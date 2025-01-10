@@ -1,48 +1,33 @@
 import { IconSearch } from '@tabler/icons-react';
 import { Burger, Group, Combobox, useCombobox, InputBase } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import classes from './Topbar.module.css';
 import PortPolicyLogo from '../../assets/port-policy-forge-logo.svg'
 
+interface TopbarProps {
+    onClusterSelect: () => void;
+}
 
-// const links = [
-//     { link: '/about', label: 'Features' },
-//     { link: '/pricing', label: 'Pricing' },
-//     { link: '/learn', label: 'Learn' },
-//     { link: '/community', label: 'Community' },
-// ];
+const clusters = ['small', 'medium', 'large'];
 
-// const items = links.map((link) => (
-//     <a
-//         key={link.label}
-//         href={link.link}
-//         className={classes.link}
-//         onClick={(event) => event.preventDefault()}
-//     >
-//         {link.label}
-//     </a>
-// ));
-
-const namespaces = ['default', 'demo', 'kube-system'];
-
-export function Topbar() {
+export function Topbar({ onClusterSelect }: TopbarProps) {
     const [opened, { toggle }] = useDisclosure(false);
-    const [selectedNamespace, setSelectedNamespace] = useState<string | null>(null);
+    const [selectedCluster, setSelectedCluster] = useState<string | null>(null);
     const [search, setSearch] = useState('');
 
     const combobox = useCombobox({
         onDropdownClose: () => combobox.resetSelectedOption(),
     });
 
-    const shouldFilterOptions = namespaces.every((item) => item !== search);
+    const shouldFilterOptions = clusters.every((item) => item !== search);
     const filteredOptions = shouldFilterOptions
-        ? namespaces.filter((item) => item.toLowerCase().includes(search.toLowerCase().trim()))
-        : namespaces;
+        ? clusters.filter((item) => item.toLowerCase().includes(search.toLowerCase().trim()))
+        : clusters;
 
-    const options = filteredOptions.map((namespace) => (
-        <Combobox.Option value={namespace} key={namespace}>
-            {namespace}
+    const options = filteredOptions.map((cluster) => (
+        <Combobox.Option value={cluster} key={cluster}>
+            {cluster}
         </Combobox.Option>
     ));
 
@@ -51,16 +36,17 @@ export function Topbar() {
             <div className={classes.inner}>
                 <Group>
                     <Burger opened={opened} onClick={toggle} size="sm" hiddenFrom="sm" />
-                    <img src={PortPolicyLogo} height={60}></img>
+                    <img src={PortPolicyLogo} height={60} alt="Port Policy Logo" />
                 </Group>
 
                 <Group ml={40}>
                     <Combobox
                         store={combobox}
                         onOptionSubmit={(val) => {
-                            setSelectedNamespace(val);
+                            setSelectedCluster(val);
                             setSearch(val);
                             combobox.closeDropdown();
+                            onClusterSelect();
                         }}
                     >
                         <Combobox.Target>
@@ -71,9 +57,9 @@ export function Topbar() {
                                 onFocus={() => combobox.openDropdown()}
                                 onBlur={() => {
                                     combobox.closeDropdown();
-                                    setSearch(selectedNamespace || '');
+                                    setSearch(selectedCluster || '');
                                 }}
-                                placeholder="Search namespace"
+                                placeholder="Select Cluster"
                                 value={search}
                                 onChange={(event) => {
                                     combobox.updateSelectedOptionIndex();
@@ -89,21 +75,6 @@ export function Topbar() {
                         </Combobox.Dropdown>
                     </Combobox>
                 </Group>
-
-
-                {/* TODO: Further feature menus will be added here in the future */}
-                {/* <Group>
-                    <Group ml={50} gap={5} className={classes.links} visibleFrom="sm">
-                        {items}
-                    </Group>
-                    <Autocomplete
-                        className={classes.search}
-                        placeholder="Search"
-                        leftSection={<IconSearch size={16} stroke={1.5} />}
-                        data={['React', 'Angular', 'Vue', 'Next.js', 'Riot.js', 'Svelte', 'Blitz.js']}
-                        visibleFrom="xs"
-                    />
-                </Group> */}
             </div>
         </header>
     );
