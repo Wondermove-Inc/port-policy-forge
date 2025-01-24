@@ -1,6 +1,4 @@
 # Port Policy Forge
-
-## Overview
 Precisely manage and regulate Kubernetes workload ports with eBPF.
 
 ## Features
