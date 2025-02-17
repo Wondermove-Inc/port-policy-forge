@@ -4,7 +4,7 @@ import { Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home.tsx';
 import Namespace from './pages/Namespace';
 import Workloads from './pages/Workload.tsx';
-import Port from './pages/Port.tsx';
+import WorkloadDetail from './pages/WorkloadDetail.tsx';
 import { loadWasm } from './wasmLoader.tsx';
 
 declare global {
@@ -39,7 +39,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/namespace" element={<Namespace />} />
         <Route path="/namespace/:namespaceName" element={<Workloads />} />
-        <Route path="/namespace/:namespaceName/workload/:workloadId/ports" element={<Port />} />
+        <Route path="/namespace/:namespaceName/workload/:workloadId/ports" element={<WorkloadDetail />} />
       </Routes>
     </div>
   )

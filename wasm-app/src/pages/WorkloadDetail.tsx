@@ -33,6 +33,15 @@ type WorkloadDetail = {
   uuid: string;
   workloadName: string;
   kind: string;
+  stats: {
+    active: number;
+    unconnected: number;
+    idle: number;
+    error: number;
+    attempted: number;
+    latencyRtt: number | null;
+    throughput: number;
+  };
   ports: PortsData;
 };
 
@@ -49,7 +58,7 @@ function wasmGetWorkloadDetail(workloadId: string): Promise<WorkloadDetail> {
   });
 }
 
-const Port = () => {
+const WorkloadDetail = () => {
   const { namespaceName, workloadId } = useParams<{ namespaceName: string; workloadId: string }>();
   const [detail, setDetail] = useState<WorkloadDetail | null>(null);
   const [rawData, setRawData] = useState<string>("");
@@ -77,8 +86,13 @@ const Port = () => {
 
   return (
     <div>
-      <h2>Workload Detail: {detail.workloadName}</h2>
-      <p><strong>Kind:</strong> {detail.kind}</p>
+      <h2>Workload Detail: {namespaceName}-workload-1</h2>
+      <p>
+        <strong>Kind:</strong> {detail.kind}
+      </p>
+      <p>
+        <strong>Stats:</strong> Active: {detail.stats.active}, Unconnected: {detail.stats.unconnected}, Idle: {detail.stats.idle}, Error: {detail.stats.error}, Attempted: {detail.stats.attempted}, Latency RTT: {detail.stats.latencyRtt}, Throughput: {detail.stats.throughput}
+      </p>
       <h3>Ports:</h3>
       <div>
         <h4>Open Ports</h4>
@@ -87,8 +101,10 @@ const Port = () => {
             {detail.ports.open.map((port) => (
               <li key={port.id}>
                 <strong>ID:</strong> {port.id} | <strong>Port:</strong>{" "}
-                {port.isRange ? `${port.portRange?.start} - ${port.portRange?.end}` : port.portNumber} |{" "}
-                <strong>Status:</strong> {port.status} | <strong>Direction:</strong> {port.direction}
+                {port.isRange
+                  ? `${port.portRange?.start} - ${port.portRange?.end}`
+                  : port.portNumber} | <strong>Status:</strong> {port.status} |{" "}
+                <strong>Direction:</strong> {port.direction}
               </li>
             ))}
           </ul>
@@ -103,8 +119,10 @@ const Port = () => {
             {detail.ports.closed.map((port) => (
               <li key={port.id}>
                 <strong>ID:</strong> {port.id} | <strong>Port:</strong>{" "}
-                {port.isRange ? `${port.portRange?.start} - ${port.portRange?.end}` : port.portNumber} |{" "}
-                <strong>Status:</strong> {port.status} | <strong>Direction:</strong> {port.direction}
+                {port.isRange
+                  ? `${port.portRange?.start} - ${port.portRange?.end}`
+                  : port.portNumber} | <strong>Status:</strong> {port.status} |{" "}
+                <strong>Direction:</strong> {port.direction}
               </li>
             ))}
           </ul>
@@ -119,4 +137,4 @@ const Port = () => {
   );
 };
 
-export default Port;
+export default WorkloadDetail;
