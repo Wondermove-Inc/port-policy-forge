@@ -9,6 +9,6 @@ Currently, two official plugins are available:
 
 ## Getting Started
 
-```
+```bash
 $ npm install && npm run dev
 ```

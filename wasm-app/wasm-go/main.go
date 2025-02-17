@@ -5,74 +5,6 @@ import (
 	"syscall/js"
 )
 
-type Namespace struct {
-	ID            int    `json:"id"`
-	NamespaceName string `json:"namespaceName"`
-}
-
-type Workload struct {
-	ID           int    `json:"id"`
-	WorkloadName string `json:"workloadName"`
-}
-
-type PortRange struct {
-	Start string `json:"start"`
-	End   string `json:"end"`
-}
-
-type PortSource struct {
-	IP   string `json:"ip"`
-	Port int    `json:"port"`
-}
-
-type Port struct {
-	ID                int         `json:"id"`
-	IsRange           bool        `json:"isRange"`
-	PortNumber        *int        `json:"portNumber"` // nil if range
-	PortRange         *PortRange  `json:"portRange"`  // nil if not range
-	Status            int         `json:"status"`
-	Direction         string      `json:"direction"`
-	Source            interface{} `json:"source"`
-	IsOpen            bool        `json:"isOpen"`
-	Risk              int         `json:"risk"`
-	Type              string      `json:"type"`
-	Count             interface{} `json:"count"`             // null 처리
-	LastConnection    interface{} `json:"lastConnection"`    // string 또는 null
-	LastSrcIP         interface{} `json:"lastSrcIp"`         // string or null
-	LastConnectionLog interface{} `json:"lastConnectionLog"` // 간단히 처리
-}
-
-type Relation struct {
-	WorkloadId string `json:"workloadId"`
-	Status     int    `json:"status"`
-}
-
-type Stats struct {
-	Active      int      `json:"active"`
-	Unconnected int      `json:"unconnected"`
-	Idle        int      `json:"idle"`
-	Error       int      `json:"error"`
-	Attempted   int      `json:"attempted"`
-	LatencyRtt  *float64 `json:"latencyRtt"`
-	Throughput  float64  `json:"throughput"`
-}
-
-type WorkloadResource struct {
-	UUID         string     `json:"uuid"`
-	WorkloadName string     `json:"workloadName"`
-	Kind         string     `json:"kind"`
-	From         []Relation `json:"from"`
-	To           []Relation `json:"to"`
-}
-
-type WorkloadDetail struct {
-	UUID         string            `json:"uuid"`
-	WorkloadName string            `json:"workloadName"`
-	Kind         string            `json:"kind"`
-	Stats        Stats             `json:"stats"`
-	Ports        map[string][]Port `json:"ports"` // "open" and "closed"
-}
-
 func main() {
 	done := make(chan struct{}, 0)
 
@@ -135,7 +67,7 @@ func getWorkloadDetail(this js.Value, p []js.Value) interface{} {
 	workloadID := p[0].String()
 	detail := WorkloadDetail{
 		UUID:         workloadID,
-		WorkloadName: "",
+		WorkloadName: "demo-workload-1",
 		Kind:         "deployment",
 		Stats: Stats{
 			Active:      2,
@@ -146,43 +78,145 @@ func getWorkloadDetail(this js.Value, p []js.Value) interface{} {
 			LatencyRtt:  float64Ptr(1.39),
 			Throughput:  469.89,
 		},
-		Ports: map[string][]Port{
-			"open": {
-				{
-					ID:         0,
-					IsRange:    true,
-					PortNumber: nil,
-					PortRange:  &PortRange{Start: "0", End: "4999"},
-					Status:     0,
-					Direction:  "inbound",
-					Source:     nil,
-					IsOpen:     true,
-					Risk:       0,
-					Type:       "internal",
+		Ports: map[string]PortDetailGroup{
+			"inbound": {
+				Open: []Port{
+					{
+						ID:                0,
+						IsRange:           true,
+						PortNumber:        nil,
+						PortRange:         &PortRange{Start: "0", End: "4999"},
+						Status:            0,
+						Direction:         "inbound",
+						Source:            nil,
+						IsOpen:            true,
+						Risk:              0,
+						Type:              "internal",
+						Count:             nil,
+						LastConnection:    nil,
+						LastSrcIP:         nil,
+						LastConnectionLog: nil,
+					},
+					{
+						ID:                1,
+						IsRange:           true,
+						PortNumber:        intPtr(5000),
+						PortRange:         nil,
+						Status:            1,
+						Direction:         "inbound",
+						Source:            nil,
+						IsOpen:            true,
+						Risk:              0,
+						Type:              "internal",
+						Count:             nil,
+						LastConnection:    "2023-02-21T11:19:22+09:00",
+						LastSrcIP:         "10.10.1.19",
+						LastConnectionLog: "Connection Log",
+					},
+					{
+						ID:                2,
+						IsRange:           true,
+						PortNumber:        nil,
+						PortRange:         &PortRange{Start: "5001", End: "8079"},
+						Status:            0,
+						Direction:         "inbound",
+						Source:            nil,
+						IsOpen:            true,
+						Risk:              0,
+						Type:              "internal",
+						Count:             nil,
+						LastConnection:    nil,
+						LastSrcIP:         nil,
+						LastConnectionLog: nil,
+					},
+					{
+						ID:                3,
+						IsRange:           false,
+						PortNumber:        intPtr(8080),
+						PortRange:         nil,
+						Status:            2,
+						Direction:         "inbound",
+						Source:            []PortSource{{IP: "192.168.1.100", Port: 51234}},
+						IsOpen:            true,
+						Risk:              0,
+						Type:              "internal",
+						Count:             nil,
+						LastConnection:    "2022-02-21T11:19:22+09:00",
+						LastSrcIP:         "10.10.1.19",
+						LastConnectionLog: "Connection Log",
+					},
 				},
-				{
-					ID:         1,
-					IsRange:    false,
-					PortNumber: intPtr(8080),
-					Status:     2,
-					Direction:  "inbound",
-					Source:     []PortSource{{IP: "192.168.1.100", Port: 51234}},
-					IsOpen:     true,
-					Risk:       0,
-					Type:       "internal",
+				Closed: []Port{
+					{
+						ID:                4,
+						IsRange:           false,
+						PortNumber:        intPtr(50051),
+						PortRange:         nil,
+						Status:            4,
+						Direction:         "inbound",
+						Source:            []PortSource{{IP: "192.168.1.100", Port: 51234}},
+						IsOpen:            false,
+						Risk:              2,
+						Type:              "internal",
+						Count:             10,
+						LastConnection:    "2023-02-21T11:19:22+09:00",
+						LastSrcIP:         "10.10.1.19",
+						LastConnectionLog: "Connection Log",
+					},
+					{
+						ID:                5,
+						IsRange:           false,
+						PortNumber:        intPtr(50052),
+						PortRange:         nil,
+						Status:            4,
+						Direction:         "inbound",
+						Source:            []PortSource{{IP: "192.168.1.100", Port: 51234}},
+						IsOpen:            false,
+						Risk:              1,
+						Type:              "internal",
+						Count:             4,
+						LastConnection:    "2023-02-21T11:19:22+09:00",
+						LastSrcIP:         "10.10.1.19",
+						LastConnectionLog: "Connection Log",
+					},
 				},
 			},
-			"closed": {
-				{
-					ID:         0,
-					IsRange:    false,
-					PortNumber: intPtr(50051),
-					Status:     4,
-					Direction:  "inbound",
-					Source:     []PortSource{{IP: "192.168.1.100", Port: 51234}},
-					IsOpen:     false,
-					Risk:       2,
-					Type:       "internal",
+			"outbound": {
+				Open: []Port{
+					{
+						ID:                6,
+						IsRange:           false,
+						PortNumber:        intPtr(9000),
+						PortRange:         nil,
+						Status:            0,
+						Direction:         "outbound",
+						Source:            []PortSource{{IP: "10.0.0.1", Port: 12345}},
+						IsOpen:            true,
+						Risk:              0,
+						Type:              "external",
+						Count:             nil,
+						LastConnection:    "2023-02-21T12:00:00+09:00",
+						LastSrcIP:         "10.0.0.2",
+						LastConnectionLog: "Outbound connection log",
+					},
+				},
+				Closed: []Port{
+					{
+						ID:                7,
+						IsRange:           false,
+						PortNumber:        intPtr(9001),
+						PortRange:         nil,
+						Status:            4,
+						Direction:         "outbound",
+						Source:            []PortSource{{IP: "10.0.0.1", Port: 12345}},
+						IsOpen:            false,
+						Risk:              2,
+						Type:              "external",
+						Count:             5,
+						LastConnection:    "2023-02-21T12:05:00+09:00",
+						LastSrcIP:         "10.0.0.2",
+						LastConnectionLog: "Outbound closed connection log",
+					},
 				},
 			},
 		},
