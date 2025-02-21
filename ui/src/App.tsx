@@ -1,42 +1,22 @@
-import './App.css'
-import '@mantine/core/styles.css'
-import "reactflow/dist/style.css";
-import { MantineProvider, Text, Container, Space } from '@mantine/core'
-import { Topbar } from './components/Topbar/Topbar.tsx'
-import Flow from './components/Flow/Flow'
-import PortTable from './components/Table/Table.tsx';
-import { useState } from 'react';
+import { Box } from "@mui/material";
+import { defaultTheme, ThemeProvider } from "@skuber/theme";
 
-function App() {
-  const [showCluster, setShowCluster] = useState(false);
-  const [showTable, setShowTable] = useState(false);
+import { Header } from "./components/layout/Header";
 
-  const handleClusterSelect = () => {
-    setShowCluster(true);
-  };
+import "@skuber/theme/styles/global.css";
+import "./index.css";
 
-  const handleShowTable = () => {
-    setShowTable(true);
-  }
-
+export default function App() {
   return (
-    <MantineProvider>
-      <Topbar onClusterSelect={handleClusterSelect} />
-      {showCluster ? (
-        <>
-          {showTable && <PortTable />}
-          <Flow onNodeClick={handleShowTable} onFlowClick={handleShowTable} />
-        </>
-      ) : (
-        <Container>
-          <Space h="md" />
-          <Text size="xl" color="dimmed" style={{ textAlign: 'center' }}>
-            To begin, select one of the cluster.
-          </Text>
-        </Container>
-      )}
-    </MantineProvider>
-  )
+    <ThemeProvider theme={defaultTheme}>
+      <Header />
+      <Box
+        sx={{
+          backgroundColor: "background.secondary",
+          width: "100%",
+          minHeight: "calc(100vh - 56px)",
+        }}
+      ></Box>
+    </ThemeProvider>
+  );
 }
-
-export default App;
