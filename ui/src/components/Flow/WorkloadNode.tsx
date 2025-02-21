@@ -2,11 +2,9 @@ import { memo, useCallback } from 'react';
 import { Button } from '@mantine/core';
 import { Handle, NodeProps, Position } from 'reactflow';
 
-const handleStyle = { left: 10 };
 
 const WorkloadNode = ({
     data,
-    isConnectable,
     // targetPosition = Position.Right,
     // sourcePosition = Position.Left
 }: NodeProps) => {

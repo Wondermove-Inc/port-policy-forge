@@ -1,16 +1,8 @@
-import { useCallback } from "react";
-import ReactFlow, {
+import {
+    ReactFlow, 
     Node,
-    addEdge,
     Background,
-    Edge,
-    Connection,
-    Position,
-    MarkerType,
     useNodesState,
-    useEdgesState,
-    ControlButton,
-    Controls
 } from "reactflow";
 import CustomNode from "./CustomNode.tsx";
 import WorkloadNode from "./WorkloadNode.tsx";
@@ -116,9 +108,9 @@ interface FlowProps {
 const BasicFlow: React.FC<FlowProps> = ({ onNodeClick, onFlowClick }) => {
     const [nodes, , onNodesChange] = useNodesState(initialNodes);
 
-    const onNodeClickHandler = (event: React.MouseEvent, node: Node) => {
-        onNodeClick();
-    };
+    // const onNodeClickHandler = (_: React.MouseEvent, _: Node) => {
+    //     onNodeClick();
+    // };
 
     return (
         <div onClick={onFlowClick} style={{ width: "100%", height: "100%" }}>
@@ -127,7 +119,7 @@ const BasicFlow: React.FC<FlowProps> = ({ onNodeClick, onFlowClick }) => {
                 onNodesChange={onNodesChange}
                 nodeTypes={nodeTypes}
                 fitView
-                onNodeClick={onNodeClickHandler}
+                onNodeClick={onNodeClick}
             >
                 <Background />
             </ReactFlow>

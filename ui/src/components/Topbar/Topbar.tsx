@@ -1,4 +1,3 @@
-import { IconSearch } from '@tabler/icons-react';
 import { Burger, Group, Combobox, useCombobox, InputBase } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useState } from 'react';
