@@ -5,17 +5,17 @@ import { useMemo } from "react";
 
 export const WorkloadSummary = () => {
   const stylesByType = {
-    status: { variant: "subtitle3" as const, gap: "12px" },
-    metric: { variant: "body3" as const, gap: "8px" },
+    status: { variant: "subtitle3", gap: "12px" },
+    metric: { variant: "body3", gap: "8px" },
   };
 
   const workloadData = useMemo(
     () => [
       { title: WORKLOAD_STATUS.active.label, value: "2", color: WORKLOAD_STATUS.active.color, ...stylesByType.status },
       {
-        title: WORKLOAD_STATUS.unconneted.label,
+        title: WORKLOAD_STATUS.unconnected.label,
         value: "65,536",
-        color: WORKLOAD_STATUS.unconneted.color,
+        color: WORKLOAD_STATUS.unconnected.color,
         ...stylesByType.status,
       },
       { title: WORKLOAD_STATUS.idle.label, value: "", color: WORKLOAD_STATUS.idle.color, ...stylesByType.status },

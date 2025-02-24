@@ -1,14 +1,15 @@
 import { Tabs } from "@skuber/components";
 import { defaultTheme } from "@skuber/theme";
+import { WorkloadDivided } from "../../../../share/constants/common";
 
 const tabs = [
   {
-    id: "inbound",
-    label: "Inbound",
+    id: WorkloadDivided.INBOUND,
+    label: WorkloadDivided.INBOUND,
   },
   {
-    id: "outbound",
-    label: "Outbound",
+    id: WorkloadDivided.OUTBOUND,
+    label: WorkloadDivided.OUTBOUND,
   },
 ];
 
