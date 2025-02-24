@@ -5,7 +5,7 @@ import { Header } from "./components/layout/Header";
 
 import "@skuber/theme/styles/global.css";
 import "./index.css";
-import { EyeIcon } from "./components/icons/EyeIcon";
+import { ViewFilter } from "./components/molecules/ViewFilter";
 
 export default function App() {
   return (
@@ -18,7 +18,7 @@ export default function App() {
           minHeight: "calc(100vh - 56px)",
         }}
       >
-        <EyeIcon />
+        <ViewFilter />
       </Box>
     </ThemeProvider>
   );
