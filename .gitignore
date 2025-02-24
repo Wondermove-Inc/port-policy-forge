@@ -4,3 +4,6 @@
 .run/
 
 # ignore built binaries
+
+# env
+.env
