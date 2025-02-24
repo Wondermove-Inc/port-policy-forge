@@ -6,10 +6,29 @@ import { Header } from "./components/layout/Header";
 import "@skuber/theme/styles/global.css";
 import "./index.css";
 import { ViewFilter } from "./components/molecules/ViewFilter";
+import { EyeIcon } from "./components/icons/EyeIcon";
+import { WorkloadDetail } from "./components/pages/WorkloadDetail";
 
 export default function App() {
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <ThemeProvider
+      theme={{
+        ...defaultTheme,
+        typography: {
+          ...defaultTheme.typography,
+          body3: {
+            fontSize: "13px",
+            fontWeight: 500,
+            lineHeight: "20px",
+          },
+          subtitle3: {
+            fontSize: "16px",
+            fontWeight: 800,
+            lineHeight: "20px",
+          },
+        },
+      }}
+    >
       <Header />
       <Box
         sx={{
@@ -19,6 +38,8 @@ export default function App() {
         }}
       >
         <ViewFilter />
+        <EyeIcon />
+        <WorkloadDetail />
       </Box>
     </ThemeProvider>
   );
