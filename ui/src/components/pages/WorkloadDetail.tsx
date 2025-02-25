@@ -5,17 +5,17 @@ import { WorkloadSummary } from "./components/detail/WorkloadSummary";
 import { WorkloadTabs } from "./components/detail/WorkloadTabs";
 
 export const WorkloadDetail = () => {
-  const [open, setOpen] = useState(false);
+  const [isWorkloadDetailOpenned, setIsWorkloadDetailOpenned] = useState(false);
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Workload Name</Button>
+      <Button onClick={() => setIsWorkloadDetailOpenned(true)}>Workload Name</Button>
       <Drawer
-        open={open}
+        open={isWorkloadDetailOpenned}
         title="email-service"
         subTitle="Deployment"
         onClose={() => {
-          setOpen(false);
+          setIsWorkloadDetailOpenned(false);
         }}
       >
         <WorkloadTabs onChangeTab={() => {}} />
