@@ -40,7 +40,7 @@ export const PolicyApplication = () => {
             <InfoIcon size={16} />
             <Typography variant="b1_m">Apply a service policy to close unused ports </Typography>
           </Box>
-          <Typography variant="b2_r">
+          <Typography variant="b2_r" color="text.secondary">
             Enforce service policies to close all unconnected ports for <br /> added security. If you don't apply a
             policy, all ports remain open.
           </Typography>
