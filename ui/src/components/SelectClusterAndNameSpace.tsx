@@ -48,8 +48,21 @@ export const SelectClusterAndNameSpace = ({
         alignItems="center"
         spacing={1}
         sx={{
-          width: avatar ? "97px" : "115px",
+          "&:hover": { backgroundColor: "action.hover" },
+          width: avatar ? "117px" : "142px",
           height: "100%",
+          ...(id === "cluster" && {
+            paddingLeft: "16px",
+            paddingRight: "12px",
+            borderTopLeftRadius: "8.89px",
+            borderBottomLeftRadius: "8.89px",
+          }),
+          ...(id === "namespace" && {
+            paddingRight: "12px",
+            paddingLeft: "16px",
+            borderTopRightRadius: "8.89px",
+            borderBottomRightRadius: "8.89px",
+          }),
         }}
       >
         {avatar && selectedOption?.avatar && (
@@ -83,6 +96,9 @@ export const SelectClusterAndNameSpace = ({
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
             },
+            "& .MuiSvgIcon-root": {
+              top: "30%",
+            },
             "&.MuiInputBase-root": {
               backgroundColor: "transparent",
               border: "none",
@@ -97,7 +113,12 @@ export const SelectClusterAndNameSpace = ({
           <MenuItem
             disabled
             value=""
-            sx={{ borderBottom: "1.11px solid", borderColor: "border.default" }}
+            sx={{
+              borderBottom: "1.11px solid",
+              borderColor: "border.default",
+              fontSize: "12px",
+              color: "text.tertiary",
+            }}
           >
             {placeholder}
           </MenuItem>
@@ -111,6 +132,8 @@ export const SelectClusterAndNameSpace = ({
                 gap: "8px",
                 justifyContent: "space-between",
                 alignItems: "center",
+                fontSize: "14px",
+                color: "text.primary",
               }}
             >
               <Typography sx={{ overflow: "hidden", textOverflow: "ellipsis" }}>
@@ -131,14 +154,13 @@ export const SelectClusterAndNameSpace = ({
         borderRadius: "8.89px",
         border: "1.11px solid",
         borderColor: "border.default",
-        width: "260px",
+        width: "290px",
         height: "46px",
         boxShadow: "5.56px 5.56px 66.67px 0px rgba(20, 25, 35, 0.9)",
         backdropFilter: "blur(55.5555534362793px)",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        padding: "0px 12px 0px 16px",
       }}
     >
       {renderSelect(
