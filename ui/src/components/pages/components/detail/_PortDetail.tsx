@@ -24,22 +24,27 @@ export const PortDetail = ({ record }: { record: any }) => {
             {`Connected sources (${record.source})`}
           </Typography>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-            {record.sourceDetail.map(({ ip, port }: { ip: string; port: number }) => (
-              <Box key={`${ip}-${port}`}>
-                <Typography variant="body1" color="text.primary">
-                  {`${ip}/${port}`}
-                </Typography>
-                <ShadedBox>
-                  <Typography variant="body2" color="text.primary">
-                    Working on deploying a front-end application, making it accessible only from an internal test
-                    server.
+            {record.sourceDetail.map(
+              ({ ip, port }: { ip: string; port: number }) => (
+                <Box
+                  key={`${ip}-${port}`}
+                  sx={{ display: "flex", flexDirection: "column", gap: 1 }}
+                >
+                  <Typography variant="body1" color="text.primary">
+                    {`${ip}/${port}`}
                   </Typography>
-                  <Typography variant="caption" color="text.tertiary">
-                    2023.02.21, 11:19:22 (GMT +9)
-                  </Typography>
-                </ShadedBox>
-              </Box>
-            ))}
+                  <ShadedBox>
+                    <Typography variant="body2" color="text.primary">
+                      Working on deploying a front-end application, making it
+                      accessible only from an internal test server.
+                    </Typography>
+                    <Typography variant="caption" color="text.tertiary">
+                      2023.02.21, 11:19:22 (GMT +9)
+                    </Typography>
+                  </ShadedBox>
+                </Box>
+              ),
+            )}
           </Box>
         </Box>
       )}
@@ -56,10 +61,16 @@ export const PortDetail = ({ record }: { record: any }) => {
       >
         <Box sx={{ display: "flex", gap: 2.5 }}>
           {[
-            { label: isOpen ? "Last connection" : "Last Connection attempts", value: record.lastConnection },
+            {
+              label: isOpen ? "Last connection" : "Last Connection attempts",
+              value: record.lastConnection,
+            },
             { label: "Last Src IP", value: record.lastSrcIp },
           ].map(({ label, value }) => (
-            <Box key={label} sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+            <Box
+              key={label}
+              sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}
+            >
               <Typography variant="caption" color="text.tertiary">
                 {label}
               </Typography>

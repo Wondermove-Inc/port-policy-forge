@@ -1,10 +1,11 @@
 import { Box } from "@mui/material";
 import { Button, Typography } from "@skuber/components";
+
+import { CollapsibleTable } from "./_CollapsibleTable";
+import { PortDetail } from "./_PortDetail";
+import { workloadDetail } from "./data";
 import { AddIcon } from "../../../icons/AddIcon";
 import { EditIcon } from "../../../icons/EditIcon";
-import { CollapsibleTable } from "./_CollapsibleTable";
-import { workloadDetail } from "./data";
-import { PortDetail } from "./_PortDetail";
 
 const columns = [
   {
@@ -62,7 +63,9 @@ export const OpenPort = () => {
   // TODO
   const data = workloadDetail.ports.inbound.open.map((el) => ({
     ...el,
-    portNumber: el.isRange ? `${el?.portRange?.start} ~ ${el?.portRange?.end}` : el.portNumber,
+    portNumber: el.isRange
+      ? `${el?.portRange?.start} ~ ${el?.portRange?.end}`
+      : el.portNumber,
     status: el.status,
     source: el.source?.length || "-",
     access: "Allow all access ",
@@ -74,35 +77,45 @@ export const OpenPort = () => {
       <Box
         sx={{
           display: "flex",
-          justifyContent: "space-between",
+          flexDirection: "column",
           alignItems: "center",
-          paddingY: "4px",
-          marginBottom: "12px",
         }}
       >
-        <Typography variant="subtitle1" component={"p"}>
-          {`Open (${workloadDetail.ports.inbound.open.length})`}
-        </Typography>
-        <Button
-          variant="outlined"
-          size="extraSmall"
+        <Box
           sx={{
-            width: "94px",
-            height: "24px",
+            display: "flex",
+            width: "100%",
+            justifyContent: "space-between",
+            paddingY: "4px",
+            marginBottom: "12px",
           }}
         >
-          <AddIcon size={16} />
-          Open Port
-        </Button>
+          <Typography variant="subtitle1" component={"p"}>
+            {`Open (${workloadDetail.ports.inbound.open.length || 0})`}
+          </Typography>
+          <Button
+            variant="outlined"
+            size="extraSmall"
+            sx={{
+              width: "94px",
+              height: "24px",
+            }}
+          >
+            <AddIcon size={16} />
+            Open Port
+          </Button>
+        </Box>
+        <CollapsibleTable
+          columns={columns}
+          data={data}
+          sx={{
+            maxWidth: "472px",
+          }}
+          renderDetails={(record) =>
+            record.sourceDetail ? <PortDetail record={record} /> : undefined
+          }
+        />
       </Box>
-      <CollapsibleTable
-        columns={columns}
-        data={data}
-        sx={{
-          maxWidth: "472px",
-        }}
-        renderDetails={(record) => (record.sourceDetail ? <PortDetail record={record} /> : undefined)}
-      />
     </>
   );
 };
