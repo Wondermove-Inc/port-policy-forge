@@ -5,6 +5,7 @@ import { WorkloadSummary } from "./components/detail/_WorkloadSummary";
 import { WorkloadTabs } from "./components/detail/_WorkloadTabs";
 import { PolicyApplication } from "./components/detail/_PolicyApplication";
 import { OpenPort } from "./components/detail/_OpenPort";
+import { ClosePort } from "./components/detail/_ClosePort";
 
 export const WorkloadDetail = () => {
   const [isWorkloadDetailOpenned, setIsWorkloadDetailOpenned] = useState(false);
@@ -24,6 +25,7 @@ export const WorkloadDetail = () => {
         <WorkloadSummary />
         <PolicyApplication />
         <OpenPort />
+        <ClosePort />
       </Drawer>
     </>
   );

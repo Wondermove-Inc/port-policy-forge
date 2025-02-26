@@ -1,8 +1,10 @@
 import { Box } from "@mui/material";
 import { Button, Typography } from "@skuber/components";
 import { AddIcon } from "../../../icons/AddIcon";
-import { CollapsibleTable } from "../../../atoms/Table/Table";
 import { EditIcon } from "../../../icons/EditIcon";
+import { CollapsibleTable } from "./_CollapsibleTable";
+import { workloadDetail } from "./data";
+import { PortDetail } from "./_PortDetail";
 
 const columns = [
   {
@@ -57,26 +59,15 @@ const columns = [
 ];
 
 export const OpenPort = () => {
-  const data = [
-    {
-      portNumber: 8080,
-      status: 0,
-      source: 1,
-      access: "Allow all access ",
-    },
-    {
-      portNumber: 8080,
-      status: 0,
-      source: 1,
-      access: "Allow except some access",
-    },
-    {
-      portNumber: 8080,
-      status: 0,
-      source: 1,
-      access: "Allow only some access",
-    },
-  ];
+  // TODO
+  const data = workloadDetail.ports.inbound.open.map((el) => ({
+    ...el,
+    portNumber: el.isRange ? `${el?.portRange?.start} ~ ${el?.portRange?.end}` : el.portNumber,
+    status: el.status,
+    source: el.source?.length || "-",
+    access: "Allow all access ",
+    sourceDetail: el.source,
+  }));
 
   return (
     <>
@@ -90,7 +81,7 @@ export const OpenPort = () => {
         }}
       >
         <Typography variant="subtitle1" component={"p"}>
-          Open (65,526)
+          {`Open (${workloadDetail.ports.inbound.open.length})`}
         </Typography>
         <Button
           variant="outlined"
@@ -110,123 +101,7 @@ export const OpenPort = () => {
         sx={{
           maxWidth: "472px",
         }}
-        renderDetails={(record) => (
-          <Box>
-            <Box
-              sx={{
-                paddingY: "12px",
-                display: "flex",
-                flexDirection: "column",
-                gap: "12px",
-              }}
-            >
-              <Typography variant="caption" color="text.tertiary">
-                Connected sources (1)
-              </Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "8px",
-                }}
-              >
-                <>
-                  <Typography variant="body1" color="text.primary">
-                    172.16.0.0/12
-                  </Typography>
-                  <Box
-                    sx={{
-                      padding: "12px",
-                      borderRadius: "8px",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "10px",
-                      backgroundColor: "background.shaded",
-                    }}
-                  >
-                    <Typography variant="body2" color="text.primary">
-                      Working on deploying a front-end application, making it accessible only from an internal test
-                      server.
-                    </Typography>
-                    <Typography variant="caption" color="text.tertiary">
-                      2023.02.21, 11:19:22 (GMT +9)
-                    </Typography>
-                  </Box>
-                </>
-              </Box>
-            </Box>
-            <Box
-              sx={{
-                borderTop: "1px solid",
-                borderColor: "border.elevated",
-                paddingY: "20px",
-                display: "flex",
-                flexDirection: "column",
-                gap: "20px",
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: "20px",
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "4px",
-                  }}
-                >
-                  <Typography variant="caption" color="text.tertiary">
-                    Last connection
-                  </Typography>
-                  <Typography variant="body1" color="text.primary">
-                    2023.02.21, 11:19:22 (GMT +9)
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "4px",
-                  }}
-                >
-                  <Typography variant="caption" color="text.tertiary">
-                    Last Src IP
-                  </Typography>
-                  <Typography variant="body1" color="text.primary">
-                    10.10.19
-                  </Typography>
-                </Box>
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "4px",
-                }}
-              >
-                <Typography variant="caption" color="text.tertiary">
-                  Last Connection Log
-                </Typography>
-                <Box
-                  sx={{
-                    padding: "12px",
-                    borderRadius: "8px",
-                    backgroundColor: "background.shaded",
-                  }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    {
-                      "192.168.10.101:34562 (remote-node) -> 172.16.0.236:4240 (health) to-endpoint FORWARDED (TCP Flags: ACK)"
-                    }
-                  </Typography>
-                </Box>
-              </Box>
-            </Box>
-          </Box>
-        )}
+        renderDetails={(record) => (record.sourceDetail ? <PortDetail record={record} /> : undefined)}
       />
     </>
   );

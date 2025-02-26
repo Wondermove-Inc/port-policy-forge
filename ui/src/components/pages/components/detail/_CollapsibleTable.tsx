@@ -16,15 +16,15 @@ import {
   Typography,
   TableCellProps,
 } from "@mui/material";
-import { ArrowDownIcon } from "../../icons/ArrowDownIcon";
-import { ArrowRightIcon } from "../../icons/ArrowRightIcon";
+import { ArrowDownIcon } from "../../../icons/ArrowDownIcon";
+import { ArrowRightIcon } from "../../../icons/ArrowRightIcon";
 
 export type TableColumnProps = TableCellProps & {
   id: string;
   label: React.ReactNode;
   width?: number;
   borderRight?: boolean;
-  render?: (record: any) => React.ReactNode;
+  render?: ((record: any) => React.ReactNode) | undefined;
 };
 
 type CollapsibleTableProps = {
@@ -35,7 +35,7 @@ type CollapsibleTableProps = {
   tableProps?: TableProps;
   width?: number | string;
   loading?: boolean;
-  renderDetails: (record: any) => React.ReactNode;
+  renderDetails?: (record: any) => React.ReactNode;
 };
 
 export const CollapsibleTable = ({
@@ -104,35 +104,43 @@ export const CollapsibleTable = ({
                   </TableCell>
                 </TableRow>
               ) : data.length > 0 ? (
-                data.map((row, index) => (
-                  <React.Fragment key={index}>
-                    <TableRow>
-                      {columns.map((column, colIndex) => (
-                        <TableCell key={colIndex} align={column.align} width={column.width}>
-                          {colIndex === 0 ? (
-                            <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexGrow: 1 }}>
-                              <IconButton size="small" onClick={() => handleToggleRow(index)}>
-                                {openRows[index] ? <ArrowDownIcon size={16} /> : <ArrowRightIcon size={16} />}
-                              </IconButton>
-                              {column.render ? column.render(row) : row[column.id]}
-                            </Box>
-                          ) : column.render ? (
-                            column.render(row)
-                          ) : (
-                            row[column.id]
-                          )}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={columns.length}>
-                        <Collapse in={openRows[index]} timeout="auto" unmountOnExit>
-                          <Box margin={1}>{renderDetails(row)}</Box>
-                        </Collapse>
-                      </TableCell>
-                    </TableRow>
-                  </React.Fragment>
-                ))
+                data.map((row, index) => {
+                  const hasDetails = renderDetails && renderDetails(row);
+
+                  return (
+                    <React.Fragment key={index}>
+                      <TableRow>
+                        {columns.map((column, colIndex) => (
+                          <TableCell key={colIndex} align={column.align} width={column.width}>
+                            {colIndex === 0 ? (
+                              <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexGrow: 1 }}>
+                                {hasDetails && (
+                                  <IconButton size="small" onClick={() => handleToggleRow(index)}>
+                                    {openRows[index] ? <ArrowDownIcon size={16} /> : <ArrowRightIcon size={16} />}
+                                  </IconButton>
+                                )}
+                                {column.render ? column.render(row) : row[column.id]}
+                              </Box>
+                            ) : column.render ? (
+                              column.render(row)
+                            ) : (
+                              row[column.id]
+                            )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                      {hasDetails && (
+                        <TableRow>
+                          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={columns.length}>
+                            <Collapse in={openRows[index]} timeout="auto" unmountOnExit>
+                              <Box margin={1}>{renderDetails(row)}</Box>
+                            </Collapse>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </React.Fragment>
+                  );
+                })
               ) : (
                 <TableRow>
                   <TableCell width="100%" colSpan={columns.length + 1}>
