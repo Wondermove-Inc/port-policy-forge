@@ -7,8 +7,8 @@ import {
   Typography,
 } from "@mui/material";
 
-import { ArrowDownIcon } from "../icons/ArrowDownIcon";
-import { CheckIcon } from "../icons/CheckIcon";
+import { ArrowDownIcon } from "@/components/icons/ArrowDownIcon";
+import { CheckIcon } from "@/components/icons/CheckIcon";
 
 type Option = {
   value: string;

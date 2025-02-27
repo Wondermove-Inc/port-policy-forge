@@ -1,14 +1,18 @@
 import { Box } from "@mui/material";
 import { Typography } from "@skuber/components";
-import { StatsType, Stats } from "../../../../../models/WorkLoadDetail";
-import { PORT_STATUS_MAP } from "../../../../../constants/common";
+
+import { PORT_STATUS_MAP } from "@/constants/common";
+import { StatsType, Stats } from "@/models/WorkLoadDetail";
 
 export type WorkloadSummaryProps = {
   stats: StatsType;
   workloadName: string;
 };
 
-export const WorkloadSummary = ({ stats, workloadName }: WorkloadSummaryProps) => {
+export const WorkloadSummary = ({
+  stats,
+  workloadName,
+}: WorkloadSummaryProps) => {
   const stylesByType = {
     status: { variant: "subtitle3", gap: "12px" },
     metric: { variant: "body3", gap: "8px" },
@@ -43,24 +47,34 @@ export const WorkloadSummary = ({ stats, workloadName }: WorkloadSummaryProps) =
         maxWidth: 440,
       }}
     >
-      {[...workloadData, ...metrics].map(({ title, value, color, variant, gap }, index) => (
-        <Box
-          key={index}
-          sx={{
-            minWidth: 78.4,
-            display: "flex",
-            flexDirection: "column",
-            gap,
-          }}
-        >
-          <Typography variant="caption" component="p" sx={{ color: "text.secondary" }}>
-            {title}
-          </Typography>
-          <Typography variant={variant as any} component="p" sx={{ color: value ? color : "status.idle" }}>
-            {value || "-"}
-          </Typography>
-        </Box>
-      ))}
+      {[...workloadData, ...metrics].map(
+        ({ title, value, color, variant, gap }, index) => (
+          <Box
+            key={index}
+            sx={{
+              minWidth: 78.4,
+              display: "flex",
+              flexDirection: "column",
+              gap,
+            }}
+          >
+            <Typography
+              variant="caption"
+              component="p"
+              sx={{ color: "text.secondary" }}
+            >
+              {title}
+            </Typography>
+            <Typography
+              variant={variant as any}
+              component="p"
+              sx={{ color: value ? color : "status.idle" }}
+            >
+              {value || "-"}
+            </Typography>
+          </Box>
+        ),
+      )}
     </Box>
   );
 };

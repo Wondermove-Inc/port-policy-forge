@@ -1,5 +1,4 @@
 import { SvgIcon, SvgIconProps } from "@mui/material";
-
 import { palette } from "@skuber/theme";
 
 export type BaseIconProps = Omit<SvgIconProps, "size" | "color"> & {

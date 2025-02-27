@@ -2,17 +2,22 @@ import { useState } from "react";
 
 import { Button } from "@skuber/components";
 
-import { Drawer } from "../atoms/Drawer";
-import { WorkloadTabs } from "./components/pages/detail/WorkloadTabs";
-import { WorkloadSummary } from "./components/pages/detail/WorkloadSummary";
-import { PolicyApplication } from "./components/pages/detail/PolicyApplication";
+import { ClosePort } from "./detail/ClosePort";
+import { OpenPort } from "./detail/OpenPort";
+import { PolicyApplication } from "./detail/PolicyApplication";
+import { WorkloadSummary } from "./detail/WorkloadSummary";
+import { WorkloadTabs } from "./detail/WorkloadTabs";
+
+import { Drawer } from "@/components/atoms/Drawer";
 
 export const WorkloadDetail = () => {
   const [isWorkloadDetailOpened, setIsWorkloadDetailOpened] = useState(false);
 
   return (
     <>
-      <Button onClick={() => setIsWorkloadDetailOpened(true)}>Workload Name</Button>
+      <Button onClick={() => setIsWorkloadDetailOpened(true)}>
+        Workload Name
+      </Button>
       <Drawer
         open={isWorkloadDetailOpened}
         title="email-service"
@@ -35,6 +40,8 @@ export const WorkloadDetail = () => {
           workloadName="Default"
         />
         <PolicyApplication />
+        <OpenPort />
+        <ClosePort />
       </Drawer>
     </>
   );

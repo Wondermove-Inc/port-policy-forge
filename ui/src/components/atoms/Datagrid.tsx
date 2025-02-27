@@ -13,19 +13,20 @@ import {
   NoRowsOverlayPropsOverrides,
 } from "@mui/x-data-grid";
 
-import { TableListEmpty } from "./TableEmpty";
-import { CheckBoxIcon } from "../../icons/CheckBoxIcon";
-import { IndeterminateIcon } from "../../icons/IndeterminateIcon";
+import { DatagridListEmpty } from "./DatagridEmpty";
+
+import { CheckBoxIcon } from "@/components/icons/CheckBoxIcon";
+import { IndeterminateIcon } from "@/components/icons/IndeterminateIcon";
 
 const CustomNoResultOverlay = () => {
-  return <TableListEmpty title={"No Data"} description={"No Data"} />;
+  return <DatagridListEmpty title={"No Data"} description={"No Data"} />;
 };
 export type CustomGridColDef = GridColDef & {
   enableCheckBox?: boolean;
   disabled?: boolean;
 };
 
-export const Table = (
+export const Datagrid = (
   props: DataGridProps & {
     emptyHeight?: number | string;
     height?: number | string;

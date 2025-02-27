@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 import { Box, Drawer as MuiDrawer, DrawerProps } from "@mui/material";
 import { Typography } from "@skuber/components";
 
-import { CloseIcon } from "../../icons/CloseIcon";
+import { CloseIcon } from "@/components/icons/CloseIcon";
 
 export type DrawerBaseProps = DrawerProps & {
   title: string;
