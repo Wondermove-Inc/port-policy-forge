@@ -19,6 +19,11 @@ export default function App() {
             fontWeight: 700,
             lineHeight: "16px",
           },
+          captionBold: {
+            fontSize: "12px",
+            fontWeight: 600,
+            lineHeight: "16px",
+          },
         },
       }}
     >
