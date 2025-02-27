@@ -26,6 +26,16 @@ export default function App() {
             fontWeight: 800,
             lineHeight: "20px",
           },
+          body1Bold: {
+            fontSize: "14px",
+            fontWeight: 700,
+            lineHeight: "16px",
+          },
+          captionBold: {
+            fontSize: "12px",
+            fontWeight: 600,
+            lineHeight: "16px",
+          },
         },
       }}
     >
