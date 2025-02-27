@@ -1,4 +1,5 @@
 import { Tabs } from "@skuber/components";
+
 import { Direction } from "../../../../../models/WorkLoadDetail";
 
 const tabs = [
@@ -12,7 +13,11 @@ const tabs = [
   },
 ];
 
-export const WorkloadTabs = ({ onChangeTab }: { onChangeTab?: (id: string) => void }) => {
+export const WorkloadTabs = ({
+  onChangeTab,
+}: {
+  onChangeTab?: (id: string) => void;
+}) => {
   return (
     <Tabs
       data={tabs}

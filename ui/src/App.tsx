@@ -2,12 +2,10 @@ import { Box } from "@mui/material";
 import { defaultTheme, ThemeProvider } from "@skuber/theme";
 
 import { Header } from "./components/layout/Header";
-
+import { ViewFilter } from "./components/molecules/ViewFilter";
+import { WorkloadDetail } from "./components/pages/WorkloadDetail";
 import "@skuber/theme/styles/global.css";
 import "./index.css";
-import { ViewFilter } from "./components/molecules/ViewFilter";
-import { EyeIcon } from "./components/icons/EyeIcon";
-import { WorkloadDetail } from "./components/pages/WorkloadDetail";
 
 export default function App() {
   return (
@@ -64,7 +62,6 @@ export default function App() {
         }}
       >
         <ViewFilter />
-        <EyeIcon />
         <WorkloadDetail />
       </Box>
     </ThemeProvider>
