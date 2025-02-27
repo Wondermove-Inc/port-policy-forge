@@ -5,7 +5,7 @@ import {
   useState,
 } from "react";
 
-import { Box, Checkbox, SxProps, Theme } from "@mui/material";
+import { Box, Checkbox, SxProps, Theme, Typography } from "@mui/material";
 import {
   DataGrid,
   DataGridProps,
@@ -13,16 +13,20 @@ import {
   NoRowsOverlayPropsOverrides,
 } from "@mui/x-data-grid";
 
-import { TableListEmpty } from "./TableEmpty";
-import { CheckBoxIcon } from "../../icons/CheckBoxIcon";
-import { IndeterminateIcon } from "../../icons/IndeterminateIcon";
+import { DatagridListEmpty } from "./DatagridEmpty";
+
+import { CheckBoxIcon } from "@/components/icons/CheckBoxIcon";
+import { IndeterminateIcon } from "@/components/icons/IndeterminateIcon";
 
 const CustomNoResultOverlay = () => {
-  return <TableListEmpty title={"No Data"} description={"No Data"} />;
+  return <DatagridListEmpty title={"No Data"} description={"No Data"} />;
 };
-export type CustomGridColDef = GridColDef & { enableCheckBox?: boolean };
+export type CustomGridColDef = GridColDef & {
+  enableCheckBox?: boolean;
+  disabled?: boolean;
+};
 
-export const Table = (
+export const Datagrid = (
   props: DataGridProps & {
     emptyHeight?: number | string;
     height?: number | string;
@@ -124,7 +128,7 @@ export const Table = (
               display: "flex",
               justifyContent: "flex-start",
               alignItems: "center",
-              gap: "8px",
+              gap: "12px",
             }}
           >
             <Checkbox
@@ -159,11 +163,18 @@ export const Table = (
         : params.value;
       if (column.enableCheckBox && content !== undefined && content !== null) {
         return (
-          <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+            }}
+          >
             <Checkbox
               checked={checkedRows[column.field]?.[rowId] || false}
               onChange={() => handleToggleRowCheck(column.field, rowId)}
               checkedIcon={<CheckBoxIcon />}
+              disabled={column.disabled}
               sx={{
                 "&.Mui-checked": {
                   backgroundColor: "interaction.primaryContrastBackground",
@@ -174,7 +185,19 @@ export const Table = (
           </Box>
         );
       }
-      return content;
+      return (
+        <Typography
+          sx={{
+            display: "block",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            ...(column.disabled && { color: "text.disabled" }),
+          }}
+        >
+          {content}
+        </Typography>
+      );
     },
   }));
   const columnStyles = useMemo(() => {

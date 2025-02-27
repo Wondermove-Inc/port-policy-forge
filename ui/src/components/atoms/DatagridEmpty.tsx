@@ -1,14 +1,14 @@
 import { Box, Typography } from "@mui/material";
 
-type TableEmptyProps = {
+type DatagridEmptyProps = {
   title?: string;
   description?: string;
 };
 
-export const TableListEmpty = ({
+export const DatagridListEmpty = ({
   title = "No enrolled data yet",
   description = "",
-}: TableEmptyProps) => {
+}: DatagridEmptyProps) => {
   return (
     <Box
       sx={{
@@ -31,7 +31,7 @@ export const TableListEmpty = ({
   );
 };
 
-export const TableEmpty = ({
+export const DatagridEmpty = ({
   text,
   error,
   height = 54,
