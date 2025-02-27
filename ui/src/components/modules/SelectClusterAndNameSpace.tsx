@@ -28,8 +28,8 @@ type SelectNameSpaceProps = {
 export const SelectClusterAndNameSpace = ({
   clusterOptions,
   nameSpaceOptions,
-  selectedCluster,
-  selectedNameSpace,
+  selectedCluster = clusterOptions[0]?.value || "",
+  selectedNameSpace = nameSpaceOptions[0]?.value || "",
   onClusterChange,
   onNameSpaceChange,
 }: SelectNameSpaceProps) => {
