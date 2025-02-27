@@ -1,5 +1,5 @@
 import { Tabs } from "@skuber/components";
-import { WorkloadDivided } from "../../../../models/WorkLoadDetail";
+import { WorkloadDivided } from "../../../../../models/WorkLoadDetail";
 
 const tabs = [
   {
