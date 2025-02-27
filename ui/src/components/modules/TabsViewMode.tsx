@@ -48,7 +48,7 @@ export const TabsViewMode = ({
             minHeight: "37px",
             borderRight: "1px solid",
             borderColor: "primary.dark",
-            "&:first-of-type": {
+            "&:last-of-type": {
               borderRight: "none",
             },
           }}
