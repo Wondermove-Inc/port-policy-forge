@@ -1,6 +1,6 @@
 import { Tabs } from "@skuber/components";
 
-import { Direction } from "../../../../../models/WorkLoadDetail";
+import { Direction } from "@/models/WorkLoadDetail";
 
 const tabs = [
   {

@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import { defaultTheme, ThemeProvider } from "@skuber/theme";
 
 import { Header } from "./components/layout/Header";
-import { ViewFilter } from "./components/molecules/ViewFilter";
+import { ViewFilter } from "./components/modules/ViewFilter";
 import { WorkloadDetail } from "./components/pages/WorkloadDetail";
 import "@skuber/theme/styles/global.css";
 import "./index.css";

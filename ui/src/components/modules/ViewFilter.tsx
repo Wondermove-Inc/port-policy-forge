@@ -3,8 +3,8 @@ import { useState } from "react";
 import { Box } from "@mui/material";
 import { Autocomplete, Toggle, Typography } from "@skuber/components";
 
-import { CloseIcon } from "../icons/CloseIcon";
-import { EyeIcon } from "../icons/EyeIcon";
+import { CloseIcon } from "@/components/icons/CloseIcon";
+import { EyeIcon } from "@/components/icons/EyeIcon";
 
 export const ViewFilter = () => {
   const [open, setOpen] = useState(false);

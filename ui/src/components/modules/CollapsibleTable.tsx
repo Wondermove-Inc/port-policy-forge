@@ -18,8 +18,8 @@ import {
   TableCellProps,
 } from "@mui/material";
 
-import { ArrowDownIcon } from "../../../../icons/ArrowDownIcon";
-import { ArrowRightIcon } from "../../../../icons/ArrowRightIcon";
+import { ArrowDownIcon } from "@/components/icons/ArrowDownIcon";
+import { ArrowRightIcon } from "@/components/icons/ArrowRightIcon";
 
 export type TableColumnProps = TableCellProps & {
   id: string;

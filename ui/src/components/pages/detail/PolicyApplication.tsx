@@ -11,7 +11,7 @@ import {
 } from "@skuber/components";
 import { defaultTheme } from "@skuber/theme";
 
-import { InfoIcon } from "../../../../icons/InfoIcon";
+import { InfoIcon } from "@/components/icons/InfoIcon";
 
 export const PolicyApplication = () => {
   const [isPolicyApplicationOpened, setIsPolicyApplicationOpened] =

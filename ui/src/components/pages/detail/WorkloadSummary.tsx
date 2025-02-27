@@ -1,8 +1,8 @@
 import { Box } from "@mui/material";
 import { Typography } from "@skuber/components";
 
-import { PORT_STATUS_MAP } from "../../../../../constants/common";
-import { StatsType, Stats } from "../../../../../models/WorkLoadDetail";
+import { PORT_STATUS_MAP } from "@/constants/common";
+import { StatsType, Stats } from "@/models/WorkLoadDetail";
 
 export type WorkloadSummaryProps = {
   stats: StatsType;

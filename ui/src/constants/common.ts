@@ -1,4 +1,4 @@
-import { Stats } from "../models/WorkLoadDetail";
+import { Stats } from "@/models/WorkLoadDetail";
 
 export const PORT_STATUS_MAP: Record<Stats, { label: string; color: string }> =
   {
