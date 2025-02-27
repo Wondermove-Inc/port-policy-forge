@@ -5,11 +5,23 @@ import { Header } from "./components/layout/Header";
 
 import "@skuber/theme/styles/global.css";
 import "./index.css";
-import { EyeIcon } from "./components/icons/EyeIcon";
+import { ViewFilter } from "./components/molecules/ViewFilter";
 
 export default function App() {
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <ThemeProvider
+      theme={{
+        ...defaultTheme,
+        typography: {
+          ...defaultTheme.typography,
+          body1Bold: {
+            fontSize: "14px",
+            fontWeight: 700,
+            lineHeight: "16px",
+          },
+        },
+      }}
+    >
       <Header />
       <Box
         sx={{
@@ -18,7 +30,7 @@ export default function App() {
           minHeight: "calc(100vh - 56px)",
         }}
       >
-        <EyeIcon />
+        <ViewFilter />
       </Box>
     </ThemeProvider>
   );
