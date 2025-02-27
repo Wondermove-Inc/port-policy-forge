@@ -22,7 +22,7 @@ export const ModelCloseSelectPort = ({
           sx={{
             paddingLeft: "24px",
             listStyleType: "disc",
-            fontSize: "13px",
+            typography: "body2",
             fontWeight: 400,
           }}
         >

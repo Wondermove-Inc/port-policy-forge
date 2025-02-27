@@ -16,13 +16,13 @@ export const Search = ({ placeholder }: SearchProps) => {
         }
         sx={{
           height: "32px",
-          fontSize: "14px",
+          typography: "label",
           color: "text.white",
           "& .MuiOutlinedInput-input": {
             "&::placeholder": {
               color: "text.tertiary",
               opacity: 1,
-              fontSize: "14px",
+              typography: "label",
             },
           },
         }}
