@@ -1,6 +1,6 @@
 import { Tab, Tabs } from "@mui/material";
 
-type ViewMoreProps = {
+type CustomTabsProps = {
   tabs: {
     label: string;
     value: string;
@@ -9,7 +9,7 @@ type ViewMoreProps = {
   handleChange: (event: React.SyntheticEvent, newValue: string) => void;
 };
 
-export const ViewMore = ({ tabs, value, handleChange }: ViewMoreProps) => {
+export const CustomTabs = ({ tabs, value, handleChange }: CustomTabsProps) => {
   return (
     <Tabs
       value={value}
