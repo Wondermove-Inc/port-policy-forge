@@ -5,15 +5,14 @@ import { Button } from "@skuber/components";
 import { Drawer } from "../atoms/Drawer";
 import { WorkloadTabs } from "./components/pages/detail/WorkloadTabs";
 import { WorkloadSummary } from "./components/pages/detail/WorkloadSummary";
+import { PolicyApplication } from "./components/pages/detail/PolicyApplication";
 
 export const WorkloadDetail = () => {
   const [isWorkloadDetailOpened, setIsWorkloadDetailOpened] = useState(false);
 
   return (
     <>
-      <Button onClick={() => setIsWorkloadDetailOpened(true)}>
-        Workload Name
-      </Button>
+      <Button onClick={() => setIsWorkloadDetailOpened(true)}>Workload Name</Button>
       <Drawer
         open={isWorkloadDetailOpened}
         title="email-service"
@@ -35,6 +34,7 @@ export const WorkloadDetail = () => {
           }}
           workloadName="Default"
         />
+        <PolicyApplication />
       </Drawer>
     </>
   );

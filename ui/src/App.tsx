@@ -16,6 +16,18 @@ export default function App() {
         ...defaultTheme,
         typography: {
           ...defaultTheme.typography,
+          b1_m: {
+            fontSize: "14px",
+            fontWeight: 500,
+            lineHeight: "20px",
+            color: "white",
+          },
+          b2_r: {
+            fontSize: "13px",
+            fontWeight: 400,
+            lineHeight: "18px",
+            color: "text.secondary",
+          },
           body3: {
             fontSize: "13px",
             fontWeight: 500,
