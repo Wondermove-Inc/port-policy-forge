@@ -33,6 +33,9 @@ export const Table = (
       } & NoRowsOverlayPropsOverrides
     >;
     hasSearch?: boolean;
+    onCheckedRowsChange?: (
+      checkedRows: Record<string, Record<string, boolean>>,
+    ) => void;
   },
 ) => {
   const {
@@ -44,6 +47,7 @@ export const Table = (
     height = "100%",
     rowHeight = 64,
     emptyHeight,
+    onCheckedRowsChange,
     ...rest
   } = props;
   const rows = props.rows ?? [];
@@ -53,23 +57,25 @@ export const Table = (
     Record<string, Record<string, boolean>>
   >({});
 
+  const updateCheckedRows = (
+    newCheckedRows: Record<string, Record<string, boolean>>,
+  ) => {
+    setCheckedRows(newCheckedRows);
+    onCheckedRowsChange?.(newCheckedRows);
+  };
   const handleToggleColumnCheck = (columnField: string) => {
     const isChecked = !checkedRows[columnField]?.allChecked;
     const updatedRows = Object.fromEntries(
       rows.map((row) => [row.id, isChecked]),
     );
 
-    setCheckedRows((prev) => {
-      const isIndeterminate =
-        !isChecked && Object.values(updatedRows).some(Boolean);
-      return {
-        ...prev,
-        [columnField]: {
-          ...updatedRows,
-          allChecked: isChecked,
-          isIndeterminate,
-        },
-      };
+    updateCheckedRows({
+      ...checkedRows,
+      [columnField]: {
+        ...updatedRows,
+        allChecked: isChecked,
+        isIndeterminate: !isChecked && Object.values(updatedRows).some(Boolean),
+      },
     });
   };
 
@@ -87,15 +93,17 @@ export const Table = (
         (row) => updatedColumnChecks[row.id],
       ).length;
       const isIndeterminate = checkedCount > 0 && checkedCount < rows.length;
-      const IsAllChecked = rows.every((row) => updatedColumnChecks[row.id]);
-      return {
+      const isAllChecked = rows.every((row) => updatedColumnChecks[row.id]);
+      const newCheckedRows = {
         ...prev,
         [columnField]: {
           ...updatedColumnChecks,
-          allChecked: IsAllChecked,
+          allChecked: isAllChecked,
           isIndeterminate,
         },
       };
+      updateCheckedRows(newCheckedRows);
+      return newCheckedRows;
     });
   };
 
