@@ -26,7 +26,7 @@ export default function App() {
             fontSize: "13px",
             fontWeight: 400,
             lineHeight: "18px",
-            color: "text.secondary"
+            color: "text.secondary",
           },
           body3: {
             fontSize: "13px",
@@ -49,13 +49,6 @@ export default function App() {
             lineHeight: "16px",
           },
         },
-        palette: {
-          ...defaultTheme.palette,
-          background: {
-            ...defaultTheme.palette.background,
-            primaryBlue: "#538BFF1A",
-          },
-        }
       }}
     >
       <Header />

@@ -1,4 +1,4 @@
-export enum WorkloadStatus {
+export enum Stats {
   ACTIVE = "active",
   UNCONNECTED = "unconnected",
   IDLE = "idle",
@@ -6,7 +6,7 @@ export enum WorkloadStatus {
   ATTEMPTED = "attempted",
 }
 
-export enum WorkloadDivided {
+export enum Direction {
   INBOUND = "Inbound",
   OUTBOUND = "Outbound",
 }

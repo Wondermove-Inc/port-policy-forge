@@ -12,9 +12,7 @@ export const WorkloadDetail = () => {
 
   return (
     <>
-      <Button onClick={() => setIsWorkloadDetailOpened(true)}>
-        Workload Name
-      </Button>
+      <Button onClick={() => setIsWorkloadDetailOpened(true)}>Workload Name</Button>
       <Drawer
         open={isWorkloadDetailOpened}
         title="email-service"
