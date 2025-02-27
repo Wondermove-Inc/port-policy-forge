@@ -1,6 +1,6 @@
 import { Tab, Tabs } from "@mui/material";
 
-type CustomTabsProps = {
+type TabsViewModeProps = {
   tabs: {
     label: string;
     value: string;
@@ -9,7 +9,11 @@ type CustomTabsProps = {
   handleChange: (event: React.SyntheticEvent, newValue: string) => void;
 };
 
-export const CustomTabs = ({ tabs, value, handleChange }: CustomTabsProps) => {
+export const TabsViewMode = ({
+  tabs,
+  value,
+  handleChange,
+}: TabsViewModeProps) => {
   return (
     <Tabs
       value={value}
@@ -24,7 +28,7 @@ export const CustomTabs = ({ tabs, value, handleChange }: CustomTabsProps) => {
         "& .MuiTabs-indicator": { display: "none" },
       }}
     >
-      {tabs.map((tab, index) => (
+      {tabs.map((tab) => (
         <Tab
           key={tab.value}
           label={tab.label}
@@ -35,16 +39,18 @@ export const CustomTabs = ({ tabs, value, handleChange }: CustomTabsProps) => {
               backgroundColor: "interaction.primaryContrastBackground",
             },
             textTransform: "none",
-            fontSize: "12px",
-            fontWeight: "600",
+            typography: "captionBold",
             color: "interaction.primaryContrastBackground",
             padding: "0",
             height: "37px",
             width: "72px",
             minWidth: "72px",
             minHeight: "37px",
-            borderRight: index !== tabs.length - 1 ? "1px solid" : "none",
+            borderRight: "1px solid",
             borderColor: "primary.dark",
+            "&:first-of-type": {
+              borderRight: "none",
+            },
           }}
         />
       ))}
