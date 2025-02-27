@@ -53,13 +53,6 @@ export default function App() {
             lineHeight: "16px",
           },
         },
-        palette: {
-          ...defaultTheme.palette,
-          background: {
-            ...defaultTheme.palette.background,
-            primaryBlue: "#538BFF1A",
-          },
-        }
       }}
     >
       <Header />

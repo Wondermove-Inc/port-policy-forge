@@ -17,7 +17,7 @@ export const PolicyApplication = () => {
         sx={{
           padding: "12px 12px 12px 24px",
           borderRadius: "8px",
-          bgcolor: "background.primaryBlue",
+          bgcolor: "#538BFF1A",
           display: "flex",
           gap: "12px",
           alignItems: "center",
@@ -45,18 +45,11 @@ export const PolicyApplication = () => {
             policy, all ports remain open.
           </Typography>
         </Box>
-        <Button
-          size="extraSmall"
-          onClick={() => setIsPolicyApplicationOpened(true)}
-        >
+        <Button size="extraSmall" onClick={() => setIsPolicyApplicationOpened(true)}>
           Apply
         </Button>
       </Box>
-      <Modal
-        width={434}
-        open={isPolicyApplicationOpened}
-        onClose={handleClosePolicyApplicationModal}
-      >
+      <Modal width={434} open={isPolicyApplicationOpened} onClose={handleClosePolicyApplicationModal}>
         <ModalHeader title="Applying a service policy" onClose={handleClosePolicyApplicationModal} />
         <ModalBody>
           <Typography>
