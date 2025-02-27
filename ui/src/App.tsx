@@ -9,7 +9,19 @@ import { ViewFilter } from "./components/molecules/ViewFilter";
 
 export default function App() {
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <ThemeProvider
+      theme={{
+        ...defaultTheme,
+        typography: {
+          ...defaultTheme.typography,
+          body1Bold: {
+            fontSize: "14px",
+            fontWeight: 700,
+            lineHeight: "16px",
+          },
+        },
+      }}
+    >
       <Header />
       <Box
         sx={{
