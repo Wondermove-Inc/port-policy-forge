@@ -34,7 +34,12 @@ export const WorkloadList = () => {
       enableCheckBox: true,
       renderCell: ({ row }) => {
         return (
-          <Typography sx={{ color: "status.warning", fontWeight: "600" }}>
+          <Typography
+            sx={{
+              color: `${row.unconnectedPort ? "status.warning" : "text.disabled"}`,
+              fontWeight: "600",
+            }}
+          >
             {row.unconnectedPort || "-"}
           </Typography>
         );
@@ -47,7 +52,12 @@ export const WorkloadList = () => {
       enableCheckBox: true,
       renderCell: ({ row }) => {
         return (
-          <Typography sx={{ color: "status.warning", fontWeight: "600" }}>
+          <Typography
+            sx={{
+              color: `${row.idlePort ? "status.warning" : "text.disabled"}`,
+              fontWeight: "600",
+            }}
+          >
             {row.idlePort || "-"}
           </Typography>
         );
@@ -61,7 +71,10 @@ export const WorkloadList = () => {
       renderCell: ({ row }) => {
         return (
           <Typography
-            sx={{ color: "interaction.primaryContrast", fontWeight: "600" }}
+            sx={{
+              color: `${row.activePort ? "interaction.primaryContrast" : "text.disabled"}`,
+              fontWeight: "600",
+            }}
           >
             {row.activePort || "-"}
           </Typography>
@@ -73,9 +86,15 @@ export const WorkloadList = () => {
       headerName: "Error port",
       width: 196,
       enableCheckBox: true,
+      disabled: true,
       renderCell: ({ row }) => {
         return (
-          <Typography sx={{ color: "status.danger", fontWeight: "600" }}>
+          <Typography
+            sx={{
+              color: `${row.errorPort ? "status.danger" : "text.disabled"}`,
+              fontWeight: "600",
+            }}
+          >
             {row.errorPort || "-"}
           </Typography>
         );
@@ -85,6 +104,18 @@ export const WorkloadList = () => {
       field: "closedPortAttempted",
       headerName: "Closed Port Attempted",
       width: 196,
+      renderCell: ({ row }) => {
+        return (
+          <Typography
+            sx={{
+              color: `${row.closedPortAttempted ? "status.danger" : "text.disabled"}`,
+              fontWeight: "600",
+            }}
+          >
+            {row.closedPortAttempted || "-"}
+          </Typography>
+        );
+      },
     },
   ];
   const rows = [
@@ -96,7 +127,7 @@ export const WorkloadList = () => {
       idlePort: 8,
       activePort: 8,
       errorPort: 6,
-      closedPortAttempted: "Closed Port Attempted",
+      closedPortAttempted: "",
     },
     {
       id: 2,
@@ -106,7 +137,7 @@ export const WorkloadList = () => {
       idlePort: 7,
       activePort: 8,
       errorPort: 9,
-      closedPortAttempted: "Closed Port Attempted",
+      closedPortAttempted: "1",
     },
     {
       id: 3,
@@ -116,7 +147,7 @@ export const WorkloadList = () => {
       idlePort: 0,
       activePort: 0,
       errorPort: 0,
-      closedPortAttempted: "Closed Port Attempted",
+      closedPortAttempted: "",
     },
   ];
   const isCheckedPort = useMemo(() => {
