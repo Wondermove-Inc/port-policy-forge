@@ -7,7 +7,7 @@ import { Table } from "../atoms/Table";
 import { CustomGridColDef } from "../atoms/Table/Table";
 import { CheckBoxIcon } from "../icons/CheckBoxIcon";
 import { ModelCloseSelectPort } from "../modules/ModelCloseSelectPort";
-import { Search } from "../modules/Search";
+import { SearchComplete } from "../modules/SearchComplete";
 import { SelectClusterAndNameSpace } from "../modules/SelectClusterAndNameSpace";
 import { TabsViewMode } from "../modules/TabsViewMode";
 
@@ -214,7 +214,10 @@ export const WorkloadList = () => {
             gap: "12px",
           }}
         >
-          <Search placeholder="Search for workloads " />
+          <SearchComplete
+            options={["cluster1", "cluster2", "cluster3"]}
+            placeholder="Search for workloads"
+          />
           <Button
             variant="contained"
             sx={{
