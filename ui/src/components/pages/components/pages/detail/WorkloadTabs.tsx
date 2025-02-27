@@ -1,22 +1,18 @@
 import { Tabs } from "@skuber/components";
-import { WorkloadDivided } from "../../../../../models/WorkLoadDetail";
+import { Direction } from "../../../../../models/WorkLoadDetail";
 
 const tabs = [
   {
-    id: WorkloadDivided.INBOUND,
-    label: WorkloadDivided.INBOUND,
+    id: Direction.INBOUND,
+    label: Direction.INBOUND,
   },
   {
-    id: WorkloadDivided.OUTBOUND,
-    label: WorkloadDivided.OUTBOUND,
+    id: Direction.OUTBOUND,
+    label: Direction.OUTBOUND,
   },
 ];
 
-export const WorkloadTabs = ({
-  onChangeTab,
-}: {
-  onChangeTab?: (id: string) => void;
-}) => {
+export const WorkloadTabs = ({ onChangeTab }: { onChangeTab?: (id: string) => void }) => {
   return (
     <Tabs
       data={tabs}

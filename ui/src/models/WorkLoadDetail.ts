@@ -6,7 +6,7 @@ export enum Stats {
   ATTEMPTED = "attempted",
 }
 
-export enum WorkloadDivided {
+export enum Direction {
   INBOUND = "Inbound",
   OUTBOUND = "Outbound",
 }

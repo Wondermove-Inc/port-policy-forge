@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { Typography } from "@skuber/components";
 import { StatsType, Stats } from "../../../../../models/WorkLoadDetail";
-import { STATS_STATUS_MAP } from "../../../../../constants/common";
+import { PORT_STATUS_MAP } from "../../../../../constants/common";
 
 export type WorkloadSummaryProps = {
   stats: StatsType;
@@ -15,9 +15,9 @@ export const WorkloadSummary = ({ stats, workloadName }: WorkloadSummaryProps) =
   };
 
   const workloadData = Object.values(Stats).map((status) => ({
-    title: STATS_STATUS_MAP[status].label,
+    title: PORT_STATUS_MAP[status].label,
     value: stats[status] || "",
-    color: STATS_STATUS_MAP[status].color,
+    color: PORT_STATUS_MAP[status].color,
     ...stylesByType.status,
   }));
 
