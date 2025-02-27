@@ -1,11 +1,11 @@
 import { Box } from "@mui/material";
 import { Button, Typography } from "@skuber/components";
 
-import { CollapsibleTable } from "./_CollapsibleTable";
-import { PortDetail } from "./_PortDetail";
+import { PortDetail } from "./PortDetail";
 import { workloadDetail } from "./data";
-import { AddIcon } from "../../../icons/AddIcon";
-import { EditIcon } from "../../../icons/EditIcon";
+import { CollapsibleTable } from "./CollapsibleTable";
+import { EditIcon } from "../../../../icons/EditIcon";
+import { AddIcon } from "../../../../icons/AddIcon";
 
 const columns = [
   {

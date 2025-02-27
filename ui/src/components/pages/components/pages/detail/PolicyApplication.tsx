@@ -1,14 +1,14 @@
 import { Box, List, ListItem } from "@mui/material";
-import { InfoIcon } from "../../../icons/InfoIcon";
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Typography } from "@skuber/components";
 import { useState } from "react";
 import { defaultTheme } from "@skuber/theme";
+import { InfoIcon } from "../../../../icons/InfoIcon";
 
 export const PolicyApplication = () => {
-  const [isPolicyApplicationOpenned, setIsPolicyApplicationOpenned] = useState(false);
+  const [isPolicyApplicationOpened, setIsPolicyApplicationOpened] = useState(false);
 
   const handleClosePolicyApplicationModal = () => {
-    setIsPolicyApplicationOpenned(false);
+    setIsPolicyApplicationOpened(false);
   };
 
   return (
@@ -17,7 +17,7 @@ export const PolicyApplication = () => {
         sx={{
           padding: "12px 12px 12px 24px",
           borderRadius: "8px",
-          bgcolor: "#538BFF1A",
+          bgcolor: "background.primaryBlue",
           display: "flex",
           gap: "12px",
           alignItems: "center",
@@ -46,19 +46,15 @@ export const PolicyApplication = () => {
           </Typography>
         </Box>
         <Button
-          sx={{
-            width: "50px",
-            height: "24px",
-          }}
           size="extraSmall"
-          onClick={() => setIsPolicyApplicationOpenned(true)}
+          onClick={() => setIsPolicyApplicationOpened(true)}
         >
           Apply
         </Button>
       </Box>
       <Modal
         width={434}
-        open={isPolicyApplicationOpenned}
+        open={isPolicyApplicationOpened}
         onClose={handleClosePolicyApplicationModal}
       >
         <ModalHeader title="Applying a service policy" onClose={handleClosePolicyApplicationModal} />

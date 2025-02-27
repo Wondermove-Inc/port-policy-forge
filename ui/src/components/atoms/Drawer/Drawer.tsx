@@ -58,6 +58,7 @@ export const Drawer = ({
             sx={{
               cursor: "pointer",
             }}
+            size={16}
           />
         </Box>
         <Typography variant="caption" lineHeight={"15px"} component={"p"}>

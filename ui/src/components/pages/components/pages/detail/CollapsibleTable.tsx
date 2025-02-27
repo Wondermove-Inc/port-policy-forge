@@ -17,9 +17,9 @@ import {
   Typography,
   TableCellProps,
 } from "@mui/material";
+import { ArrowDownIcon } from "../../../../icons/ArrowDownIcon";
+import { ArrowRightIcon } from "../../../../icons/ArrowRightIcon";
 
-import { ArrowDownIcon } from "../../../icons/ArrowDownIcon";
-import { ArrowRightIcon } from "../../../icons/ArrowRightIcon";
 
 export type TableColumnProps = TableCellProps & {
   id: string;

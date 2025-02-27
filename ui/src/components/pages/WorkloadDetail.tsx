@@ -1,28 +1,43 @@
-import { Button } from "@skuber/components";
 import { useState } from "react";
+
+import { Button } from "@skuber/components";
+
 import { Drawer } from "../atoms/Drawer";
-import { WorkloadSummary } from "./components/detail/_WorkloadSummary";
-import { WorkloadTabs } from "./components/detail/_WorkloadTabs";
-import { PolicyApplication } from "./components/detail/_PolicyApplication";
-import { OpenPort } from "./components/detail/_OpenPort";
-import { ClosePort } from "./components/detail/_ClosePort";
+import { WorkloadTabs } from "./components/pages/detail/WorkloadTabs";
+import { WorkloadSummary } from "./components/pages/detail/WorkloadSummary";
+import { PolicyApplication } from "./components/pages/detail/PolicyApplication";
+import { OpenPort } from "./components/pages/detail/OpenPort";
+import { ClosePort } from "./components/pages/detail/ClosePort";
 
 export const WorkloadDetail = () => {
-  const [isWorkloadDetailOpenned, setIsWorkloadDetailOpenned] = useState(false);
+  const [isWorkloadDetailOpened, setIsWorkloadDetailOpened] = useState(false);
 
   return (
     <>
-      <Button onClick={() => setIsWorkloadDetailOpenned(true)}>Workload Name</Button>
+      <Button onClick={() => setIsWorkloadDetailOpened(true)}>
+        Workload Name
+      </Button>
       <Drawer
-        open={isWorkloadDetailOpenned}
+        open={isWorkloadDetailOpened}
         title="email-service"
         subTitle="Deployment"
         onClose={() => {
-          setIsWorkloadDetailOpenned(false);
+          setIsWorkloadDetailOpened(false);
         }}
       >
         <WorkloadTabs onChangeTab={() => {}} />
-        <WorkloadSummary />
+        <WorkloadSummary
+          stats={{
+            active: 10,
+            unconnected: 5,
+            idle: 0,
+            error: 2,
+            attempted: 3,
+            latencyRtt: 1.39,
+            throughput: 469.89,
+          }}
+          workloadName="Default"
+        />
         <PolicyApplication />
         <OpenPort />
         <ClosePort />

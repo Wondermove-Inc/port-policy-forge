@@ -1,6 +1,5 @@
 import { Tabs } from "@skuber/components";
-import { defaultTheme } from "@skuber/theme";
-import { WorkloadDivided } from "../../../../share/constants/common";
+import { WorkloadDivided } from "../../../../../models/WorkLoadDetail";
 
 const tabs = [
   {
@@ -13,7 +12,11 @@ const tabs = [
   },
 ];
 
-export const WorkloadTabs = ({ onChangeTab }: { onChangeTab?: (id: string) => void }) => {
+export const WorkloadTabs = ({
+  onChangeTab,
+}: {
+  onChangeTab?: (id: string) => void;
+}) => {
   return (
     <Tabs
       data={tabs}
@@ -24,7 +27,7 @@ export const WorkloadTabs = ({ onChangeTab }: { onChangeTab?: (id: string) => vo
           paddingY: "4px",
         },
         ".MuiButtonBase-root": {
-          ...defaultTheme.typography.h2,
+          typography: "h2",
           minHeight: "24px",
           minWidth: "78px",
           padding: 0,
