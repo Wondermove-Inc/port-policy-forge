@@ -3,8 +3,8 @@ import { useState } from "react";
 import { Button } from "@skuber/components";
 
 import { Drawer } from "../atoms/Drawer";
-import { WorkloadSummary } from "./components/detail/WorkloadSummary";
-import { WorkloadTabs } from "./components/detail/WorkloadTabs";
+import { WorkloadTabs } from "./components/pages/detail/WorkloadTabs";
+import { WorkloadSummary } from "./components/pages/detail/WorkloadSummary";
 
 export const WorkloadDetail = () => {
   const [isWorkloadDetailOpened, setIsWorkloadDetailOpened] = useState(false);
