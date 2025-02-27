@@ -3,13 +3,12 @@ import { useMemo, useState } from "react";
 import { Box, Tab, Tabs, Typography } from "@mui/material";
 import { Button } from "@skuber/components";
 
-import { SearchComplete } from "../modules/SearchComplete";
-import { SelectClusterAndNameSpace } from "../modules/SelectClusterAndNameSpace";
-import { TabsViewMode } from "../modules/TabsViewMode";
-
 import { Datagrid, CustomGridColDef } from "@/components/atoms/Datagrid";
 import { CheckBoxIcon } from "@/components/icons/CheckBoxIcon";
 import { ModelCloseSelectPort } from "@/components/modules/ModelCloseSelectPort";
+import { SearchComplete } from "@/components/modules/SearchComplete";
+import { SelectClusterAndNameSpace } from "@/components/modules/SelectClusterAndNameSpace";
+import { TabsViewMode } from "@/components/modules/TabsViewMode";
 
 export const WorkloadList = () => {
   const [isSelectPortOpened, setIsSelectPortOpened] = useState<boolean>(false);
@@ -152,7 +151,7 @@ export const WorkloadList = () => {
   ];
   const isCheckedPort = useMemo(() => {
     return Object.values(checkedRows).some((port) =>
-      Object.values(port).includes(true),
+      Object.values(port).includes(true)
     );
   }, [checkedRows]);
   return (
