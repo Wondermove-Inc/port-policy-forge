@@ -7,8 +7,8 @@ import {
   Typography,
 } from "@mui/material";
 
-import { ArrowDownIcon } from "./icons/ArrowDownIcon";
-import { CheckIcon } from "./icons/CheckIcon";
+import { ArrowDownIcon } from "../icons/ArrowDownIcon";
+import { CheckIcon } from "../icons/CheckIcon";
 
 type Option = {
   value: string;
@@ -39,7 +39,7 @@ export const SelectClusterAndNameSpace = ({
     onChange: (value: string) => void,
     options: Option[],
     placeholder: string,
-    avatar?: boolean,
+    withAvatar?: boolean,
   ) => {
     const selectedOption = options.find((o) => o.value === value);
     return (
@@ -49,23 +49,23 @@ export const SelectClusterAndNameSpace = ({
         spacing={1}
         sx={{
           "&:hover": { backgroundColor: "action.hover" },
-          width: avatar ? "117px" : "142px",
+          width: withAvatar ? "117px" : "142px",
           height: "100%",
-          ...(id === "cluster" && {
+          "&:first-of-type": {
             paddingLeft: "16px",
             paddingRight: "12px",
             borderTopLeftRadius: "8.89px",
             borderBottomLeftRadius: "8.89px",
-          }),
-          ...(id === "namespace" && {
+          },
+          "&:last-of-type": {
             paddingRight: "12px",
             paddingLeft: "16px",
             borderTopRightRadius: "8.89px",
             borderBottomRightRadius: "8.89px",
-          }),
+          },
         }}
       >
-        {avatar && selectedOption?.avatar && (
+        {withAvatar && selectedOption?.avatar && (
           <Avatar src={selectedOption.avatar} sx={{ width: 24, height: 24 }} />
         )}
         <Select
@@ -79,14 +79,13 @@ export const SelectClusterAndNameSpace = ({
           }
           MenuProps={{
             PaperProps: {
-              sx: { mt: "10px", ml: avatar ? "-24px" : "-4px" },
+              sx: { mt: "10px", ml: withAvatar ? "-24px" : "-4px" },
             },
           }}
           sx={{
-            fontSize: "14px",
-            fontWeight: "700",
+            typography: "body1Bold",
             width: "100%",
-            minWidth: avatar ? "90px" : "120px",
+            minWidth: withAvatar ? "90px" : "120px",
             height: "100%",
             display: "flex",
             alignItems: "center",
@@ -116,7 +115,7 @@ export const SelectClusterAndNameSpace = ({
             sx={{
               borderBottom: "1.11px solid",
               borderColor: "border.default",
-              fontSize: "12px",
+              typography: "caption",
               color: "text.tertiary",
             }}
           >
@@ -132,7 +131,7 @@ export const SelectClusterAndNameSpace = ({
                 gap: "8px",
                 justifyContent: "space-between",
                 alignItems: "center",
-                fontSize: "14px",
+                typography: "body1",
                 color: "text.primary",
               }}
             >
