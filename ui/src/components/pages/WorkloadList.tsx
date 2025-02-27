@@ -164,8 +164,7 @@ export const WorkloadList = () => {
             <Tab
               sx={{
                 textTransform: "none",
-                fontWeight: "700",
-                fontSize: "20px",
+                typography: "h2",
                 color: "text.tertiary",
                 "&.Mui-selected": {
                   color: "text.white",
@@ -189,7 +188,7 @@ export const WorkloadList = () => {
             variant="contained"
             sx={{
               height: "32px",
-              fontSize: "12px",
+              typography: "caption",
               fontWeight: "700",
             }}
             startIcon={<CheckBoxIcon color="white" size={16} />}
