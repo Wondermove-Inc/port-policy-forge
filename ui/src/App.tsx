@@ -48,6 +48,11 @@ export default function App() {
             fontWeight: 600,
             lineHeight: "16px",
           },
+          labelBold: {
+            fontSize: "12px",
+            fontWeight: 700,
+            lineHeight: "16px",
+          },
         },
       }}
     >
