@@ -6,6 +6,7 @@ import { Header } from "./components/layout/Header";
 import "@skuber/theme/styles/global.css";
 import "./index.css";
 import { ViewFilter } from "./components/molecules/ViewFilter";
+import { WorkloadList } from "./components/pages/WorkloadList";
 
 export default function App() {
   return (
@@ -35,6 +36,7 @@ export default function App() {
           minHeight: "calc(100vh - 56px)",
         }}
       >
+        <WorkloadList />
         <ViewFilter />
       </Box>
     </ThemeProvider>
