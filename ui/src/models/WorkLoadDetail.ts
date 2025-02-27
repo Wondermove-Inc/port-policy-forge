@@ -1,4 +1,4 @@
-export enum WorkloadStatus {
+export enum Stats {
   ACTIVE = "active",
   UNCONNECTED = "unconnected",
   IDLE = "idle",
