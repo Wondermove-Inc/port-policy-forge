@@ -1,26 +1,41 @@
-import { Button } from "@skuber/components";
 import { useState } from "react";
+
+import { Button } from "@skuber/components";
+
 import { Drawer } from "../atoms/Drawer";
 import { WorkloadSummary } from "./components/detail/_WorkloadSummary";
 import { WorkloadTabs } from "./components/detail/_WorkloadTabs";
 import { PolicyApplication } from "./components/detail/_PolicyApplication";
 
 export const WorkloadDetail = () => {
-  const [isWorkloadDetailOpenned, setIsWorkloadDetailOpenned] = useState(false);
+  const [isWorkloadDetailOpened, setIsWorkloadDetailOpened] = useState(false);
 
   return (
     <>
-      <Button onClick={() => setIsWorkloadDetailOpenned(true)}>Workload Name</Button>
+      <Button onClick={() => setIsWorkloadDetailOpened(true)}>
+        Workload Name
+      </Button>
       <Drawer
-        open={isWorkloadDetailOpenned}
+        open={isWorkloadDetailOpened}
         title="email-service"
         subTitle="Deployment"
         onClose={() => {
-          setIsWorkloadDetailOpenned(false);
+          setIsWorkloadDetailOpened(false);
         }}
       >
         <WorkloadTabs onChangeTab={() => {}} />
-        <WorkloadSummary />
+        <WorkloadSummary
+          stats={{
+            active: 10,
+            unconnected: 5,
+            idle: 0,
+            error: 2,
+            attempted: 3,
+            latency: 1.39,
+            throughput: 469.89,
+          }}
+          workloadName="Default"
+        />
         <PolicyApplication />
       </Drawer>
     </>

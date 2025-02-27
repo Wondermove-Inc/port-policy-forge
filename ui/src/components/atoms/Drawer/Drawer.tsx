@@ -1,6 +1,8 @@
 import { ReactNode } from "react";
+
 import { Box, Drawer as MuiDrawer, DrawerProps } from "@mui/material";
 import { Typography } from "@skuber/components";
+
 import { CloseIcon } from "../../icons/CloseIcon";
 
 export type DrawerBaseProps = DrawerProps & {
@@ -10,18 +12,23 @@ export type DrawerBaseProps = DrawerProps & {
   onClose: () => void;
 };
 
-export const Drawer = ({ title, subTitle, children, onClose, ...props }: DrawerBaseProps) => {
+export const Drawer = ({
+  title,
+  subTitle,
+  children,
+  onClose,
+  ...props
+}: DrawerBaseProps) => {
   return (
     <MuiDrawer
       anchor="right"
       sx={{
-        ".MuiPaper-root": {
-          marginTop: "56px",
+        ".MuiDrawer-paper": {
           boxShadow: "none",
           backgroundColor: "background.secondary",
-        },
-        ".MuiBackdrop-root": {
-          marginTop: "56px",
+          border: "1px solid",
+          borderRight: 0,
+          borderColor: "border.default",
         },
       }}
       {...props}
@@ -29,7 +36,7 @@ export const Drawer = ({ title, subTitle, children, onClose, ...props }: DrawerB
       <Box
         sx={{
           padding: "20px",
-          border: "1px solid",
+          borderBottom: "1px solid",
           borderColor: "border.default",
           borderTop: 0,
           display: "flex",
@@ -51,6 +58,7 @@ export const Drawer = ({ title, subTitle, children, onClose, ...props }: DrawerB
             sx={{
               cursor: "pointer",
             }}
+            size={16}
           />
         </Box>
         <Typography variant="caption" lineHeight={"15px"} component={"p"}>
@@ -60,10 +68,7 @@ export const Drawer = ({ title, subTitle, children, onClose, ...props }: DrawerB
       <Box
         sx={{
           padding: "20px",
-          border: "1px solid",
-          borderColor: "border.default",
           borderTop: 0,
-          height: "100%",
         }}
       >
         {children}

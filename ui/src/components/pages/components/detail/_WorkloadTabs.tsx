@@ -1,5 +1,6 @@
 import { Tabs } from "@skuber/components";
 import { defaultTheme } from "@skuber/theme";
+
 import { WorkloadDivided } from "../../../../share/constants/common";
 
 const tabs = [
@@ -13,7 +14,11 @@ const tabs = [
   },
 ];
 
-export const WorkloadTabs = ({ onChangeTab }: { onChangeTab?: (id: string) => void }) => {
+export const WorkloadTabs = ({
+  onChangeTab,
+}: {
+  onChangeTab?: (id: string) => void;
+}) => {
   return (
     <Tabs
       data={tabs}
