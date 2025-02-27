@@ -1,10 +1,4 @@
-export enum WorkloadStatus {
-  ACTIVE = "active",
-  UNCONNECTED = "unconnected",
-  IDLE = "idle",
-  ERROR = "error",
-  ATTEMPTED = "attempted",
-}
+import { WorkloadStatus } from "../../models/WorkLoadDetail";
 
 export const WORKLOAD_STATUS: Record<
   WorkloadStatus,
@@ -17,7 +11,3 @@ export const WORKLOAD_STATUS: Record<
   attempted: { label: "Attempted", color: "status.danger" },
 };
 
-export enum WorkloadDivided {
-  INBOUND = "Inbound",
-  OUTBOUND = "Outbound",
-}

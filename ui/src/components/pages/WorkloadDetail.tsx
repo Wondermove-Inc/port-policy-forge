@@ -3,9 +3,9 @@ import { useState } from "react";
 import { Button } from "@skuber/components";
 
 import { Drawer } from "../atoms/Drawer";
-import { WorkloadSummary } from "./components/detail/_WorkloadSummary";
-import { WorkloadTabs } from "./components/detail/_WorkloadTabs";
-import { PolicyApplication } from "./components/detail/_PolicyApplication";
+import { WorkloadTabs } from "./components/pages/detail/WorkloadTabs";
+import { WorkloadSummary } from "./components/pages/detail/WorkloadSummary";
+import { PolicyApplication } from "./components/pages/detail/PolicyApplication";
 
 export const WorkloadDetail = () => {
   const [isWorkloadDetailOpened, setIsWorkloadDetailOpened] = useState(false);
@@ -31,7 +31,7 @@ export const WorkloadDetail = () => {
             idle: 0,
             error: 2,
             attempted: 3,
-            latency: 1.39,
+            latencyRtt: 1.39,
             throughput: 469.89,
           }}
           workloadName="Default"

@@ -1,7 +1,5 @@
 import { Tabs } from "@skuber/components";
-import { defaultTheme } from "@skuber/theme";
-
-import { WorkloadDivided } from "../../../../share/constants/common";
+import { WorkloadDivided } from "../../../../models/WorkLoadDetail";
 
 const tabs = [
   {
@@ -29,7 +27,7 @@ export const WorkloadTabs = ({
           paddingY: "4px",
         },
         ".MuiButtonBase-root": {
-          ...defaultTheme.typography.h2,
+          typography: "h2",
           minHeight: "24px",
           minWidth: "78px",
           padding: 0,

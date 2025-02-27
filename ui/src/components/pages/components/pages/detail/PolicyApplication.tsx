@@ -1,8 +1,8 @@
 import { Box, List, ListItem } from "@mui/material";
-import { InfoIcon } from "../../../icons/InfoIcon";
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Typography } from "@skuber/components";
 import { useState } from "react";
 import { defaultTheme } from "@skuber/theme";
+import { InfoIcon } from "../../../../icons/InfoIcon";
 
 export const PolicyApplication = () => {
   const [isPolicyApplicationOpenned, setIsPolicyApplicationOpenned] = useState(false);
