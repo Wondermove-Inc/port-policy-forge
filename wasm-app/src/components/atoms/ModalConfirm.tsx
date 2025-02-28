@@ -31,7 +31,7 @@ export const ModalConfirm = ({
             sx={{
               paddingLeft: "24px",
               listStyleType: "disc",
-              ...defaultTheme.typography.body2,
+              typography: "body2",
             }}
           >
             {descriptionDetails.map((item, index) => (
