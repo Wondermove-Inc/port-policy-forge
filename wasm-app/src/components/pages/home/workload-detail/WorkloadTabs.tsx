@@ -5,11 +5,11 @@ import { PortDirection } from "@/models";
 const tabs = [
   {
     id: PortDirection.INBOUND,
-    label: PortDirection.INBOUND,
+    label: "Inbound",
   },
   {
     id: PortDirection.OUTBOUND,
-    label: PortDirection.OUTBOUND,
+    label: "Outbound",
   },
 ];
 
