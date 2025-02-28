@@ -1,5 +1,6 @@
 import { ClosePort } from "./workload-detail/ClosePort";
 import { OpenPort } from "./workload-detail/OpenPort";
+import { OpenPortModal } from "./workload-detail/OpenPortModal";
 import { PolicyApplication } from "./workload-detail/PolicyApplication";
 import { WorkloadSummary } from "./workload-detail/WorkloadSummary";
 import { WorkloadTabs } from "./workload-detail/WorkloadTabs";
@@ -35,6 +36,7 @@ export const WorkloadDetail = ({ open, handleClose }: WorkloadDetailProps) => {
       <PolicyApplication />
       <OpenPort />
       <ClosePort />
+      <OpenPortModal />
     </Drawer>
   );
 };

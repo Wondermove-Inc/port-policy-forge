@@ -187,8 +187,9 @@ export const WorkloadList = () => {
         }}
       >
         <Tabs value={"1"} sx={{ "& .MuiTabs-indicator": { display: "none" } }}>
-          {bounds.map((bound) => (
+          {bounds.map((bound, index) => (
             <Tab
+              key={index}
               sx={{
                 textTransform: "none",
                 typography: "h2",
@@ -242,8 +243,8 @@ export const WorkloadList = () => {
       </Box>
       <ModalClosePort
         open={closePortModal.visible}
-        handleCloseModal={closePortModal.close}
-        handleConfirmButton={() => {}}
+        onClose={closePortModal.close}
+        onConfirm={() => {}}
       />
       <WorkloadDetail
         open={detailDrawer.visible}
