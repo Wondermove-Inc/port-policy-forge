@@ -11,7 +11,8 @@ import {
 import { useForm } from "react-hook-form";
 
 import { PortSettingModal } from "./_PortSettingModal";
-import { PortAccessSettingForm } from "../../../../../models/WorkLoadDetail";
+
+import { PortAccessSettingForm } from "@/models/WorkLoadDetail";
 
 const data = [
   {

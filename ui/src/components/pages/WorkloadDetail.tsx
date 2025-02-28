@@ -2,11 +2,14 @@ import { useState } from "react";
 
 import { Button } from "@skuber/components";
 
-import { Drawer } from "../atoms/Drawer";
-import { OpenPortModal } from "./components/pages/detail/OpenPortModal";
-import { PolicyApplication } from "./components/pages/detail/PolicyApplication";
-import { WorkloadSummary } from "./components/pages/detail/WorkloadSummary";
-import { WorkloadTabs } from "./components/pages/detail/WorkloadTabs";
+import { ClosePort } from "./detail/ClosePort";
+import { OpenPort } from "./detail/OpenPort";
+import { OpenPortModal } from "./detail/OpenPortModal";
+import { PolicyApplication } from "./detail/PolicyApplication";
+import { WorkloadSummary } from "./detail/WorkloadSummary";
+import { WorkloadTabs } from "./detail/WorkloadTabs";
+
+import { Drawer } from "@/components/atoms/Drawer";
 
 export const WorkloadDetail = () => {
   const [isWorkloadDetailOpened, setIsWorkloadDetailOpened] = useState(false);
@@ -39,6 +42,8 @@ export const WorkloadDetail = () => {
         />
         <PolicyApplication />
         <OpenPortModal />
+        <OpenPort />
+        <ClosePort />
       </Drawer>
     </>
   );

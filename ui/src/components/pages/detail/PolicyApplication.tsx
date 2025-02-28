@@ -4,7 +4,8 @@ import { Box } from "@mui/material";
 import { Button, Typography } from "@skuber/components";
 
 import { ModalConfirm } from "./_ModalConfirm";
-import { InfoIcon } from "../../../../icons/InfoIcon";
+
+import { InfoIcon } from "@/components/icons/InfoIcon";
 
 export const PolicyApplication = () => {
   const [isPolicyApplicationOpened, setIsPolicyApplicationOpened] =

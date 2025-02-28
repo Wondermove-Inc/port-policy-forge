@@ -13,9 +13,9 @@ import {
 import { defaultTheme } from "@skuber/theme";
 import { useFieldArray, UseFormReturn } from "react-hook-form";
 
-import { PortAccessSettingForm } from "../../../../../models/WorkLoadDetail";
-import { AddIcon } from "../../../../icons/AddIcon";
-import { DeleteIcon } from "../../../../icons/DeleteIcon";
+import { AddIcon } from "@/components/icons/AddIcon";
+import { DeleteIcon } from "@/components/icons/DeleteIcon";
+import { PortAccessSettingForm } from "@/models/WorkLoadDetail";
 
 interface PortSettingModalProps {
   isOpen: boolean;
