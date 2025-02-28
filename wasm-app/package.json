@@ -12,7 +12,13 @@
   "dependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.1.5"
+    "react-router-dom": "^7.1.5",
+    "@mui/material": "6.1.6",
+    "@mui/x-data-grid": "^7.27.0",
+    "@skuber/components": "^1.0.3",
+    "@skuber/icons": "^1.0.3",
+    "@skuber/theme": "^1.0.3",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
@@ -24,6 +30,8 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.18",
     "globals": "^15.14.0",
-    "vite": "^6.1.0"
+    "vite": "^6.1.0",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "vite-plugin-svgr": "^4.3.0"
   }
 }

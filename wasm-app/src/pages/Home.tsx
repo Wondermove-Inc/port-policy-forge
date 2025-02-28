@@ -1,26 +1,8 @@
-import { useState } from 'react'
+import { WorkloadList } from "@/components/pages/home/WorkloadList";
+import { WorkloadMap } from "@/components/pages/home/WorkloadMap";
+import { useCommonStore } from "@/store";
 
-declare global {
-  interface Window {
-    wasmFibonacciSum: (n: number) => number;
-    getMock: () => any;
-  }
-}
-
-function wasmFibonacciSum(n: number): Promise<number> {
-  return new Promise((resolve) => {
-    const res = window.wasmFibonacciSum(n)
-    resolve(res)
-  })
-}
-
-
-const Home = () => {
-  return (
-    <div>
-      <h2>Home Page</h2>
-    </div>
-  );
-}
-
-export default Home
+export const Home = () => {
+  const { isViewList } = useCommonStore();
+  return isViewList ? <WorkloadList /> : <WorkloadMap />;
+};
