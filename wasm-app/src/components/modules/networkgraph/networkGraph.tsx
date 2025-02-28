@@ -123,6 +123,7 @@ const NetworkGraph = ({ workloads }: NetworkGraphProps) => {
             y: 100,
           };
         });
+
         setEdges(edges);
         setNodes(nodes);
       };

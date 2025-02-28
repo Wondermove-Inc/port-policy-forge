@@ -27,7 +27,7 @@ export const Home = () => {
 
   const [clusterValue, setClusterValue] = useState(clusterOptions[0].value);
   const [nameSpaceValue, setNameSpaceValue] = useState(
-    nameSpaceOptions[clusterValue][0].value,
+    nameSpaceOptions[clusterValue][0].value
   );
 
   useEffect(() => {
@@ -37,9 +37,21 @@ export const Home = () => {
     <Box
       sx={{
         padding: "20px",
+        height: "100%",
       }}
     >
-      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          position: "absolute",
+          right: 0,
+          top: 0,
+          zIndex: 88,
+          width: "100%",
+          padding: "20px",
+        }}
+      >
         <SelectClusterAndNameSpace
           clusterOptions={clusterOptions}
           nameSpaceOptions={nameSpaceOptions[clusterValue]}

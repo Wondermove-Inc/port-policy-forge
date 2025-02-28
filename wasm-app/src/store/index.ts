@@ -6,6 +6,6 @@ interface CommonStore {
 }
 
 export const useCommonStore = create<CommonStore>((set) => ({
-  isViewList: false,
+  isViewList: true,
   setIsViewList: (isViewList) => set({ isViewList }),
 }));
