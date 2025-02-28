@@ -164,26 +164,13 @@ export const WorkloadList = () => {
         padding: "20px",
       }}
     >
-      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-        <SelectClusterAndNameSpace
-          clusterOptions={[
-            { value: "cluster1", label: "cluster1", avatar: "-" },
-          ]}
-          nameSpaceOptions={[{ value: "namespace1", label: "namespace1" }]}
-          onClusterChange={() => {}}
-          onNameSpaceChange={() => {}}
-          selectedCluster={"cluster1"}
-          selectedNameSpace={"namespace1"}
-        />
-        <TabsViewMode />
-      </Box>
       <Box
         sx={{
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           padding: "0 12px 0 2px",
-          marginTop: "36px",
+          marginTop: "100px",
         }}
       >
         <Tabs value={"1"} sx={{ "& .MuiTabs-indicator": { display: "none" } }}>

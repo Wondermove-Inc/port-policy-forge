@@ -16,12 +16,10 @@ export const loadImage = (src: string): Promise<HTMLImageElement> => {
 };
 
 export const loadAllImages = async (): Promise<CanvasImage> => {
-  // Định nghĩa các màu cho các trạng thái khác nhau
   const idleColor = "#FFA800";
   const errorColor = "#EB4136";
   const activeColor = "#538BFF";
-
-  // Tạo biến thể của các icon với màu khác nhau
+  
   const workloadArrowIdleIcon = WorkloadArrowIcon.replace(
     /stroke=['"]%23[0-9a-fA-F]{3,6}['"]/g,
     `stroke='%23${idleColor.slice(1)}'`,
@@ -37,7 +35,6 @@ export const loadAllImages = async (): Promise<CanvasImage> => {
     `stroke='%23${activeColor.slice(1)}'`,
   );
 
-  // Tải tất cả hình ảnh cần thiết
   const images = await Promise.all([
     loadImage(WorkloadArrowIcon),
     loadImage(workloadArrowIdleIcon),
@@ -48,7 +45,6 @@ export const loadAllImages = async (): Promise<CanvasImage> => {
     loadImage(WorkloadDeploymentIcon),
   ]);
 
-  // Trả về đối tượng CanvasImage chứa các hình ảnh đã tải
   return {
     arrow: images[0],
     idleArrow: images[1],

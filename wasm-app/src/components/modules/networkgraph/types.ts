@@ -25,24 +25,39 @@ export enum DeploymentIconSize {
   BIG = 40,
 }
 
+export type NodeData = {
+  id: string;
+  size: number; // default of node
+  customSize: number;
+  customLabel: string;
+  color: string;
+  x: number;
+  y: number;
+};
+
+export type EdgeData = {
+  id?: string;
+  from: string;
+  to: string;
+  status: EdgeStatus;
+};
+
 export type CustomEdge = Partial<Edge> & {
   id: IdType;
   from: CustomNode;
   to: CustomNode;
-  status: EdgeStatus;
+  data?: EdgeData;
 };
 
 export type CustomNode = Partial<Node> & {
   id: IdType;
   x: number;
   y: number;
-  data: {
-    label: string;
-  };
+  data?: NodeData;
   size: NodeSize;
 };
 
-export type NetworkWithBody = Network & {
+export type CustomNetwork = Network & {
   body: {
     edges: CustomEdge[];
     nodes: CustomNode[];
@@ -64,4 +79,18 @@ export type DrawingOptions = {
   connectedEdges?: IdType[];
   connectedNodes?: IdType[];
   disabled?: boolean;
+};
+
+export type WorkloadConnector = {
+  workloadId: string;
+  status: number;
+};
+
+export type Workload = {
+  uuid: string;
+  workloadName: string;
+  kind: string;
+  size?: NodeSize;
+  from: WorkloadConnector[];
+  to: WorkloadConnector[];
 };
