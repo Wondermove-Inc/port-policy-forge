@@ -9,21 +9,19 @@ import { Datagrid, CustomGridColDef } from "@/components/atoms/Datagrid";
 import { CheckBoxIcon } from "@/components/icons/CheckBoxIcon";
 import { ModalClosePort } from "@/components/modules/ModalClosePort";
 import { SearchComplete } from "@/components/modules/SearchComplete";
+import { SelectClusterAndNameSpace } from "@/components/modules/SelectClusterAndNameSpace";
+import { TabsViewMode } from "@/components/modules/TabsViewMode";
 import { useDisclosure } from "@/hooks/useDisclosure";
-import { WorkListType } from "@/models";
 
 export const WorkloadList = () => {
+  const closePortModal = useDisclosure();
+  const detailDrawer = useDisclosure();
   const [checkedRows, setCheckedRows] = useState<
     Record<string, Record<string, boolean>>
   >({});
-  const [selectedTabBound, setSelectedTabBound] = useState("inbound");
-  
-  const closePortModal = useDisclosure();
-  const detailDrawer = useDisclosure();
-
   const bounds = [
-    { label: "Inbound", value: "inbound" },
-    { label: "Outbound", value: "outbound" },
+    { label: "Inbound", value: "1" },
+    { label: "Outbound", value: "2" },
   ];
   const columns: CustomGridColDef[] = [
     { field: "name", headerName: "Name", width: 196 },
@@ -123,83 +121,62 @@ export const WorkloadList = () => {
       },
     },
   ];
-  const datas: WorkListType = {
-    inbound : [
-      {
-        id: 1,
-        name: "Inbound",
-        type: "Type Inbound",
-        unconnectedPort: 2,
-        idlePort: 8,
-        activePort: 8,
-        errorPort: 6,
-        closedPortAttempted: "",
-      },
-      {
-        id: 2,
-        name: "Name Inbound 2",
-        type: "Type Inbound 2",
-        unconnectedPort: 3,
-        idlePort: 7,
-        activePort: 8,
-        errorPort: 9,
-        closedPortAttempted: "1",
-      },
-      {
-        id: 3,
-        name: "Name Inbound 2",
-        type: "Type Inbound 2",
-        unconnectedPort: 3,
-        idlePort: 7,
-        activePort: 8,
-        errorPort: 9,
-        closedPortAttempted: "1",
-      },
-    ],
-    outbound : [
-      {
-        id: 1,
-        name: "outbound",
-        type: "Type outbound",
-        unconnectedPort: 2,
-        idlePort: 88,
-        activePort: 82,
-        errorPort: 0,
-        closedPortAttempted: "",
-      },
-      {
-        id: 2,
-        name: "Name outbound 2",
-        type: "Type outbound 2",
-        unconnectedPort: 33,
-        idlePort: 73,
-        activePort: 38,
-        errorPort: 39,
-        closedPortAttempted: "1",
-      },
-    ]
-  };
-  const rows = useMemo(() => {
-    return datas[selectedTabBound];
-  }, [datas, selectedTabBound]);
-
+  const rows = [
+    {
+      id: 1,
+      name: "Name",
+      type: "Type",
+      unconnectedPort: 2,
+      idlePort: 8,
+      activePort: 8,
+      errorPort: 6,
+      closedPortAttempted: "",
+    },
+    {
+      id: 2,
+      name: "Name",
+      type: "Type",
+      unconnectedPort: 3,
+      idlePort: 7,
+      activePort: 8,
+      errorPort: 9,
+      closedPortAttempted: "1",
+    },
+    {
+      id: 3,
+      name: "Name",
+      type: "Type",
+      unconnectedPort: 0,
+      idlePort: 0,
+      activePort: 0,
+      errorPort: 0,
+      closedPortAttempted: "",
+    },
+  ];
   const isCheckedPort = useMemo(() => {
     return Object.values(checkedRows).some((port) =>
       Object.values(port).includes(true),
     );
   }, [checkedRows]);
-
-  const handleChangeTabBound = (event: React.SyntheticEvent, newValue: string) => {
-    setSelectedTabBound(newValue);
-    setCheckedRows({});
-  };
-  const handleConfirmClosePort = () => {
-    console.log(checkedRows);
-    closePortModal.close();
-  }
-
   return (
-    <>
+    <Box
+      sx={{
+        padding: "20px",
+      }}
+    >
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <SelectClusterAndNameSpace
+          clusterOptions={[
+            { value: "cluster1", label: "cluster1", avatar: "-" },
+          ]}
+          nameSpaceOptions={[{ value: "namespace1", label: "namespace1" }]}
+          onClusterChange={() => {}}
+          onNameSpaceChange={() => {}}
+          selectedCluster={"cluster1"}
+          selectedNameSpace={"namespace1"}
+        />
+        <TabsViewMode />
+      </Box>
       <Box
         sx={{
           display: "flex",
@@ -209,7 +186,7 @@ export const WorkloadList = () => {
           marginTop: "36px",
         }}
       >
-        <Tabs value={selectedTabBound} onChange={handleChangeTabBound} sx={{ "& .MuiTabs-indicator": { display: "none" } }}>
+        <Tabs value={"1"} sx={{ "& .MuiTabs-indicator": { display: "none" } }}>
           {bounds.map((bound, index) => (
             <Tab
               key={index}
@@ -255,13 +232,11 @@ export const WorkloadList = () => {
       </Box>
       <Box sx={{ marginTop: "24px", padding: "0 12px" }}>
         <Datagrid
-          key={selectedTabBound}
           columns={columns}
           rows={rows}
           hasSearch={true}
           noRowsOverlay={() => <Box>Nodata</Box>}
           width="100%"
-          checkedRows={checkedRows}
           onCheckedRowsChange={setCheckedRows}
           onRowClick={detailDrawer.open}
         ></Datagrid>
@@ -269,12 +244,12 @@ export const WorkloadList = () => {
       <ModalClosePort
         open={closePortModal.visible}
         onClose={closePortModal.close}
-        onConfirm={handleConfirmClosePort}
+        onConfirm={() => {}}
       />
       <WorkloadDetail
         open={detailDrawer.visible}
         handleClose={detailDrawer.close}
       />
-    </>
+    </Box>
   );
 };

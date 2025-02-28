@@ -65,18 +65,6 @@ export type WorkloadDetailType = {
   };
 };
 
-export type WorkListType = {
-  [key: string]: { 
-    id: number; 
-    name: string; 
-    type: string; 
-    unconnectedPort: number; 
-    idlePort: number; 
-    activePort: number; 
-    errorPort: number; 
-    closedPortAttempted: string; 
-  }[];
-}
 export type PortAccessSettingForm = {
   sources: {
     source: string;
