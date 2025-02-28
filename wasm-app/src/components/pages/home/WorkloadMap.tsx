@@ -1,3 +1,4 @@
+import NetworkGraph from "@/components/modules/networkgraph/networkGraph";
 import { SelectClusterAndNameSpace } from "@/components/modules/SelectClusterAndNameSpace";
 import { ViewFilter } from "@/components/modules/ViewFilter";
 import { Box } from "@mui/material";
@@ -28,7 +29,7 @@ export const WorkloadMap = () => {
           selectedNameSpace={"namespace1"}
         />
       </Box>
-
+      <NetworkGraph />
       <ViewFilter />
     </Box>
   );
