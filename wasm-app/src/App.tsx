@@ -46,6 +46,7 @@ const App = () => {
           backgroundColor: "background.secondary",
           width: "100%",
           minHeight: "calc(100vh - 56px)",
+          position: "relative",
         }}
       >
         <Routes>
