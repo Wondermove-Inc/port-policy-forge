@@ -30,6 +30,7 @@ export const ModalClosePort = ({
             listStyleType: "disc",
             typography: "body2",
             fontWeight: 400,
+            color: "text.secondary",
           }}
         >
           <ListItem sx={{ display: "list-item", padding: 0 }}>
