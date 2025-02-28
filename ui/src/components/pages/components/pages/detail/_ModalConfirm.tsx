@@ -1,21 +1,57 @@
-import { Box } from "@mui/material";
-import { Modal, ModalBody, ModalHeader, Typography } from "@skuber/components";
+import { List, ListItem } from "@mui/material";
+import {
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Typography,
+} from "@skuber/components";
+import { defaultTheme } from "@skuber/theme";
 
-export const ModalConfirm = () => {
+type ModalConfirmProps = {
+  open: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title: string;
+  description: string;
+  detailList: string[];
+};
+
+export const ModalConfirm = ({
+  open,
+  onClose,
+  onConfirm,
+  title,
+  description,
+  detailList,
+}: ModalConfirmProps) => {
   return (
-    <Modal width={646} open={false} onClose={() => {}}>
-      <ModalHeader title="Open Inbound Port" onClose={() => {}} />
+    <Modal width={434} open={open} onClose={onClose}>
+      <ModalHeader title={title} onClose={onClose} />
       <ModalBody>
-        <Typography>Closed Port(820)</Typography>
-        <Box
-          sx={{
-            bgcolor: "background.modal",
-            borderRadius: "12px",
-            padding: "20px",
-            marginTop: "8px",
-          }}
-        ></Box>
+        <Typography>{description}</Typography>
+        {detailList && detailList.length > 0 && (
+          <List
+            sx={{
+              paddingLeft: "24px",
+              listStyleType: "disc",
+              ...defaultTheme.typography.body2,
+            }}
+          >
+            {detailList.map((item, index) => (
+              <ListItem key={index} sx={{ display: "list-item", padding: 0 }}>
+                {item}
+              </ListItem>
+            ))}
+          </List>
+        )}
       </ModalBody>
+      <ModalFooter
+        cancelButtonTitle="Cancel"
+        confirmButtonTitle="Confirm"
+        onClickCancelButton={onClose}
+        onClickConfirmButton={onConfirm}
+      />
     </Modal>
   );
 };

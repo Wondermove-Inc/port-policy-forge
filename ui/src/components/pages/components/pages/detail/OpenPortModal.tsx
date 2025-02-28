@@ -19,66 +19,11 @@ const data = [
     source: "89.0.142.86",
     lastConnection: "2022-01-01 00:00:00",
   },
-  {
-    portNumber: 820,
-    source: "89.0.142.86",
-    lastConnection: "2022-01-01 00:00:00",
-  },
-  {
-    portNumber: 820,
-    source: "89.0.142.86",
-    lastConnection: "2022-01-01 00:00:00",
-  },
-  {
-    portNumber: 820,
-    source: "89.0.142.86",
-    lastConnection: "2022-01-01 00:00:00",
-  },
-  {
-    portNumber: 820,
-    source: "89.0.142.86",
-    lastConnection: "2022-01-01 00:00:00",
-  },
-  {
-    portNumber: 820,
-    source: "89.0.142.86",
-    lastConnection: "2022-01-01 00:00:00",
-  },
-  {
-    portNumber: 820,
-    source: "89.0.142.86",
-    lastConnection: "2022-01-01 00:00:00",
-  },
-  {
-    portNumber: 820,
-    source: "89.0.142.86",
-    lastConnection: "2022-01-01 00:00:00",
-  },
-  {
-    portNumber: 820,
-    source: "89.0.142.86",
-    lastConnection: "2022-01-01 00:00:00",
-  },
-  {
-    portNumber: 820,
-    source: "89.0.142.86",
-    lastConnection: "2022-01-01 00:00:00",
-  },
-  {
-    portNumber: 820,
-    source: "89.0.142.86",
-    lastConnection: "2022-01-01 00:00:00",
-  },
-  {
-    portNumber: 820,
-    source: "89.0.142.86",
-    lastConnection: "2022-01-01 00:00:00",
-  },
 ];
 
 export const OpenPortModal = () => {
-  const [isOpen, setIsOpen] = useState(true);
-  const [isPortSettingOpened, setIsPortSettingOpened] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isPortSettingOpened, setIsPortSettingOpened] = useState(false);
   const form = useForm<PortAccessSettingForm>({
     defaultValues: {
       sources: [
