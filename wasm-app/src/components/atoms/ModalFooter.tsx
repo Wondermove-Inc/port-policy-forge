@@ -58,7 +58,9 @@ export const ModalFooter = ({
             variant="contained"
             size="small"
             disabled={disabled}
-            startIcon={loading ? <CircularProgress size={16} color="inherit" /> : null}
+            startIcon={
+              loading ? <CircularProgress size={16} color="inherit" /> : null
+            }
             onClick={onClickConfirmButton}
           >
             {confirmButtonTitle}

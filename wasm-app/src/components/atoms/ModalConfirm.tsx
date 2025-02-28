@@ -1,6 +1,7 @@
 import { List, ListItem } from "@mui/material";
 import { Modal, ModalBody, ModalHeader, Typography } from "@skuber/components";
 import { defaultTheme } from "@skuber/theme";
+
 import { ModalFooter } from "./ModalFooter";
 
 type ModalConfirmProps = {
@@ -12,7 +13,14 @@ type ModalConfirmProps = {
   descriptionDetails: string[];
 };
 
-export const ModalConfirm = ({ open, onClose, onConfirm, title, description, descriptionDetails }: ModalConfirmProps) => {
+export const ModalConfirm = ({
+  open,
+  onClose,
+  onConfirm,
+  title,
+  description,
+  descriptionDetails,
+}: ModalConfirmProps) => {
   return (
     <Modal width={434} open={open} onClose={onClose}>
       <ModalHeader title={title} onClose={onClose} />

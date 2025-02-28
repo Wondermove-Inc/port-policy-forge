@@ -1,8 +1,8 @@
 import { Box } from "@mui/material";
 import { Button, Typography } from "@skuber/components";
 
-import { InfoIcon } from "@/components/icons/InfoIcon";
 import { ModalConfirm } from "@/components/atoms/ModalConfirm";
+import { InfoIcon } from "@/components/icons/InfoIcon";
 import { useDisclosure } from "@/hooks/useDisclosure";
 
 export const PolicyApplication = () => {
@@ -35,11 +35,13 @@ export const PolicyApplication = () => {
             }}
           >
             <InfoIcon size={16} />
-            <Typography variant="b1_m">Apply a service policy to close unused ports </Typography>
+            <Typography variant="b1_m">
+              Apply a service policy to close unused ports{" "}
+            </Typography>
           </Box>
           <Typography variant="b2_r" color="text.secondary">
-            Enforce service policies to close all unconnected ports for <br /> added security. If you don't apply a
-            policy, all ports remain open.
+            Enforce service policies to close all unconnected ports for <br />{" "}
+            added security. If you don't apply a policy, all ports remain open.
           </Typography>
         </Box>
         <Button size="extraSmall" onClick={policyApplicationModal.open}>

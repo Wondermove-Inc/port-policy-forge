@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+
 import { Network } from "vis-network";
-import { setupNetworkEvents } from "./networkEvents";
-import { createNetworkOptions } from "./networkOptions";
+
 import { createNodes, createEdges } from "./dataUtils";
 import { loadAllImages } from "./imageLoader";
+import { setupNetworkEvents } from "./networkEvents";
+import { createNetworkOptions } from "./networkOptions";
 import { CanvasImage, CustomEdge, CustomNode, NetworkWithBody } from "./types";
 
 let network: NetworkWithBody;
@@ -34,14 +36,14 @@ const NetworkGraph = () => {
     ) {
       return;
     }
-    
+
     const data = { nodes, edges };
     const options = createNetworkOptions();
 
     network = new Network(
       containerRef.current,
       data,
-      options
+      options,
     ) as NetworkWithBody;
 
     setupNetworkEvents(network, canvasImages, edges);

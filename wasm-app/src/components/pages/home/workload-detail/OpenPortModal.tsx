@@ -7,10 +7,12 @@ import {
   Typography,
 } from "@skuber/components";
 import { useForm } from "react-hook-form";
+
 import { PortSettingModal } from "./_PortSettingModal";
-import { PortAccessSettingForm } from "@/models";
-import { useDisclosure } from "@/hooks/useDisclosure";
+
 import { SearchComplete } from "@/components/modules/SearchComplete";
+import { useDisclosure } from "@/hooks/useDisclosure";
+import { PortAccessSettingForm } from "@/models";
 
 const data = [
   {
@@ -86,7 +88,13 @@ export const OpenPortModal = () => {
       <Modal width={646} open={openPortModal.visible} onClose={() => {}}>
         <ModalHeader title="Open Inbound Port" onClose={openPortModal.close} />
         <ModalBody>
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <Typography>Closed Port(820)</Typography>
             <SearchComplete
               options={[]}

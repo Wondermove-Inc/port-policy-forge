@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from "react";
+
+import { Link } from "react-router-dom";
 
 declare global {
   interface Window {
@@ -42,7 +43,7 @@ const Namespace = () => {
       .then((data) => {
         setNamespaces(data.result);
         setRawData(data.raw);
-        console.log(data.raw)
+        console.log(data.raw);
         setLoading(false);
       })
       .catch((err) => {
@@ -50,11 +51,13 @@ const Namespace = () => {
         setLoading(false);
       });
   }, []);
-  
+
   if (loading) return <p>Loading namespaces...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  const prettyRawData = rawData ? JSON.stringify(JSON.parse(rawData), null, 2) : "";
+  const prettyRawData = rawData
+    ? JSON.stringify(JSON.parse(rawData), null, 2)
+    : "";
 
   return (
     <div>
@@ -62,7 +65,9 @@ const Namespace = () => {
       <ul>
         {namespaces.map((ns) => (
           <li key={ns.id}>
-            <Link to={`/namespace/${ns.namespaceName}`}>{ns.namespaceName}</Link>
+            <Link to={`/namespace/${ns.namespaceName}`}>
+              {ns.namespaceName}
+            </Link>
           </li>
         ))}
       </ul>

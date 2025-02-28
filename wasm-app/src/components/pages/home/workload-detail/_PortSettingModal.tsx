@@ -1,4 +1,11 @@
-import { Box, FormControlLabel, List, ListItem, RadioGroup, TextField } from "@mui/material";
+import {
+  Box,
+  FormControlLabel,
+  List,
+  ListItem,
+  RadioGroup,
+  TextField,
+} from "@mui/material";
 import {
   Button,
   Modal,
@@ -23,7 +30,11 @@ interface PortSettingModalProps {
   form: UseFormReturn<PortAccessSettingForm>;
 }
 
-export const PortSettingModal = ({ isOpen, handleClose, form }: PortSettingModalProps) => {
+export const PortSettingModal = ({
+  isOpen,
+  handleClose,
+  form,
+}: PortSettingModalProps) => {
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "sources",
@@ -36,7 +47,15 @@ export const PortSettingModal = ({ isOpen, handleClose, form }: PortSettingModal
   return (
     <Modal width={646} open={isOpen} onClose={handleClose}>
       <ModalHeader title="Port Access settings" onClose={handleClose} />
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2, overflowY: "auto", maxHeight: "450px" }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          overflowY: "auto",
+          maxHeight: "450px",
+        }}
+      >
         <Box
           sx={{
             display: "flex",
@@ -55,7 +74,9 @@ export const PortSettingModal = ({ isOpen, handleClose, form }: PortSettingModal
           />
         </Box>
         <Box sx={{ px: "20px" }}>
-          <Typography>Opening the port will result in the following changes</Typography>
+          <Typography>
+            Opening the port will result in the following changes
+          </Typography>
           <List
             sx={{
               pl: 3,
@@ -67,7 +88,9 @@ export const PortSettingModal = ({ isOpen, handleClose, form }: PortSettingModal
             <ListItem sx={{ display: "list-item", p: 0 }}>
               The closed port becomes externally accessible again.
             </ListItem>
-            <ListItem sx={{ display: "list-item", p: 0 }}>Service traffic through that port is allowed.</ListItem>
+            <ListItem sx={{ display: "list-item", p: 0 }}>
+              Service traffic through that port is allowed.
+            </ListItem>
           </List>
         </Box>
         {!allowFullAccess && (
@@ -77,7 +100,11 @@ export const PortSettingModal = ({ isOpen, handleClose, form }: PortSettingModal
                 name="access"
                 control={form.control}
                 render={({ field }) => (
-                  <RadioGroup sx={{ display: "flex", alignItems: "center", gap: 3 }} row {...field}>
+                  <RadioGroup
+                    sx={{ display: "flex", alignItems: "center", gap: 3 }}
+                    row
+                    {...field}
+                  >
                     <FormControlLabel
                       sx={{ display: "flex", gap: 1 }}
                       value="some"
@@ -96,7 +123,15 @@ export const PortSettingModal = ({ isOpen, handleClose, form }: PortSettingModal
             </Box>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
               {fields.map((field, index) => (
-                <Box key={field.id} sx={{ display: "flex", gap: 2, px: "20px", alignItems: "center" }}>
+                <Box
+                  key={field.id}
+                  sx={{
+                    display: "flex",
+                    gap: 2,
+                    px: "20px",
+                    alignItems: "center",
+                  }}
+                >
                   <Box
                     sx={{
                       display: "flex",
@@ -116,7 +151,10 @@ export const PortSettingModal = ({ isOpen, handleClose, form }: PortSettingModal
                           },
                         }}
                       />
-                      <Select sx={{ flex: 1 }} options={[{ label: "TCP", value: "tcp" }]} />
+                      <Select
+                        sx={{ flex: 1 }}
+                        options={[{ label: "TCP", value: "tcp" }]}
+                      />
                     </Box>
                     <Textarea
                       sx={{
@@ -127,7 +165,13 @@ export const PortSettingModal = ({ isOpen, handleClose, form }: PortSettingModal
                       label="Comment"
                     />
                   </Box>
-                  {index !== 0 && <DeleteIcon size={20} sx={{ cursor: "pointer" }} onClick={() => remove(index)} />}
+                  {index !== 0 && (
+                    <DeleteIcon
+                      size={20}
+                      sx={{ cursor: "pointer" }}
+                      onClick={() => remove(index)}
+                    />
+                  )}
                 </Box>
               ))}
               <Button

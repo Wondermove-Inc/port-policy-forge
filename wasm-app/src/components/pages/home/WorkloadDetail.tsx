@@ -1,3 +1,5 @@
+import { Box } from "@mui/material";
+
 import { ClosePort } from "./workload-detail/ClosePort";
 import { OpenPort } from "./workload-detail/OpenPort";
 import { OpenPortModal } from "./workload-detail/OpenPortModal";
@@ -21,21 +23,29 @@ export const WorkloadDetail = ({ open, handleClose }: WorkloadDetailProps) => {
       onClose={handleClose}
     >
       <WorkloadTabs onChangeTab={() => {}} />
-      <WorkloadSummary
-        stats={{
-          active: 10,
-          unconnected: 5,
-          idle: 0,
-          error: 2,
-          attempted: 3,
-          latencyRtt: 1.39,
-          throughput: 469.89,
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "32px",
         }}
-        workloadName="Default"
-      />
-      <PolicyApplication />
-      <OpenPort />
-      <ClosePort />
+      >
+        <WorkloadSummary
+          stats={{
+            active: 10,
+            unconnected: 5,
+            idle: 0,
+            error: 2,
+            attempted: 3,
+            latencyRtt: 1.39,
+            throughput: 469.89,
+          }}
+          workloadName="Default"
+        />
+        <PolicyApplication />
+        <OpenPort />
+        <ClosePort />
+      </Box>
       <OpenPortModal />
     </Drawer>
   );

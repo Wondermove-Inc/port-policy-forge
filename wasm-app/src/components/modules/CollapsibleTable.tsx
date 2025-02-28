@@ -70,7 +70,13 @@ export const CollapsibleTable = <T,>({
             {...tableProps}
           >
             <TableHead>
-              <TableRow>
+              <TableRow
+                sx={{
+                  ".MuiTableCell-head": {
+                    paddingY: "10.5px",
+                  },
+                }}
+              >
                 {columns.map((column, index) => (
                   <TableCell
                     key={column.id}
@@ -101,7 +107,13 @@ export const CollapsibleTable = <T,>({
             <TableBody>
               {loading && (
                 <TableRow>
-                  <TableCell width="100%" colSpan={columns.length + 1}>
+                  <TableCell
+                    width="100%"
+                    colSpan={columns.length + 1}
+                    sx={{
+                      textAlign: "center",
+                    }}
+                  >
                     <Typography variant="body1" color="text.tertiary">
                       Loading...
                     </Typography>
@@ -111,7 +123,13 @@ export const CollapsibleTable = <T,>({
 
               {!loading && data.length === 0 && (
                 <TableRow>
-                  <TableCell width="100%" colSpan={columns.length + 1}>
+                  <TableCell
+                    width="100%"
+                    colSpan={columns.length + 1}
+                    sx={{
+                      textAlign: "center",
+                    }}
+                  >
                     <Typography variant="body1" color="text.tertiary">
                       There is no data to display.
                     </Typography>
@@ -127,11 +145,17 @@ export const CollapsibleTable = <T,>({
 
                   return (
                     <React.Fragment key={index}>
-                      <TableRow>
+                      <TableRow
+                        sx={{
+                          ".MuiTableCell-body": {
+                            padding: "15.5px 8px",
+                          },
+                        }}
+                      >
                         {columns.map((column, colIndex) => {
                           const cellContent = column.render
                             ? column.render(row)
-                            : row[column.id as keyof T] as React.ReactNode;
+                            : (row[column.id as keyof T] as React.ReactNode);
 
                           return (
                             <TableCell
