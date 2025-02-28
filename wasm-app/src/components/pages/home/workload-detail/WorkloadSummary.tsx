@@ -66,7 +66,7 @@ export const WorkloadSummary = ({
               {title}
             </Typography>
             <Typography
-              variant={variant as any}
+              variant={variant}
               component="p"
               sx={{ color: value ? color : "status.idle" }}
             >
