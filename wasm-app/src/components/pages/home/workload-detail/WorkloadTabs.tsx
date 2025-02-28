@@ -1,15 +1,15 @@
 import { Tabs } from "@skuber/components";
 
-import { Direction } from "@/models";
+import { PortDirection } from "@/models";
 
 const tabs = [
   {
-    id: Direction.INBOUND,
-    label: Direction.INBOUND,
+    id: PortDirection.INBOUND,
+    label: PortDirection.INBOUND,
   },
   {
-    id: Direction.OUTBOUND,
-    label: Direction.OUTBOUND,
+    id: PortDirection.OUTBOUND,
+    label: PortDirection.OUTBOUND,
   },
 ];
 

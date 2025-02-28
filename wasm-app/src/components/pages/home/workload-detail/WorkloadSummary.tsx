@@ -3,6 +3,7 @@ import { Typography } from "@skuber/components";
 
 import { PORT_STATUS_MAP } from "@/constants";
 import { StatsType, Stats } from "@/models";
+import { formatNumber } from "@/utils/format";
 
 export type WorkloadSummaryProps = {
   stats: StatsType;
@@ -20,7 +21,7 @@ export const WorkloadSummary = ({
 
   const workloadData = Object.values(Stats).map((status) => ({
     title: PORT_STATUS_MAP[status].label,
-    value: stats[status] || "",
+    value: formatNumber(stats[status]) || "",
     color: PORT_STATUS_MAP[status].color,
     ...stylesByType.status,
   }));
@@ -44,7 +45,7 @@ export const WorkloadSummary = ({
         display: "flex",
         flexWrap: "wrap",
         gap: "24px 12px",
-        maxWidth: 440,
+        maxWidth: 472,
       }}
     >
       {[...workloadData, ...metrics].map(

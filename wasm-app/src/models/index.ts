@@ -6,7 +6,7 @@ export enum Stats {
   ATTEMPTED = "attempted",
 }
 
-export enum Direction {
+export enum PortDirection {
   INBOUND = "Inbound",
   OUTBOUND = "Outbound",
 }
