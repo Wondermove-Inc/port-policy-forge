@@ -155,7 +155,7 @@ export const WorkloadList = () => {
   ];
   const isCheckedPort = useMemo(() => {
     return Object.values(checkedRows).some((port) =>
-      Object.values(port).includes(true),
+      Object.values(port).includes(true)
     );
   }, [checkedRows]);
   return (
@@ -222,7 +222,7 @@ export const WorkloadList = () => {
               fontWeight: "700",
             }}
             startIcon={<CheckBoxIcon color="white" size={16} />}
-            onClick={() => setIsClosePortOpen(true)}
+            onClick={closePortModal.open}
             disabled={!isCheckedPort}
           >
             Close selected ports
