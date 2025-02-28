@@ -131,7 +131,7 @@ export const CollapsibleTable = <T,>({
                         {columns.map((column, colIndex) => {
                           const cellContent = column.render
                             ? column.render(row)
-                            : row[column.id as keyof T] as React.ReactNode;
+                            : (row[column.id as keyof T] as React.ReactNode);
 
                           return (
                             <TableCell

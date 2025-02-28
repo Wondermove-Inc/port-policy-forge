@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
+
 import "../public/wasm_exec.js";
+import { Box } from "@mui/material";
+import { ThemeProvider } from "@skuber/theme";
 import { Routes, Route } from "react-router-dom";
+
 import { Home } from "./pages/Home.tsx";
 import Namespace from "./pages/Namespace";
 import Workloads from "./pages/Workload.tsx";
 import WorkloadDetail from "./pages/WorkloadDetail.tsx";
+import { customTheme } from "./theme";
 import { loadWasm } from "./wasmLoader.tsx";
 
-import { ThemeProvider } from "@skuber/theme";
-import { customTheme } from "./theme";
 import { Header } from "@/components/layout/Header";
-import { Box } from "@mui/material";
 
 import "@skuber/theme/styles/global.css";
 import "./index.css";

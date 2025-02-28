@@ -24,7 +24,7 @@ export type SourceType = {
 export type Port = {
   id: number;
   isRange: boolean;
-  portNumber: number | string |null;
+  portNumber: number | string | null;
   portRange: PortRangeType | null;
   status: number;
   direction: string;

@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useEffect, useState } from "react";
+
+import { useParams, Link } from "react-router-dom";
 
 declare global {
   interface Window {
@@ -68,7 +69,10 @@ function wasmGetWorkloadDetail(workloadId: string): Promise<WorkloadDetail> {
 }
 
 const WorkloadDetailComponent = () => {
-  const { namespaceName, workloadId } = useParams<{ namespaceName: string; workloadId: string }>();
+  const { namespaceName, workloadId } = useParams<{
+    namespaceName: string;
+    workloadId: string;
+  }>();
   const [detail, setDetail] = useState<WorkloadDetail | null>(null);
   const [rawData, setRawData] = useState<string>("");
   const [loading, setLoading] = useState(true);
@@ -147,7 +151,7 @@ const WorkloadDetailComponent = () => {
       return <p>No ports found.</p>;
     }
     return (
-      <table border={1} cellPadding={4} style={{ marginBottom: '1rem' }}>
+      <table border={1} cellPadding={4} style={{ marginBottom: "1rem" }}>
         {renderTableHeader()}
         {renderPortRows(ports)}
       </table>
@@ -157,13 +161,14 @@ const WorkloadDetailComponent = () => {
   return (
     <div>
       <h2>Workload Detail: {namespaceName}-workload-1</h2>
-      <p><strong>Kind:</strong> {detail.kind}</p>
+      <p>
+        <strong>Kind:</strong> {detail.kind}
+      </p>
       <p>
         <strong>Stats:</strong> Active: {detail.stats.active}, Unconnected:{" "}
         {detail.stats.unconnected}, Idle: {detail.stats.idle}, Error:{" "}
-        {detail.stats.error}, Attempted: {detail.stats.attempted},{" "}
-        Latency RTT: {detail.stats.latencyRtt}, Throughput:{" "}
-        {detail.stats.throughput}
+        {detail.stats.error}, Attempted: {detail.stats.attempted}, Latency RTT:{" "}
+        {detail.stats.latencyRtt}, Throughput: {detail.stats.throughput}
       </p>
 
       {/* Inbound Ports */}

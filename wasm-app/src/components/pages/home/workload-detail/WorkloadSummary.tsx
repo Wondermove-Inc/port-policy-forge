@@ -73,7 +73,7 @@ export const WorkloadSummary = ({
               {value || "-"}
             </Typography>
           </Box>
-        )
+        ),
       )}
     </Box>
   );
