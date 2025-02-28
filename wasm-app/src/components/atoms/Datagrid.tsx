@@ -2,6 +2,7 @@ import {
   HTMLAttributes,
   JSXElementConstructor,
   useMemo,
+  useState,
 } from "react";
 
 import { Box, Checkbox, SxProps, Theme, Typography } from "@mui/material";
@@ -36,7 +37,6 @@ export const Datagrid = (
       } & NoRowsOverlayPropsOverrides
     >;
     hasSearch?: boolean;
-    checkedRows: Record<string, Record<string, boolean>>;
     onCheckedRowsChange?: (
       checkedRows: Record<string, Record<string, boolean>>,
     ) => void;
@@ -51,16 +51,20 @@ export const Datagrid = (
     height = "100%",
     rowHeight = 64,
     emptyHeight,
-    checkedRows,
     onCheckedRowsChange,
     ...rest
   } = props;
   const rows = props.rows ?? [];
   const tableHeight = rows?.length || !emptyHeight ? height : emptyHeight;
 
+  const [checkedRows, setCheckedRows] = useState<
+    Record<string, Record<string, boolean>>
+  >({});
+
   const updateCheckedRows = (
     newCheckedRows: Record<string, Record<string, boolean>>,
   ) => {
+    setCheckedRows(newCheckedRows);
     onCheckedRowsChange?.(newCheckedRows);
   };
   const handleToggleColumnCheck = (columnField: string) => {
@@ -83,25 +87,28 @@ export const Datagrid = (
     columnField: string,
     rowId: string | number,
   ) => {
-    const currentColumnChecks = checkedRows[columnField] || {};
-    const updatedColumnChecks = {
-      ...currentColumnChecks,
-      [rowId]: !currentColumnChecks[rowId],
-    };
-    const checkedCount = rows.filter(
-      (row) => updatedColumnChecks[row.id],
-    ).length;
-    const isIndeterminate = checkedCount > 0 && checkedCount < rows.length;
-    const isAllChecked = rows.every((row) => updatedColumnChecks[row.id]);
-    const newCheckedRows = {
-      ...checkedRows,
-      [columnField]: {
-        ...updatedColumnChecks,
-        allChecked: isAllChecked,
-        isIndeterminate,
-      },
-    };
-    updateCheckedRows(newCheckedRows);
+    setCheckedRows((prev) => {
+      const currentColumnChecks = prev[columnField] || {};
+      const updatedColumnChecks = {
+        ...currentColumnChecks,
+        [rowId]: !currentColumnChecks[rowId],
+      };
+      const checkedCount = rows.filter(
+        (row) => updatedColumnChecks[row.id],
+      ).length;
+      const isIndeterminate = checkedCount > 0 && checkedCount < rows.length;
+      const isAllChecked = rows.every((row) => updatedColumnChecks[row.id]);
+      const newCheckedRows = {
+        ...prev,
+        [columnField]: {
+          ...updatedColumnChecks,
+          allChecked: isAllChecked,
+          isIndeterminate,
+        },
+      };
+      updateCheckedRows(newCheckedRows);
+      return newCheckedRows;
+    });
   };
 
   const updatedColumns: CustomGridColDef[] = (
@@ -168,7 +175,6 @@ export const Datagrid = (
               onChange={() => handleToggleRowCheck(column.field, rowId)}
               checkedIcon={<CheckBoxIcon />}
               disabled={column.disabled}
-              onClick={(e) => e.stopPropagation()} 
               sx={{
                 "&.Mui-checked": {
                   backgroundColor: "interaction.primaryContrastBackground",

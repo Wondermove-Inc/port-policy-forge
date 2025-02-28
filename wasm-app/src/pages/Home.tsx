@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react";
-
-import { Box } from "@mui/material";
-
 import { SelectClusterAndNameSpace } from "@/components/modules/SelectClusterAndNameSpace";
 import { TabsViewMode } from "@/components/modules/TabsViewMode";
 import { WorkloadList } from "@/components/pages/home/WorkloadList";
-import { useCommonStore } from "@/store";
 import { WorkloadMap } from "@/components/pages/home/WorkloadMap";
+import { useCommonStore } from "@/store";
+import { Box } from "@mui/material";
+import { useEffect, useState } from "react";
 
 export const Home = () => {
   const { isViewList } = useCommonStore();
