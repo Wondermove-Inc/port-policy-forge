@@ -21,26 +21,26 @@ import {
 import { ArrowDownIcon } from "@/components/icons/ArrowDownIcon";
 import { ArrowRightIcon } from "@/components/icons/ArrowRightIcon";
 
-export type TableColumnProps = TableCellProps & {
+export type TableColumnProps<T> = TableCellProps & {
   id: string;
   label: React.ReactNode;
   width?: number;
   borderRight?: boolean;
-  render?: ((record: any) => React.ReactNode) | undefined;
+  render?: (record: T) => React.ReactNode;
 };
 
-type CollapsibleTableProps = {
-  columns: TableColumnProps[];
-  data: any[];
+type CollapsibleTableProps<T> = {
+  columns: TableColumnProps<T>[];
+  data: T[];
   sx?: SxProps;
   tableContainerProps?: TableContainerProps;
   tableProps?: TableProps;
   width?: number | string;
   loading?: boolean;
-  renderDetails?: (record: any) => React.ReactNode;
+  renderDetails?: (record: T) => React.ReactNode;
 };
 
-export const CollapsibleTable = ({
+export const CollapsibleTable = <T,>({
   columns,
   data,
   sx,
@@ -49,7 +49,7 @@ export const CollapsibleTable = ({
   width = "100%",
   loading,
   renderDetails,
-}: CollapsibleTableProps) => {
+}: CollapsibleTableProps<T>) => {
   const [openRows, setOpenRows] = React.useState<Record<number, boolean>>({});
 
   const handleToggleRow = (index: number) => {
@@ -70,7 +70,13 @@ export const CollapsibleTable = ({
             {...tableProps}
           >
             <TableHead>
-              <TableRow>
+              <TableRow
+                sx={{
+                  ".MuiTableCell-head": {
+                    paddingY: "10.5px",
+                  },
+                }}
+              >
                 {columns.map((column, index) => (
                   <TableCell
                     key={column.id}
@@ -101,7 +107,13 @@ export const CollapsibleTable = ({
             <TableBody>
               {loading && (
                 <TableRow>
-                  <TableCell width="100%" colSpan={columns.length + 1}>
+                  <TableCell
+                    width="100%"
+                    colSpan={columns.length + 1}
+                    sx={{
+                      textAlign: "center",
+                    }}
+                  >
                     <Typography variant="body1" color="text.tertiary">
                       Loading...
                     </Typography>
@@ -111,7 +123,13 @@ export const CollapsibleTable = ({
 
               {!loading && data.length === 0 && (
                 <TableRow>
-                  <TableCell width="100%" colSpan={columns.length + 1}>
+                  <TableCell
+                    width="100%"
+                    colSpan={columns.length + 1}
+                    sx={{
+                      textAlign: "center",
+                    }}
+                  >
                     <Typography variant="body1" color="text.tertiary">
                       There is no data to display.
                     </Typography>
@@ -127,11 +145,17 @@ export const CollapsibleTable = ({
 
                   return (
                     <React.Fragment key={index}>
-                      <TableRow>
+                      <TableRow
+                        sx={{
+                          ".MuiTableCell-body": {
+                            padding: "15.5px 8px",
+                          },
+                        }}
+                      >
                         {columns.map((column, colIndex) => {
                           const cellContent = column.render
                             ? column.render(row)
-                            : row[column.id];
+                            : (row[column.id as keyof T] as React.ReactNode);
 
                           return (
                             <TableCell

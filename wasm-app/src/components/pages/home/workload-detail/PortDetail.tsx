@@ -1,6 +1,8 @@
 import { Box } from "@mui/material";
 import { Typography } from "@skuber/components";
 
+import { Port } from "@/models";
+
 const ShadedBox = ({ children }: { children: React.ReactNode }) => (
   <Box
     sx={{
@@ -13,7 +15,7 @@ const ShadedBox = ({ children }: { children: React.ReactNode }) => (
   </Box>
 );
 
-export const PortDetail = ({ record }: { record: any }) => {
+export const PortDetail = ({ record }: { record: Port }) => {
   const isOpen = record.isOpen;
 
   return (
@@ -24,7 +26,7 @@ export const PortDetail = ({ record }: { record: any }) => {
             {`Connected sources (${record.source})`}
           </Typography>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-            {record.sourceDetail.map(
+            {(record.source || []).map(
               ({ ip, port }: { ip: string; port: number }) => (
                 <Box
                   key={`${ip}-${port}`}

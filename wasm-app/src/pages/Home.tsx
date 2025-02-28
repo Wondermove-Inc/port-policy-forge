@@ -4,9 +4,9 @@ import { Box } from "@mui/material";
 
 import { SelectClusterAndNameSpace } from "@/components/modules/SelectClusterAndNameSpace";
 import { TabsViewMode } from "@/components/modules/TabsViewMode";
-import { ViewFilter } from "@/components/modules/ViewFilter";
 import { WorkloadList } from "@/components/pages/home/WorkloadList";
 import { useCommonStore } from "@/store";
+import { ViewFilter } from "@/components/pages/home/workload-map/ViewFilter";
 
 export const Home = () => {
   const { isViewList } = useCommonStore();

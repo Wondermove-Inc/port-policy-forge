@@ -38,7 +38,7 @@ const columns = [
     label: "",
     sortable: false,
     width: 68,
-    render: (record: any) => (
+    render: () => (
       <Typography variant="b2_r" color="primary.dark">
         Open
       </Typography>
@@ -49,7 +49,7 @@ const columns = [
     label: "",
     sortable: false,
     width: 24,
-    render: (record: any) => (
+    render: () => (
       <Box
         sx={{
           display: "flex",
@@ -72,21 +72,21 @@ export const ClosePort = () => {
   }));
 
   return (
-    <>
+    <Box>
       <Box
         sx={{
-          marginBottom: "12px",
           display: "flex",
           alignItems: "center",
           paddingY: "4px",
           gap: "8px",
+          marginBottom: "12px",
         }}
       >
         <Typography
           variant="subtitle1"
           component={"span"}
           sx={{
-            paddingY: "4px",
+            paddingY: "6.5px",
           }}
         >
           {`Closed Port Attempted (${workloadDetail.ports.inbound.closed.length || 0})`}
@@ -101,6 +101,6 @@ export const ClosePort = () => {
         }}
         renderDetails={(record) => <PortDetail record={record} />}
       />
-    </>
+    </Box>
   );
 };

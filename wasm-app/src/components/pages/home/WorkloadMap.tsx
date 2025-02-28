@@ -1,6 +1,9 @@
-import { SelectClusterAndNameSpace } from "@/components/modules/SelectClusterAndNameSpace";
-import { ViewFilter } from "@/components/modules/ViewFilter";
 import { Box } from "@mui/material";
+
+import NetworkGraph from "@/components/modules/networkgraph/networkGraph";
+import { SelectClusterAndNameSpace } from "@/components/modules/SelectClusterAndNameSpace";
+import { TabsViewMode } from "@/components/modules/TabsViewMode";
+import { ViewFilter } from "@/components/pages/home/workload-map/ViewFilter";
 
 export const WorkloadMap = () => {
   return (
@@ -13,8 +16,9 @@ export const WorkloadMap = () => {
       <Box
         sx={{
           position: "absolute",
-          bottom: 32,
-          left: 32,
+          top: 20,
+          left: 20,
+          zIndex: 1,
         }}
       >
         <SelectClusterAndNameSpace
@@ -28,7 +32,17 @@ export const WorkloadMap = () => {
           selectedNameSpace={"namespace1"}
         />
       </Box>
-
+      <Box
+        sx={{
+          position: "absolute",
+          top: 20,
+          right: 20,
+          zIndex: 1,
+        }}
+      >
+        <TabsViewMode />
+      </Box>
+      <NetworkGraph />
       <ViewFilter />
     </Box>
   );

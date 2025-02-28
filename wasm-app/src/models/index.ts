@@ -16,11 +16,16 @@ export type PortRangeType = {
   end: string;
 };
 
+export type SourceType = {
+  ip: string;
+  port: number;
+};
+
 export type Port = {
   id: number;
   isRange: boolean;
-  portNumber?: number | null;
-  portRange?: PortRangeType | null;
+  portNumber: number | string | null;
+  portRange: PortRangeType | null;
   status: number;
   direction: string;
   isOpen: boolean;
@@ -30,6 +35,8 @@ export type Port = {
   lastConnection: string | null;
   lastSrcIp: string | null;
   lastConnectionLog: string | null;
+  source: SourceType[] | null;
+  access?: number;
 };
 
 export type PortDetailGroupType = {
@@ -70,3 +77,12 @@ export type WorkListType = {
     closedPortAttempted: string; 
   }[];
 }
+export type PortAccessSettingForm = {
+  sources: {
+    source: string;
+    type: string;
+    comment: string;
+  }[];
+  allowFullAccess: boolean;
+  access: number;
+};

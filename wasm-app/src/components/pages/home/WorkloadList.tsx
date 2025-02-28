@@ -185,7 +185,7 @@ export const WorkloadList = () => {
 
   const isCheckedPort = useMemo(() => {
     return Object.values(checkedRows).some((port) =>
-      Object.values(port).includes(true)
+      Object.values(port).includes(true),
     );
   }, [checkedRows]);
 
@@ -210,8 +210,9 @@ export const WorkloadList = () => {
         }}
       >
         <Tabs value={selectedTabBound} onChange={handleChangeTabBound} sx={{ "& .MuiTabs-indicator": { display: "none" } }}>
-          {bounds.map((bound) => (
+          {bounds.map((bound, index) => (
             <Tab
+              key={index}
               sx={{
                 textTransform: "none",
                 typography: "h2",
@@ -267,8 +268,8 @@ export const WorkloadList = () => {
       </Box>
       <ModalClosePort
         open={closePortModal.visible}
-        handleCloseModal={closePortModal.close}
-        handleConfirmButton={handleConfirmClosePort}
+        onClose={closePortModal.close}
+        onConfirm={handleConfirmClosePort}
       />
       <WorkloadDetail
         open={detailDrawer.visible}

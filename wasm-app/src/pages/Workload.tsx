@@ -1,5 +1,8 @@
-import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+/* eslint-disable  @typescript-eslint/no-unused-vars */
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from "react";
+
+import { useParams, Link } from "react-router-dom";
 
 declare global {
   interface Window {
@@ -99,19 +102,40 @@ const Workloads = () => {
   if (loading) return <p>Loading workloads for {namespaceName}...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  const prettyRawData = rawData ? JSON.stringify(JSON.parse(rawData), null, 2) : "";
+  const prettyRawData = rawData
+    ? JSON.stringify(JSON.parse(rawData), null, 2)
+    : "";
 
   return (
     <div>
       <h2>Workloads for Namespace: {namespaceName}</h2>
       {workloads.map((w) => (
-        <div key={w.uuid} style={{ border: '1px solid #ccc', marginBottom: '1rem', padding: '1rem' }}>
-          <p><strong>UUID:</strong> {w.uuid}</p>
-          <p><strong>Name:</strong> {w.workloadName}</p>
-          <p><strong>Kind:</strong> {w.kind}</p>
-          <p><strong>From:</strong> {JSON.stringify(w.from)}</p>
-          <p><strong>To:</strong> {JSON.stringify(w.to)}</p>
-          <p><strong>Stats:</strong> {JSON.stringify(w.stats)}</p>
+        <div
+          key={w.uuid}
+          style={{
+            border: "1px solid #ccc",
+            marginBottom: "1rem",
+            padding: "1rem",
+          }}
+        >
+          <p>
+            <strong>UUID:</strong> {w.uuid}
+          </p>
+          <p>
+            <strong>Name:</strong> {w.workloadName}
+          </p>
+          <p>
+            <strong>Kind:</strong> {w.kind}
+          </p>
+          <p>
+            <strong>From:</strong> {JSON.stringify(w.from)}
+          </p>
+          <p>
+            <strong>To:</strong> {JSON.stringify(w.to)}
+          </p>
+          <p>
+            <strong>Stats:</strong> {JSON.stringify(w.stats)}
+          </p>
           <Link to={`/namespace/${namespaceName}/workload/${w.uuid}/ports`}>
             View Port Details
           </Link>

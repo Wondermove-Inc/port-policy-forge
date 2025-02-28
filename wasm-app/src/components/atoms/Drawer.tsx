@@ -26,9 +26,14 @@ export const Drawer = ({
         ".MuiDrawer-paper": {
           boxShadow: "none",
           backgroundColor: "background.secondary",
-          border: "1px solid",
+          borderLeft: "1px solid",
           borderRight: 0,
           borderColor: "border.default",
+          marginTop: "56px",
+          height: "calc(100% - 56px)",
+        },
+        ".MuiBackdrop-root": {
+          marginTop: "56px",
         },
       }}
       {...props}
@@ -48,9 +53,10 @@ export const Drawer = ({
           sx={{
             display: "flex",
             justifyContent: "space-between",
+            paddingY: "2px",
           }}
         >
-          <Typography variant="subtitle1" lineHeight={"24px"}>
+          <Typography variant="subtitle1" lineHeight={"19px"}>
             {title}
           </Typography>
           <CloseIcon
@@ -67,7 +73,7 @@ export const Drawer = ({
       </Box>
       <Box
         sx={{
-          padding: "20px",
+          padding: "24px 20px 59px 20px",
           borderTop: 0,
         }}
       >

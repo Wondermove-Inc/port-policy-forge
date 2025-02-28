@@ -7,6 +7,7 @@ import { PortDetail } from "./PortDetail";
 import { AddIcon } from "@/components/icons/AddIcon";
 import { EditIcon } from "@/components/icons/EditIcon";
 import { CollapsibleTable } from "@/components/modules/CollapsibleTable";
+import { Port } from "@/models";
 
 const columns = [
   {
@@ -22,7 +23,7 @@ const columns = [
     width: 107,
   },
   {
-    id: "source",
+    id: "sourceNumber",
     label: "Source",
     sortable: false,
     width: 82,
@@ -32,7 +33,7 @@ const columns = [
     label: "Access ",
     sortable: false,
     width: 136,
-    render: (record: any) => (
+    render: (record: Port) => (
       <Box
         sx={{
           display: "flex",
@@ -52,7 +53,7 @@ const columns = [
     label: "",
     sortable: false,
     width: 84,
-    render: (record: any) => (
+    render: () => (
       <Typography variant="b2_r" color="primary.dark">
         Close
       </Typography>
@@ -68,55 +69,53 @@ export const OpenPort = () => {
       ? `${el?.portRange?.start} ~ ${el?.portRange?.end}`
       : el.portNumber,
     status: el.status,
-    source: el.source?.length || "-",
+    sourceNumber: el.source?.length || "-",
     access: "Allow all access ",
-    sourceDetail: el.source,
+    source: el.source,
   }));
 
   return (
-    <>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
       <Box
         sx={{
           display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
+          width: "100%",
+          justifyContent: "space-between",
+          paddingY: "6.5px",
+          marginBottom: "12px",
         }}
       >
-        <Box
+        <Typography variant="subtitle1" component={"p"}>
+          {`Open (${workloadDetail.ports.inbound.open.length || 0})`}
+        </Typography>
+        <Button
+          variant="outlined"
+          size="extraSmall"
           sx={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "space-between",
-            paddingY: "4px",
-            marginBottom: "12px",
+            width: "94px",
+            height: "24px",
           }}
         >
-          <Typography variant="subtitle1" component={"p"}>
-            {`Open (${workloadDetail.ports.inbound.open.length || 0})`}
-          </Typography>
-          <Button
-            variant="outlined"
-            size="extraSmall"
-            sx={{
-              width: "94px",
-              height: "24px",
-            }}
-          >
-            <AddIcon size={16} />
-            Open Port
-          </Button>
-        </Box>
-        <CollapsibleTable
-          columns={columns}
-          data={data}
-          sx={{
-            maxWidth: "472px",
-          }}
-          renderDetails={(record) =>
-            record.sourceDetail ? <PortDetail record={record} /> : undefined
-          }
-        />
+          <AddIcon size={16} />
+          Open Port
+        </Button>
       </Box>
-    </>
+      <CollapsibleTable
+        columns={columns}
+        data={data}
+        sx={{
+          maxWidth: "472px",
+        }}
+        renderDetails={(record) =>
+          record.source ? <PortDetail record={record} /> : undefined
+        }
+      />
+    </Box>
   );
 };
