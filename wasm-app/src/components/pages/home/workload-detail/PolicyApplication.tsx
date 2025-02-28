@@ -1,17 +1,12 @@
-import { useState } from "react";
-
 import { Box } from "@mui/material";
 import { Button, Typography } from "@skuber/components";
 
 import { InfoIcon } from "@/components/icons/InfoIcon";
 import { ModalConfirm } from "@/components/atoms/ModalConfirm";
+import { useDisclosure } from "@/hooks/useDisclosure";
 
 export const PolicyApplication = () => {
-  const [isPolicyApplicationOpened, setIsPolicyApplicationOpened] = useState(false);
-
-  const handleClosePolicyApplicationModal = () => {
-    setIsPolicyApplicationOpened(false);
-  };
+  const policyApplicationModal = useDisclosure();
 
   return (
     <>
@@ -47,13 +42,13 @@ export const PolicyApplication = () => {
             policy, all ports remain open.
           </Typography>
         </Box>
-        <Button size="extraSmall" onClick={() => setIsPolicyApplicationOpened(true)}>
+        <Button size="extraSmall" onClick={policyApplicationModal.open}>
           Apply
         </Button>
       </Box>
       <ModalConfirm
-        open={isPolicyApplicationOpened}
-        onClose={handleClosePolicyApplicationModal}
+        open={policyApplicationModal.visible}
+        onClose={policyApplicationModal.close}
         onConfirm={() => {}}
         title="Apply a service policy"
         description="Close all unused ports according to service policy."
