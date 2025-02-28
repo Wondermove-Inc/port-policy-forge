@@ -1,7 +1,6 @@
 import { Box } from "@mui/material";
 import { Button, Typography } from "@skuber/components";
 
-import { workloadDetail } from "./data";
 import { PortDetail } from "./PortDetail";
 
 import { AddIcon } from "@/components/icons/AddIcon";
@@ -61,19 +60,11 @@ const columns = [
   },
 ];
 
-export const OpenPort = () => {
-  // TODO
-  const data = workloadDetail.ports.inbound.open.map((el) => ({
-    ...el,
-    portNumber: el.isRange
-      ? `${el?.portRange?.start} ~ ${el?.portRange?.end}`
-      : el.portNumber,
-    status: el.status,
-    sourceNumber: el.source?.length || "-",
-    access: "Allow all access ",
-    source: el.source,
-  }));
+type OpenPortProps = {
+  data: Port[];
+};
 
+export const OpenPort = ({ data }: OpenPortProps) => {
   return (
     <Box
       sx={{
@@ -92,7 +83,7 @@ export const OpenPort = () => {
         }}
       >
         <Typography variant="subtitle1" component={"p"}>
-          {`Open (${workloadDetail.ports.inbound.open.length || 0})`}
+          {`Open (${data?.length || 0})`}
         </Typography>
         <Button
           variant="outlined"

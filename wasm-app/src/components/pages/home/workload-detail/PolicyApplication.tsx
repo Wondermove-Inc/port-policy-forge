@@ -8,6 +8,11 @@ import { useDisclosure } from "@/hooks/useDisclosure";
 export const PolicyApplication = () => {
   const policyApplicationModal = useDisclosure();
 
+  const handleApplyPolicy = () => {
+    // TODO
+    policyApplicationModal.close();
+  };
+
   return (
     <>
       <Box
@@ -51,7 +56,7 @@ export const PolicyApplication = () => {
       <ModalConfirm
         open={policyApplicationModal.visible}
         onClose={policyApplicationModal.close}
-        onConfirm={() => {}}
+        onConfirm={handleApplyPolicy}
         title="Apply a service policy"
         description="Close all unused ports according to service policy."
         descriptionDetails={[

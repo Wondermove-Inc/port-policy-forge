@@ -1,12 +1,12 @@
 import { Box } from "@mui/material";
 import { Typography } from "@skuber/components";
 
-import { workloadDetail } from "./data";
 import { PortDetail } from "./PortDetail";
 
 import { CloseIcon } from "@/components/icons/CloseIcon";
 import { WarningIcon } from "@/components/icons/WarningIcon";
 import { CollapsibleTable } from "@/components/modules/CollapsibleTable";
+import { Port } from "@/models";
 
 const columns = [
   {
@@ -63,14 +63,11 @@ const columns = [
   },
 ];
 
-export const ClosePort = () => {
-  const data = workloadDetail.ports.inbound.closed.map((el) => ({
-    ...el,
-    risk: el.risk,
-    type: el.type,
-    count: el.count || 0,
-  }));
+type ClosePortProps = {
+  data: Port[];
+};
 
+export const ClosePort = ({ data }: ClosePortProps) => {
   return (
     <Box>
       <Box
@@ -89,7 +86,7 @@ export const ClosePort = () => {
             paddingY: "6.5px",
           }}
         >
-          {`Closed Port Attempted (${workloadDetail.ports.inbound.closed.length || 0})`}
+          {`Closed Port Attempted (${data?.length || 0})`}
         </Typography>
         <WarningIcon size={20} />
       </Box>
