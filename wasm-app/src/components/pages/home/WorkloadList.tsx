@@ -155,7 +155,7 @@ export const WorkloadList = () => {
   ];
   const isCheckedPort = useMemo(() => {
     return Object.values(checkedRows).some((port) =>
-      Object.values(port).includes(true)
+      Object.values(port).includes(true),
     );
   }, [checkedRows]);
   return (
