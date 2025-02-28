@@ -1,12 +1,13 @@
 import { IdType } from "vis-network";
-import { CanvasImage, CustomEdge, CustomNode, NetworkWithBody } from "./types";
-import { workloads } from "./data";
+
 import { drawAllEdges, drawAllNodes } from "./canvasRenderer";
+import { workloads } from "./data";
+import { CanvasImage, CustomEdge, CustomNode, NetworkWithBody } from "./types";
 
 export const setupNetworkEvents = (
   network: NetworkWithBody,
   canvasImages: CanvasImage,
-  edges: CustomEdge[]
+  edges: CustomEdge[],
 ) => {
   if (!network) return;
 
@@ -46,7 +47,7 @@ export const handleAfterDrawing = (
     hoverNodeId: string;
     connectedEdges: IdType[];
     connectedNodes: IdType[];
-  }
+  },
 ) => {
   if (!canvasImages || !network) {
     return;

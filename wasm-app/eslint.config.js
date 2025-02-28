@@ -10,7 +10,13 @@ import reactRefresh from "eslint-plugin-react-refresh";
 
 export default [
   {
-    ignores: ["dist", "public", "wasm-go", "src/App.tsx"],
+    ignores: [
+      "dist",
+      "public",
+      "wasm-go",
+      "src/App.tsx",
+      "src/components/modules/networkgraph",
+    ],
   },
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
@@ -89,7 +95,7 @@ export default [
         "error",
         {
           cspell: {
-            words: ["skuber", "auditlog", "Milli"],
+            words: ["skuber", "networkgraph"],
           },
         },
       ],

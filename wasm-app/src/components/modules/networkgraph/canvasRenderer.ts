@@ -1,12 +1,13 @@
 import { IdType } from "vis-network";
-import { 
-  CanvasImage, 
-  CustomEdge, 
-  CustomNode, 
-  DeploymentIconSize, 
-  DrawingOptions, 
-  EdgeStatus, 
-  NodeSize 
+
+import {
+  CanvasImage,
+  CustomEdge,
+  CustomNode,
+  DeploymentIconSize,
+  DrawingOptions,
+  EdgeStatus,
+  NodeSize,
 } from "./types";
 
 export const drawAllEdges = (
@@ -18,7 +19,7 @@ export const drawAllEdges = (
     hoverNodeId?: string;
     connectedEdges?: IdType[];
     connectedNodes?: IdType[];
-  }
+  },
 ) => {
   for (const edgeId in networkEdges) {
     const edge = networkEdges[edgeId];
@@ -41,7 +42,7 @@ export const drawAllNodes = (
     hoverNodeId?: string;
     connectedEdges?: IdType[];
     connectedNodes?: IdType[];
-  }
+  },
 ) => {
   for (const nodeId in networkNodes) {
     const node = networkNodes[nodeId];
@@ -69,7 +70,7 @@ export const drawNetworkNode = (
   node: CustomNode,
   canvasImages: CanvasImage,
   workloads: any[],
-  options?: DrawingOptions
+  options?: DrawingOptions,
 ) => {
   if (!canvasImages || !node.x || !node.y) {
     return;
@@ -80,7 +81,7 @@ export const drawNetworkNode = (
   }
 
   const workloadSize = workloads.find(
-    (workload) => workload.uuid === node.id
+    (workload) => workload.uuid === node.id,
   )?.size;
   node.size = workloadSize || NodeSize.MEDIUM;
   drawNodeBackground(ctx, node, options);
@@ -96,7 +97,7 @@ export const drawNetworkNode = (
 export const drawNodeBackground = (
   ctx: CanvasRenderingContext2D,
   node: CustomNode,
-  options?: DrawingOptions
+  options?: DrawingOptions,
 ) => {
   const isHovered = !!options?.hoverNodeId;
   ctx.lineWidth = 2;
@@ -131,7 +132,7 @@ export const drawNodeBackground = (
 export const drawExclamationIcon = (
   ctx: CanvasRenderingContext2D,
   node: CustomNode,
-  canvasImages: CanvasImage
+  canvasImages: CanvasImage,
 ) => {
   if (!canvasImages) return;
 
@@ -141,7 +142,7 @@ export const drawExclamationIcon = (
     node.x + 12,
     node.y - node.size / 2,
     20,
-    20
+    20,
   );
   ctx.closePath();
 };
@@ -149,7 +150,7 @@ export const drawExclamationIcon = (
 export const drawDeploymentIcon = (
   ctx: CanvasRenderingContext2D,
   node: CustomNode,
-  canvasImages: CanvasImage
+  canvasImages: CanvasImage,
 ) => {
   if (!canvasImages) return;
 
@@ -165,7 +166,7 @@ export const drawDeploymentIcon = (
     node.x - deploymentIconSize / 2,
     node.y - deploymentIconSize / 2,
     deploymentIconSize,
-    deploymentIconSize
+    deploymentIconSize,
   );
   ctx.closePath();
 };
@@ -174,7 +175,7 @@ export const drawNodeLabel = (
   ctx: CanvasRenderingContext2D,
   node: CustomNode,
   canvasImages: CanvasImage,
-  workloads: any[]
+  workloads: any[],
 ) => {
   if (!canvasImages) return;
 
@@ -182,7 +183,7 @@ export const drawNodeLabel = (
   ctx.fillStyle = "rgba(255, 255, 255, 1)";
 
   const label = workloads.find(
-    (workload) => workload.uuid === node.id
+    (workload) => workload.uuid === node.id,
   )?.workloadName;
 
   const textMetrics = ctx.measureText(label as string);
@@ -195,13 +196,13 @@ export const drawNodeLabel = (
     label as string,
     node.x - textWidth / 2 + protectedAddImageWidth / 2 - imageToTextSpacing,
     node.y + node.size / 2 + 15,
-    100
+    100,
   );
 
   ctx.drawImage(
     canvasImages.protected,
     node.x - textWidth / 2 - protectedAddImageWidth,
-    node.y + node.size / 2 + 6
+    node.y + node.size / 2 + 6,
   );
   ctx.closePath();
 };
@@ -212,7 +213,7 @@ export const drawNetWorkEdge = (
   canvasImages: CanvasImage,
   options?: {
     connectedEdges?: IdType[];
-  }
+  },
 ) => {
   if (!canvasImages) {
     return;
@@ -221,7 +222,7 @@ export const drawNetWorkEdge = (
   const isActiveEdge = options?.connectedEdges?.includes(edge.id);
   const { from, to } = edge;
   const angle = Math.atan2(to.y - from.y, to.x - from.x);
-  
+
   ctx.save();
   drawEdgeLine(ctx, edge, from, to, angle, isActiveEdge);
   ctx.restore();
@@ -236,7 +237,7 @@ export const drawEdgeLine = (
   from: CustomNode,
   to: CustomNode,
   angle: number,
-  isActiveEdge: boolean = false
+  isActiveEdge: boolean = false,
 ) => {
   ctx.strokeStyle = "#4a4f58";
 
@@ -273,7 +274,7 @@ export const drawEdgeLine = (
   ctx.stroke();
   ctx.closePath();
   ctx.setLineDash([0, 0]);
-  
+
   // Vẽ nhãn cho đường kẻ khi cần
   if (isActiveEdge) {
     drawLineLabel(ctx, edge, newFromX, newToY, newFromY, newToX, angle);
@@ -281,19 +282,19 @@ export const drawEdgeLine = (
 };
 
 export const drawLineLabel = (
-  ctx: CanvasRenderingContext2D, 
+  ctx: CanvasRenderingContext2D,
   edge: CustomEdge,
   newFromX: number,
   newToY: number,
   newFromY: number,
   newToX: number,
-  angle: number
+  angle: number,
 ) => {
   let label = "";
   let options = {
     backgroundColor: "",
     borderColor: "",
-    textColor: ""
+    textColor: "",
   };
 
   if (edge.status === EdgeStatus.IDLE) {
@@ -341,7 +342,7 @@ export const drawLineLabel = (
     -rectHeight / 2,
     rectWidth / 2,
     -rectHeight / 2 + borderRadius,
-    borderRadius
+    borderRadius,
   );
   ctx.lineTo(rectWidth / 2, rectHeight / 2 - borderRadius);
   ctx.arcTo(
@@ -349,7 +350,7 @@ export const drawLineLabel = (
     rectHeight / 2,
     rectWidth / 2 - borderRadius,
     rectHeight / 2,
-    borderRadius
+    borderRadius,
   );
   ctx.lineTo(-rectWidth / 2 + borderRadius, rectHeight / 2);
   ctx.arcTo(
@@ -357,7 +358,7 @@ export const drawLineLabel = (
     rectHeight / 2,
     -rectWidth / 2,
     rectHeight / 2 - borderRadius,
-    borderRadius
+    borderRadius,
   );
   ctx.lineTo(-rectWidth / 2, -rectHeight / 2 + borderRadius);
   ctx.arcTo(
@@ -365,7 +366,7 @@ export const drawLineLabel = (
     -rectHeight / 2,
     -rectWidth / 2 + borderRadius,
     -rectHeight / 2,
-    borderRadius
+    borderRadius,
   );
   ctx.closePath();
   ctx.fill();
@@ -383,7 +384,7 @@ export const drawEdgeArrow = (
   to: CustomNode,
   angle: number,
   canvasImages: CanvasImage,
-  isActiveEdge: boolean = false
+  isActiveEdge: boolean = false,
 ) => {
   if (!canvasImages) return;
 
@@ -403,11 +404,7 @@ export const drawEdgeArrow = (
   }
 
   const arrowOffset =
-    to.size === NodeSize.BIG
-      ? 40.5
-      : to.size === NodeSize.SMALL
-      ? 23.5
-      : 33.5;
+    to.size === NodeSize.BIG ? 40.5 : to.size === NodeSize.SMALL ? 23.5 : 33.5;
   const arrowNewToX = to.x - arrowOffset * Math.cos(angle);
   const arrowNewToY = to.y - arrowOffset * Math.sin(angle);
   const arrowSize = 16;
@@ -419,6 +416,6 @@ export const drawEdgeArrow = (
     -arrowSize / 2,
     -arrowSize / 2,
     arrowSize,
-    arrowSize
+    arrowSize,
   );
 };
