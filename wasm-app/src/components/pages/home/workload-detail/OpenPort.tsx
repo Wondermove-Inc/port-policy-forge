@@ -7,6 +7,7 @@ import { PortDetail } from "./PortDetail";
 import { AddIcon } from "@/components/icons/AddIcon";
 import { EditIcon } from "@/components/icons/EditIcon";
 import { CollapsibleTable } from "@/components/modules/CollapsibleTable";
+import { Port } from "@/models";
 
 const columns = [
   {
@@ -22,7 +23,7 @@ const columns = [
     width: 107,
   },
   {
-    id: "source",
+    id: "sourceNumber",
     label: "Source",
     sortable: false,
     width: 82,
@@ -32,7 +33,7 @@ const columns = [
     label: "Access ",
     sortable: false,
     width: 136,
-    render: (record: any) => (
+    render: (record: Port) => (
       <Box
         sx={{
           display: "flex",
@@ -52,7 +53,7 @@ const columns = [
     label: "",
     sortable: false,
     width: 84,
-    render: (record: any) => (
+    render: () => (
       <Typography variant="b2_r" color="primary.dark">
         Close
       </Typography>
@@ -68,9 +69,9 @@ export const OpenPort = () => {
       ? `${el?.portRange?.start} ~ ${el?.portRange?.end}`
       : el.portNumber,
     status: el.status,
-    source: el.source?.length || "-",
+    sourceNumber: el.source?.length || "-",
     access: "Allow all access ",
-    sourceDetail: el.source,
+    source: el.source,
   }));
 
   return (
@@ -113,7 +114,7 @@ export const OpenPort = () => {
             maxWidth: "472px",
           }}
           renderDetails={(record) =>
-            record.sourceDetail ? <PortDetail record={record} /> : undefined
+            record.source ? <PortDetail record={record} /> : undefined
           }
         />
       </Box>

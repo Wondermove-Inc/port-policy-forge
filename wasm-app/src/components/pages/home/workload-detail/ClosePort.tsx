@@ -38,7 +38,7 @@ const columns = [
     label: "",
     sortable: false,
     width: 68,
-    render: (record: any) => (
+    render: () => (
       <Typography variant="b2_r" color="primary.dark">
         Open
       </Typography>
@@ -49,7 +49,7 @@ const columns = [
     label: "",
     sortable: false,
     width: 24,
-    render: (record: any) => (
+    render: () => (
       <Box
         sx={{
           display: "flex",
