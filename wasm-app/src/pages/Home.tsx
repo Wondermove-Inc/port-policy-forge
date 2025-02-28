@@ -6,7 +6,7 @@ import { SelectClusterAndNameSpace } from "@/components/modules/SelectClusterAnd
 import { TabsViewMode } from "@/components/modules/TabsViewMode";
 import { WorkloadList } from "@/components/pages/home/WorkloadList";
 import { useCommonStore } from "@/store";
-import { ViewFilter } from "@/components/pages/home/workload-map/ViewFilter";
+import { WorkloadMap } from "@/components/pages/home/WorkloadMap";
 
 export const Home = () => {
   const { isViewList } = useCommonStore();
@@ -50,7 +50,7 @@ export const Home = () => {
         />
         <TabsViewMode />
       </Box>
-      {isViewList ? <WorkloadList /> : <ViewFilter />}
+      {isViewList ? <WorkloadList /> : <WorkloadMap />}
     </Box>
   );
 };
