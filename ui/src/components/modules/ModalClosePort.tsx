@@ -1,18 +1,24 @@
-import { List, ListItem, Typography } from "@mui/material";
-import { Modal, ModalBody, ModalFooter, ModalHeader } from "@skuber/components";
+import { List, ListItem } from "@mui/material";
+import {
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Typography,
+} from "@skuber/components";
 
-type ModelCloseSelectPortProps = {
-  isSelectPortOpened: boolean;
+type ModalClosePortProps = {
+  open: boolean;
   handleCloseModal: () => void;
   handleConfirmButton: () => void;
 };
-export const ModelCloseSelectPort = ({
-  isSelectPortOpened,
+export const ModalClosePort = ({
+  open,
   handleCloseModal,
   handleConfirmButton,
-}: ModelCloseSelectPortProps) => {
+}: ModalClosePortProps) => {
   return (
-    <Modal width={434} open={isSelectPortOpened} onClose={handleCloseModal}>
+    <Modal width={434} open={open} onClose={handleCloseModal}>
       <ModalHeader title="Close selected ports" onClose={handleCloseModal} />
       <ModalBody>
         <Typography>

@@ -3,15 +3,19 @@ import { useMemo, useState } from "react";
 import { Box, Tab, Tabs, Typography } from "@mui/material";
 import { Button } from "@skuber/components";
 
+import { WorkloadDetail } from "./WorkloadDetail";
+
 import { Datagrid, CustomGridColDef } from "@/components/atoms/Datagrid";
 import { CheckBoxIcon } from "@/components/icons/CheckBoxIcon";
-import { ModelCloseSelectPort } from "@/components/modules/ModelCloseSelectPort";
+import { ModalClosePort } from "@/components/modules/ModalClosePort";
 import { SearchComplete } from "@/components/modules/SearchComplete";
 import { SelectClusterAndNameSpace } from "@/components/modules/SelectClusterAndNameSpace";
 import { TabsViewMode } from "@/components/modules/TabsViewMode";
+import { useDisclosure } from "@/hooks/useDisclosure";
 
 export const WorkloadList = () => {
-  const [isSelectPortOpened, setIsSelectPortOpened] = useState<boolean>(false);
+  const closePortModal = useDisclosure();
+  const detailDrawer = useDisclosure();
   const [checkedRows, setCheckedRows] = useState<
     Record<string, Record<string, boolean>>
   >({});
@@ -151,7 +155,7 @@ export const WorkloadList = () => {
   ];
   const isCheckedPort = useMemo(() => {
     return Object.values(checkedRows).some((port) =>
-      Object.values(port).includes(true)
+      Object.values(port).includes(true),
     );
   }, [checkedRows]);
   return (
@@ -171,14 +175,7 @@ export const WorkloadList = () => {
           selectedCluster={"cluster1"}
           selectedNameSpace={"namespace1"}
         />
-        <TabsViewMode
-          tabs={[
-            { label: "View List", value: "1" },
-            { label: "View Map", value: "2" },
-          ]}
-          value={"1"}
-          handleChange={() => {}}
-        />
+        <TabsViewMode />
       </Box>
       <Box
         sx={{
@@ -225,7 +222,7 @@ export const WorkloadList = () => {
               fontWeight: "700",
             }}
             startIcon={<CheckBoxIcon color="white" size={16} />}
-            onClick={() => setIsSelectPortOpened(true)}
+            onClick={() => setIsClosePortOpen(true)}
             disabled={!isCheckedPort}
           >
             Close selected ports
@@ -240,12 +237,17 @@ export const WorkloadList = () => {
           noRowsOverlay={() => <Box>Nodata</Box>}
           width="100%"
           onCheckedRowsChange={setCheckedRows}
+          onRowClick={detailDrawer.open}
         ></Datagrid>
       </Box>
-      <ModelCloseSelectPort
-        isSelectPortOpened={isSelectPortOpened}
-        handleCloseModal={() => setIsSelectPortOpened(false)}
+      <ModalClosePort
+        open={closePortModal.visible}
+        handleCloseModal={closePortModal.close}
         handleConfirmButton={() => {}}
+      />
+      <WorkloadDetail
+        open={detailDrawer.visible}
+        handleClose={detailDrawer.close}
       />
     </Box>
   );

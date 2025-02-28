@@ -4,7 +4,7 @@ import { ThemeProvider } from "@skuber/theme";
 import { customTheme } from "./theme";
 
 import { Header } from "@/components/layout/Header";
-import { WorkloadList } from "@/components/pages/WorkloadList";
+import { Home } from "@/pages/Home";
 
 import "@skuber/theme/styles/global.css";
 import "./index.css";
@@ -20,7 +20,7 @@ export default function App() {
           minHeight: "calc(100vh - 56px)",
         }}
       >
-        <WorkloadList />
+        <Home />
       </Box>
     </ThemeProvider>
   );

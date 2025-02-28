@@ -1,22 +1,17 @@
 import { Tab, Tabs } from "@mui/material";
 
-type TabsViewModeProps = {
-  tabs: {
-    label: string;
-    value: string;
-  }[];
-  value: string;
-  handleChange: (event: React.SyntheticEvent, newValue: string) => void;
-};
+import { useCommonStore } from "@/store";
 
-export const TabsViewMode = ({
-  tabs,
-  value,
-  handleChange,
-}: TabsViewModeProps) => {
+export const TabsViewMode = () => {
+  const { isViewList, setIsViewList } = useCommonStore();
+
+  const handleChange = (event: React.SyntheticEvent, newValue: boolean) => {
+    setIsViewList(newValue);
+  };
+
   return (
     <Tabs
-      value={value}
+      value={isViewList}
       onChange={handleChange}
       sx={{
         border: "1px solid",
@@ -28,9 +23,12 @@ export const TabsViewMode = ({
         "& .MuiTabs-indicator": { display: "none" },
       }}
     >
-      {tabs.map((tab) => (
+      {[
+        { label: "View List", value: true },
+        { label: "View Map", value: false },
+      ].map((tab, index) => (
         <Tab
-          key={tab.value}
+          key={index}
           label={tab.label}
           value={tab.value}
           sx={{
