@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { Box } from "@mui/material";
 
 import { ClosePort } from "./workload-detail/ClosePort";
@@ -8,6 +10,7 @@ import { WorkloadSummary } from "./workload-detail/WorkloadSummary";
 import { WorkloadTabs } from "./workload-detail/WorkloadTabs";
 
 import { Drawer } from "@/components/atoms/Drawer";
+import { PortDirection } from "@/models";
 
 type WorkloadDetailProps = {
   open: boolean;
@@ -15,6 +18,14 @@ type WorkloadDetailProps = {
 };
 
 export const WorkloadDetail = ({ open, handleClose }: WorkloadDetailProps) => {
+  const [portDirection, setPortDirection] = useState<PortDirection>(
+    PortDirection.INBOUND,
+  );
+
+  const handleChangeTab = (direction: string) => {
+    setPortDirection(direction as PortDirection);
+  };
+
   return (
     <Drawer
       open={open}
@@ -22,7 +33,7 @@ export const WorkloadDetail = ({ open, handleClose }: WorkloadDetailProps) => {
       subTitle="Deployment"
       onClose={handleClose}
     >
-      <WorkloadTabs onChangeTab={() => {}} />
+      <WorkloadTabs onChangeTab={handleChangeTab} />
       <Box
         sx={{
           display: "flex",
