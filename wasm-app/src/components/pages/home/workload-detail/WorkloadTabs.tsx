@@ -26,6 +26,7 @@ export const WorkloadTabs = ({
         ".MuiTabs-flexContainer": {
           gap: "20px",
           paddingY: "4px",
+          marginBottom: "16px",
         },
         ".MuiButtonBase-root": {
           typography: "h2",

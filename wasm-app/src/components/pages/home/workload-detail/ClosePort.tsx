@@ -64,29 +64,24 @@ const columns = [
 ];
 
 export const ClosePort = () => {
-  const data = workloadDetail.ports.inbound.closed.map((el) => ({
-    ...el,
-    risk: el.risk,
-    type: el.type,
-    count: el.count || 0,
-  }));
+  const data = [];
 
   return (
-    <>
+    <Box>
       <Box
         sx={{
-          marginBottom: "12px",
           display: "flex",
           alignItems: "center",
           paddingY: "4px",
           gap: "8px",
+          marginBottom: "12px"
         }}
       >
         <Typography
           variant="subtitle1"
           component={"span"}
           sx={{
-            paddingY: "4px",
+            paddingY: "6.5px",
           }}
         >
           {`Closed Port Attempted (${workloadDetail.ports.inbound.closed.length || 0})`}
@@ -101,6 +96,6 @@ export const ClosePort = () => {
         }}
         renderDetails={(record) => <PortDetail record={record} />}
       />
-    </>
+    </Box>
   );
 };

@@ -75,49 +75,47 @@ export const OpenPort = () => {
   }));
 
   return (
-    <>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
       <Box
         sx={{
           display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
+          width: "100%",
+          justifyContent: "space-between",
+          paddingY: "6.5px",
+          marginBottom: "12px",
         }}
       >
-        <Box
+        <Typography variant="subtitle1" component={"p"}>
+          {`Open (${workloadDetail.ports.inbound.open.length || 0})`}
+        </Typography>
+        <Button
+          variant="outlined"
+          size="extraSmall"
           sx={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "space-between",
-            paddingY: "4px",
-            marginBottom: "12px",
+            width: "94px",
+            height: "24px",
           }}
         >
-          <Typography variant="subtitle1" component={"p"}>
-            {`Open (${workloadDetail.ports.inbound.open.length || 0})`}
-          </Typography>
-          <Button
-            variant="outlined"
-            size="extraSmall"
-            sx={{
-              width: "94px",
-              height: "24px",
-            }}
-          >
-            <AddIcon size={16} />
-            Open Port
-          </Button>
-        </Box>
-        <CollapsibleTable
-          columns={columns}
-          data={data}
-          sx={{
-            maxWidth: "472px",
-          }}
-          renderDetails={(record) =>
-            record.source ? <PortDetail record={record} /> : undefined
-          }
-        />
+          <AddIcon size={16} />
+          Open Port
+        </Button>
       </Box>
-    </>
+      <CollapsibleTable
+        columns={columns}
+        data={data}
+        sx={{
+          maxWidth: "472px",
+        }}
+        renderDetails={(record) =>
+          record.source ? <PortDetail record={record} /> : undefined
+        }
+      />
+    </Box>
   );
 };
