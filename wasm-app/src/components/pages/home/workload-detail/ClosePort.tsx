@@ -64,7 +64,12 @@ const columns = [
 ];
 
 export const ClosePort = () => {
-  const data = [];
+  const data = workloadDetail.ports.inbound.closed.map((el) => ({
+    ...el,
+    risk: el.risk,
+    type: el.type,
+    count: el.count || 0,
+  }));
 
   return (
     <Box>
@@ -74,7 +79,7 @@ export const ClosePort = () => {
           alignItems: "center",
           paddingY: "4px",
           gap: "8px",
-          marginBottom: "12px"
+          marginBottom: "12px",
         }}
       >
         <Typography

@@ -64,3 +64,13 @@ export type WorkloadDetailType = {
     outbound: PortDetailGroupType;
   };
 };
+
+export type PortAccessSettingForm = {
+  sources: {
+    source: string;
+    type: string;
+    comment: string;
+  }[];
+  allowFullAccess: boolean;
+  access: number;
+};

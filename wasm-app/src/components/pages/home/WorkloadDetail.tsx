@@ -1,6 +1,8 @@
 import { Box } from "@mui/material";
+
 import { ClosePort } from "./workload-detail/ClosePort";
 import { OpenPort } from "./workload-detail/OpenPort";
+import { OpenPortModal } from "./workload-detail/OpenPortModal";
 import { PolicyApplication } from "./workload-detail/PolicyApplication";
 import { WorkloadSummary } from "./workload-detail/WorkloadSummary";
 import { WorkloadTabs } from "./workload-detail/WorkloadTabs";
@@ -21,11 +23,13 @@ export const WorkloadDetail = ({ open, handleClose }: WorkloadDetailProps) => {
       onClose={handleClose}
     >
       <WorkloadTabs onChangeTab={() => {}} />
-      <Box sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "32px",
-      }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "32px",
+        }}
+      >
         <WorkloadSummary
           stats={{
             active: 10,
@@ -42,6 +46,7 @@ export const WorkloadDetail = ({ open, handleClose }: WorkloadDetailProps) => {
         <OpenPort />
         <ClosePort />
       </Box>
+      <OpenPortModal />
     </Drawer>
   );
 };

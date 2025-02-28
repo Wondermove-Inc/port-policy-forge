@@ -1,51 +1,26 @@
-import { List, ListItem } from "@mui/material";
-import {
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Typography,
-} from "@skuber/components";
+import { ModalConfirm } from "../atoms/ModalConfirm";
 
 type ModalClosePortProps = {
   open: boolean;
-  handleCloseModal: () => void;
-  handleConfirmButton: () => void;
+  onClose: () => void;
+  onConfirm: () => void;
 };
 export const ModalClosePort = ({
   open,
-  handleCloseModal,
-  handleConfirmButton,
+  onClose,
+  onConfirm,
 }: ModalClosePortProps) => {
   return (
-    <Modal width={434} open={open} onClose={handleCloseModal}>
-      <ModalHeader title="Close selected ports" onClose={handleCloseModal} />
-      <ModalBody>
-        <Typography>
-          Closing selected ports makes the following changes
-        </Typography>
-        <List
-          sx={{
-            paddingLeft: "24px",
-            listStyleType: "disc",
-            typography: "body2",
-            fontWeight: 400,
-          }}
-        >
-          <ListItem sx={{ display: "list-item", padding: 0 }}>
-            Closed ports will no longer be accessible externally.
-          </ListItem>
-          <ListItem sx={{ display: "list-item", padding: 0 }}>
-            To reopen a port, you must manually reset it.
-          </ListItem>
-        </List>
-      </ModalBody>
-      <ModalFooter
-        cancelButtonTitle="Cancel"
-        confirmButtonTitle="Confirm"
-        onClickCancelButton={handleCloseModal}
-        onClickConfirmButton={handleConfirmButton}
-      />
-    </Modal>
+    <ModalConfirm
+      title="Close ports"
+      description="Closing an port makes the following changes"
+      descriptionDetails={[
+        "Closed ports will no longer be accessible externally.",
+        "To reopen a port, you must manually reset it.",
+      ]}
+      open={open}
+      onClose={onClose}
+      onConfirm={onConfirm}
+    />
   );
 };

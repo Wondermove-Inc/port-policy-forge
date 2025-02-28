@@ -53,7 +53,7 @@ export const Drawer = ({
           sx={{
             display: "flex",
             justifyContent: "space-between",
-            paddingY: "2px"
+            paddingY: "2px",
           }}
         >
           <Typography variant="subtitle1" lineHeight={"19px"}>
