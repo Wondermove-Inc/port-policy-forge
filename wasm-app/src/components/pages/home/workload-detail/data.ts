@@ -1,4 +1,4 @@
-export const workloadDetail = {
+export const workloadDetailData = {
   uuid: "7431bb4f-cae8-4dbe-a542-d6f52c893271",
   workloadName: "demo-workload-1",
   kind: "deployment",

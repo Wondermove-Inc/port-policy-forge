@@ -3,7 +3,6 @@ import { Typography } from "@skuber/components";
 
 import { PORT_STATUS_MAP } from "@/constants";
 import { StatsType, Stats } from "@/models";
-import { formatNumber } from "@/utils/format";
 
 export type WorkloadSummaryProps = {
   stats: StatsType;
@@ -21,15 +20,15 @@ export const WorkloadSummary = ({
 
   const workloadData = Object.values(Stats).map((status) => ({
     title: PORT_STATUS_MAP[status].label,
-    value: formatNumber(stats[status]) || "",
+    value: stats[status],
     color: PORT_STATUS_MAP[status].color,
     ...stylesByType.status,
   }));
 
   const metrics = [
     { title: "Namespace", value: workloadName },
-    { title: "Latency rtt", value: stats.latencyRtt + "ms" },
-    { title: "Throughput", value: stats.throughput + "MiB/s" },
+    { title: "Latency rtt", value: stats.latencyRtt },
+    { title: "Throughput", value: stats.throughput },
   ].map((metric) => ({
     ...metric,
     color: "text.primary",

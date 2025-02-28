@@ -7,8 +7,8 @@ export enum Stats {
 }
 
 export enum PortDirection {
-  INBOUND = "Inbound",
-  OUTBOUND = "Outbound",
+  INBOUND = "inbound",
+  OUTBOUND = "outbound",
 }
 
 export type PortRangeType = {
@@ -45,13 +45,13 @@ export type PortDetailGroupType = {
 };
 
 export type StatsType = {
-  active: number;
-  unconnected: number;
-  idle: number;
-  error: number;
-  attempted: number;
+  active: number | null;
+  unconnected: number | null;
+  idle: number | null;
+  error: number | null;
+  attempted: number | null;
   latencyRtt: number | null;
-  throughput: number;
+  throughput: number | null;
 };
 
 export type WorkloadDetailType = {
