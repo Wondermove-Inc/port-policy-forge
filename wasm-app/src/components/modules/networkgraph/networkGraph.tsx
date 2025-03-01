@@ -6,12 +6,13 @@ import {
   EdgeData,
   CustomNetwork,
   NodeData,
-  NodeSize,
-  Workload,
+  NetworkNodeData,
 } from "./types";
 import { drawAllEdges, drawAllNodes } from "./canvasRenderer";
 
 let network: CustomNetwork;
+
+const NODE_SPACING = 200;
 
 export const createNetworkOptions = () => {
   return {
@@ -35,19 +36,26 @@ export const createNetworkOptions = () => {
         enabled: true,
         iterations: 200,
       },
+      barnesHut: {
+        gravitationalConstant: -2000,
+        centralGravity: 0.3,
+        springLength: NODE_SPACING,
+        springConstant: 0.04,
+        damping: 0.09,
+        avoidOverlap: 1,
+      },
     },
   };
 };
 
 export type NetworkGraphProps = {
-  workloads: Workload[];
+  nodes: NodeData[];
+  edges: EdgeData[];
 };
 
-const NetworkGraph = ({ workloads }: NetworkGraphProps) => {
+const NetworkGraph = ({ edges, nodes }: NetworkGraphProps) => {
   const containerRef = useRef(null);
   const [canvasImages, setCanvasImages] = useState<CanvasImage>();
-  const [edges, setEdges] = useState<EdgeData[]>([]);
-  const [nodes, setNodes] = useState<NodeData[]>([]);
 
   useEffect(() => {
     if (
@@ -59,7 +67,14 @@ const NetworkGraph = ({ workloads }: NetworkGraphProps) => {
       return;
     }
 
-    const data = { nodes, edges };
+    nodes.forEach((node) => {
+      (node as NodeData & NetworkNodeData).size = node.nodeSize / 2;
+      (node as NodeData & NetworkNodeData).color = "transparent";
+      (node as NodeData & NetworkNodeData).x = 100;
+      (node as NodeData & NetworkNodeData).y = 100;
+    });
+
+    const data = { nodes: nodes, edges };
     const options = createNetworkOptions();
 
     network = new Network(containerRef.current, data, options) as CustomNetwork;
@@ -91,46 +106,13 @@ const NetworkGraph = ({ workloads }: NetworkGraphProps) => {
   }, [canvasImages, edges, nodes]);
 
   useEffect(() => {
-    if (workloads) {
-      const initializeData = async () => {
-        const images = await loadAllImages();
-        setCanvasImages(images);
-        const edges = workloads.reduce((pre, current) => {
-          const fromEdges: EdgeData[] = current.from.map((f) => ({
-            from: f.workloadId,
-            to: current.uuid,
-            status: f.status,
-          }));
+    const initializeData = async () => {
+      const images = await loadAllImages();
+      setCanvasImages(images);
+    };
 
-          const toEdges: EdgeData[] = current.to.map((t) => ({
-            from: current.uuid,
-            to: t.workloadId,
-            status: t.status,
-          }));
-
-          return [...pre, ...fromEdges, ...toEdges] as EdgeData[];
-        }, [] as EdgeData[]);
-
-        const nodes = workloads.map<NodeData>((workload) => {
-          workload.size = workload.size || NodeSize.MEDIUM;
-          return {
-            id: workload.uuid,
-            customLabel: workload.workloadName,
-            size: workload.size ? workload.size / 2 : NodeSize.MEDIUM / 2,
-            customSize: workload.size ? workload.size : NodeSize.MEDIUM,
-            color: "transparent",
-            x: 100,
-            y: 100,
-          };
-        });
-
-        setEdges(edges);
-        setNodes(nodes);
-      };
-
-      initializeData();
-    }
-  }, [workloads]);
+    initializeData();
+  }, []);
 
   return <div ref={containerRef} style={{ width: "100%", height: "100%" }} />;
 };

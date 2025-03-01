@@ -7,6 +7,9 @@ import {
   NodeSize,
 } from "./types";
 
+const EXCLAMATION_SIZE = 20;
+const GLOBAL_ALPHA = 1.0;
+const DISABLED_GLOBAL_ALPHA = 0.2;
 export const drawNetworkNode = (
   ctx: CanvasRenderingContext2D,
   node: CustomNode,
@@ -18,7 +21,7 @@ export const drawNetworkNode = (
   }
 
   if (options?.disabled) {
-    ctx.globalAlpha = 0.2;
+    ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
   }
 
   drawNodeBackground(ctx, node, options);
@@ -27,7 +30,7 @@ export const drawNetworkNode = (
   drawNodeLabel(ctx, node, canvasImages);
 
   if (options?.disabled) {
-    ctx.globalAlpha = 1.0;
+    ctx.globalAlpha = GLOBAL_ALPHA;
   }
 };
 
@@ -38,7 +41,7 @@ export const drawNodeBackground = (
 ) => {
   const isHovered = !!options?.hoverNodeId;
   ctx.lineWidth = 2;
-  const nodeSize = node?.data?.customSize || 0;
+  const nodeSize = node?.data?.nodeSize || 0;
 
   if (isHovered && options?.hoverNodeId === node.id) {
     ctx.fillStyle = color.fill.interaction100;
@@ -78,9 +81,9 @@ export const drawExclamationIcon = (
   ctx.drawImage(
     canvasImages.exclamation,
     node.x + 12,
-    node.y - (node?.data?.customSize || 0) / 2,
-    20,
-    20
+    node.y - (node?.data?.nodeSize || 0) / 2,
+    EXCLAMATION_SIZE,
+    EXCLAMATION_SIZE
   );
   ctx.closePath();
 };
@@ -91,7 +94,7 @@ export const drawDeploymentIcon = (
   canvasImages: CanvasImage
 ) => {
   if (!canvasImages) return;
-  const nodeSize = node?.data?.customSize
+  const nodeSize = node?.data?.nodeSize;
   let deploymentIconSize = DeploymentIconSize.MEDIUM;
   if (nodeSize === NodeSize.BIG) {
     deploymentIconSize = DeploymentIconSize.BIG;
@@ -116,12 +119,12 @@ export const drawNodeLabel = (
 ) => {
   if (!canvasImages) return;
 
-  const nodeSize = node?.data?.customSize || 0
+  const nodeSize = node?.data?.nodeSize || 0;
 
   ctx.font = "12px";
   ctx.fillStyle = color.white;
 
-  const label = node?.data?.customLabel
+  const label = node?.data?.customLabel;
 
   const textMetrics = ctx.measureText(label as string);
   const textWidth = textMetrics.width;

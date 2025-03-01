@@ -27,9 +27,12 @@ export enum DeploymentIconSize {
 
 export type NodeData = {
   id: string;
-  size: number; // default of node
-  customSize: number;
+  nodeSize: number;
   customLabel: string;
+};
+
+export type NetworkNodeData = {
+  size: number;
   color: string;
   x: number;
   y: number;
@@ -84,13 +87,4 @@ export type DrawingOptions = {
 export type WorkloadConnector = {
   workloadId: string;
   status: number;
-};
-
-export type Workload = {
-  uuid: string;
-  workloadName: string;
-  kind: string;
-  size?: NodeSize;
-  from: WorkloadConnector[];
-  to: WorkloadConnector[];
 };

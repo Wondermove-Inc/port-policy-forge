@@ -16,6 +16,7 @@ import { Header } from "@/components/layout/Header";
 
 import "@skuber/theme/styles/global.css";
 import "./index.css";
+import { WasmProvider } from "./wasm.provider.tsx";
 
 declare global {
   interface Window {
@@ -40,25 +41,27 @@ const App = () => {
 
   return (
     <ThemeProvider theme={customTheme}>
-      <Header />
-      <Box
-        sx={{
-          backgroundColor: "background.secondary",
-          width: "100%",
-          minHeight: "calc(100vh - 56px)",
-          position: "relative",
-        }}
-      >
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/namespace" element={<Namespace />} />
-          <Route path="/namespace/:namespaceName" element={<Workloads />} />
-          <Route
-            path="/namespace/:namespaceName/workload/:workloadId/ports"
-            element={<WorkloadDetail />}
-          />
-        </Routes>
-      </Box>
+      <WasmProvider>
+        <Header />
+        <Box
+          sx={{
+            backgroundColor: "background.secondary",
+            width: "100%",
+            minHeight: "calc(100vh - 56px)",
+            position: "relative",
+          }}
+        >
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/namespace" element={<Namespace />} />
+            <Route path="/namespace/:namespaceName" element={<Workloads />} />
+            <Route
+              path="/namespace/:namespaceName/workload/:workloadId/ports"
+              element={<WorkloadDetail />}
+            />
+          </Routes>
+        </Box>
+      </WasmProvider>
     </ThemeProvider>
   );
 };

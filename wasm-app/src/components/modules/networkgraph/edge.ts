@@ -8,6 +8,84 @@ import {
   NodeSize,
 } from "./types";
 
+const ARROW_SIZE = 16;
+const LINE_WIDTH = 1;
+const LABEL_RECT_WIDTH = 48;
+const LABEL_RECT_HEIGHT = 24;
+const LABEL_BORDER_RADIUS = 8;
+const FONT = "12px Arial";
+
+const getLineOffset = (nodeSize: NodeSize | undefined): number => {
+  if (nodeSize === undefined) return 31;
+
+  switch (nodeSize) {
+    case NodeSize.BIG:
+      return 38;
+    case NodeSize.SMALL:
+      return 21;
+    default:
+      return 31;
+  }
+};
+
+const getArrowOffset = (nodeSize: NodeSize | undefined): number => {
+  if (nodeSize === undefined) return 33.5;
+
+  switch (nodeSize) {
+    case NodeSize.BIG:
+      return 40.5;
+    case NodeSize.SMALL:
+      return 23.5;
+    default:
+      return 33.5;
+  }
+};
+
+interface EdgeStyle {
+  strokeStyle: string;
+  label?: string;
+  backgroundColor?: string;
+  borderColor?: string;
+  textColor?: string;
+  arrowKey: keyof CanvasImage;
+  lineDash: number[];
+}
+
+const EDGE_STYLES: Record<string, EdgeStyle> = {
+  [EdgeStatus.IDLE]: {
+    strokeStyle: color.idle,
+    label: "Idle",
+    backgroundColor: color.idleBackground,
+    borderColor: color.idle,
+    textColor: color.idle,
+    arrowKey: "idleArrow",
+    lineDash: [0, 0],
+  },
+  [EdgeStatus.ERROR]: {
+    strokeStyle: color.error,
+    label: "Error",
+    backgroundColor: color.errorBackground,
+    borderColor: color.error,
+    textColor: color.error,
+    arrowKey: "errorArrow",
+    lineDash: [0, 0],
+  },
+  [EdgeStatus.ACCESS_ATTEMPTS]: {
+    strokeStyle: color.error,
+    label: "Attempt",
+    backgroundColor: color.errorBackground,
+    borderColor: color.error,
+    textColor: color.error,
+    arrowKey: "errorArrow",
+    lineDash: [2, 2],
+  },
+  DEFAULT: {
+    strokeStyle: color.active,
+    arrowKey: "activeArrow",
+    lineDash: [0, 0],
+  },
+};
+
 export const drawNetWorkEdge = (
   ctx: CanvasRenderingContext2D,
   edge: CustomEdge,
@@ -16,172 +94,164 @@ export const drawNetWorkEdge = (
     connectedEdges?: IdType[];
   }
 ) => {
-  if (!canvasImages) {
-    return;
-  }
+  if (!canvasImages) return;
 
   const isActiveEdge = options?.connectedEdges?.includes(edge.id);
   const { from, to } = edge;
   const angle = Math.atan2(to.y - from.y, to.x - from.x);
 
   ctx.save();
-  drawEdgeLine(ctx, edge, from, to, angle, isActiveEdge);
-  ctx.restore();
-  ctx.save();
-  drawEdgeArrow(ctx, edge, from, to, angle, canvasImages, isActiveEdge);
+
+  const fromSize = from?.data?.nodeSize;
+  const toSize = to?.data?.nodeSize;
+  const fromOffset = getLineOffset(fromSize);
+  const toOffset = getLineOffset(toSize);
+
+  const newFromX = from.x + fromOffset * Math.cos(angle);
+  const newFromY = from.y + fromOffset * Math.sin(angle);
+  const newToX = to.x - toOffset * Math.cos(angle);
+  const newToY = to.y - toOffset * Math.sin(angle);
+
+  drawEdgeLine(
+    ctx,
+    edge,
+    newFromX,
+    newFromY,
+    newToX,
+    newToY,
+    angle,
+    isActiveEdge
+  );
+
+  if (isActiveEdge) {
+    drawLineLabel(ctx, edge, newFromX, newFromY, newToX, newToY, angle);
+  }
+
+  drawEdgeArrow(ctx, edge, to, angle, canvasImages, isActiveEdge);
+
   ctx.restore();
 };
 
-export const drawEdgeLine = (
+const drawEdgeLine = (
   ctx: CanvasRenderingContext2D,
   edge: CustomEdge,
-  from: CustomNode,
-  to: CustomNode,
+  fromX: number,
+  fromY: number,
+  toX: number,
+  toY: number,
   angle: number,
   isActiveEdge: boolean = false
 ) => {
-  ctx.strokeStyle = color.stroke.default;
-
-  ctx.lineWidth = 1;
-  ctx.lineJoin = "round";
-  const fromSize = from?.data?.customSize;
-  const toSize = to?.data?.customSize;
-  const fromOffset =
-    fromSize === NodeSize.BIG ? 38 : fromSize === NodeSize.SMALL ? 21 : 31;
-
-  const toOffset =
-    toSize === NodeSize.BIG ? 38 : toSize === NodeSize.SMALL ? 21 : 31;
-
-  const newToX = to.x - toOffset * Math.cos(angle);
-  const newToY = to.y - toOffset * Math.sin(angle);
-  const newFromX = from.x + fromOffset * Math.cos(angle);
-  const newFromY = from.y + fromOffset * Math.sin(angle);
-
   ctx.beginPath();
+  ctx.lineWidth = LINE_WIDTH;
+  ctx.lineJoin = "round";
+
   if (isActiveEdge) {
-    if (edge.data?.status === EdgeStatus.IDLE) {
-      ctx.strokeStyle = color.idle;
-    } else if (edge.data?.status === EdgeStatus.ERROR) {
-      ctx.strokeStyle = color.error;
-    } else if (edge.data?.status === EdgeStatus.ACCESS_ATTEMPTS) {
-      ctx.strokeStyle = color.error;
-      ctx.setLineDash([2, 2]);
-    } else {
-      ctx.strokeStyle = color.active;
-    }
+    const edgeStatus = edge.data?.status;
+    const styleKey = edgeStatus ? String(edgeStatus) : "DEFAULT";
+    const style = EDGE_STYLES[styleKey] || EDGE_STYLES.DEFAULT;
+
+    ctx.strokeStyle = style.strokeStyle;
+    ctx.setLineDash(style.lineDash);
+  } else {
+    ctx.strokeStyle = color.stroke.default;
+    ctx.setLineDash([0, 0]);
   }
 
-  ctx.moveTo(newFromX, newFromY);
-  ctx.lineTo(newToX, newToY);
+  ctx.moveTo(fromX, fromY);
+  ctx.lineTo(toX, toY);
   ctx.stroke();
   ctx.closePath();
   ctx.setLineDash([0, 0]);
-
-  if (isActiveEdge) {
-    drawLineLabel(ctx, edge, newFromX, newToY, newFromY, newToX, angle);
-  }
 };
 
-export const drawLineLabel = (
+const drawLineLabel = (
   ctx: CanvasRenderingContext2D,
   edge: CustomEdge,
-  newFromX: number,
-  newToY: number,
-  newFromY: number,
-  newToX: number,
+  fromX: number,
+  fromY: number,
+  toX: number,
+  toY: number,
   angle: number
 ) => {
-  let label = "";
-  let options = {
-    backgroundColor: "",
-    borderColor: "",
-    textColor: "",
-  };
+  const edgeStatus = edge.data?.status;
+  if (!edgeStatus) return;
 
-  if (edge.data?.status === EdgeStatus.IDLE) {
-    label = "Idle";
-    options = {
-      backgroundColor: color.idleBackground,
-      borderColor: color.idle,
-      textColor: color.idle,
-    };
-  } else if (
-    edge.data?.status === EdgeStatus.ERROR ||
-    edge.data?.status === EdgeStatus.ACCESS_ATTEMPTS
+  const styleKey = String(edgeStatus);
+  const style = EDGE_STYLES[styleKey];
+
+  // Chỉ vẽ nhãn cho các trạng thái cụ thể
+  if (
+    !style ||
+    !style.label ||
+    !style.backgroundColor ||
+    !style.borderColor ||
+    !style.textColor
   ) {
-    label = edge.data?.status === EdgeStatus.ERROR ? "Error" : "Attempt";
-    options = {
-      backgroundColor: color.errorBackground,
-      borderColor: color.error,
-      textColor: color.error,
-    };
-  } else {
     return;
   }
 
-  const centerX = (newFromX + newToX) / 2;
-  const centerY = (newFromY + newToY) / 2;
-  ctx.font = "12px Arial";
+  const centerX = (fromX + toX) / 2;
+  const centerY = (fromY + toY) / 2;
+
+  ctx.save();
+
+  ctx.font = FONT;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.translate(centerX, centerY);
+
   let textAngle = angle;
   if (textAngle > Math.PI / 2 || textAngle < -Math.PI / 2) {
     textAngle += Math.PI;
   }
   ctx.rotate(textAngle);
 
-  const rectWidth = 48;
-  const rectHeight = 24;
-  const borderRadius = 8;
-  ctx.fillStyle = options.backgroundColor;
-  ctx.beginPath();
-  ctx.moveTo(-rectWidth / 2 + borderRadius, -rectHeight / 2);
-  ctx.lineTo(rectWidth / 2 - borderRadius, -rectHeight / 2);
-  ctx.arcTo(
-    rectWidth / 2,
-    -rectHeight / 2,
-    rectWidth / 2,
-    -rectHeight / 2 + borderRadius,
-    borderRadius
+  ctx.fillStyle = style.backgroundColor;
+  drawRoundedRect(
+    ctx,
+    -LABEL_RECT_WIDTH / 2,
+    -LABEL_RECT_HEIGHT / 2,
+    LABEL_RECT_WIDTH,
+    LABEL_RECT_HEIGHT,
+    LABEL_BORDER_RADIUS
   );
-  ctx.lineTo(rectWidth / 2, rectHeight / 2 - borderRadius);
-  ctx.arcTo(
-    rectWidth / 2,
-    rectHeight / 2,
-    rectWidth / 2 - borderRadius,
-    rectHeight / 2,
-    borderRadius
-  );
-  ctx.lineTo(-rectWidth / 2 + borderRadius, rectHeight / 2);
-  ctx.arcTo(
-    -rectWidth / 2,
-    rectHeight / 2,
-    -rectWidth / 2,
-    rectHeight / 2 - borderRadius,
-    borderRadius
-  );
-  ctx.lineTo(-rectWidth / 2, -rectHeight / 2 + borderRadius);
-  ctx.arcTo(
-    -rectWidth / 2,
-    -rectHeight / 2,
-    -rectWidth / 2 + borderRadius,
-    -rectHeight / 2,
-    borderRadius
-  );
-  ctx.closePath();
-  ctx.fill();
-  ctx.strokeStyle = options.borderColor;
-  ctx.lineWidth = 1;
+
+  ctx.strokeStyle = style.borderColor;
+  ctx.lineWidth = LINE_WIDTH;
   ctx.stroke();
-  ctx.fillStyle = options.textColor;
-  ctx.fillText(label, 0, 0);
+
+  ctx.fillStyle = style.textColor;
+  ctx.fillText(style.label, 0, 0);
+
+  ctx.restore();
 };
 
-export const drawEdgeArrow = (
+const drawRoundedRect = (
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number
+) => {
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.arcTo(x + width, y, x + width, y + radius, radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.arcTo(x + width, y + height, x + width - radius, y + height, radius);
+  ctx.lineTo(x + radius, y + height);
+  ctx.arcTo(x, y + height, x, y + height - radius, radius);
+  ctx.lineTo(x, y + radius);
+  ctx.arcTo(x, y, x + radius, y, radius);
+  ctx.closePath();
+  ctx.fill();
+};
+
+const drawEdgeArrow = (
   ctx: CanvasRenderingContext2D,
   edge: CustomEdge,
-  from: CustomNode,
   to: CustomNode,
   angle: number,
   canvasImages: CanvasImage,
@@ -189,35 +259,34 @@ export const drawEdgeArrow = (
 ) => {
   if (!canvasImages) return;
 
-  let arrowImage = canvasImages.arrow;
+  let arrowKey: keyof CanvasImage = "arrow";
 
   if (isActiveEdge) {
-    if (edge.data?.status === EdgeStatus.IDLE) {
-      arrowImage = canvasImages.idleArrow;
-    } else if (
-      edge.data?.status === EdgeStatus.ERROR ||
-      edge.data?.status === EdgeStatus.ACCESS_ATTEMPTS
-    ) {
-      arrowImage = canvasImages.errorArrow;
-    } else {
-      arrowImage = canvasImages.activeArrow;
-    }
+    const edgeStatus = edge.data?.status;
+    const styleKey = edgeStatus ? String(edgeStatus) : "DEFAULT";
+    const style = EDGE_STYLES[styleKey] || EDGE_STYLES.DEFAULT;
+    arrowKey = style.arrowKey;
   }
 
-  const toSize = to?.data?.customSize
-  const arrowOffset =
-    toSize === NodeSize.BIG ? 40.5 : toSize === NodeSize.SMALL ? 23.5 : 33.5;
-  const arrowNewToX = to.x - arrowOffset * Math.cos(angle);
-  const arrowNewToY = to.y - arrowOffset * Math.sin(angle);
-  const arrowSize = 16;
+  const arrowImage = canvasImages[arrowKey];
+  if (!arrowImage) return;
 
-  ctx.translate(arrowNewToX, arrowNewToY);
+  const toSize = to?.data?.nodeSize;
+  const arrowOffset = getArrowOffset(toSize);
+  const arrowX = to.x - arrowOffset * Math.cos(angle);
+  const arrowY = to.y - arrowOffset * Math.sin(angle);
+
+  ctx.save();
+
+  ctx.translate(arrowX, arrowY);
   ctx.rotate(angle + Math.PI / 2);
   ctx.drawImage(
     arrowImage,
-    -arrowSize / 2,
-    -arrowSize / 2,
-    arrowSize,
-    arrowSize
+    -ARROW_SIZE / 2,
+    -ARROW_SIZE / 2,
+    ARROW_SIZE,
+    ARROW_SIZE
   );
+
+  ctx.restore();
 };
