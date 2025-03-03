@@ -143,9 +143,9 @@ export const WorkloadList = () => {
           }}
         >
           <SearchComplete
-            options={workloads.map(item => ({
+            options={workloads.map((item) => ({
               id: item.id,
-              label: item.name
+              label: item.name,
             }))}
             placeholder="Search for workloads"
           />
