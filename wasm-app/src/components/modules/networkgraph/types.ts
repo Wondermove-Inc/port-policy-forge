@@ -7,8 +7,8 @@ export type Coord = {
 
 export enum EdgeStatus {
   DEFAULT,
-  ACTIVE,
   IDLE,
+  ACTIVE,
   ERROR,
   ACCESS_ATTEMPTS,
 }
