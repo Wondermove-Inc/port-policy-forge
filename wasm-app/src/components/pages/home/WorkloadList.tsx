@@ -22,6 +22,7 @@ export const WorkloadList = () => {
   const [checkedRows, setCheckedRows] = useState<
     Record<string, Record<string, boolean>>
   >({});
+  const [selectedTabBound, setSelectedTabBound] = useState("1");
 
   useEffect(() => {
     getWorkloads();
@@ -101,6 +102,18 @@ export const WorkloadList = () => {
     );
   }, [checkedRows]);
 
+  const handleChangeTabBound = (
+    event: React.SyntheticEvent,
+    newValue: string,
+  ) => {
+    setSelectedTabBound(newValue);
+    setCheckedRows({});
+  };
+  const handleConfirmClosePort = () => {
+    closePortModal.close();
+    console.log(checkedRows);
+  };
+
   return (
     <Box
       sx={{
@@ -117,7 +130,11 @@ export const WorkloadList = () => {
           height: "32px",
         }}
       >
-        <Tabs value={"1"} sx={{ "& .MuiTabs-indicator": { display: "none" } }}>
+        <Tabs
+          value={selectedTabBound}
+          onChange={handleChangeTabBound}
+          sx={{ "& .MuiTabs-indicator": { display: "none" } }}
+        >
           {BOUND_TYPES.map((bound, index) => (
             <Tab
               key={index}
@@ -143,9 +160,9 @@ export const WorkloadList = () => {
           }}
         >
           <SearchComplete
-            options={workloads.map(item => ({
+            options={workloads.map((item) => ({
               id: item.id,
-              label: item.name
+              label: item.name,
             }))}
             placeholder="Search for workloads"
           />
@@ -166,11 +183,13 @@ export const WorkloadList = () => {
       </Box>
       <Box sx={{ marginTop: "24px", padding: "0 12px" }}>
         <Datagrid
+          key={selectedTabBound}
           columns={columns}
           rows={workloads}
           hasSearch={true}
           noRowsOverlay={() => <Box>Nodata</Box>}
           width="100%"
+          checkedRows={checkedRows}
           onCheckedRowsChange={setCheckedRows}
           onRowClick={detailDrawer.open}
         ></Datagrid>
@@ -178,7 +197,7 @@ export const WorkloadList = () => {
       <ModalClosePort
         open={closePortModal.visible}
         onClose={closePortModal.close}
-        onConfirm={() => {}}
+        onConfirm={handleConfirmClosePort}
       />
       <WorkloadDetail
         open={detailDrawer.visible}
