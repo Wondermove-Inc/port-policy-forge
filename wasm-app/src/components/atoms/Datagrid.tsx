@@ -1,8 +1,4 @@
-import {
-  HTMLAttributes,
-  JSXElementConstructor,
-  useMemo,
-} from "react";
+import { HTMLAttributes, JSXElementConstructor, useMemo } from "react";
 
 import { Box, Checkbox, SxProps, Theme, Typography } from "@mui/material";
 import {
@@ -168,7 +164,7 @@ export const Datagrid = (
               onChange={() => handleToggleRowCheck(column.field, rowId)}
               checkedIcon={<CheckBoxIcon />}
               disabled={column.disabled}
-              onClick={(e) => e.stopPropagation()} 
+              onClick={(e) => e.stopPropagation()}
               sx={{
                 "&.Mui-checked": {
                   backgroundColor: "interaction.primaryContrastBackground",

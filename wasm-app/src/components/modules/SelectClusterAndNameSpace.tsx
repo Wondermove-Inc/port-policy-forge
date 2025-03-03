@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import {
   Box,
   Avatar,
@@ -9,6 +11,8 @@ import {
 
 import { ArrowDownIcon } from "@/components/icons/ArrowDownIcon";
 import { CheckIcon } from "@/components/icons/CheckIcon";
+import { clusters, namespaces } from "@/data";
+import { useCommonStore } from "@/store";
 
 type Option = {
   value: string;
@@ -16,23 +20,58 @@ type Option = {
   avatar?: string;
 };
 
-type SelectNameSpaceProps = {
-  clusterOptions: Option[];
-  nameSpaceOptions: Option[];
-  selectedCluster: string;
-  selectedNameSpace: string;
-  onClusterChange: (value: string) => void;
-  onNameSpaceChange: (value: string) => void;
-};
+export const SelectClusterAndNameSpace = () => {
+  const [clusterOptions, setClusterOptions] = useState<Option[]>([]);
+  const [namespaceOptions, setNamespaceOptions] = useState<Option[]>([]);
 
-export const SelectClusterAndNameSpace = ({
-  clusterOptions,
-  nameSpaceOptions,
-  selectedCluster = clusterOptions[0]?.value || "",
-  selectedNameSpace = nameSpaceOptions[0]?.value || "",
-  onClusterChange,
-  onNameSpaceChange,
-}: SelectNameSpaceProps) => {
+  const {
+    selectedCluster,
+    setSelectedCluster,
+    selectedNamespace,
+    setSelectedNamespace,
+  } = useCommonStore();
+
+  useEffect(() => {
+    getClusters();
+  }, []);
+
+  useEffect(() => {
+    getNamespaces();
+  }, [selectedCluster]);
+
+  const getClusters = () => {
+    setTimeout(() => {
+      const newClusters = clusters.map((cluster) => ({
+        value: cluster.id,
+        label: cluster.name,
+        avatar: cluster.avatar,
+      }));
+      setClusterOptions(newClusters);
+      setSelectedCluster(newClusters[0].value);
+    }, 500);
+  };
+
+  const getNamespaces = () => {
+    setTimeout(() => {
+      const newNamespaces = namespaces
+        .filter((namespace) => namespace.clusterId === selectedCluster)
+        .map((namespace) => ({
+          value: namespace.id,
+          label: namespace.name,
+        }));
+      setNamespaceOptions(newNamespaces);
+      setSelectedNamespace(newNamespaces[0].value);
+    }, 500);
+  };
+
+  const handleClusterChange = (value: string) => {
+    setSelectedCluster(value);
+  };
+
+  const handleNamespaceChange = (value: string) => {
+    setSelectedNamespace(value);
+  };
+
   const renderSelect = (
     id: string,
     value: string,
@@ -165,16 +204,16 @@ export const SelectClusterAndNameSpace = ({
       {renderSelect(
         "cluster",
         selectedCluster,
-        onClusterChange,
+        handleClusterChange,
         clusterOptions,
         "Cluster",
         true,
       )}
       {renderSelect(
         "namespace",
-        selectedNameSpace,
-        onNameSpaceChange,
-        nameSpaceOptions,
+        selectedNamespace,
+        handleNamespaceChange,
+        namespaceOptions,
         "Namespace",
       )}
     </Box>

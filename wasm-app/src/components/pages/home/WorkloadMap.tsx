@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 
 import { Box } from "@mui/material";
 
+import { WorkloadDetail } from "./WorkloadDetail";
+
 import NetworkGraph from "@/components/modules/networkgraph/networkGraph";
 import {
   EdgeData,
@@ -10,25 +12,33 @@ import {
   NodeSize,
 } from "@/components/modules/networkgraph/types";
 import { ViewFilter } from "@/components/pages/home/workload-map/ViewFilter";
+import { useDisclosure } from "@/hooks/useDisclosure";
 import { useWasmContext } from "@/wasm.provider";
 
 export const WorkloadMap = () => {
   const wasmCtx = useWasmContext();
   const [edges, setEdges] = useState<EdgeData[]>([]);
   const [nodes, setNodes] = useState<NodeData[]>([]);
+  const [activeNodeId, setActiveNodeId] = useState<string>();
+  const detailDrawer = useDisclosure();
+  useEffect(() => {
+    if (!detailDrawer.visible) {
+      setActiveNodeId(undefined);
+    }
+  }, [detailDrawer.visible]);
   useEffect(() => {
     const workloads = wasmCtx.getWorkloads("");
     const edges = workloads.reduce((pre, current) => {
       const fromEdges: EdgeData[] = current.from.map((f) => ({
         from: f.workloadId,
         to: current.uuid,
-        status: EdgeStatus.DEFAULT,
+        status: EdgeStatus.ACCESS_ATTEMPTS,
       }));
 
       const toEdges: EdgeData[] = current.to.map((t) => ({
         from: current.uuid,
         to: t.workloadId,
-        status: EdgeStatus.DEFAULT,
+        status: EdgeStatus.ACCESS_ATTEMPTS,
       }));
 
       return [...pre, ...fromEdges, ...toEdges] as EdgeData[];
@@ -45,6 +55,11 @@ export const WorkloadMap = () => {
     setNodes(nodes);
   }, []);
 
+  const handleNodeClick = (nodeId: string) => {
+    setActiveNodeId(nodeId);
+    detailDrawer.open();
+  };
+
   return (
     <Box
       sx={{
@@ -56,8 +71,17 @@ export const WorkloadMap = () => {
         zIndex: 1,
       }}
     >
-      <NetworkGraph edges={edges} nodes={nodes} />
+      <NetworkGraph
+        edges={edges}
+        nodes={nodes}
+        activeNodeId={activeNodeId}
+        onNodeClick={handleNodeClick}
+      />
       <ViewFilter />
+      <WorkloadDetail
+        open={detailDrawer.visible}
+        handleClose={detailDrawer.close}
+      />
     </Box>
   );
 };
