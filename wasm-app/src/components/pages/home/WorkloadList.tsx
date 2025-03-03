@@ -9,6 +9,7 @@ import { Datagrid, CustomGridColDef } from "@/components/atoms/Datagrid";
 import { CheckBoxIcon } from "@/components/icons/CheckBoxIcon";
 import { ModalClosePort } from "@/components/modules/ModalClosePort";
 import { SearchComplete } from "@/components/modules/SearchComplete";
+import { workloads } from "@/data";
 import { useDisclosure } from "@/hooks/useDisclosure";
 
 export const WorkloadList = () => {
@@ -119,43 +120,13 @@ export const WorkloadList = () => {
       },
     },
   ];
-  const rows = [
-    {
-      id: 1,
-      name: "Name",
-      type: "Type",
-      unconnectedPort: 2,
-      idlePort: 8,
-      activePort: 8,
-      errorPort: 6,
-      closedPortAttempted: "",
-    },
-    {
-      id: 2,
-      name: "Name",
-      type: "Type",
-      unconnectedPort: 3,
-      idlePort: 7,
-      activePort: 8,
-      errorPort: 9,
-      closedPortAttempted: "1",
-    },
-    {
-      id: 3,
-      name: "Name",
-      type: "Type",
-      unconnectedPort: 0,
-      idlePort: 0,
-      activePort: 0,
-      errorPort: 0,
-      closedPortAttempted: "",
-    },
-  ];
+
   const isCheckedPort = useMemo(() => {
     return Object.values(checkedRows).some((port) =>
       Object.values(port).includes(true),
     );
   }, [checkedRows]);
+
   return (
     <Box
       sx={{
@@ -219,7 +190,7 @@ export const WorkloadList = () => {
       <Box sx={{ marginTop: "24px", padding: "0 12px" }}>
         <Datagrid
           columns={columns}
-          rows={rows}
+          rows={workloads}
           hasSearch={true}
           noRowsOverlay={() => <Box>Nodata</Box>}
           width="100%"

@@ -9,3 +9,36 @@ export const namespaces = [
   { id: "test1", name: "Test1", clusterId: "cluster2" },
   { id: "test2", name: "Test2", clusterId: "cluster2" },
 ];
+
+export const workloads = [
+  {
+    id: 1,
+    name: "Name",
+    type: "Type",
+    unconnectedPort: 2,
+    idlePort: 8,
+    activePort: 8,
+    errorPort: 6,
+    closedPortAttempted: "",
+  },
+  {
+    id: 2,
+    name: "Name",
+    type: "Type",
+    unconnectedPort: 3,
+    idlePort: 7,
+    activePort: 8,
+    errorPort: 9,
+    closedPortAttempted: "1",
+  },
+  {
+    id: 3,
+    name: "Name",
+    type: "Type",
+    unconnectedPort: 0,
+    idlePort: 0,
+    activePort: 0,
+    errorPort: 0,
+    closedPortAttempted: "",
+  },
+];

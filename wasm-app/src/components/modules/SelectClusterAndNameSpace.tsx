@@ -47,7 +47,7 @@ export const SelectClusterAndNameSpace = () => {
         type: cluster.type as TypeCluster | undefined,
       }));
       setClusterOptions(newClusters);
-      setSelectedCluster(newClusters[0].value);
+      setSelectedCluster(newClusters[0]?.value || "");
     }, 500);
   };
 
@@ -60,7 +60,7 @@ export const SelectClusterAndNameSpace = () => {
           label: namespace.name,
         }));
       setNamespaceOptions(newNamespaces);
-      setSelectedNamespace(newNamespaces[0].value);
+      setSelectedNamespace(newNamespaces[0]?.value || "");
     }, 500);
   };
 

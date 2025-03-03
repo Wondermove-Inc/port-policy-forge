@@ -17,6 +17,7 @@ import { Header } from "@/components/layout/Header";
 import "@skuber/theme/styles/global.css";
 import "./index.css";
 import { WasmProvider } from "./wasm.provider.tsx";
+import { PageLoading } from "./components/layout/PageLoading.tsx";
 
 declare global {
   interface Window {
@@ -35,31 +36,31 @@ const App = () => {
       });
   }, []);
 
-  if (!isWasmLoaded) {
-    return <p>Loading WASM...</p>;
-  }
-
   return (
     <ThemeProvider theme={customTheme}>
       <WasmProvider>
         <Header />
         <Box
           sx={{
-            backgroundColor: "background.secondary",
+            backgroundColor: "background.modal",
             width: "100%",
             minHeight: "calc(100vh - 56px)",
             position: "relative",
           }}
         >
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/namespace" element={<Namespace />} />
-            <Route path="/namespace/:namespaceName" element={<Workloads />} />
-            <Route
-              path="/namespace/:namespaceName/workload/:workloadId/ports"
-              element={<WorkloadDetail />}
-            />
-          </Routes>
+          {isWasmLoaded ? (
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/namespace" element={<Namespace />} />
+              <Route path="/namespace/:namespaceName" element={<Workloads />} />
+              <Route
+                path="/namespace/:namespaceName/workload/:workloadId/ports"
+                element={<WorkloadDetail />}
+              />
+            </Routes>
+          ) : (
+            <PageLoading />
+          )}
         </Box>
       </WasmProvider>
     </ThemeProvider>
