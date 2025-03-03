@@ -1,46 +1,53 @@
 import { Box } from "@mui/material";
 import { Typography } from "@skuber/components";
 
-import { workloadDetail } from "./data";
 import { PortDetail } from "./PortDetail";
 
 import { CloseIcon } from "@/components/icons/CloseIcon";
 import { WarningIcon } from "@/components/icons/WarningIcon";
 import { CollapsibleTable } from "@/components/modules/CollapsibleTable";
+import { Port } from "@/models";
 
 const columns = [
   {
     id: "portNumber",
     label: "Number",
     sortable: false,
-    width: 112,
+    width: 85,
+    render: (record: Port) => (
+      <Typography variant="b2_m">{record.portNumber}</Typography>
+    ),
   },
   {
     id: "risk",
     label: "Risk",
     sortable: false,
-    width: 112,
+    width: 25,
   },
   {
     id: "type",
     label: "Type",
     sortable: false,
-    width: 92,
+    width: 75,
   },
   {
     id: "count",
     label: "Count ",
     sortable: false,
-    width: 64,
+    width: 65,
   },
   {
     id: "open",
     label: "",
     sortable: false,
-    width: 68,
+    width: 120,
     render: () => (
-      <Typography variant="b2_r" color="primary.dark">
-        Open
+      <Typography
+        variant="label_m"
+        color="primary.dark"
+        sx={{ cursor: "pointer" }}
+      >
+        Open the access
       </Typography>
     ),
   },
@@ -48,7 +55,7 @@ const columns = [
     id: "close",
     label: "",
     sortable: false,
-    width: 24,
+    width: 32,
     render: () => (
       <Box
         sx={{
@@ -57,20 +64,17 @@ const columns = [
           justifyContent: "center",
         }}
       >
-        <CloseIcon size={16} />
+        <CloseIcon size={16} sx={{ cursor: "pointer" }} />
       </Box>
     ),
   },
 ];
 
-export const ClosePort = () => {
-  const data = workloadDetail.ports.inbound.closed.map((el) => ({
-    ...el,
-    risk: el.risk,
-    type: el.type,
-    count: el.count || 0,
-  }));
+type ClosePortProps = {
+  data: Port[];
+};
 
+export const ClosePort = ({ data }: ClosePortProps) => {
   return (
     <Box>
       <Box
@@ -89,7 +93,7 @@ export const ClosePort = () => {
             paddingY: "6.5px",
           }}
         >
-          {`Closed Port Attempted (${workloadDetail.ports.inbound.closed.length || 0})`}
+          {`Closed Port Attempted (${data?.length || 0})`}
         </Typography>
         <WarningIcon size={20} />
       </Box>

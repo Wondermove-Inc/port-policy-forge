@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 import { Box, MenuItem, Select, Stack, Typography } from "@mui/material";
 
@@ -11,13 +11,13 @@ import { PrmIcon } from "../icons/PrmIcon";
 import { ArrowDownIcon } from "@/components/icons/ArrowDownIcon";
 import { CheckIcon } from "@/components/icons/CheckIcon";
 import { clusters, namespaces } from "@/data";
-import { TypeCluster } from "@/models";
+import { ClusterType } from "@/models";
 import { useCommonStore } from "@/store";
 
 type Option = {
   value: string;
   label: string;
-  type?: TypeCluster;
+  type?: ClusterType;
 };
 
 export const SelectClusterAndNameSpace = () => {
@@ -45,7 +45,7 @@ export const SelectClusterAndNameSpace = () => {
       const newClusters = clusters.map((cluster) => ({
         value: cluster.id,
         label: cluster.name,
-        type: cluster.type as TypeCluster | undefined,
+        type: cluster.type as ClusterType,
       }));
       setClusterOptions(newClusters);
       setSelectedCluster(newClusters[0]?.value || "");
@@ -113,15 +113,19 @@ export const SelectClusterAndNameSpace = () => {
           },
         }}
       >
-        {withAvatar && selectedOption?.type && renderIcon(selectedOption.type)}
+        {withAvatar &&
+          selectedOption?.type &&
+          renderClusterIcon(selectedOption.type)}
         <Select
           open={isOpen}
           id={id}
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            onChange(e.target.value)
+          }
           variant="standard"
           IconComponent={ArrowDownIcon}
-          renderValue={(selected) =>
+          renderValue={(selected: string) =>
             options.find((o) => o.value === selected)?.label || ""
           }
           MenuProps={{
@@ -197,17 +201,17 @@ export const SelectClusterAndNameSpace = () => {
     );
   };
 
-  const renderIcon = (type: TypeCluster) => {
+  const renderClusterIcon = (type: ClusterType) => {
     switch (type) {
-      case TypeCluster.AKS:
+      case ClusterType.AKS:
         return <AksIcon />;
-      case TypeCluster.PRM:
+      case ClusterType.PRM:
         return <PrmIcon />;
-      case TypeCluster.GKE:
+      case ClusterType.GKE:
         return <GkeIcon />;
-      case TypeCluster.EKS:
+      case ClusterType.EKS:
         return <EksIcon />;
-      case TypeCluster.OKE:
+      case ClusterType.OKE:
         return <OkeIcon />;
       default:
         return null;

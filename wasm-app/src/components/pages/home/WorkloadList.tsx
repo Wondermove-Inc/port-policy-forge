@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Box, Tab, Tabs, Typography } from "@mui/material";
 import { Button } from "@skuber/components";
@@ -9,19 +9,43 @@ import { Datagrid, CustomGridColDef } from "@/components/atoms/Datagrid";
 import { CheckBoxIcon } from "@/components/icons/CheckBoxIcon";
 import { ModalClosePort } from "@/components/modules/ModalClosePort";
 import { SearchComplete } from "@/components/modules/SearchComplete";
-import { workloads } from "@/data";
+import { BOUND_TYPES } from "@/constants";
+import { workloadList } from "@/data";
 import { useDisclosure } from "@/hooks/useDisclosure";
+import { WorkloadListItem } from "@/models";
 
 export const WorkloadList = () => {
   const closePortModal = useDisclosure();
   const detailDrawer = useDisclosure();
+
+  const [workloads, setWorkloads] = useState<WorkloadListItem[]>([]);
   const [checkedRows, setCheckedRows] = useState<
     Record<string, Record<string, boolean>>
   >({});
-  const bounds = [
-    { label: "Inbound", value: "1" },
-    { label: "Outbound", value: "2" },
-  ];
+
+  useEffect(() => {
+    getWorkloads();
+  }, []);
+
+  const getWorkloads = () => {
+    setTimeout(() => {
+      setWorkloads(workloadList);
+    }, 500);
+  };
+
+  const renderCellWithEmptyValue = (value: string, color: string) => {
+    return (
+      <Typography
+        sx={{
+          color: `${value ? color : "text.disabled"}`,
+          fontWeight: "600",
+        }}
+      >
+        {value || "-"}
+      </Typography>
+    );
+  };
+
   const columns: CustomGridColDef[] = [
     { field: "name", headerName: "Name", flex: 1 },
     {
@@ -34,54 +58,24 @@ export const WorkloadList = () => {
       headerName: "Unconnected Port",
       flex: 1,
       enableCheckBox: true,
-      renderCell: ({ row }) => {
-        return (
-          <Typography
-            sx={{
-              color: `${row.unconnectedPort ? "status.warning" : "text.disabled"}`,
-              fontWeight: "600",
-            }}
-          >
-            {row.unconnectedPort || "-"}
-          </Typography>
-        );
-      },
+      renderCell: ({ value }) =>
+        renderCellWithEmptyValue(value, "status.warning"),
     },
     {
       field: "idlePort",
       headerName: "Idle port",
       flex: 1,
       enableCheckBox: true,
-      renderCell: ({ row }) => {
-        return (
-          <Typography
-            sx={{
-              color: `${row.idlePort ? "status.warning" : "text.disabled"}`,
-              fontWeight: "600",
-            }}
-          >
-            {row.idlePort || "-"}
-          </Typography>
-        );
-      },
+      renderCell: ({ value }) =>
+        renderCellWithEmptyValue(value, "status.warning"),
     },
     {
       field: "activePort",
       headerName: "Active port",
       flex: 1,
       enableCheckBox: true,
-      renderCell: ({ row }) => {
-        return (
-          <Typography
-            sx={{
-              color: `${row.activePort ? "interaction.primaryContrast" : "text.disabled"}`,
-              fontWeight: "600",
-            }}
-          >
-            {row.activePort || "-"}
-          </Typography>
-        );
-      },
+      renderCell: ({ value }) =>
+        renderCellWithEmptyValue(value, "interaction.primaryContrast"),
     },
     {
       field: "errorPort",
@@ -89,35 +83,15 @@ export const WorkloadList = () => {
       flex: 1,
       enableCheckBox: true,
       disabled: true,
-      renderCell: ({ row }) => {
-        return (
-          <Typography
-            sx={{
-              color: `${row.errorPort ? "status.danger" : "text.disabled"}`,
-              fontWeight: "600",
-            }}
-          >
-            {row.errorPort || "-"}
-          </Typography>
-        );
-      },
+      renderCell: ({ value }) =>
+        renderCellWithEmptyValue(value, "status.danger"),
     },
     {
       field: "closedPortAttempted",
       headerName: "Closed Port Attempted",
       flex: 1,
-      renderCell: ({ row }) => {
-        return (
-          <Typography
-            sx={{
-              color: `${row.closedPortAttempted ? "status.danger" : "text.disabled"}`,
-              fontWeight: "600",
-            }}
-          >
-            {row.closedPortAttempted || "-"}
-          </Typography>
-        );
-      },
+      renderCell: ({ value }) =>
+        renderCellWithEmptyValue(value, "status.danger"),
     },
   ];
 
@@ -144,7 +118,7 @@ export const WorkloadList = () => {
         }}
       >
         <Tabs value={"1"} sx={{ "& .MuiTabs-indicator": { display: "none" } }}>
-          {bounds.map((bound, index) => (
+          {BOUND_TYPES.map((bound, index) => (
             <Tab
               key={index}
               sx={{
@@ -171,7 +145,10 @@ export const WorkloadList = () => {
           }}
         >
           <SearchComplete
-            options={["cluster1", "cluster2", "cluster3"]}
+            options={workloads.map(item => ({
+              id: item.id,
+              label: item.name
+            }))}
             placeholder="Search for workloads"
           />
           <Button

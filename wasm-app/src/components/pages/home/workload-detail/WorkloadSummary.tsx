@@ -20,15 +20,15 @@ export const WorkloadSummary = ({
 
   const workloadData = Object.values(Stats).map((status) => ({
     title: PORT_STATUS_MAP[status].label,
-    value: stats[status] || "",
+    value: stats[status],
     color: PORT_STATUS_MAP[status].color,
     ...stylesByType.status,
   }));
 
   const metrics = [
     { title: "Namespace", value: workloadName },
-    { title: "Latency rtt", value: stats.latencyRtt + "ms" },
-    { title: "Throughput", value: stats.throughput + "MiB/s" },
+    { title: "Latency rtt", value: stats.latencyRtt },
+    { title: "Throughput", value: stats.throughput },
   ].map((metric) => ({
     ...metric,
     color: "text.primary",
@@ -44,7 +44,7 @@ export const WorkloadSummary = ({
         display: "flex",
         flexWrap: "wrap",
         gap: "24px 12px",
-        maxWidth: 440,
+        maxWidth: 472,
       }}
     >
       {[...workloadData, ...metrics].map(

@@ -1,12 +1,24 @@
 import { Box } from "@mui/material";
-import { Button, Typography } from "@skuber/components";
+import { Typography } from "@skuber/components";
 
 import { ModalConfirm } from "@/components/atoms/ModalConfirm";
 import { InfoIcon } from "@/components/icons/InfoIcon";
 import { useDisclosure } from "@/hooks/useDisclosure";
 
-export const PolicyApplication = () => {
+type PolicyApplicationProps = {
+  fetchWorkloadDetail: () => void;
+};
+
+export const PolicyApplication = ({
+  fetchWorkloadDetail,
+}: PolicyApplicationProps) => {
   const policyApplicationModal = useDisclosure();
+
+  const handleApplyPolicy = () => {
+    // TODO
+    fetchWorkloadDetail();
+    policyApplicationModal.close();
+  };
 
   return (
     <>
@@ -44,14 +56,23 @@ export const PolicyApplication = () => {
             added security. If you don't apply a policy, all ports remain open.
           </Typography>
         </Box>
-        <Button size="extraSmall" onClick={policyApplicationModal.open}>
+        <Box
+          sx={{
+            p: "4px 8px",
+            borderRadius: "4px",
+            typography: "labelBold",
+            bgcolor: "primary.main",
+            cursor: "pointer",
+          }}
+          onClick={policyApplicationModal.open}
+        >
           Apply
-        </Button>
+        </Box>
       </Box>
       <ModalConfirm
         open={policyApplicationModal.visible}
         onClose={policyApplicationModal.close}
-        onConfirm={() => {}}
+        onConfirm={handleApplyPolicy}
         title="Apply a service policy"
         description="Close all unused ports according to service policy."
         descriptionDetails={[

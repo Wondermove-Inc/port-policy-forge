@@ -6,12 +6,12 @@ export enum Stats {
   ATTEMPTED = "attempted",
 }
 
-export enum Direction {
-  INBOUND = "Inbound",
-  OUTBOUND = "Outbound",
+export enum PortDirection {
+  INBOUND = "inbound",
+  OUTBOUND = "outbound",
 }
 
-export enum TypeCluster {
+export enum ClusterType {
   AKS = "aks",
   PRM = "premise",
   GKE = "gke",
@@ -53,13 +53,13 @@ export type PortDetailGroupType = {
 };
 
 export type StatsType = {
-  active: number;
-  unconnected: number;
-  idle: number;
-  error: number;
-  attempted: number;
+  active: number | null;
+  unconnected: number | null;
+  idle: number | null;
+  error: number | null;
+  attempted: number | null;
   latencyRtt: number | null;
-  throughput: number;
+  throughput: number | null;
 };
 
 export type WorkloadDetailType = {
@@ -81,4 +81,29 @@ export type PortAccessSettingForm = {
   }[];
   allowFullAccess: boolean;
   access: number;
+};
+
+export enum AccessSource {
+  ALLOW_ALL = 0,
+  ALLOW_EXPECT = 1,
+  ALLOW_ONLY = 3,
+}
+
+export const STATUS_MAP: Record<number, Stats> = {
+  0: Stats.UNCONNECTED,
+  1: Stats.IDLE,
+  2: Stats.ACTIVE,
+  3: Stats.ERROR,
+  4: Stats.ATTEMPTED,
+};
+
+export type WorkloadListItem = {
+  id: string;
+  name: string;
+  type: string;
+  unconnectedPort: number;
+  idlePort: number;
+  activePort: number;
+  errorPort: number;
+  closedPortAttempted: number;
 };

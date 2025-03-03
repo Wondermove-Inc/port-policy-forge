@@ -9,7 +9,10 @@ import { CloseIcon } from "../icons/CloseIcon";
 import { SearchIcon } from "../icons/SearchIcon";
 
 export type SearchCompleteProps = {
-  options: string[];
+  options: {
+    id: string;
+    label: string;
+  }[];
   sx?: SxProps<Theme>;
   placeholder?: string;
 };
