@@ -12,7 +12,7 @@ export const namespaces = [
 
 export const workloadList = [
   {
-    id: "1",
+    id: "ID1",
     name: "Workload Name 1",
     type: "Type",
     unconnectedPort: 2,
@@ -22,7 +22,7 @@ export const workloadList = [
     closedPortAttempted: 0,
   },
   {
-    id: "2",
+    id: "ID33",
     name: "Workload Name 2",
     type: "Type",
     unconnectedPort: 3,
