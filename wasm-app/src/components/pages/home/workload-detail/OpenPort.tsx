@@ -1,7 +1,8 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { Box } from "@mui/material";
 import { Button, Typography } from "@skuber/components";
+import { useForm } from "react-hook-form";
 
 import { PortSettingModal } from "./_PortSettingModal";
 import { PortDetail } from "./PortDetail";
@@ -11,17 +12,40 @@ import { EditIcon } from "@/components/icons/EditIcon";
 import { BadgePortStatus } from "@/components/modules/BadgePortStatus";
 import { CollapsibleTable } from "@/components/modules/CollapsibleTable";
 import { useDisclosure } from "@/hooks/useDisclosure";
-import { Port, PortDirection } from "@/models";
+import { Port, PortAccessSettingForm, PortDirection } from "@/models";
 
 type OpenPortProps = {
   data: Port[];
   portDirection: PortDirection;
+  fetchWorkloadDetail: () => void;
 };
 
-export const OpenPort = ({ data, portDirection }: OpenPortProps) => {
+export const OpenPort = ({
+  data,
+  portDirection,
+  fetchWorkloadDetail,
+}: OpenPortProps) => {
   const openPortModal = useDisclosure();
 
+  const [recordSelected, setRecordSelected] = useState<Port | null>(null);
+
   const isInbound = portDirection === PortDirection.INBOUND;
+
+  const form = useForm<PortAccessSettingForm>({
+    defaultValues: {
+      sources: [
+        {
+          source: "",
+          type: "",
+          comment: "",
+        },
+      ],
+      allowFullAccess: false,
+      access: 3,
+      port: null,
+    },
+    mode: "onChange",
+  });
 
   const columns = useMemo(
     () => [
@@ -63,7 +87,11 @@ export const OpenPort = ({ data, portDirection }: OpenPortProps) => {
             <Typography variant="b2_r" color="text.primary">
               {record.access}
             </Typography>
-            <EditIcon size={16} sx={{ cursor: "pointer" }} />
+            <EditIcon
+              size={16}
+              sx={{ cursor: "pointer" }}
+              onClick={() => handleEdit(record)}
+            />
           </Box>
         ),
       },
@@ -85,6 +113,23 @@ export const OpenPort = ({ data, portDirection }: OpenPortProps) => {
     ],
     [portDirection],
   );
+
+  const handleEdit = (record: Port) => {
+    setRecordSelected(record);
+    openPortModal.open();
+  };
+
+  const handleClose = () => {
+    setRecordSelected(null);
+    form.reset();
+    openPortModal.close();
+  };
+
+  const handleSubmit = () => {
+    // TODO
+    fetchWorkloadDetail();
+    handleClose();
+  };
 
   return (
     <Box
@@ -132,7 +177,11 @@ export const OpenPort = ({ data, portDirection }: OpenPortProps) => {
       />
       <PortSettingModal
         isOpen={openPortModal.visible}
-        handleClose={openPortModal.close}
+        handleClose={handleClose}
+        handleSubmit={handleSubmit}
+        port={recordSelected}
+        isInbound={isInbound}
+        form={form}
       />
     </Box>
   );

@@ -118,8 +118,12 @@ export const WorkloadDetail = ({
         <OpenPort
           data={workloadDetail.ports[portDirection].open}
           portDirection={portDirection}
+          fetchWorkloadDetail={fetchWorkloadDetail}
         />
-        <ClosePort data={workloadDetail.ports[portDirection].closed} />
+        <ClosePort
+          data={workloadDetail.ports[portDirection].closed}
+          fetchWorkloadDetail={fetchWorkloadDetail}
+        />
       </Box>
     </Drawer>
   );
