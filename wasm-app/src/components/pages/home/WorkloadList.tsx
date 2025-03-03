@@ -9,8 +9,6 @@ import { Datagrid, CustomGridColDef } from "@/components/atoms/Datagrid";
 import { CheckBoxIcon } from "@/components/icons/CheckBoxIcon";
 import { ModalClosePort } from "@/components/modules/ModalClosePort";
 import { SearchComplete } from "@/components/modules/SearchComplete";
-import { SelectClusterAndNameSpace } from "@/components/modules/SelectClusterAndNameSpace";
-import { TabsViewMode } from "@/components/modules/TabsViewMode";
 import { useDisclosure } from "@/hooks/useDisclosure";
 
 export const WorkloadList = () => {

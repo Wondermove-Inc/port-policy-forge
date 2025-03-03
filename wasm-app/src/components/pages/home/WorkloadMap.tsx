@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 
 import { Box } from "@mui/material";
 
+import { WorkloadDetail } from "./WorkloadDetail";
+
 import NetworkGraph from "@/components/modules/networkgraph/networkGraph";
 import {
   EdgeData,
@@ -10,9 +12,8 @@ import {
   NodeSize,
 } from "@/components/modules/networkgraph/types";
 import { ViewFilter } from "@/components/pages/home/workload-map/ViewFilter";
-import { useWasmContext } from "@/wasm.provider";
-import { WorkloadDetail } from "./WorkloadDetail";
 import { useDisclosure } from "@/hooks/useDisclosure";
+import { useWasmContext } from "@/wasm.provider";
 
 export const WorkloadMap = () => {
   const wasmCtx = useWasmContext();
@@ -22,7 +23,7 @@ export const WorkloadMap = () => {
   const detailDrawer = useDisclosure();
   useEffect(() => {
     if (!detailDrawer.visible) {
-      setActiveNodeId(undefined)
+      setActiveNodeId(undefined);
     }
   }, [detailDrawer.visible]);
   useEffect(() => {
