@@ -22,16 +22,16 @@ export const WorkloadList = () => {
     { label: "Outbound", value: "2" },
   ];
   const columns: CustomGridColDef[] = [
-    { field: "name", headerName: "Name", width: 196 },
+    { field: "name", headerName: "Name", flex: 1 },
     {
       field: "type",
       headerName: "Type",
-      width: 196,
+      flex: 1,
     },
     {
       field: "unconnectedPort",
       headerName: "Unconnected Port",
-      width: 196,
+      flex: 1,
       enableCheckBox: true,
       renderCell: ({ row }) => {
         return (
@@ -49,7 +49,7 @@ export const WorkloadList = () => {
     {
       field: "idlePort",
       headerName: "Idle port",
-      width: 196,
+      flex: 1,
       enableCheckBox: true,
       renderCell: ({ row }) => {
         return (
@@ -67,7 +67,7 @@ export const WorkloadList = () => {
     {
       field: "activePort",
       headerName: "Active port",
-      width: 196,
+      flex: 1,
       enableCheckBox: true,
       renderCell: ({ row }) => {
         return (
@@ -85,7 +85,7 @@ export const WorkloadList = () => {
     {
       field: "errorPort",
       headerName: "Error port",
-      width: 196,
+      flex: 1,
       enableCheckBox: true,
       disabled: true,
       renderCell: ({ row }) => {
@@ -104,7 +104,7 @@ export const WorkloadList = () => {
     {
       field: "closedPortAttempted",
       headerName: "Closed Port Attempted",
-      width: 196,
+      flex: 1,
       renderCell: ({ row }) => {
         return (
           <Typography
@@ -168,7 +168,7 @@ export const WorkloadList = () => {
           alignItems: "center",
           justifyContent: "space-between",
           padding: "0 12px 0 2px",
-          marginTop: "100px",
+          marginTop: "80px",
         }}
       >
         <Tabs value={"1"} sx={{ "& .MuiTabs-indicator": { display: "none" } }}>

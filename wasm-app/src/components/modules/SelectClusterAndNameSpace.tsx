@@ -1,23 +1,23 @@
 import { useEffect, useState } from "react";
 
-import {
-  Box,
-  Avatar,
-  MenuItem,
-  Select,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, MenuItem, Select, Stack, Typography } from "@mui/material";
+
+import { AksIcon } from "../icons/AksIcon";
+import { EksIcon } from "../icons/EksIcon";
+import { GkeIcon } from "../icons/GkeIcon";
+import { OkeIcon } from "../icons/OkeIcon";
+import { PrmIcon } from "../icons/PrmIcon";
 
 import { ArrowDownIcon } from "@/components/icons/ArrowDownIcon";
 import { CheckIcon } from "@/components/icons/CheckIcon";
 import { clusters, namespaces } from "@/data";
+import { TypeCluster } from "@/models";
 import { useCommonStore } from "@/store";
 
 type Option = {
   value: string;
   label: string;
-  avatar?: string;
+  type?: TypeCluster;
 };
 
 export const SelectClusterAndNameSpace = () => {
@@ -44,7 +44,7 @@ export const SelectClusterAndNameSpace = () => {
       const newClusters = clusters.map((cluster) => ({
         value: cluster.id,
         label: cluster.name,
-        avatar: cluster.avatar,
+        type: cluster.type as TypeCluster | undefined,
       }));
       setClusterOptions(newClusters);
       setSelectedCluster(newClusters[0].value);
@@ -88,7 +88,7 @@ export const SelectClusterAndNameSpace = () => {
         spacing={1}
         sx={{
           "&:hover": { backgroundColor: "action.hover" },
-          width: withAvatar ? "117px" : "142px",
+          width: "145px",
           height: "100%",
           "&:first-of-type": {
             paddingLeft: "16px",
@@ -104,9 +104,7 @@ export const SelectClusterAndNameSpace = () => {
           },
         }}
       >
-        {withAvatar && selectedOption?.avatar && (
-          <Avatar src={selectedOption.avatar} sx={{ width: 24, height: 24 }} />
-        )}
+        {withAvatar && selectedOption?.type && renderIcon(selectedOption.type)}
         <Select
           id={id}
           value={value}
@@ -124,7 +122,7 @@ export const SelectClusterAndNameSpace = () => {
           sx={{
             typography: "body1Bold",
             width: "100%",
-            minWidth: withAvatar ? "90px" : "120px",
+            minWidth: withAvatar ? "85px" : "110px",
             height: "100%",
             display: "flex",
             alignItems: "center",
@@ -183,6 +181,23 @@ export const SelectClusterAndNameSpace = () => {
         </Select>
       </Stack>
     );
+  };
+
+  const renderIcon = (type: TypeCluster) => {
+    switch (type) {
+      case TypeCluster.AKS:
+        return <AksIcon />;
+      case TypeCluster.PRM:
+        return <PrmIcon />;
+      case TypeCluster.GKE:
+        return <GkeIcon />;
+      case TypeCluster.EKS:
+        return <EksIcon />;
+      case TypeCluster.OKE:
+        return <OkeIcon />;
+      default:
+        return null;
+    }
   };
 
   return (
