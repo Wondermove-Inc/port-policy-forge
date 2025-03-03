@@ -31,6 +31,8 @@ export const Drawer = ({
           borderColor: "border.default",
           marginTop: "56px",
           height: "calc(100% - 56px)",
+          display: "flex",
+          flexDirection: "column",
         },
         ".MuiBackdrop-root": {
           marginTop: "56px",
@@ -73,8 +75,11 @@ export const Drawer = ({
       </Box>
       <Box
         sx={{
+          flex: 1,
+          overflowY: "auto",
           padding: "24px 20px 59px 20px",
           borderTop: 0,
+          overlay: "auto",
         }}
       >
         {children}

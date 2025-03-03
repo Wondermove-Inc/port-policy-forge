@@ -54,6 +54,7 @@ export const OpenPort = ({ data, portDirection }: OpenPortProps) => {
               display: "flex",
               gap: "8px",
               alignItems: "center",
+              justifyContent: "space-between",
             }}
           >
             <Typography variant="b2_r" color="text.primary">
