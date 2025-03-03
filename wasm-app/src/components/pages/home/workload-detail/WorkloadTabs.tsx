@@ -27,6 +27,9 @@ export const WorkloadTabs = ({
           gap: "20px",
           paddingY: "4px",
           marginBottom: "16px",
+          ".Mui-selected": {
+            color: "text.primary",
+          },
         },
         ".MuiButtonBase-root": {
           typography: "h2",
