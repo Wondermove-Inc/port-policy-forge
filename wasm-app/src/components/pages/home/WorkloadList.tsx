@@ -158,6 +158,8 @@ export const WorkloadList = () => {
               }}
               label={bound.label}
               value={bound.value}
+              disableRipple
+              disableTouchRipple
             />
           ))}
         </Tabs>

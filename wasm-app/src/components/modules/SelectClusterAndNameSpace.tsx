@@ -23,6 +23,7 @@ type Option = {
 export const SelectClusterAndNameSpace = () => {
   const [clusterOptions, setClusterOptions] = useState<Option[]>([]);
   const [namespaceOptions, setNamespaceOptions] = useState<Option[]>([]);
+  const [openSelect, setOpenSelect] = useState<string | null>(null);
 
   const {
     selectedCluster,
@@ -72,6 +73,10 @@ export const SelectClusterAndNameSpace = () => {
     setSelectedNamespace(value);
   };
 
+  const handleOpen = (id: string) => {
+    setOpenSelect((prev) => (prev === id ? null : id));
+  };
+
   const renderSelect = (
     id: string,
     value: string,
@@ -81,15 +86,19 @@ export const SelectClusterAndNameSpace = () => {
     withAvatar?: boolean,
   ) => {
     const selectedOption = options.find((o) => o.value === value);
+    const isOpen = openSelect === id;
+
     return (
       <Stack
         direction="row"
         alignItems="center"
         spacing={1}
+        onClick={() => handleOpen(id)}
         sx={{
           "&:hover": { backgroundColor: "action.hover" },
           width: "145px",
           height: "100%",
+          cursor: "pointer",
           "&:first-of-type": {
             paddingLeft: "16px",
             paddingRight: "12px",
@@ -106,6 +115,7 @@ export const SelectClusterAndNameSpace = () => {
       >
         {withAvatar && selectedOption?.type && renderIcon(selectedOption.type)}
         <Select
+          open={isOpen}
           id={id}
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -131,9 +141,10 @@ export const SelectClusterAndNameSpace = () => {
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
+              padding: "0",
             },
             "& .MuiSvgIcon-root": {
-              top: "30%",
+              top: "32%",
             },
             "&.MuiInputBase-root": {
               backgroundColor: "transparent",
@@ -153,7 +164,10 @@ export const SelectClusterAndNameSpace = () => {
               borderBottom: "1.11px solid",
               borderColor: "border.default",
               typography: "caption",
-              color: "text.tertiary",
+              "&.Mui-disabled": {
+                opacity: 1,
+                color: "text.tertiary",
+              },
             }}
           >
             {placeholder}

@@ -1,11 +1,11 @@
 export const clusters = [
   { id: "cluster1", name: "Cluster1", type: "aks" },
-  { id: "cluster2", name: "Cluster2", type: "gke" },
+  { id: "cluster2", name: "Cluster2123213123", type: "gke" },
 ];
 
 export const namespaces = [
   { id: "namespace1", name: "Namespace1", clusterId: "cluster1" },
-  { id: "namespace2", name: "Namespace2", cluster: "cluster1" },
+  { id: "namespace2", name: "Namespace212312312321", clusterId: "cluster1" },
   { id: "test1", name: "Test1", clusterId: "cluster2" },
   { id: "test2", name: "Test2", clusterId: "cluster2" },
 ];
