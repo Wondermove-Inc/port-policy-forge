@@ -169,6 +169,7 @@ export const WorkloadList = () => {
           justifyContent: "space-between",
           padding: "0 12px 0 2px",
           marginTop: "80px",
+          height: "32px",
         }}
       >
         <Tabs value={"1"} sx={{ "& .MuiTabs-indicator": { display: "none" } }}>
