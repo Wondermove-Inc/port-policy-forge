@@ -10,35 +10,35 @@ export const namespaces = [
   { id: "test2", name: "Test2", clusterId: "cluster2" },
 ];
 
-export const workloads = [
+export const workloadList = [
   {
-    id: 1,
-    name: "Name",
+    id: "1",
+    name: "Workload Name 1",
     type: "Type",
     unconnectedPort: 2,
     idlePort: 8,
     activePort: 8,
     errorPort: 6,
-    closedPortAttempted: "",
+    closedPortAttempted: 0,
   },
   {
-    id: 2,
-    name: "Name",
+    id: "2",
+    name: "Workload Name 2",
     type: "Type",
     unconnectedPort: 3,
     idlePort: 7,
     activePort: 8,
     errorPort: 9,
-    closedPortAttempted: "1",
+    closedPortAttempted: 1,
   },
   {
-    id: 3,
-    name: "Name",
+    id: "3",
+    name: "Workload Name 3",
     type: "Type",
     unconnectedPort: 0,
     idlePort: 0,
     activePort: 0,
     errorPort: 0,
-    closedPortAttempted: "",
+    closedPortAttempted: 2,
   },
 ];

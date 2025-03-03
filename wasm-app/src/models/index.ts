@@ -11,7 +11,7 @@ export enum Direction {
   OUTBOUND = "Outbound",
 }
 
-export enum TypeCluster {
+export enum ClusterType {
   AKS = "aks",
   PRM = "premise",
   GKE = "gke",
@@ -81,4 +81,15 @@ export type PortAccessSettingForm = {
   }[];
   allowFullAccess: boolean;
   access: number;
+};
+
+export type WorkloadListItem = {
+  id: string;
+  name: string;
+  type: string;
+  unconnectedPort: number;
+  idlePort: number;
+  activePort: number;
+  errorPort: number;
+  closedPortAttempted: number;
 };

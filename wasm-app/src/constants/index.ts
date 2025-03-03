@@ -8,3 +8,8 @@ export const PORT_STATUS_MAP: Record<Stats, { label: string; color: string }> =
     error: { label: "Error", color: "status.danger" },
     attempted: { label: "Attempted", color: "status.danger" },
   };
+
+export const BOUND_TYPES = [
+  { label: "Inbound", value: "1" },
+  { label: "Outbound", value: "2" },
+];
