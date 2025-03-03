@@ -12,6 +12,7 @@ export const Home = () => {
     <Box
       sx={{
         height: "100%",
+        padding: "20px",
       }}
     >
       <Box
@@ -24,6 +25,7 @@ export const Home = () => {
           zIndex: 88,
           width: "100%",
           padding: "20px",
+          alignItems: "center",
         }}
       >
         <SelectClusterAndNameSpace />

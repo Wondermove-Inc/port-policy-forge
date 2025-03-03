@@ -88,7 +88,7 @@ export const SelectClusterAndNameSpace = () => {
         spacing={1}
         sx={{
           "&:hover": { backgroundColor: "action.hover" },
-          width: withAvatar ? "117px" : "142px",
+          width: "145px",
           height: "100%",
           "&:first-of-type": {
             paddingLeft: "16px",
