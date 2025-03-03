@@ -3,7 +3,6 @@ import { useEffect, useState, useCallback } from "react";
 import { Box } from "@mui/material";
 
 import { ClosePort } from "./workload-detail/ClosePort";
-import { workloadDetailData } from "./workload-detail/data";
 import { OpenPort } from "./workload-detail/OpenPort";
 import { OpenPortModal } from "./workload-detail/OpenPortModal";
 import { PolicyApplication } from "./workload-detail/PolicyApplication";
@@ -11,72 +10,20 @@ import { WorkloadSummary } from "./workload-detail/WorkloadSummary";
 import { WorkloadTabs } from "./workload-detail/WorkloadTabs";
 
 import { Drawer } from "@/components/atoms/Drawer";
+import { exampleWorkload } from "@/data";
 import {
   PortDetailGroupType,
   PortDirection,
   PortRangeType,
   WorkloadDetailType,
 } from "@/models";
-import { getAccessLabel, getPortKindLabel, getPortNumber, getPortRiskLabel } from "@/utils";
+import {
+  getAccessLabel,
+  getPortKindLabel,
+  getPortNumber,
+  getPortRiskLabel,
+} from "@/utils";
 import { formatNumber, formatter } from "@/utils/format";
-
-const INITIAL_WORKLOAD_DETAIL: WorkloadDetailType = {
-  uuid: "",
-  workloadName: "",
-  kind: "",
-  stats: {
-    active: null,
-    unconnected: null,
-    idle: null,
-    error: null,
-    attempted: null,
-    latencyRtt: null,
-    throughput: null,
-  },
-  ports: {
-    inbound: { open: [], closed: [] },
-    outbound: { open: [], closed: [] },
-  },
-};
-
-const formatWorkloadDetail = (data: WorkloadDetailType) => ({
-  ...data,
-  workloadName: formatter("workloadName")(data),
-  stats: {
-    active: formatter("stats.active", "", formatNumber)(data),
-    unconnected: formatter("stats.unconnected", "", formatNumber)(data),
-    idle: formatter("stats.idle", "", formatNumber)(data),
-    error: formatter("stats.error", "", formatNumber)(data),
-    attempted: formatter("stats.attempted")(data),
-    namespace: formatter("namespace")(data),
-    latencyRtt: formatter("stats.latencyRtt", "ms")(data),
-    throughput: formatter("stats.throughput", "MiB/s")(data),
-  },
-  ports: ["inbound", "outbound"].reduce(
-    (acc, direction) => {
-      acc[direction as PortDirection] = {
-        open: data.ports[direction as PortDirection].open.map((el) => ({
-          ...el,
-          portNumber: getPortNumber({
-            isRange: el.isRange,
-            portRange: el.portRange as PortRangeType,
-            portNumber: el.portNumber as string,
-          }),
-          sourceNumber: formatter("source", "", (el) => el.length)(el),
-          access: formatter("access", "", getAccessLabel)(el),
-        })),
-        closed: data.ports[direction as PortDirection].closed.map((el) => ({
-          ...el,
-          risk: formatter("risk", "", getPortRiskLabel)(el),
-          type: formatter("type", "", getPortKindLabel)(el),
-          count: formatter("count", "", formatNumber)(el),
-        })),
-      };
-      return acc;
-    },
-    {} as Record<PortDirection, PortDetailGroupType>,
-  ),
-});
 
 export const WorkloadDetail = ({
   open,
@@ -88,20 +35,68 @@ export const WorkloadDetail = ({
   const [portDirection, setPortDirection] = useState<PortDirection>(
     PortDirection.INBOUND,
   );
-  const [workloadDetail, setWorkloadDetail] = useState<WorkloadDetailType>(
-    INITIAL_WORKLOAD_DETAIL,
-  );
-
-  const fetchWorkloadDetail = useCallback(() => {
-    // TODO
-    setWorkloadDetail(
-      formatWorkloadDetail(workloadDetailData) as WorkloadDetailType,
-    );
-  }, []);
+  const [workloadDetail, setWorkloadDetail] =
+    useState<WorkloadDetailType | null>(null);
 
   useEffect(() => {
     fetchWorkloadDetail();
-  }, [fetchWorkloadDetail]);
+  }, []);
+
+  const fetchWorkloadDetail = useCallback(() => {
+    // TODO
+    setTimeout(() => {
+      setWorkloadDetail({
+        ...exampleWorkload,
+        workloadName: formatter("workloadName")(exampleWorkload),
+        stats: {
+          active: formatter("stats.active", "", formatNumber)(exampleWorkload),
+          unconnected: formatter(
+            "stats.unconnected",
+            "",
+            formatNumber,
+          )(exampleWorkload),
+          idle: formatter("stats.idle", "", formatNumber)(exampleWorkload),
+          error: formatter("stats.error", "", formatNumber)(exampleWorkload),
+          attempted: formatter("stats.attempted")(exampleWorkload),
+          namespace: formatter("namespace")(exampleWorkload),
+          latencyRtt: formatter("stats.latencyRtt", "ms")(exampleWorkload),
+          throughput: formatter("stats.throughput", "MiB/s")(exampleWorkload),
+        },
+        ports: ["inbound", "outbound"].reduce(
+          (acc, direction) => {
+            acc[direction as PortDirection] = {
+              open: exampleWorkload.ports[direction as PortDirection].open.map(
+                (el) => ({
+                  ...el,
+                  portNumber: getPortNumber({
+                    isRange: el.isRange,
+                    portRange: el.portRange as PortRangeType,
+                    portNumber: el.portNumber,
+                  }),
+                  sourceNumber: formatter("source", "", (el) => el.length)(el),
+                  access: formatter("access", "", getAccessLabel)(el),
+                }),
+              ),
+              closed: exampleWorkload.ports[
+                direction as PortDirection
+              ].closed.map((el) => ({
+                ...el,
+                risk: formatter("risk", "", getPortRiskLabel)(el),
+                type: formatter("type", "", getPortKindLabel)(el),
+                count: formatter("count", "", formatNumber)(el),
+              })),
+            };
+            return acc;
+          },
+          {} as Record<PortDirection, PortDetailGroupType>,
+        ),
+      });
+    }, 500);
+  }, []);
+
+  if (!workloadDetail) {
+    return <></>;
+  }
 
   return (
     <Drawer

@@ -94,6 +94,7 @@ export const CollapsibleTable = <T,>({
                       }),
                       color: "text.default",
                       ...column.sx,
+                      typography: "b2_r",
                     }}
                   >
                     {column.label}
