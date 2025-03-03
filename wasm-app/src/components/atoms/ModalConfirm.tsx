@@ -1,4 +1,4 @@
-import { List, ListItem } from "@mui/material";
+import { Box, List, ListItem } from "@mui/material";
 import { Modal, ModalBody, ModalHeader, Typography } from "@skuber/components";
 
 import { ModalFooter } from "./ModalFooter";
@@ -24,13 +24,20 @@ export const ModalConfirm = ({
     <Modal width={434} open={open} onClose={onClose}>
       <ModalHeader title={title} onClose={onClose} />
       <ModalBody>
-        <Typography>{description}</Typography>
+        <Typography
+          sx={{
+            mb: "4px",
+          }}
+        >
+          {description}
+        </Typography>
         {descriptionDetails && descriptionDetails.length > 0 && (
           <List
             sx={{
               paddingLeft: "24px",
               listStyleType: "disc",
               typography: "body2",
+              color: "text.secondary",
             }}
           >
             {descriptionDetails.map((item, index) => (

@@ -19,6 +19,11 @@ export enum ClusterType {
   OKE = "oke",
 }
 
+export enum PortKind {
+  INTERNAL = "internal",
+  EXTERNAL = "external",
+}
+
 export type PortRangeType = {
   start: string;
   end: string;
@@ -27,6 +32,8 @@ export type PortRangeType = {
 export type SourceType = {
   ip: string;
   port: number;
+  comment?: string;
+  createdAt?: string;
 };
 
 export type Port = {
@@ -44,6 +51,7 @@ export type Port = {
   lastSrcIp: string | null;
   lastConnectionLog: string | null;
   source: SourceType[] | null;
+  sourceNumber?: number | null;
   access?: number;
 };
 
@@ -78,7 +86,6 @@ export type PortAccessSettingForm = {
   sources: {
     source: string;
     type: string;
-    comment: string;
   }[];
   allowFullAccess: boolean;
   access: number;
@@ -88,6 +95,12 @@ export enum AccessSource {
   ALLOW_ALL = 0,
   ALLOW_EXPECT = 1,
   ALLOW_ONLY = 3,
+}
+
+export enum PortRisk {
+  NULL = 0,
+  NORMAL = 1,
+  HIGH = 2,
 }
 
 export const STATUS_MAP: Record<number, Stats> = {

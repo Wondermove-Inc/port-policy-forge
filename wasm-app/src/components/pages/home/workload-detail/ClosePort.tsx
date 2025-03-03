@@ -22,19 +22,27 @@ const columns = [
     id: "risk",
     label: "Risk",
     sortable: false,
-    width: 25,
+    width: 65,
+    render: (record: Port) => (
+      <Typography variant="b2_m" color="status.danger">
+        {record.risk}
+      </Typography>
+    ),
   },
   {
     id: "type",
     label: "Type",
     sortable: false,
-    width: 75,
+    width: 85,
+    render: (record: Port) => (
+      <Typography variant="b2_m">{record.type}</Typography>
+    ),
   },
   {
     id: "count",
     label: "Count ",
     sortable: false,
-    width: 65,
+    width: 85,
   },
   {
     id: "open",

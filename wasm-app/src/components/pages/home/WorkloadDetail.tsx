@@ -17,7 +17,12 @@ import {
   PortRangeType,
   WorkloadDetailType,
 } from "@/models";
-import { getAccessLabel, getPortNumber } from "@/utils";
+import {
+  getAccessLabel,
+  getPortKindLabel,
+  getPortNumber,
+  getPortRiskLabel,
+} from "@/utils";
 import { formatNumber, formatter } from "@/utils/format";
 
 export const WorkloadDetail = ({
@@ -66,7 +71,7 @@ export const WorkloadDetail = ({
                   portNumber: getPortNumber({
                     isRange: el.isRange,
                     portRange: el.portRange as PortRangeType,
-                    portNumber: el.portNumber as string,
+                    portNumber: el.portNumber,
                   }),
                   sourceNumber: formatter("source", "", (el) => el.length)(el),
                   access: formatter("access", "", getAccessLabel)(el),
@@ -76,6 +81,8 @@ export const WorkloadDetail = ({
                 direction as PortDirection
               ].closed.map((el) => ({
                 ...el,
+                risk: formatter("risk", "", getPortRiskLabel)(el),
+                type: formatter("type", "", getPortKindLabel)(el),
                 count: formatter("count", "", formatNumber)(el),
               })),
             };

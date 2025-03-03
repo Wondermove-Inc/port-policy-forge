@@ -20,6 +20,11 @@ export const customTheme = {
       fontWeight: 400,
       lineHeight: "18px",
     },
+    b2_m: {
+      fontSize: "13px",
+      fontWeight: 600,
+      lineHeight: "18px",
+    },
     body3: {
       fontSize: "13px",
       fontWeight: 500,
