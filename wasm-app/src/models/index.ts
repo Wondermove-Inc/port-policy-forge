@@ -11,7 +11,7 @@ export enum PortDirection {
   OUTBOUND = "outbound",
 }
 
-export enum TypeCluster {
+export enum ClusterType {
   AKS = "aks",
   PRM = "premise",
   GKE = "gke",
@@ -95,4 +95,15 @@ export const STATUS_MAP: Record<number, Stats> = {
   2: Stats.ACTIVE,
   3: Stats.ERROR,
   4: Stats.ATTEMPTED,
+};
+
+export type WorkloadListItem = {
+  id: string;
+  name: string;
+  type: string;
+  unconnectedPort: number;
+  idlePort: number;
+  activePort: number;
+  errorPort: number;
+  closedPortAttempted: number;
 };

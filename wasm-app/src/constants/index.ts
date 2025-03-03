@@ -30,3 +30,8 @@ export const PORT_STATUS_MAP: Record<
     backgroundColor: "#EB413633",
   },
 };
+
+export const BOUND_TYPES = [
+  { label: "Inbound", value: "1" },
+  { label: "Outbound", value: "2" },
+];
