@@ -27,6 +27,8 @@ export type PortRangeType = {
 export type SourceType = {
   ip: string;
   port: number;
+  comment?: string;
+  createdAt?: string;
 };
 
 export type Port = {
@@ -44,6 +46,7 @@ export type Port = {
   lastSrcIp: string | null;
   lastConnectionLog: string | null;
   source: SourceType[] | null;
+  sourceNumber?: number | null;
   access?: number;
 };
 
@@ -77,7 +80,6 @@ export type PortAccessSettingForm = {
   sources: {
     source: string;
     type: string;
-    comment: string;
   }[];
   allowFullAccess: boolean;
   access: number;

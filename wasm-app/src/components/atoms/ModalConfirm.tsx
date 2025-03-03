@@ -31,6 +31,7 @@ export const ModalConfirm = ({
               paddingLeft: "24px",
               listStyleType: "disc",
               typography: "body2",
+              color: "text.secondary",
             }}
           >
             {descriptionDetails.map((item, index) => (

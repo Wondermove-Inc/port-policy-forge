@@ -25,6 +25,7 @@ export const workloadDetailData = {
           status: 0,
           direction: "inbound",
           source: null,
+          access: 0,
           isOpen: true,
           risk: 0,
           type: "internal",
@@ -41,6 +42,7 @@ export const workloadDetailData = {
           status: 1,
           direction: "inbound",
           source: null,
+          access: 1,
           isOpen: true,
           risk: 0,
           type: "internal",
@@ -60,6 +62,7 @@ export const workloadDetailData = {
           status: 0,
           direction: "inbound",
           source: null,
+          access: 3,
           isOpen: true,
           risk: 0,
           type: "internal",
@@ -73,16 +76,23 @@ export const workloadDetailData = {
           isRange: false,
           portNumber: 8080,
           portRange: null,
+          access: 0,
           status: 2,
           direction: "inbound",
           source: [
             {
               ip: "192.168.1.100",
               port: 51234,
+              comment:
+                "Working on deploying a front-end application, making it accessible only from an internal test server.",
+              createdAt: "2023-02-21T11:19:22+09:00",
             },
             {
               ip: "192.168.1.101",
               port: 51234,
+              comment:
+                "Working on deploying a front-end application, making it accessible only from an internal test server.",
+              createdAt: "2023-02-21T11:19:22+09:00",
             },
           ],
           isOpen: true,
@@ -147,11 +157,15 @@ export const workloadDetailData = {
           portNumber: 9000,
           portRange: null,
           status: 0,
+          access: 0,
           direction: "outbound",
           source: [
             {
               ip: "10.0.0.1",
               port: 12345,
+              comment:
+                "Working on deploying a front-end application, making it accessible only from an internal test server.",
+              createdAt: "2023-02-21T11:19:22+09:00",
             },
           ],
           isOpen: true,
