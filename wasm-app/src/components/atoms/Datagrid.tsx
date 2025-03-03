@@ -187,6 +187,7 @@ export const Datagrid = (
       }
       return (
         <Typography
+          component="span"
           sx={{
             display: "block",
             overflow: "hidden",

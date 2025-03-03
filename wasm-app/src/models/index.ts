@@ -11,6 +11,14 @@ export enum Direction {
   OUTBOUND = "Outbound",
 }
 
+export enum TypeCluster {
+  AKS = "aks",
+  PRM = "premise",
+  GKE = "gke",
+  EKS = "eks",
+  OKE = "oke",
+}
+
 export type PortRangeType = {
   start: string;
   end: string;
