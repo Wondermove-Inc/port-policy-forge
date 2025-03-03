@@ -95,7 +95,8 @@ export const OpenPort = ({ data, portDirection }: OpenPortProps) => {
           display: "flex",
           width: "100%",
           justifyContent: "space-between",
-          paddingY: "6.5px",
+          alignItems: "center",
+          paddingY: "4px",
           marginBottom: "12px",
         }}
       >
