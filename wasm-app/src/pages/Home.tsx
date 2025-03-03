@@ -1,10 +1,12 @@
+import { useEffect, useState } from "react";
+
+import { Box } from "@mui/material";
+
 import { SelectClusterAndNameSpace } from "@/components/modules/SelectClusterAndNameSpace";
 import { TabsViewMode } from "@/components/modules/TabsViewMode";
 import { WorkloadList } from "@/components/pages/home/WorkloadList";
 import { WorkloadMap } from "@/components/pages/home/WorkloadMap";
 import { useCommonStore } from "@/store";
-import { Box } from "@mui/material";
-import { useEffect, useState } from "react";
 
 export const Home = () => {
   const { isViewList } = useCommonStore();
@@ -25,7 +27,7 @@ export const Home = () => {
 
   const [clusterValue, setClusterValue] = useState(clusterOptions[0].value);
   const [nameSpaceValue, setNameSpaceValue] = useState(
-    nameSpaceOptions[clusterValue][0].value
+    nameSpaceOptions[clusterValue][0].value,
   );
 
   useEffect(() => {
@@ -48,6 +50,7 @@ export const Home = () => {
           zIndex: 88,
           width: "100%",
           padding: "20px",
+          alignItems: "center",
         }}
       >
         <SelectClusterAndNameSpace
