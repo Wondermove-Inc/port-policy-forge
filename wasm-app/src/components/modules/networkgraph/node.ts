@@ -132,7 +132,7 @@ export const drawNodeLabel = (
 
   const nodeSize = node?.data?.nodeSize || 0;
 
-  ctx.font = "12px";
+  ctx.font = "normal 12px Arial";
   ctx.fillStyle = color.white;
   ctx.textAlign = "left";
   ctx.textBaseline = "alphabetic";
@@ -178,7 +178,6 @@ export const drawNodeNumberOfPortBadge = (
     ctx.beginPath();
     ctx.arc(x, y, ARC_RADIUS, 0, Math.PI * 2);
     ctx.lineWidth = 1;
-    console.log(ctx.strokeStyle);
     ctx.fill();
     ctx.closePath();
     ctx.font = "bold 10px Arial";

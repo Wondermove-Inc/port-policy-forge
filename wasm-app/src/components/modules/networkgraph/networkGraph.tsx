@@ -107,7 +107,6 @@ const NetworkGraph = ({
         handleAfterDrawing(ctx, canvasImages, edges, nodes);
       }
     });
-
     network.on("hoverNode", function (params) {
       if (activeNodeId) {
         return;
@@ -145,8 +144,15 @@ const NetworkGraph = ({
         onNodeClick?.(nodeId as string);
       }
     });
+
     network.redraw();
-   
+
+    return () => {
+      network.off("hoverNode");
+      network.off("afterDrawing");
+      network.off("blurNode");
+      network.off("click");
+    };
   }, [canvasImages, edges, nodes, activeNodeId]);
 
   useEffect(() => {
