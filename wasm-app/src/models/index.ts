@@ -82,3 +82,17 @@ export type PortAccessSettingForm = {
   allowFullAccess: boolean;
   access: number;
 };
+
+export enum AccessSource {
+  ALLOW_ALL = 0,
+  ALLOW_EXPECT = 1,
+  ALLOW_ONLY = 3,
+}
+
+export const STATUS_MAP: Record<number, Stats> = {
+  0: Stats.UNCONNECTED,
+  1: Stats.IDLE,
+  2: Stats.ACTIVE,
+  3: Stats.ERROR,
+  4: Stats.ATTEMPTED,
+};

@@ -13,34 +13,41 @@ const columns = [
     id: "portNumber",
     label: "Number",
     sortable: false,
-    width: 112,
+    width: 85,
+    render: (record: Port) => (
+      <Typography variant="b2_m">{record.portNumber}</Typography>
+    ),
   },
   {
     id: "risk",
     label: "Risk",
     sortable: false,
-    width: 112,
+    width: 25,
   },
   {
     id: "type",
     label: "Type",
     sortable: false,
-    width: 92,
+    width: 75,
   },
   {
     id: "count",
     label: "Count ",
     sortable: false,
-    width: 64,
+    width: 65,
   },
   {
     id: "open",
     label: "",
     sortable: false,
-    width: 68,
+    width: 120,
     render: () => (
-      <Typography variant="b2_r" color="primary.dark">
-        Open
+      <Typography
+        variant="label_m"
+        color="primary.dark"
+        sx={{ cursor: "pointer" }}
+      >
+        Open the access
       </Typography>
     ),
   },
@@ -48,7 +55,7 @@ const columns = [
     id: "close",
     label: "",
     sortable: false,
-    width: 24,
+    width: 32,
     render: () => (
       <Box
         sx={{
@@ -57,7 +64,7 @@ const columns = [
           justifyContent: "center",
         }}
       >
-        <CloseIcon size={16} />
+        <CloseIcon size={16} sx={{ cursor: "pointer" }} />
       </Box>
     ),
   },

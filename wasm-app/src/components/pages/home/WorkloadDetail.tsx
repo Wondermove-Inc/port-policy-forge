@@ -11,7 +11,13 @@ import { WorkloadSummary } from "./workload-detail/WorkloadSummary";
 import { WorkloadTabs } from "./workload-detail/WorkloadTabs";
 
 import { Drawer } from "@/components/atoms/Drawer";
-import { PortDirection, WorkloadDetailType } from "@/models";
+import {
+  PortDetailGroupType,
+  PortDirection,
+  PortRangeType,
+  WorkloadDetailType,
+} from "@/models";
+import { getAccessLabel, getPortNumber } from "@/utils";
 import { formatNumber, formatter } from "@/utils/format";
 
 const INITIAL_WORKLOAD_DETAIL: WorkloadDetailType = {
@@ -37,7 +43,6 @@ const formatWorkloadDetail = (data: WorkloadDetailType) => ({
   ...data,
   workloadName: formatter("workloadName")(data),
   stats: {
-    ...data.stats,
     active: formatter("stats.active", "", formatNumber)(data),
     unconnected: formatter("stats.unconnected", "", formatNumber)(data),
     idle: formatter("stats.idle", "", formatNumber)(data),
@@ -47,24 +52,27 @@ const formatWorkloadDetail = (data: WorkloadDetailType) => ({
     latencyRtt: formatter("stats.latencyRtt", "ms")(data),
     throughput: formatter("stats.throughput", "MiB/s")(data),
   },
-  ports: Object.fromEntries(
-    ["inbound", "outbound"].map((direction) => [
-      direction,
-      {
-        open: data.ports[direction].open.map((el) => ({
+  ports: ["inbound", "outbound"].reduce(
+    (acc, direction) => {
+      acc[direction as PortDirection] = {
+        open: data.ports[direction as PortDirection].open.map((el) => ({
           ...el,
-          portNumber: el.isRange
-            ? `${el?.portRange?.start} ~ ${el?.portRange?.end}`
-            : el.portNumber,
-          sourceNumber: el.source?.length || "-",
-          access: "Allow all access",
+          portNumber: getPortNumber({
+            isRange: el.isRange,
+            portRange: el.portRange as PortRangeType,
+            portNumber: el.portNumber as string,
+          }),
+          sourceNumber: formatter("source", "", (el) => el.length)(el),
+          access: formatter("access", "", getAccessLabel)(el),
         })),
-        closed: data.ports[direction].closed.map((el) => ({
+        closed: data.ports[direction as PortDirection].closed.map((el) => ({
           ...el,
-          count: el.count || 0,
+          count: formatter("count", "", formatNumber)(el),
         })),
-      },
-    ]),
+      };
+      return acc;
+    },
+    {} as Record<PortDirection, PortDetailGroupType>,
   ),
 });
 
@@ -83,7 +91,10 @@ export const WorkloadDetail = ({
   );
 
   const fetchWorkloadDetail = useCallback(() => {
-    setWorkloadDetail(formatWorkloadDetail(workloadDetailData));
+    // TODO
+    setWorkloadDetail(
+      formatWorkloadDetail(workloadDetailData) as WorkloadDetailType,
+    );
   }, []);
 
   useEffect(() => {
@@ -107,8 +118,11 @@ export const WorkloadDetail = ({
           stats={workloadDetail.stats}
           workloadName={workloadDetail.workloadName}
         />
-        <PolicyApplication />
-        <OpenPort data={workloadDetail.ports[portDirection].open} />
+        <PolicyApplication fetchWorkloadDetail={fetchWorkloadDetail} />
+        <OpenPort
+          data={workloadDetail.ports[portDirection].open}
+          portDirection={portDirection}
+        />
         <ClosePort data={workloadDetail.ports[portDirection].closed} />
       </Box>
       <OpenPortModal />
