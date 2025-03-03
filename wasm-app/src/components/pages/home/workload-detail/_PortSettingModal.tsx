@@ -1,11 +1,4 @@
-import {
-  Box,
-  FormControlLabel,
-  List,
-  ListItem,
-  RadioGroup,
-  TextField,
-} from "@mui/material";
+import { Box, FormControlLabel, RadioGroup, TextField } from "@mui/material";
 import {
   Button,
   Modal,
@@ -17,9 +10,9 @@ import {
   Toggle,
   Typography,
 } from "@skuber/components";
-import { defaultTheme } from "@skuber/theme";
-import { useFieldArray, UseFormReturn, Controller } from "react-hook-form";
+import { useFieldArray, Controller, useForm } from "react-hook-form";
 
+import { DescriptionWithDetails } from "@/components/atoms/DescriptionWithDetails";
 import { AddIcon } from "@/components/icons/AddIcon";
 import { DeleteIcon } from "@/components/icons/DeleteIcon";
 import { PortAccessSettingForm } from "@/models";
@@ -27,26 +20,61 @@ import { PortAccessSettingForm } from "@/models";
 interface PortSettingModalProps {
   isOpen: boolean;
   handleClose: () => void;
-  form: UseFormReturn<PortAccessSettingForm>;
 }
 
 export const PortSettingModal = ({
   isOpen,
   handleClose,
-  form,
 }: PortSettingModalProps) => {
+  const form = useForm<PortAccessSettingForm>({
+    defaultValues: {
+      sources: [
+        {
+          source: "",
+          type: "",
+          comment: "",
+        },
+      ],
+      allowFullAccess: false,
+      access: null,
+      port: null,
+    },
+  });
+
+  const { control, watch } = form;
+
   const { fields, append, remove } = useFieldArray({
-    control: form.control,
+    control,
     name: "sources",
   });
 
   const handleAddSource = () => append({ source: "", type: "", comment: "" });
 
-  const allowFullAccess = form.watch("allowFullAccess");
+  const allowFullAccess = watch("allowFullAccess");
 
   return (
     <Modal width={646} open={isOpen} onClose={handleClose}>
       <ModalHeader title="Port Access settings" onClose={handleClose} />
+      <Box sx={{ p: "16px 20px 0 20px" }}>
+        <DescriptionWithDetails
+          description="Please enter the port to open. You can enter it in one of the following three formats."
+          details={[
+            "Single port: 30080",
+            "Multiple ports: enter separated by commas (e.g. 30080,30081,30082)",
+            "Port range: enter the range with a hyphen (e.g. 30080-30090)",
+          ]}
+        />
+        <TextField
+          id="port"
+          sx={{
+            width: "100% !important",
+            ".MuiFormLabel-root": {
+              bgcolor: "unset",
+            },
+          }}
+          placeholder="Port number"
+        />
+      </Box>
       <Box
         sx={{
           display: "flex",
@@ -61,44 +89,23 @@ export const PortSettingModal = ({
             display: "flex",
             alignItems: "center",
             gap: 2,
-            p: 2,
-            borderBottom: 1,
-            borderColor: "border.default",
+            p: "20px",
+            pb: 0,
           }}
         >
-          <Typography variant="body1">Allow full access</Typography>
+          <Typography variant="body1">Allow all access</Typography>
           <Controller
             name="allowFullAccess"
-            control={form.control}
+            control={control}
             render={({ field }) => <Toggle {...field} checked={field.value} />}
           />
         </Box>
-        <Box sx={{ px: "20px" }}>
-          <Typography>
-            Opening the port will result in the following changes
-          </Typography>
-          <List
-            sx={{
-              pl: 3,
-              pt: 1,
-              listStyleType: "disc",
-              ...defaultTheme.typography.body2,
-            }}
-          >
-            <ListItem sx={{ display: "list-item", p: 0 }}>
-              The closed port becomes externally accessible again.
-            </ListItem>
-            <ListItem sx={{ display: "list-item", p: 0 }}>
-              Service traffic through that port is allowed.
-            </ListItem>
-          </List>
-        </Box>
         {!allowFullAccess && (
           <>
-            <Box sx={{ px: "30px" }}>
+            <Box sx={{ px: "31px" }}>
               <Controller
                 name="access"
-                control={form.control}
+                control={control}
                 render={({ field }) => (
                   <RadioGroup
                     sx={{ display: "flex", alignItems: "center", gap: 3 }}
@@ -140,7 +147,13 @@ export const PortSettingModal = ({
                       flex: 1,
                     }}
                   >
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "12px",
+                      }}
+                    >
                       <TextField
                         id="source"
                         label="Source"

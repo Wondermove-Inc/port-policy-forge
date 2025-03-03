@@ -3,12 +3,14 @@ import { useMemo } from "react";
 import { Box } from "@mui/material";
 import { Button, Typography } from "@skuber/components";
 
+import { PortSettingModal } from "./_PortSettingModal";
 import { PortDetail } from "./PortDetail";
 
 import { AddIcon } from "@/components/icons/AddIcon";
 import { EditIcon } from "@/components/icons/EditIcon";
 import { BadgePortStatus } from "@/components/modules/BadgePortStatus";
 import { CollapsibleTable } from "@/components/modules/CollapsibleTable";
+import { useDisclosure } from "@/hooks/useDisclosure";
 import { Port, PortDirection } from "@/models";
 
 type OpenPortProps = {
@@ -17,6 +19,8 @@ type OpenPortProps = {
 };
 
 export const OpenPort = ({ data, portDirection }: OpenPortProps) => {
+  const openPortModal = useDisclosure();
+
   const isInbound = portDirection === PortDirection.INBOUND;
 
   const columns = useMemo(
@@ -110,6 +114,7 @@ export const OpenPort = ({ data, portDirection }: OpenPortProps) => {
             width: "94px",
             height: "24px",
           }}
+          onClick={openPortModal.open}
         >
           <AddIcon size={16} />
           Open Port
@@ -124,6 +129,10 @@ export const OpenPort = ({ data, portDirection }: OpenPortProps) => {
         renderDetails={(record) =>
           record.source ? <PortDetail record={record} /> : undefined
         }
+      />
+      <PortSettingModal
+        isOpen={openPortModal.visible}
+        handleClose={openPortModal.close}
       />
     </Box>
   );
