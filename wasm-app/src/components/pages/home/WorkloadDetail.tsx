@@ -91,6 +91,7 @@ export const WorkloadDetail = ({
   );
 
   const fetchWorkloadDetail = useCallback(() => {
+    // TODO
     setWorkloadDetail(
       formatWorkloadDetail(workloadDetailData) as WorkloadDetailType,
     );
@@ -117,7 +118,7 @@ export const WorkloadDetail = ({
           stats={workloadDetail.stats}
           workloadName={workloadDetail.workloadName}
         />
-        <PolicyApplication />
+        <PolicyApplication fetchWorkloadDetail={fetchWorkloadDetail} />
         <OpenPort
           data={workloadDetail.ports[portDirection].open}
           portDirection={portDirection}
