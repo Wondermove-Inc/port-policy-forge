@@ -1,4 +1,4 @@
-import { AccessSource } from "@/models";
+import { AccessSource, PortKind } from "@/models";
 
 export const getPortNumber = ({
   isRange,
@@ -28,5 +28,27 @@ export const getAccessLabel = (access: number) => {
       return "allow only some sources";
     default:
       return "Allow all access";
+  }
+};
+
+export const getPortKindLabel = (kind: string) => {
+  switch (kind) {
+    case PortKind.INTERNAL:
+      return "Internal";
+    case PortKind.EXTERNAL:
+      return "External";
+    default:
+      return "";
+  }
+};
+
+export const getPortRiskLabel = (risk: number) => {
+  switch (risk) {
+    case 1:
+      return "Normal";
+    case 2:
+      return "High";
+    default:
+      return "";
   }
 };

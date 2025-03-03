@@ -19,6 +19,11 @@ export enum ClusterType {
   OKE = "oke",
 }
 
+export enum PortKind {
+  INTERNAL = "internal",
+  EXTERNAL = "external",
+}
+
 export type PortRangeType = {
   start: string;
   end: string;
@@ -89,6 +94,12 @@ export enum AccessSource {
   ALLOW_ALL = 0,
   ALLOW_EXPECT = 1,
   ALLOW_ONLY = 3,
+}
+
+export enum PortRisk {
+  NULL = 0,
+  NORMAL = 1,
+  HIGH = 2,
 }
 
 export const STATUS_MAP: Record<number, Stats> = {

@@ -17,7 +17,7 @@ import {
   PortRangeType,
   WorkloadDetailType,
 } from "@/models";
-import { getAccessLabel, getPortNumber } from "@/utils";
+import { getAccessLabel, getPortKindLabel, getPortNumber, getPortRiskLabel } from "@/utils";
 import { formatNumber, formatter } from "@/utils/format";
 
 const INITIAL_WORKLOAD_DETAIL: WorkloadDetailType = {
@@ -67,6 +67,8 @@ const formatWorkloadDetail = (data: WorkloadDetailType) => ({
         })),
         closed: data.ports[direction as PortDirection].closed.map((el) => ({
           ...el,
+          risk: formatter("risk", "", getPortRiskLabel)(el),
+          type: formatter("type", "", getPortKindLabel)(el),
           count: formatter("count", "", formatNumber)(el),
         })),
       };
