@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { Typography } from "@skuber/components";
 
-import { Port } from "@/models";
+import { Port, SourceType } from "@/models";
 
 const ShadedBox = ({ children }: { children: React.ReactNode }) => (
   <Box
@@ -9,6 +9,9 @@ const ShadedBox = ({ children }: { children: React.ReactNode }) => (
       padding: "12px",
       borderRadius: "8px",
       backgroundColor: "background.shaded",
+      display: "flex",
+      flexDirection: "column",
+      gap: "10px",
     }}
   >
     {children}
@@ -19,15 +22,21 @@ export const PortDetail = ({ record }: { record: Port }) => {
   const isOpen = record.isOpen;
 
   return (
-    <Box>
+    <Box
+      sx={{
+        "&>div": {
+          p: "20px",
+        },
+      }}
+    >
       {isOpen && (
         <Box sx={{ py: 2, display: "flex", flexDirection: "column", gap: 2 }}>
           <Typography variant="caption" color="text.tertiary">
-            {`Connected sources (${record.source})`}
+            {`Connected sources (${record.sourceNumber})`}
           </Typography>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
             {(record.source || []).map(
-              ({ ip, port }: { ip: string; port: number }) => (
+              ({ ip, port, comment, createdAt }: SourceType) => (
                 <Box
                   key={`${ip}-${port}`}
                   sx={{ display: "flex", flexDirection: "column", gap: 1 }}
@@ -37,11 +46,10 @@ export const PortDetail = ({ record }: { record: Port }) => {
                   </Typography>
                   <ShadedBox>
                     <Typography variant="body2" color="text.primary">
-                      Working on deploying a front-end application, making it
-                      accessible only from an internal test server.
+                      {comment}
                     </Typography>
                     <Typography variant="caption" color="text.tertiary">
-                      2023.02.21, 11:19:22 (GMT +9)
+                      {createdAt}
                     </Typography>
                   </ShadedBox>
                 </Box>

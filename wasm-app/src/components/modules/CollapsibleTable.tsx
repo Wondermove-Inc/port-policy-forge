@@ -77,7 +77,7 @@ export const CollapsibleTable = <T,>({
                   },
                 }}
               >
-                {columns.map((column, index) => (
+                {columns.map((column) => (
                   <TableCell
                     key={column.id}
                     align={column.align}
@@ -96,9 +96,6 @@ export const CollapsibleTable = <T,>({
                       ...column.sx,
                     }}
                   >
-                    {index === 0 && (
-                      <Box component="span" sx={{ marginRight: 1 }} />
-                    )}
                     {column.label}
                   </TableCell>
                 ))}
@@ -148,7 +145,7 @@ export const CollapsibleTable = <T,>({
                       <TableRow
                         sx={{
                           ".MuiTableCell-body": {
-                            padding: "15.5px 8px",
+                            padding: "7.5px 12px",
                           },
                         }}
                       >
@@ -175,6 +172,9 @@ export const CollapsibleTable = <T,>({
                                     <IconButton
                                       size="small"
                                       onClick={() => handleToggleRow(index)}
+                                      sx={{
+                                        ml: "-10px",
+                                      }}
                                     >
                                       {isOpen ? (
                                         <ArrowDownIcon size={16} />
@@ -195,11 +195,13 @@ export const CollapsibleTable = <T,>({
                       {hasDetails && (
                         <TableRow>
                           <TableCell
-                            style={{ paddingBottom: 0, paddingTop: 0 }}
                             colSpan={columns.length}
+                            sx={{
+                              padding: "0 !important",
+                            }}
                           >
                             <Collapse in={isOpen} timeout="auto" unmountOnExit>
-                              <Box margin={1}>{renderDetails(row)}</Box>
+                              <Box>{renderDetails(row)}</Box>
                             </Collapse>
                           </TableCell>
                         </TableRow>
