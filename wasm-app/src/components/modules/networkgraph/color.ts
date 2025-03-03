@@ -1,5 +1,6 @@
 export const color = {
   white: "#fff",
+  black: '#19191B',
   stroke: {
     default: "#4d4d4f",
     active: "rgba(83, 139, 255, 1)",

@@ -33,11 +33,11 @@ const getArrowOffset = (nodeSize: NodeSize | undefined): number => {
 
   switch (nodeSize) {
     case NodeSize.BIG:
-      return 40.5;
+      return 41;
     case NodeSize.SMALL:
-      return 23.5;
+      return 24;
     default:
-      return 33.5;
+      return 34;
   }
 };
 

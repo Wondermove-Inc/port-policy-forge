@@ -4,6 +4,7 @@ import {
   CustomNode,
   DeploymentIconSize,
   DrawingOptions,
+  EdgeStatus,
   NodeSize,
 } from "./types";
 
@@ -28,6 +29,16 @@ export const drawNetworkNode = (
   drawExclamationIcon(ctx, node, canvasImages);
   drawDeploymentIcon(ctx, node, canvasImages);
   drawNodeLabel(ctx, node, canvasImages);
+  drawNodeNumberOfPortBadge(ctx, node, [
+    {
+      status: EdgeStatus.ERROR,
+      numberOfPorts: 10,
+    },
+    {
+      status: EdgeStatus.IDLE,
+      numberOfPorts: 20,
+    },
+  ]);
 
   if (options?.disabled) {
     ctx.globalAlpha = GLOBAL_ALPHA;
@@ -80,8 +91,8 @@ export const drawExclamationIcon = (
   ctx.beginPath();
   ctx.drawImage(
     canvasImages.exclamation,
-    node.x + 12,
-    node.y - (node?.data?.nodeSize || 0) / 2,
+    node.x + 14,
+    node.y - (node?.data?.nodeSize || 0) / 2 - 1,
     EXCLAMATION_SIZE,
     EXCLAMATION_SIZE
   );
@@ -123,7 +134,8 @@ export const drawNodeLabel = (
 
   ctx.font = "12px";
   ctx.fillStyle = color.white;
-
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
   const label = node?.data?.customLabel;
 
   const textMetrics = ctx.measureText(label as string);
@@ -145,4 +157,33 @@ export const drawNodeLabel = (
     node.y + nodeSize / 2 + 6
   );
   ctx.closePath();
+};
+
+export const drawNodeNumberOfPortBadge = (
+  ctx: CanvasRenderingContext2D,
+  node: CustomNode,
+  ports: { status: EdgeStatus; numberOfPorts: number }[]
+) => {
+  const ARC_RADIUS = 10;
+  for (let i = 0; i < ports.length; i++) {
+    let x = node.x + ARC_RADIUS + 14;
+    if (ports.length !== 1) {
+      x = node.x + ((ARC_RADIUS * 2) - 5) * i + 14;
+    }
+    const y = node.y - (node?.data?.nodeSize || 0) / 2 + 10 - 1;
+    ctx.fillStyle =
+      ports[i].status === EdgeStatus.ERROR ? color.error : color.idle;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.beginPath();
+    ctx.arc(x, y, ARC_RADIUS, 0, Math.PI * 2);
+    ctx.lineWidth = 1;
+    console.log(ctx.strokeStyle);
+    ctx.fill();
+    ctx.closePath();
+    ctx.font = "bold 10px Arial";
+    ctx.fillStyle =
+      ports[i].status === EdgeStatus.ERROR ? color.white : color.black;
+    ctx.fillText(ports[i].numberOfPorts.toString(), x, y);
+  }
 };
