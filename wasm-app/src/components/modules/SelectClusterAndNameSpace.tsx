@@ -160,16 +160,6 @@ export const SelectClusterAndNameSpace = () => {
               whiteSpace: "nowrap",
               padding: "0",
             },
-            // "& .MuiList-root": {
-            //   backgroundColor: "red",
-            //   backdropFilter: "blur(50px)",
-            //   boxShadow: "5px 5px 20px 0px #1419234D",
-            //   color: "text.default",
-            //   typography: "body1",
-            //   "&:hover": {
-            //     backgroundColor: "red",
-            //   },
-            // },
             "& .MuiSvgIcon-root": {
               top: "32%",
             },
