@@ -1,188 +1,189 @@
-import { color } from "./color";
+import { color, DISABLED_GLOBAL_ALPHA, EXCLAMATION_SIZE, GLOBAL_ALPHA } from "./constants";
 import {
   CanvasImage,
   CustomNode,
   DeploymentIconSize,
   DrawingOptions,
   EdgeStatus,
+  EdgeStatusText,
   NodeSize,
 } from "./types";
 
-const EXCLAMATION_SIZE = 20;
-const GLOBAL_ALPHA = 1.0;
-const DISABLED_GLOBAL_ALPHA = 0.2;
-export const drawNetworkNode = (
-  ctx: CanvasRenderingContext2D,
-  node: CustomNode,
-  canvasImages: CanvasImage,
-  options?: DrawingOptions
-) => {
-  if (!canvasImages || !node.x || !node.y) {
-    return;
+export class NetworkNode {
+  ctx: CanvasRenderingContext2D;
+  node: CustomNode;
+  canvasImages: CanvasImage;
+  options: DrawingOptions;
+  constructor(
+    ctx: CanvasRenderingContext2D,
+    node: CustomNode,
+    canvasImages: CanvasImage,
+    options: DrawingOptions
+  ) {
+    this.ctx = ctx;
+    this.node = node;
+    this.canvasImages = canvasImages;
+    this.options = options;
   }
 
-  if (options?.disabled) {
-    ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
-  }
-
-  drawNodeBackground(ctx, node, options);
-  drawExclamationIcon(ctx, node, canvasImages);
-  drawDeploymentIcon(ctx, node, canvasImages);
-  drawNodeLabel(ctx, node, canvasImages);
-  drawNodeNumberOfPortBadge(ctx, node, [
-    {
-      status: EdgeStatus.ERROR,
-      numberOfPorts: 10,
-    },
-    {
-      status: EdgeStatus.IDLE,
-      numberOfPorts: 20,
-    },
-  ]);
-
-  if (options?.disabled) {
-    ctx.globalAlpha = GLOBAL_ALPHA;
-  }
-};
-
-export const drawNodeBackground = (
-  ctx: CanvasRenderingContext2D,
-  node: CustomNode,
-  options?: DrawingOptions
-) => {
-  const isHovered = !!options?.hoverNodeId;
-  ctx.lineWidth = 2;
-  const nodeSize = node?.data?.nodeSize || 0;
-
-  if (isHovered && options?.hoverNodeId === node.id) {
-    ctx.fillStyle = color.fill.interaction100;
-    ctx.beginPath();
-    ctx.arc(node.x, node.y, nodeSize / 2 + 20, 0, 2 * Math.PI, false);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.fillStyle = color.fill.interaction200;
-    ctx.beginPath();
-    ctx.arc(node.x, node.y, nodeSize / 2 + 10, 0, 2 * Math.PI, false);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.strokeStyle = color.stroke.active;
-    ctx.fillStyle = color.fill.active;
-  } else {
-    ctx.fillStyle = color.fill.default;
-    ctx.strokeStyle = color.stroke.default;
-  }
-
-  ctx.beginPath();
-  ctx.arc(node.x, node.y, nodeSize / 2, 0, 2 * Math.PI, false);
-  ctx.closePath();
-  ctx.fill();
-  ctx.stroke();
-};
-
-export const drawExclamationIcon = (
-  ctx: CanvasRenderingContext2D,
-  node: CustomNode,
-  canvasImages: CanvasImage
-) => {
-  if (!canvasImages) return;
-
-  ctx.beginPath();
-  ctx.drawImage(
-    canvasImages.exclamation,
-    node.x + 14,
-    node.y - (node?.data?.nodeSize || 0) / 2 - 1,
-    EXCLAMATION_SIZE,
-    EXCLAMATION_SIZE
-  );
-  ctx.closePath();
-};
-
-export const drawDeploymentIcon = (
-  ctx: CanvasRenderingContext2D,
-  node: CustomNode,
-  canvasImages: CanvasImage
-) => {
-  if (!canvasImages) return;
-  const nodeSize = node?.data?.nodeSize;
-  let deploymentIconSize = DeploymentIconSize.MEDIUM;
-  if (nodeSize === NodeSize.BIG) {
-    deploymentIconSize = DeploymentIconSize.BIG;
-  } else if (nodeSize === NodeSize.SMALL) {
-    deploymentIconSize = DeploymentIconSize.SMALL;
-  }
-  ctx.beginPath();
-  ctx.drawImage(
-    canvasImages.deployment,
-    node.x - deploymentIconSize / 2,
-    node.y - deploymentIconSize / 2,
-    deploymentIconSize,
-    deploymentIconSize
-  );
-  ctx.closePath();
-};
-
-export const drawNodeLabel = (
-  ctx: CanvasRenderingContext2D,
-  node: CustomNode,
-  canvasImages: CanvasImage
-) => {
-  if (!canvasImages) return;
-
-  const nodeSize = node?.data?.nodeSize || 0;
-
-  ctx.font = "normal 12px Arial";
-  ctx.fillStyle = color.white;
-  ctx.textAlign = "left";
-  ctx.textBaseline = "alphabetic";
-  const label = node?.data?.customLabel;
-
-  const textMetrics = ctx.measureText(label as string);
-  const textWidth = textMetrics.width;
-  const protectedAddImageWidth = canvasImages.protected.width;
-  const imageToTextSpacing = 2;
-
-  ctx.beginPath();
-  ctx.fillText(
-    label as string,
-    node.x - textWidth / 2 + protectedAddImageWidth / 2 - imageToTextSpacing,
-    node.y + nodeSize / 2 + 15,
-    100
-  );
-
-  ctx.drawImage(
-    canvasImages.protected,
-    node.x - textWidth / 2 - protectedAddImageWidth,
-    node.y + nodeSize / 2 + 6
-  );
-  ctx.closePath();
-};
-
-export const drawNodeNumberOfPortBadge = (
-  ctx: CanvasRenderingContext2D,
-  node: CustomNode,
-  ports: { status: EdgeStatus; numberOfPorts: number }[]
-) => {
-  const ARC_RADIUS = 10;
-  for (let i = 0; i < ports.length; i++) {
-    let x = node.x + ARC_RADIUS + 14;
-    if (ports.length !== 1) {
-      x = node.x + ((ARC_RADIUS * 2) - 5) * i + 14;
+  public draw() {
+    if (this.options?.disabled) {
+      this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
     }
-    const y = node.y - (node?.data?.nodeSize || 0) / 2 + 10 - 1;
-    ctx.fillStyle =
-      ports[i].status === EdgeStatus.ERROR ? color.error : color.idle;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.beginPath();
-    ctx.arc(x, y, ARC_RADIUS, 0, Math.PI * 2);
-    ctx.lineWidth = 1;
-    ctx.fill();
-    ctx.closePath();
-    ctx.font = "bold 10px Arial";
-    ctx.fillStyle =
-      ports[i].status === EdgeStatus.ERROR ? color.white : color.black;
-    ctx.fillText(ports[i].numberOfPorts.toString(), x, y);
+    this.drawNodeBackground();
+    this.drawExclamationIcon();
+    this.drawDeploymentIcon();
+    this.drawNodeLabel();
+    this.drawNodePort();
+
+    if (this.options?.disabled) {
+      this.ctx.globalAlpha = GLOBAL_ALPHA;
+    }
   }
-};
+
+  private drawNodeBackground() {
+    const isHovered = !!this.options?.hoverNodeId;
+    this.ctx.lineWidth = 2;
+    const nodeSize = this.node?.data?.nodeSize || 0;
+
+    if (isHovered && this.options?.hoverNodeId === this.node.id) {
+      this.ctx.fillStyle = color.fill.interaction100;
+      this.ctx.beginPath();
+      this.ctx.arc(
+        this.node.x,
+        this.node.y,
+        nodeSize / 2 + 20,
+        0,
+        2 * Math.PI,
+        false
+      );
+      this.ctx.closePath();
+      this.ctx.fill();
+
+      this.ctx.fillStyle = color.fill.interaction200;
+      this.ctx.beginPath();
+      this.ctx.arc(
+        this.node.x,
+        this.node.y,
+        nodeSize / 2 + 10,
+        0,
+        2 * Math.PI,
+        false
+      );
+      this.ctx.closePath();
+      this.ctx.fill();
+
+      this.ctx.strokeStyle = color.stroke.active;
+      this.ctx.fillStyle = color.fill.active;
+    } else {
+      this.ctx.fillStyle = color.fill.default;
+      this.ctx.strokeStyle = color.stroke.default;
+    }
+
+    this.ctx.beginPath();
+    this.ctx.arc(this.node.x, this.node.y, nodeSize / 2, 0, 2 * Math.PI, false);
+    this.ctx.closePath();
+    this.ctx.fill();
+    this.ctx.stroke();
+  }
+
+  private drawExclamationIcon() {
+    if (!this.canvasImages) return;
+
+    this.ctx.beginPath();
+    this.ctx.drawImage(
+      this.canvasImages.exclamation,
+      this.node.x + 14,
+      this.node.y - (this.node?.data?.nodeSize || 0) / 2 - 1,
+      EXCLAMATION_SIZE,
+      EXCLAMATION_SIZE
+    );
+    this.ctx.closePath();
+  }
+
+  private drawDeploymentIcon() {
+    if (!this.canvasImages) return;
+    const nodeSize = this.node?.data?.nodeSize;
+    let deploymentIconSize = DeploymentIconSize.MEDIUM;
+    if (nodeSize === NodeSize.BIG) {
+      deploymentIconSize = DeploymentIconSize.BIG;
+    } else if (nodeSize === NodeSize.SMALL) {
+      deploymentIconSize = DeploymentIconSize.SMALL;
+    }
+    this.ctx.beginPath();
+    this.ctx.drawImage(
+      this.canvasImages.deployment,
+      this.node.x - deploymentIconSize / 2,
+      this.node.y - deploymentIconSize / 2,
+      deploymentIconSize,
+      deploymentIconSize
+    );
+    this.ctx.closePath();
+  }
+
+  private drawNodeLabel() {
+    const nodeSize = this.node?.data?.nodeSize || 0;
+    this.ctx.font = "normal 12px Arial";
+    this.ctx.fillStyle = color.white;
+    this.ctx.textAlign = "left";
+    this.ctx.textBaseline = "alphabetic";
+    const label = this.node?.data?.customLabel;
+
+    const textMetrics = this.ctx.measureText(label as string);
+    const textWidth = textMetrics.width;
+    const protectedAddImageWidth = this.canvasImages.protected.width;
+    const imageToTextSpacing = 2;
+
+    this.ctx.beginPath();
+    this.ctx.fillText(
+      label as string,
+      this.node.x -
+        textWidth / 2 +
+        protectedAddImageWidth / 2 -
+        imageToTextSpacing,
+      this.node.y + nodeSize / 2 + 15,
+      100
+    );
+
+    this.ctx.drawImage(
+      this.canvasImages.protected,
+      this.node.x - textWidth / 2 - protectedAddImageWidth,
+      this.node.y + nodeSize / 2 + 6
+    );
+    this.ctx.closePath();
+  }
+
+  private drawNodePort() {
+    const ports: { status: EdgeStatus; numberOfPorts: number }[] = [
+      {
+        status: EdgeStatus.ERROR,
+        numberOfPorts: 10,
+      },
+      {
+        status: EdgeStatus.IDLE,
+        numberOfPorts: 20,
+      },
+    ];
+    const ARC_RADIUS = 10;
+    for (let i = 0; i < ports.length; i++) {
+      let x = this.node.x + ARC_RADIUS + 14;
+      if (ports.length !== 1) {
+        x = this.node.x + (ARC_RADIUS * 2 - 5) * i + 14;
+      }
+      const y = this.node.y - (this.node?.data?.nodeSize || 0) / 2 + 10 - 1;
+      this.ctx.fillStyle =
+        ports[i].status === EdgeStatus.ERROR ? color.error : color.idle;
+      this.ctx.textAlign = "center";
+      this.ctx.textBaseline = "middle";
+      this.ctx.beginPath();
+      this.ctx.arc(x, y, ARC_RADIUS, 0, Math.PI * 2);
+      this.ctx.lineWidth = 1;
+      this.ctx.fill();
+      this.ctx.closePath();
+      this.ctx.font = "bold 10px Arial";
+      this.ctx.fillStyle =
+        ports[i].status === EdgeStatus.ERROR ? color.white : color.black;
+      this.ctx.fillText(ports[i].numberOfPorts.toString(), x, y);
+    }
+  }
+}

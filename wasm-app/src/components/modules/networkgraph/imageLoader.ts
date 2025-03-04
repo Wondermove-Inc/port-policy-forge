@@ -1,5 +1,4 @@
 import { CanvasImage } from "./types";
-import WorkloadArrowActiveIcon from "../../../assets/icons/workload-arrow-active.svg?inline";
 import WorkloadArrowIcon from "../../../assets/icons/workload-arrow.svg?inline";
 import WorkloadDeploymentIcon from "../../../assets/icons/workload-deployment.svg?inline";
 import WorkloadExclamationIcon from "../../../assets/icons/workload-exclamation.svg?inline";

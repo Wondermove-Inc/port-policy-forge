@@ -8,6 +8,7 @@ import NetworkGraph from "@/components/modules/networkgraph/networkGraph";
 import {
   EdgeData,
   EdgeStatus,
+  EdgeStatusText,
   NodeData,
   NodeSize,
 } from "@/components/modules/networkgraph/types";
@@ -20,6 +21,9 @@ export const WorkloadMap = () => {
   const [edges, setEdges] = useState<EdgeData[]>([]);
   const [nodes, setNodes] = useState<NodeData[]>([]);
   const [activeNodeId, setActiveNodeId] = useState<string>();
+  const [displayPorts, setDisplayPorts] = useState<EdgeStatusText[]>([
+    EdgeStatusText.ERROR,
+  ]);
   const detailDrawer = useDisclosure();
   useEffect(() => {
     if (!detailDrawer.visible) {
@@ -32,13 +36,13 @@ export const WorkloadMap = () => {
       const fromEdges: EdgeData[] = current.from.map((f) => ({
         from: f.workloadId,
         to: current.uuid,
-        status: EdgeStatus.ACCESS_ATTEMPTS,
+        status: EdgeStatus.ATTEMPT,
       }));
 
       const toEdges: EdgeData[] = current.to.map((t) => ({
         from: current.uuid,
         to: t.workloadId,
-        status: EdgeStatus.ACCESS_ATTEMPTS,
+        status: EdgeStatus.ATTEMPT,
       }));
 
       return [...pre, ...fromEdges, ...toEdges] as EdgeData[];
@@ -72,6 +76,7 @@ export const WorkloadMap = () => {
       }}
     >
       <NetworkGraph
+        displayPorts={displayPorts}
         edges={edges}
         nodes={nodes}
         activeNodeId={activeNodeId}

@@ -6,11 +6,19 @@ export type Coord = {
 };
 
 export enum EdgeStatus {
-  DEFAULT,
+  SYSTEM,
   IDLE,
   ACTIVE,
   ERROR,
-  ACCESS_ATTEMPTS,
+  ATTEMPT,
+}
+
+export enum EdgeStatusText {
+  SYSTEM = "system",
+  IDLE = "edle",
+  ACTIVE = "active",
+  ERROR = "error",
+  ATTEMPT = "attempt",
 }
 
 export enum NodeSize {
@@ -81,6 +89,7 @@ export type DrawingOptions = {
   hoverNodeId?: string;
   connectedEdges?: IdType[];
   connectedNodes?: IdType[];
+  displayPorts?: EdgeStatusText[];
   disabled?: boolean;
 };
 
@@ -88,3 +97,13 @@ export type WorkloadConnector = {
   workloadId: string;
   status: number;
 };
+
+export interface EdgeStyle {
+  strokeStyle: string;
+  label?: string;
+  backgroundColor?: string;
+  borderColor?: string;
+  textColor?: string;
+  arrowKey: keyof CanvasImage;
+  lineDash: number[];
+}

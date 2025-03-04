@@ -7,10 +7,12 @@ import {
   CustomNetwork,
   NodeData,
   NetworkNodeData,
+  EdgeStatusText,
 } from "./types";
-import { drawAllEdges, drawAllNodes } from "./canvasRenderer";
+import { NetworkEdge } from "./edge";
+import { NetworkNode } from "./node";
 
-let network: CustomNetwork;
+let network: CustomNetwork | null = null;
 
 export const createNetworkOptions = () => {
   return {
@@ -47,17 +49,21 @@ export const createNetworkOptions = () => {
 };
 
 export type NetworkGraphProps = {
+  displayPorts: EdgeStatusText[];
   nodes: NodeData[];
   edges: EdgeData[];
   activeNodeId?: string;
   onNodeClick?: (nodeId: string) => void;
+  onEdgeClick?: (edgeId: string) => void;
 };
 
 const NetworkGraph = ({
   edges,
   nodes,
   activeNodeId,
+  displayPorts,
   onNodeClick,
+  onEdgeClick,
 }: NetworkGraphProps) => {
   const containerRef = useRef(null);
   const [canvasImages, setCanvasImages] = useState<CanvasImage>();
@@ -96,15 +102,18 @@ const NetworkGraph = ({
 
     network.on("afterDrawing", (ctx: CanvasRenderingContext2D) => {
       if (activeNodeId) {
-        const connectedEdges = network.getConnectedEdges(activeNodeId);
-        const connectedNodes = network.getConnectedNodes(activeNodeId);
+        const connectedEdges = network?.getConnectedEdges(activeNodeId);
+        const connectedNodes = network?.getConnectedNodes(activeNodeId);
         handleAfterDrawing(ctx, canvasImages, edges, nodes, {
           hoverNodeId: activeNodeId,
           connectedEdges: connectedEdges,
           connectedNodes: connectedNodes as IdType[],
+          displayPorts: displayPorts,
         });
       } else {
-        handleAfterDrawing(ctx, canvasImages, edges, nodes);
+        handleAfterDrawing(ctx, canvasImages, edges, nodes, {
+          displayPorts: displayPorts,
+        });
       }
     });
     network.on("hoverNode", function (params) {
@@ -112,14 +121,15 @@ const NetworkGraph = ({
         return;
       }
       document.body.style.cursor = "pointer";
-      const connectedEdges = network.getConnectedEdges(params.node);
-      const connectedNodes = network.getConnectedNodes(params.node);
-      network.off("afterDrawing");
-      network.on("afterDrawing", (ctx: CanvasRenderingContext2D) => {
+      const connectedEdges = network?.getConnectedEdges(params.node);
+      const connectedNodes = network?.getConnectedNodes(params.node);
+      network?.off("afterDrawing");
+      network?.on("afterDrawing", (ctx: CanvasRenderingContext2D) => {
         handleAfterDrawing(ctx, canvasImages, edges, nodes, {
           hoverNodeId: params.node,
           connectedEdges: connectedEdges,
           connectedNodes: connectedNodes as IdType[],
+          displayPorts: displayPorts,
         });
       });
     });
@@ -129,14 +139,26 @@ const NetworkGraph = ({
         return;
       }
       document.body.style.cursor = "auto";
-      network.off("afterDrawing");
-      network.on("afterDrawing", (ctx: CanvasRenderingContext2D) => {
-        handleAfterDrawing(ctx, canvasImages, edges, nodes);
+      network?.off("afterDrawing");
+      network?.on("afterDrawing", (ctx: CanvasRenderingContext2D) => {
+        handleAfterDrawing(ctx, canvasImages, edges, nodes, {
+          displayPorts: displayPorts,
+        });
       });
     });
 
     network.on("click", function (properties) {
-      const nodeId = network.getNodeAt({
+      console.log(properties);
+      const edgeId = network?.getEdgeAt({
+        x: properties.event.srcEvent.offsetX,
+        y: properties.event.srcEvent.offsetY,
+      });
+
+      if (edgeId) {
+        onEdgeClick?.(edgeId as string);
+      }
+
+      const nodeId = network?.getNodeAt({
         x: properties.event.srcEvent.offsetX,
         y: properties.event.srcEvent.offsetY,
       });
@@ -148,12 +170,19 @@ const NetworkGraph = ({
     network.redraw();
 
     return () => {
-      network.off("hoverNode");
-      network.off("afterDrawing");
-      network.off("blurNode");
-      network.off("click");
+      network?.off("hoverNode");
+      network?.off("afterDrawing");
+      network?.off("blurNode");
+      network?.off("click");
     };
   }, [canvasImages, edges, nodes, activeNodeId]);
+
+  useEffect(() => {
+    return () => {
+      network?.destroy();
+      network = null;
+    };
+  }, []);
 
   useEffect(() => {
     const initializeData = async () => {
@@ -173,9 +202,10 @@ const handleAfterDrawing = (
   edges: EdgeData[],
   nodes: NodeData[],
   options?: {
-    hoverNodeId: string;
-    connectedEdges: IdType[];
-    connectedNodes: IdType[];
+    hoverNodeId?: string;
+    connectedEdges?: IdType[];
+    connectedNodes?: IdType[];
+    displayPorts?: EdgeStatusText[];
   }
 ) => {
   if (!canvasImages || !network) {
@@ -193,9 +223,37 @@ const handleAfterDrawing = (
     const edge = edges.find((e) => e.id === edgeId);
     networkEdges[edgeId].data = edge;
   }
+  for (const edgeId in networkEdges) {
+    const edge = networkEdges[edgeId];
+    if (edge) {
+      const networkEdge = new NetworkEdge(ctx, edge, canvasImages, {
+        connectedEdges: options?.connectedEdges,
+      });
+      networkEdge.draw();
+    }
+  }
 
-  drawAllEdges(ctx, networkEdges, canvasImages, options);
-  drawAllNodes(ctx, networkNodes, canvasImages, options);
+  for (const nodeId in networkNodes) {
+    const node = networkNodes[nodeId];
+    let disabled = false;
+
+    if (
+      options?.hoverNodeId &&
+      !options?.connectedNodes?.includes(nodeId) &&
+      options.hoverNodeId !== nodeId
+    ) {
+      disabled = true;
+    }
+
+    const networkNode = new NetworkNode(ctx, node, canvasImages, {
+      hoverNodeId: options?.hoverNodeId,
+      connectedEdges: options?.connectedEdges,
+      connectedNodes: options?.connectedNodes,
+      displayPorts: options?.displayPorts,
+      disabled,
+    });
+    networkNode.draw();
+  }
 };
 
 export default NetworkGraph;
