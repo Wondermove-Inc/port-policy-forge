@@ -203,6 +203,7 @@ export const CollapsibleTable = <T,>({
                             colSpan={columns.length}
                             sx={{
                               padding: "0 !important",
+                              border: "none",
                             }}
                           >
                             <Collapse in={isOpen} timeout="auto" unmountOnExit>

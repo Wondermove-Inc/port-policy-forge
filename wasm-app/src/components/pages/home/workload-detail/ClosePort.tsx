@@ -103,7 +103,7 @@ export const ClosePort = ({ data, fetchWorkloadDetail }: ClosePortProps) => {
                   }}
                   onClick={openClearHistoryModal.open}
                 >
-                  <CloseIcon size={16} color="#FFFFFF66" />
+                  <CloseIcon size={16} color="text.tertiary" />
                 </Box>
               ),
             },

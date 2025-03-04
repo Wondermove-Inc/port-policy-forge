@@ -169,6 +169,7 @@ export const PortSettingModal = ({
                                   flex: 1,
                                   ".MuiFormLabel-root": {
                                     bgcolor: "unset !important",
+                                    ml: "-5px",
                                   },
                                 }}
                               />
@@ -201,6 +202,7 @@ export const PortSettingModal = ({
                                 },
                                 ".MuiFormLabel-root": {
                                   bgcolor: "unset !important",
+                                  ml: "-5px",
                                 },
                               }}
                               label="Comment"
