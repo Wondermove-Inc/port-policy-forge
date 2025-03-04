@@ -14,7 +14,12 @@ import { CheckBoxIcon } from "@/components/icons/CheckBoxIcon";
 import { IndeterminateIcon } from "@/components/icons/IndeterminateIcon";
 
 const CustomNoResultOverlay = () => {
-  return <DatagridListEmpty title={"No Data"} description={"No Data"} />;
+  return (
+    <DatagridListEmpty
+      title={"There is no data to display. "}
+      description={""}
+    />
+  );
 };
 export type CustomGridColDef = GridColDef & {
   enableCheckBox?: boolean;
@@ -226,11 +231,12 @@ export const Datagrid = (
 
   return (
     <DataGrid
+      loading={props.loading}
       rowHeight={rowHeight}
       columnHeaderHeight={44}
       sx={{
         minHeight: 110,
-        maxHeight: 594,
+        maxHeight: "calc(100vh - 240px)",
         width,
         height: tableHeight,
         borderWidth: "0",
@@ -248,6 +254,7 @@ export const Datagrid = (
           fontWeight: "300",
           color: "text.default",
           borderTop: "none",
+          cursor: "pointer",
         },
         "& .MuiDataGrid-columnHeader": {
           typography: "body1",
@@ -270,6 +277,9 @@ export const Datagrid = (
           borderBottom: "1px solid",
           borderTop: "1px solid",
           borderColor: "border.default",
+        },
+        "& .MuiDataGrid-columnHeaderTitle": {
+          fontWeight: 600,
         },
         "& .MuiDataGrid-row": {
           borderBottom: "1px solid",
@@ -326,7 +336,7 @@ export const Datagrid = (
                 backdropFilter: "blur(10px)",
               }
             : {
-                backgroundColor: "background.secondary",
+                backgroundColor: "none",
               }),
         },
         "& .MuiDataGrid-scrollbar": {
