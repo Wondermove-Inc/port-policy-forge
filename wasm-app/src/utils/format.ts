@@ -45,7 +45,7 @@ export const formatNumber = (value: number) => {
   }
 };
 
-export const formatBinarySizeForGB = (size?: number): string => {
+export const formatBinarySize = (size?: number): string => {
   if (size === undefined) {
     return "";
   }

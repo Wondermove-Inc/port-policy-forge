@@ -24,7 +24,7 @@ export const WorkloadList = () => {
     Record<string, Record<string, boolean>>
   >({});
   const [selectedTabBound, setSelectedTabBound] = useState("1");
-  const [idSelected, setIdSelected] = useState("");
+  const [selectedWorkloadId, setSelectedWorkloadId] = useState("");
 
   useEffect(() => {
     getWorkloads();
@@ -127,12 +127,12 @@ export const WorkloadList = () => {
 
   const handleShowDetail = (id: string) => {
     detailDrawer.open();
-    setIdSelected(id);
+    setSelectedWorkloadId(id);
   };
 
   const handleCloseDetail = () => {
     detailDrawer.close();
-    setIdSelected("");
+    setSelectedWorkloadId("");
   };
 
   return (
@@ -213,7 +213,7 @@ export const WorkloadList = () => {
       <WorkloadDetail
         open={detailDrawer.visible}
         handleClose={handleCloseDetail}
-        id={idSelected}
+        id={selectedWorkloadId}
       />
     </Box>
   );

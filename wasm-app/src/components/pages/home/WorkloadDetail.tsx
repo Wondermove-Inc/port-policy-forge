@@ -24,7 +24,7 @@ import {
   getPortRiskLabel,
 } from "@/utils";
 import {
-  formatBinarySizeForGB,
+  formatBinarySize,
   formatMilliCores,
   formatNumber,
   formatter,
@@ -72,7 +72,7 @@ export const WorkloadDetail = ({
           throughput: formatter(
             "stats.throughput",
             "/s",
-            formatBinarySizeForGB,
+            formatBinarySize,
           )(exampleWorkload),
         },
         ports: ["inbound", "outbound"].reduce(
