@@ -200,20 +200,7 @@ export const WorkloadList = () => {
           rows={workloads}
           hasSearch={true}
           loading={!workloads.length}
-          noRowsOverlay={() => (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                height: "100%",
-                typography: "body1",
-                color: "grey.500",
-              }}
-            >
-              No search results found.
-            </Box>
-          )}
+          height="calc(100vh - 240px)"
           width="100%"
           checkedRows={checkedRows}
           onCheckedRowsChange={setCheckedRows}
