@@ -1,4 +1,4 @@
-import { Stats } from "@/models";
+import { Stats, WorkloadDetailType } from "@/models";
 
 export const PORT_STATUS_MAP: Record<
   Stats,
@@ -35,3 +35,22 @@ export const BOUND_TYPES = [
   { label: "Inbound", value: "1" },
   { label: "Outbound", value: "2" },
 ];
+
+export const INITIAL_WORKLOAD_DETAIL: WorkloadDetailType = {
+  uuid: "",
+  workloadName: "",
+  kind: "",
+  stats: {
+    active: null,
+    unconnected: null,
+    idle: null,
+    error: null,
+    attempted: null,
+    latencyRtt: null,
+    throughput: null,
+  },
+  ports: {
+    inbound: { open: [], closed: [] },
+    outbound: { open: [], closed: [] },
+  },
+};
