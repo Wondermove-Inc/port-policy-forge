@@ -3,86 +3,107 @@ import { Typography } from "@skuber/components";
 
 import { PortDetail } from "./PortDetail";
 
+import { ModalConfirm } from "@/components/atoms/ModalConfirm";
 import { CloseIcon } from "@/components/icons/CloseIcon";
 import { WarningIcon } from "@/components/icons/WarningIcon";
 import { CollapsibleTable } from "@/components/modules/CollapsibleTable";
+import { useDisclosure } from "@/hooks/useDisclosure";
 import { Port } from "@/models";
-
-const columns = [
-  {
-    id: "portNumber",
-    label: "Number",
-    sortable: false,
-    width: 85,
-    render: (record: Port) => (
-      <Typography variant="b2_m">{record.portNumber}</Typography>
-    ),
-  },
-  {
-    id: "risk",
-    label: "Risk",
-    sortable: false,
-    width: 65,
-    render: (record: Port) => (
-      <Typography variant="b2_m" color="status.danger">
-        {record.risk}
-      </Typography>
-    ),
-  },
-  {
-    id: "type",
-    label: "Type",
-    sortable: false,
-    width: 85,
-    render: (record: Port) => (
-      <Typography variant="b2_m">{record.type}</Typography>
-    ),
-  },
-  {
-    id: "count",
-    label: "Count ",
-    sortable: false,
-    width: 85,
-  },
-  {
-    id: "open",
-    label: "",
-    sortable: false,
-    width: 120,
-    render: () => (
-      <Typography
-        variant="label_m"
-        color="primary.dark"
-        sx={{ cursor: "pointer" }}
-      >
-        Open the access
-      </Typography>
-    ),
-  },
-  {
-    id: "close",
-    label: "",
-    sortable: false,
-    width: 32,
-    render: () => (
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <CloseIcon size={16} sx={{ cursor: "pointer" }} />
-      </Box>
-    ),
-  },
-];
 
 type ClosePortProps = {
   data: Port[];
+  fetchWorkloadDetail: () => void;
 };
 
-export const ClosePort = ({ data }: ClosePortProps) => {
+export const ClosePort = ({ data, fetchWorkloadDetail }: ClosePortProps) => {
+  const openAllowPortModal = useDisclosure();
+  const openClearHistoryModal = useDisclosure();
+
+  const handleAllowPort = () => {
+    // TODO
+    fetchWorkloadDetail();
+    openAllowPortModal.close();
+  };
+
+  const handleClearHistory = () => {
+    // TODO
+    fetchWorkloadDetail();
+    openClearHistoryModal.close();
+  };
+
+  const columns = [
+    {
+      id: "portNumber",
+      label: "Number",
+      sortable: false,
+      width: 85,
+      render: (record: Port) => (
+        <Typography variant="b2_m">{record.portNumber}</Typography>
+      ),
+    },
+    {
+      id: "risk",
+      label: "Risk",
+      sortable: false,
+      width: 65,
+      render: (record: Port) => (
+        <Typography variant="b2_m" color="status.danger">
+          {record.risk}
+        </Typography>
+      ),
+    },
+    {
+      id: "type",
+      label: "Type",
+      sortable: false,
+      width: 85,
+      render: (record: Port) => (
+        <Typography variant="b2_m">{record.type}</Typography>
+      ),
+    },
+    {
+      id: "count",
+      label: "Count ",
+      sortable: false,
+      width: 85,
+    },
+    {
+      id: "open",
+      label: "",
+      sortable: false,
+      width: 120,
+      render: () => (
+        <Typography
+          variant="label_m"
+          color="primary.dark"
+          sx={{ cursor: "pointer" }}
+          onClick={openAllowPortModal.open}
+        >
+          Open the access
+        </Typography>
+      ),
+    },
+    {
+      id: "close",
+      label: "",
+      sortable: false,
+      width: 32,
+      render: () => (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+          onClick={openClearHistoryModal.open}
+        >
+          <CloseIcon size={16} />
+        </Box>
+      ),
+    },
+  ];
+
   return (
     <Box>
       <Box
@@ -112,6 +133,28 @@ export const ClosePort = ({ data }: ClosePortProps) => {
           maxWidth: "472px",
         }}
         renderDetails={(record) => <PortDetail record={record} />}
+      />
+      <ModalConfirm
+        open={openAllowPortModal.visible}
+        onClose={openAllowPortModal.close}
+        onConfirm={handleAllowPort}
+        title="Allow Port Access"
+        description="When you allow that source (IP or domain) access to a specific port, it changes to the following"
+        descriptionDetails={[
+          "The source will be able to access the server on the specified port.",
+          "The access restriction settings for the port are updated. ",
+        ]}
+      />
+      <ModalConfirm
+        open={openClearHistoryModal.visible}
+        onClose={openClearHistoryModal.close}
+        onConfirm={handleClearHistory}
+        title="Clear History"
+        description="If you delete that connection attempt history, you can't recover it.It may be a dangerous connection attempt, so be sure to check before deleting."
+        descriptionDetails={[
+          "After deletion, no record is left and there is no way to recover it.",
+          "If you suspect a security risk, check the relevant logs before proceeding with deletion.",
+        ]}
       />
     </Box>
   );

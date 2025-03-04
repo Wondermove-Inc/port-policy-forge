@@ -4,7 +4,6 @@ import { Box } from "@mui/material";
 
 import { ClosePort } from "./workload-detail/ClosePort";
 import { OpenPort } from "./workload-detail/OpenPort";
-import { OpenPortModal } from "./workload-detail/OpenPortModal";
 import { PolicyApplication } from "./workload-detail/PolicyApplication";
 import { WorkloadSummary } from "./workload-detail/WorkloadSummary";
 import { WorkloadTabs } from "./workload-detail/WorkloadTabs";
@@ -119,10 +118,13 @@ export const WorkloadDetail = ({
         <OpenPort
           data={workloadDetail.ports[portDirection].open}
           portDirection={portDirection}
+          fetchWorkloadDetail={fetchWorkloadDetail}
         />
-        <ClosePort data={workloadDetail.ports[portDirection].closed} />
+        <ClosePort
+          data={workloadDetail.ports[portDirection].closed}
+          fetchWorkloadDetail={fetchWorkloadDetail}
+        />
       </Box>
-      <OpenPortModal />
     </Drawer>
   );
 };

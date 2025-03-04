@@ -1,18 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { Box, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Button } from "@skuber/components";
 
+import { WorkloadTabs } from "./workload-detail/WorkloadTabs";
 import { WorkloadDetail } from "./WorkloadDetail";
 
 import { Datagrid, CustomGridColDef } from "@/components/atoms/Datagrid";
 import { CheckBoxIcon } from "@/components/icons/CheckBoxIcon";
 import { ModalClosePort } from "@/components/modules/ModalClosePort";
 import { SearchComplete } from "@/components/modules/SearchComplete";
-import { BOUND_TYPES } from "@/constants";
 import { workloadList } from "@/data";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { WorkloadListItem } from "@/models";
+import { formatNumber } from "@/utils/format";
 
 export const WorkloadList = () => {
   const closePortModal = useDisclosure();
@@ -38,11 +39,12 @@ export const WorkloadList = () => {
     return (
       <Typography
         sx={{
+          typography: "body1",
           color: `${value ? color : "text.disabled"}`,
           fontWeight: "600",
         }}
       >
-        {value || "-"}
+        {value ? formatNumber(Number(value)) : "-"}
       </Typography>
     );
   };
@@ -102,16 +104,24 @@ export const WorkloadList = () => {
     );
   }, [checkedRows]);
 
-  const handleChangeTabBound = (
-    event: React.SyntheticEvent,
-    newValue: string,
-  ) => {
+  const formatCheckedRows = useMemo(() => {
+    return Object.fromEntries(
+      Object.entries(checkedRows).map(([key, value]) => [
+        key,
+        Object.keys(value).filter(
+          (k) => k !== "allChecked" && k !== "isIndeterminate" && value[k],
+        ),
+      ]),
+    );
+  }, [checkedRows]);
+
+  const handleChangeTabBound = (newValue: string) => {
     setSelectedTabBound(newValue);
     setCheckedRows({});
   };
   const handleConfirmClosePort = () => {
     closePortModal.close();
-    console.log(checkedRows);
+    console.log(formatCheckedRows);
   };
 
   return (
@@ -130,28 +140,18 @@ export const WorkloadList = () => {
           height: "32px",
         }}
       >
-        <Tabs
-          value={selectedTabBound}
-          onChange={handleChangeTabBound}
-          sx={{ "& .MuiTabs-indicator": { display: "none" } }}
-        >
-          {BOUND_TYPES.map((bound, index) => (
-            <Tab
-              key={index}
-              sx={{
-                textTransform: "none",
-                typography: "h2",
-                color: "text.tertiary",
-                "&.Mui-selected": {
-                  color: "text.white",
-                },
-                padding: "0 10px",
-              }}
-              label={bound.label}
-              value={bound.value}
-            />
-          ))}
-        </Tabs>
+        <WorkloadTabs
+          sx={{
+            paddingLeft: "12px",
+            marginBottom: "0px",
+            ".MuiTabs-flexContainer": {
+              gap: "20px",
+              paddingY: "0px",
+              marginBottom: "0px",
+            },
+          }}
+          onChangeTab={handleChangeTabBound}
+        ></WorkloadTabs>
         <Box
           sx={{
             display: "flex",

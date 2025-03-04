@@ -18,7 +18,7 @@ export const WorkloadSummary = ({
     metric: { variant: "body3", gap: "8px" },
   };
 
-  const workloadData = Object.values(Stats).map((status) => ({
+  const statistics = Object.values(Stats).map((status) => ({
     title: PORT_STATUS_MAP[status].label,
     value: stats[status],
     color: PORT_STATUS_MAP[status].color,
@@ -47,7 +47,7 @@ export const WorkloadSummary = ({
         maxWidth: 472,
       }}
     >
-      {[...workloadData, ...metrics].map(
+      {[...statistics, ...metrics].map(
         ({ title, value, color, variant, gap }, index) => (
           <Box
             key={index}

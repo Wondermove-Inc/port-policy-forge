@@ -1,3 +1,4 @@
+import { SxProps } from "@mui/material";
 import { Tabs } from "@skuber/components";
 
 import { PortDirection } from "@/models";
@@ -15,8 +16,10 @@ const tabs = [
 
 export const WorkloadTabs = ({
   onChangeTab,
+  sx = {},
 }: {
   onChangeTab?: (id: string) => void;
+  sx?: SxProps;
 }) => {
   return (
     <Tabs
@@ -40,6 +43,7 @@ export const WorkloadTabs = ({
         ".MuiTabs-indicator": {
           display: "none",
         },
+        ...sx,
       }}
     />
   );
