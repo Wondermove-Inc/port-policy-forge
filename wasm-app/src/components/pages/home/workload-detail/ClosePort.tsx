@@ -49,7 +49,7 @@ export const ClosePort = ({ data, fetchWorkloadDetail }: ClosePortProps) => {
         id: "risk",
         label: "Risk",
         sortable: false,
-        width: emptyData ? 90 : 65,
+        width: emptyData ? 90 : 85,
         render: (record: Port) => (
           <Typography color="status.danger">{record.risk}</Typography>
         ),
@@ -81,7 +81,7 @@ export const ClosePort = ({ data, fetchWorkloadDetail }: ClosePortProps) => {
                 <Typography
                   variant="label_m"
                   color="primary.dark"
-                  sx={{ cursor: "pointer" }}
+                  sx={{ cursor: "pointer", textAlign: "center" }}
                   onClick={openAllowPortModal.open}
                 >
                   Open the access
