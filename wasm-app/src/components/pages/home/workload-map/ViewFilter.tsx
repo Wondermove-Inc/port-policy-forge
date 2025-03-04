@@ -37,14 +37,17 @@ export const ViewFilter = () => {
             width: 40,
             height: 40,
             backgroundColor: "#FFFFFF1A",
-            border: "1px solid",
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             borderRadius: 999,
-            ...(open && { borderColor: "border.elevated" }),
+            ...(open && {
+              border: "1px solid",
+              borderColor: "border.elevated",
+            }),
             "&:hover": {
+              border: "1px solid",
               borderColor: "border.elevated",
             },
           }}
