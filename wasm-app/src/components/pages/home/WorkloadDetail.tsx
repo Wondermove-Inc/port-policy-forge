@@ -1,7 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
 
-import { Box } from "@mui/material";
-
 import { ClosePort } from "./workload-detail/ClosePort";
 import { OpenPort } from "./workload-detail/OpenPort";
 import { PolicyApplication } from "./workload-detail/PolicyApplication";
@@ -22,6 +20,7 @@ import {
   getPortKindLabel,
   getPortNumber,
   getPortRiskLabel,
+  getWorkloadKindLabel,
 } from "@/utils";
 import {
   formatBinarySize,
@@ -54,6 +53,7 @@ export const WorkloadDetail = ({
       setWorkloadDetail({
         ...exampleWorkload,
         workloadName: formatter("workloadName")(exampleWorkload),
+        kind: formatter("kind", "", getWorkloadKindLabel)(exampleWorkload),
         stats: {
           active: formatter("stats.active", "", formatNumber)(exampleWorkload),
           unconnected: formatter(
@@ -129,19 +129,17 @@ export const WorkloadDetail = ({
           setPortDirection(direction as PortDirection)
         }
       />
-      <Box sx={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-        <WorkloadSummary stats={workloadDetail.stats} />
-        <PolicyApplication fetchWorkloadDetail={fetchWorkloadDetail} />
-        <OpenPort
-          data={workloadDetail.ports[portDirection].open}
-          portDirection={portDirection}
-          fetchWorkloadDetail={fetchWorkloadDetail}
-        />
-        <ClosePort
-          data={workloadDetail.ports[portDirection].closed}
-          fetchWorkloadDetail={fetchWorkloadDetail}
-        />
-      </Box>
+      <WorkloadSummary stats={workloadDetail.stats} />
+      <PolicyApplication fetchWorkloadDetail={fetchWorkloadDetail} />
+      <OpenPort
+        data={workloadDetail.ports[portDirection].open}
+        portDirection={portDirection}
+        fetchWorkloadDetail={fetchWorkloadDetail}
+      />
+      <ClosePort
+        data={workloadDetail.ports[portDirection].closed}
+        fetchWorkloadDetail={fetchWorkloadDetail}
+      />
     </Drawer>
   );
 };

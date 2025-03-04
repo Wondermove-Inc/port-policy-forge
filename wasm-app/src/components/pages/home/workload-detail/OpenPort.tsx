@@ -55,7 +55,7 @@ export const OpenPort = ({
         id: "portNumber",
         label: "Number",
         sortable: false,
-        width: 80,
+        width: isInbound ? 80 : 70,
         render: (record: Port) => (
           <Typography variant="b2_m">{record.portNumber}</Typography>
         ),
@@ -147,6 +147,7 @@ export const OpenPort = ({
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        mb: 4,
       }}
     >
       <Box

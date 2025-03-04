@@ -43,7 +43,7 @@ export const WorkloadSummary = ({ stats }: WorkloadSummaryProps) => {
         display: "flex",
         flexWrap: "wrap",
         gap: "24px 12px",
-        minWidth: 472,
+        mb: 4,
       }}
     >
       {[...statistics, ...metrics].map(
@@ -51,7 +51,7 @@ export const WorkloadSummary = ({ stats }: WorkloadSummaryProps) => {
           <Box
             key={index}
             sx={{
-              minWidth: 78.4,
+              width: 78.4,
               display: "flex",
               flexDirection: "column",
               gap,

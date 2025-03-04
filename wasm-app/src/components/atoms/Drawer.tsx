@@ -75,7 +75,12 @@ export const Drawer = ({
           </Typography>
           <CloseIcon onClick={onClose} sx={{ cursor: "pointer" }} size={16} />
         </Box>
-        <Typography variant="caption" lineHeight={"15px"} component={"p"}>
+        <Typography
+          variant="caption"
+          lineHeight={"15px"}
+          component={"p"}
+          color="text.secondary"
+        >
           {subTitle}
         </Typography>
       </Box>
@@ -83,8 +88,8 @@ export const Drawer = ({
       <Box
         sx={{
           flex: 1,
-          overflowY: "auto",
-          padding: "24px 20px 59px 20px",
+          overflowY: "scroll",
+          padding: "24px 15px",
           position: "relative",
           opacity: loading ? 0.1 : 1,
           pointerEvents: loading ? "none" : "auto",
@@ -104,8 +109,6 @@ export const Drawer = ({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: "rgba(0, 0, 0, 0.3)",
-            backdropFilter: "blur(5px)",
           }}
         >
           <CircularProgress size={28} />

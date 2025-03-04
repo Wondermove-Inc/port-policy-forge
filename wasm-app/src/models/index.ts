@@ -24,6 +24,12 @@ export enum PortKind {
   EXTERNAL = "external",
 }
 
+export enum WorkloadKind {
+  DEPLOYMENT = "deployment",
+  STAGING = "staging",
+  PRODUCTION = "production",
+}
+
 export type PortRangeType = {
   start: string;
   end: string;

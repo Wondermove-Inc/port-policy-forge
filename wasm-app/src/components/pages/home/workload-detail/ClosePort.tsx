@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 import { Box } from "@mui/material";
 import { Typography } from "@skuber/components";
 
@@ -31,78 +33,83 @@ export const ClosePort = ({ data, fetchWorkloadDetail }: ClosePortProps) => {
     openClearHistoryModal.close();
   };
 
-  const columns = [
-    {
-      id: "portNumber",
-      label: "Number",
-      sortable: false,
-      width: 85,
-      render: (record: Port) => (
-        <Typography variant="b2_m">{record.portNumber}</Typography>
-      ),
-    },
-    {
-      id: "risk",
-      label: "Risk",
-      sortable: false,
-      width: 65,
-      render: (record: Port) => (
-        <Typography variant="b2_m" color="status.danger">
-          {record.risk}
-        </Typography>
-      ),
-    },
-    {
-      id: "type",
-      label: "Type",
-      sortable: false,
-      width: 85,
-      render: (record: Port) => (
-        <Typography variant="b2_m">{record.type}</Typography>
-      ),
-    },
-    {
-      id: "count",
-      label: "Count ",
-      sortable: false,
-      width: 85,
-    },
-    {
-      id: "open",
-      label: "",
-      sortable: false,
-      width: 120,
-      render: () => (
-        <Typography
-          variant="label_m"
-          color="primary.dark"
-          sx={{ cursor: "pointer" }}
-          onClick={openAllowPortModal.open}
-        >
-          Open the access
-        </Typography>
-      ),
-    },
-    {
-      id: "close",
-      label: "",
-      sortable: false,
-      width: 32,
-      render: () => (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-          }}
-          onClick={openClearHistoryModal.open}
-        >
-          <CloseIcon size={16} />
-        </Box>
-      ),
-    },
-  ];
+  const columns = useMemo(() => {
+    const emptyData = data.length === 0;
+    return [
+      {
+        id: "portNumber",
+        label: "Number",
+        sortable: false,
+        width: emptyData ? 112 : 85,
+        render: (record: Port) => (
+          <Typography variant="b2_m">{record.portNumber}</Typography>
+        ),
+      },
+      {
+        id: "risk",
+        label: "Risk",
+        sortable: false,
+        width: emptyData ? 90 : 65,
+        render: (record: Port) => (
+          <Typography color="status.danger">{record.risk}</Typography>
+        ),
+      },
+      {
+        id: "type",
+        label: "Type",
+        sortable: false,
+        width: emptyData ? 90 : 85,
+      },
+      {
+        id: "count",
+        label: "Count ",
+        sortable: false,
+        width: emptyData ? 180 : 85,
+      },
+      ...(emptyData
+        ? []
+        : [
+            {
+              id: "open",
+              label: "",
+              sortable: false,
+              width: 100,
+              sx: {
+                paddingX: "4px !important",
+              },
+              render: () => (
+                <Typography
+                  variant="label_m"
+                  color="primary.dark"
+                  sx={{ cursor: "pointer" }}
+                  onClick={openAllowPortModal.open}
+                >
+                  Open the access
+                </Typography>
+              ),
+            },
+            {
+              id: "close",
+              label: "",
+              sortable: false,
+              width: 32,
+              render: () => (
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                  }}
+                  onClick={openClearHistoryModal.open}
+                >
+                  <CloseIcon size={16} color="#FFFFFF66" />
+                </Box>
+              ),
+            },
+          ]),
+    ];
+  }, [data]);
 
   return (
     <Box>

@@ -112,7 +112,7 @@ export const CollapsibleTable = <T,>({
                       textAlign: "center",
                     }}
                   >
-                    <Typography variant="body1" color="text.tertiary">
+                    <Typography variant="body1" color="text.secondary">
                       Loading...
                     </Typography>
                   </TableCell>
@@ -123,12 +123,13 @@ export const CollapsibleTable = <T,>({
                 <TableRow>
                   <TableCell
                     width="100%"
+                    height="96px"
                     colSpan={columns.length + 1}
                     sx={{
                       textAlign: "center",
                     }}
                   >
-                    <Typography variant="body1" color="text.tertiary">
+                    <Typography variant="body1" color="text.secondary">
                       There is no data to display.
                     </Typography>
                   </TableCell>
@@ -160,6 +161,9 @@ export const CollapsibleTable = <T,>({
                               key={colIndex}
                               align={column.align}
                               width={column.width}
+                              sx={{
+                                ...column.sx,
+                              }}
                             >
                               {colIndex === 0 ? (
                                 <Box
