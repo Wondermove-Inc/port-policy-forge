@@ -130,7 +130,7 @@ export const SelectClusterAndNameSpace = () => {
           }
           MenuProps={{
             PaperProps: {
-              sx: { mt: "10px", ml: withAvatar ? "-19px" : "0" },
+              sx: { mt: "10px", ml: withAvatar ? "-19px" : "-3px" },
             },
           }}
           sx={{

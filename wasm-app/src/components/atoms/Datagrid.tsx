@@ -133,6 +133,15 @@ export const Datagrid = (
               indeterminateIcon={<IndeterminateIcon />}
               checkedIcon={<CheckBoxIcon />}
               sx={{
+                padding: "0px",
+                "& .MuiButtonBase-root": {
+                  width: "16px",
+                  height: "16px",
+                },
+                "& input[type='checkbox']": {
+                  width: "16px",
+                  height: "16px",
+                },
                 "&.Mui-checked": {
                   color: "interaction.primaryContrastBackground",
                 },
@@ -168,6 +177,14 @@ export const Datagrid = (
               sx={{
                 "&.Mui-checked": {
                   backgroundColor: "interaction.primaryContrastBackground",
+                },
+                "& .MuiButtonBase-root": {
+                  width: "16px",
+                  height: "16px",
+                },
+                "& input[type='checkbox']": {
+                  width: "16px",
+                  height: "16px",
                 },
               }}
             />
@@ -230,6 +247,7 @@ export const Datagrid = (
           alignItems: "center",
           fontWeight: "300",
           color: "text.default",
+          borderTop: "none",
         },
         "& .MuiDataGrid-columnHeader": {
           typography: "body1",
@@ -249,6 +267,10 @@ export const Datagrid = (
           display: "none",
         },
         "& .MuiDataGrid-row--borderBottom .MuiDataGrid-columnHeader": {
+          borderBottom: "1px solid",
+          borderColor: "border.default",
+        },
+        "& .MuiDataGrid-row": {
           borderBottom: "1px solid",
           borderColor: "border.default",
         },

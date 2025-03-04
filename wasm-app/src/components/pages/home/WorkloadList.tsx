@@ -172,6 +172,8 @@ export const WorkloadList = () => {
               height: "32px",
               typography: "caption",
               fontWeight: "700",
+              width: "162px",
+              whiteSpace: "nowrap",
             }}
             startIcon={<CheckBoxIcon color="white" size={16} />}
             onClick={closePortModal.open}
