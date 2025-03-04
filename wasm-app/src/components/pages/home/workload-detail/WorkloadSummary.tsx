@@ -43,7 +43,7 @@ export const WorkloadSummary = ({ stats }: WorkloadSummaryProps) => {
         display: "flex",
         flexWrap: "wrap",
         gap: "24px 12px",
-        maxWidth: 472,
+        minWidth: 472,
       }}
     >
       {[...statistics, ...metrics].map(
