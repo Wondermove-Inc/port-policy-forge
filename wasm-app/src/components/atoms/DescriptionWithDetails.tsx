@@ -12,10 +12,11 @@ export const DescriptionWithDetails = ({
 }: ConfirmDescriptionProps) => {
   return (
     <Box>
-      <Typography sx={{ mb: "4px" }}>{description}</Typography>
+      <Typography sx={{ mb: "12px" }}>{description}</Typography>
       {details.length > 0 && (
         <List
           sx={{
+            padding: 0,
             paddingLeft: "24px",
             listStyleType: "disc",
             typography: "body2",
