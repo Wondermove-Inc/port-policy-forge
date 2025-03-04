@@ -103,6 +103,9 @@ export const OpenPort = ({
         label: "",
         sortable: false,
         width: 63,
+        sx: {
+          textAlign: "center",
+        },
         render: () => (
           <Typography
             variant="b2_r"
