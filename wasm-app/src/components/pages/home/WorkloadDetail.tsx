@@ -105,7 +105,7 @@ export const WorkloadDetail = ({
         ),
       });
       setLoading(false);
-    }, 1000);
+    }, 500);
   }, []);
 
   useEffect(() => {
