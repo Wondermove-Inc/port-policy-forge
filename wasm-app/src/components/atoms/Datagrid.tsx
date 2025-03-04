@@ -10,10 +10,7 @@ import { IndeterminateIcon } from "@/components/icons/IndeterminateIcon";
 
 const CustomNoResultOverlay = () => {
   return (
-    <DatagridListEmpty
-      title={"There is no data to display. "}
-      description={""}
-    />
+    <DatagridListEmpty title={"No search results found. "} description={""} />
   );
 };
 const noRowsOverlay = () => {
@@ -28,7 +25,7 @@ const noRowsOverlay = () => {
         color: "grey.500",
       }}
     >
-      No search results found.
+      There is no data to display.
     </Box>
   );
 };

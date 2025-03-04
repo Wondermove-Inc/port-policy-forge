@@ -8,8 +8,8 @@ import { GkeIcon } from "../icons/GkeIcon";
 import { OkeIcon } from "../icons/OkeIcon";
 import { PrmIcon } from "../icons/PrmIcon";
 
-import { DownIcon } from "@/components/icons/DownIcon";
 import { CheckIcon } from "@/components/icons/CheckIcon";
+import { DownIcon } from "@/components/icons/DownIcon";
 import { clusters, namespaces } from "@/data";
 import { ClusterType } from "@/models";
 import { useCommonStore } from "@/store";
