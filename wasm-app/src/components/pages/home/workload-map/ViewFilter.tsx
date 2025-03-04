@@ -5,6 +5,7 @@ import { Autocomplete, Toggle, Typography } from "@skuber/components";
 
 import { CloseIcon } from "@/components/icons/CloseIcon";
 import { EyeIcon } from "@/components/icons/EyeIcon";
+import { SearchComplete } from "@/components/modules/SearchComplete";
 
 export const ViewFilter = () => {
   const [open, setOpen] = useState(false);
@@ -91,7 +92,7 @@ export const ViewFilter = () => {
               />
             </Box>
             <Box>
-              <Autocomplete options={[]} size="small" />
+              <SearchComplete options={[]} placeholder="Search for workloads" />
             </Box>
             <Box
               sx={{
