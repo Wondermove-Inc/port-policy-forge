@@ -32,7 +32,7 @@ export const BaseIcon = ({
         ...sx,
         ...(color && {
           "& path": {
-            fill: getColor(color as keyof typeof palette),
+            fill: getColor(color as keyof typeof palette) || "inherit",
           },
         }),
       }}
