@@ -86,9 +86,11 @@ export type PortAccessSettingForm = {
   sources: {
     source: string;
     type: string;
+    comment: string;
   }[];
+  port?: number | null;
   allowFullAccess: boolean;
-  access: number;
+  access: number | null;
 };
 
 export enum AccessSource {

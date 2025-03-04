@@ -1,6 +1,6 @@
-import { Box, List, ListItem } from "@mui/material";
-import { Modal, ModalBody, ModalHeader, Typography } from "@skuber/components";
+import { Modal, ModalBody, ModalHeader } from "@skuber/components";
 
+import { DescriptionWithDetails } from "./DescriptionWithDetails";
 import { ModalFooter } from "./ModalFooter";
 
 type ModalConfirmProps = {
@@ -24,30 +24,10 @@ export const ModalConfirm = ({
     <Modal width={434} open={open} onClose={onClose}>
       <ModalHeader title={title} onClose={onClose} />
       <ModalBody>
-        <Typography
-          sx={{
-            mb: "4px",
-          }}
-        >
-          {description}
-        </Typography>
-        {descriptionDetails && descriptionDetails.length > 0 && (
-          <List
-            sx={{
-              paddingBottom: 0,
-              paddingLeft: "24px",
-              listStyleType: "disc",
-              typography: "body2",
-              color: "text.secondary",
-            }}
-          >
-            {descriptionDetails.map((item, index) => (
-              <ListItem key={index} sx={{ display: "list-item", padding: 0 }}>
-                {item}
-              </ListItem>
-            ))}
-          </List>
-        )}
+        <DescriptionWithDetails
+          description={description}
+          details={descriptionDetails}
+        />
       </ModalBody>
       <ModalFooter
         cancelButtonTitle="Cancel"
