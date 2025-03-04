@@ -34,6 +34,7 @@ export const ModalConfirm = ({
         {descriptionDetails && descriptionDetails.length > 0 && (
           <List
             sx={{
+              paddingBottom: 0,
               paddingLeft: "24px",
               listStyleType: "disc",
               typography: "body2",
