@@ -255,7 +255,7 @@ export const Datagrid = (
           fontWeight: "600",
           backgroundColor: "background.elevated",
           borderRadius: "0px !important",
-          color: "text.white",
+          color: "text.default",
         },
         "& .MuiDataGrid-filler, & .MuiDataGrid-scrollbarFiller": {
           backgroundColor: "background.elevated",
@@ -268,6 +268,7 @@ export const Datagrid = (
         },
         "& .MuiDataGrid-row--borderBottom .MuiDataGrid-columnHeader": {
           borderBottom: "1px solid",
+          borderTop: "1px solid",
           borderColor: "border.default",
         },
         "& .MuiDataGrid-row": {
