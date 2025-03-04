@@ -66,7 +66,7 @@ export const ViewFilter = () => {
               padding: "16px",
               borderRadius: "8px",
               position: "absolute",
-              top: "-274px",
+              top: "-256px",
               left: 0,
               backgroundColor: "action.hover",
               width: 264,
