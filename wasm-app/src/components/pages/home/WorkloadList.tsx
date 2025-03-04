@@ -194,13 +194,13 @@ export const WorkloadList = () => {
           </Button>
         </Box>
       </Box>
-      <Box sx={{ marginTop: "24px", padding: "0 12px" }}>
+      <Box sx={{ marginTop: "24px", padding: "0 12px", width: "100%" }}>
         <Datagrid
-          key={selectedTabBound}
           columns={columns}
           rows={workloads}
           hasSearch={true}
-          noRowsOverlay={() => <Box>Nodata</Box>}
+          loading={!workloads.length}
+          height="calc(100vh - 240px)"
           width="100%"
           checkedRows={checkedRows}
           onCheckedRowsChange={setCheckedRows}

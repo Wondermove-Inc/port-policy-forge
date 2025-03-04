@@ -130,7 +130,20 @@ export const SelectClusterAndNameSpace = () => {
           }
           MenuProps={{
             PaperProps: {
-              sx: { mt: "10px", ml: withAvatar ? "-19px" : "-3px" },
+              sx: {
+                mt: "10px",
+                backgroundColor: "background.disabled",
+                backdropFilter: "blur(50px)",
+                boxShadow: "5px 5px 20px 0px #1419234D",
+                color: "text.default",
+                typography: "body1",
+                border: "1px solid",
+                borderColor: "border.elevated",
+                "&:hover": {
+                  backgroundColor: "background.disabled",
+                },
+                ml: withAvatar ? "-19px" : "-3px",
+              },
             },
           }}
           sx={{
@@ -166,7 +179,7 @@ export const SelectClusterAndNameSpace = () => {
             value=""
             sx={{
               borderBottom: "1.11px solid",
-              borderColor: "border.default",
+              borderColor: "border.elevated",
               typography: "caption",
               "&.Mui-disabled": {
                 opacity: 1,
@@ -224,7 +237,7 @@ export const SelectClusterAndNameSpace = () => {
         backgroundColor: "background.disabled",
         borderRadius: "8.89px",
         border: "1.11px solid",
-        borderColor: "border.default",
+        borderColor: "border.elevated",
         width: "290px",
         height: "46px",
         boxShadow: "5.56px 5.56px 66.67px 0px rgba(20, 25, 35, 0.9)",
