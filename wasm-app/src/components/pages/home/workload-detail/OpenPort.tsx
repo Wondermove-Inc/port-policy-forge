@@ -11,6 +11,7 @@ import { AddIcon } from "@/components/icons/AddIcon";
 import { EditIcon } from "@/components/icons/EditIcon";
 import { BadgePortStatus } from "@/components/modules/BadgePortStatus";
 import { CollapsibleTable } from "@/components/modules/CollapsibleTable";
+import { ModalClosePort } from "@/components/modules/ModalClosePort";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { Port, PortAccessSettingForm, PortDirection } from "@/models";
 
@@ -26,6 +27,7 @@ export const OpenPort = ({
   fetchWorkloadDetail,
 }: OpenPortProps) => {
   const openPortModal = useDisclosure();
+  const closePortModal = useDisclosure();
 
   const [recordSelected, setRecordSelected] = useState<Port | null>(null);
 
@@ -82,6 +84,7 @@ export const OpenPort = ({
               display: "flex",
               gap: "8px",
               alignItems: "center",
+              justifyContent: "space-between",
             }}
           >
             <Typography variant="b2_r" color="text.primary">
@@ -105,6 +108,7 @@ export const OpenPort = ({
             variant="b2_r"
             color="primary.dark"
             sx={{ cursor: "pointer" }}
+            onClick={closePortModal.open}
           >
             Close
           </Typography>
@@ -129,6 +133,12 @@ export const OpenPort = ({
     // TODO
     fetchWorkloadDetail();
     handleClose();
+  };
+
+  const handlePortClose = () => {
+    // TODO
+    fetchWorkloadDetail();
+    closePortModal.close();
   };
 
   return (
@@ -182,6 +192,11 @@ export const OpenPort = ({
         port={recordSelected}
         isInbound={isInbound}
         form={form}
+      />
+      <ModalClosePort
+        open={closePortModal.visible}
+        onClose={closePortModal.close}
+        onConfirm={handlePortClose}
       />
     </Box>
   );

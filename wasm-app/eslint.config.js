@@ -95,7 +95,7 @@ export default [
         "error",
         {
           cspell: {
-            words: ["skuber", "networkgraph"],
+            words: ["skuber", "networkgraph", "milli"],
           },
         },
       ],

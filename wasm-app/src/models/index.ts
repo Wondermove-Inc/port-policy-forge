@@ -68,7 +68,6 @@ export type StatsType = {
   attempted: number | null;
   latencyRtt: number | null;
   throughput: number | null;
-  namespace: string;
 };
 
 export type WorkloadDetailType = {

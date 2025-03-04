@@ -3,16 +3,15 @@ import { Typography } from "@skuber/components";
 
 import { PORT_STATUS_MAP } from "@/constants";
 import { StatsType, Stats } from "@/models";
+import { useCommonStore } from "@/store";
 
 export type WorkloadSummaryProps = {
   stats: StatsType;
-  workloadName: string;
 };
 
-export const WorkloadSummary = ({
-  stats,
-  workloadName,
-}: WorkloadSummaryProps) => {
+export const WorkloadSummary = ({ stats }: WorkloadSummaryProps) => {
+  const { selectedNamespace } = useCommonStore();
+
   const stylesByType = {
     status: { variant: "subtitle3", gap: "12px" },
     metric: { variant: "body3", gap: "8px" },
@@ -26,7 +25,7 @@ export const WorkloadSummary = ({
   }));
 
   const metrics = [
-    { title: "Namespace", value: workloadName },
+    { title: "Namespace", value: selectedNamespace },
     { title: "Latency rtt", value: stats.latencyRtt },
     { title: "Throughput", value: stats.throughput },
   ].map((metric) => ({
@@ -44,7 +43,7 @@ export const WorkloadSummary = ({
         display: "flex",
         flexWrap: "wrap",
         gap: "24px 12px",
-        maxWidth: 472,
+        minWidth: 472,
       }}
     >
       {[...statistics, ...metrics].map(

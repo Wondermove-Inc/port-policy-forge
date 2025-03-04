@@ -1,6 +1,11 @@
 import { ReactNode } from "react";
 
-import { Box, Drawer as MuiDrawer, DrawerProps } from "@mui/material";
+import {
+  Box,
+  Drawer as MuiDrawer,
+  DrawerProps,
+  CircularProgress,
+} from "@mui/material";
 import { Typography } from "@skuber/components";
 
 import { CloseIcon } from "@/components/icons/CloseIcon";
@@ -10,6 +15,7 @@ export type DrawerBaseProps = DrawerProps & {
   subTitle: string;
   children: ReactNode;
   onClose: () => void;
+  loading?: boolean;
 };
 
 export const Drawer = ({
@@ -17,13 +23,15 @@ export const Drawer = ({
   subTitle,
   children,
   onClose,
+  loading = false,
   ...props
 }: DrawerBaseProps) => {
   return (
     <MuiDrawer
       anchor="right"
+      keepMounted
       sx={{
-        ".MuiDrawer-paper": {
+        "& .MuiDrawer-paper": {
           boxShadow: "none",
           backgroundColor: "background.secondary",
           borderLeft: "1px solid",
@@ -31,8 +39,13 @@ export const Drawer = ({
           borderColor: "border.default",
           marginTop: "56px",
           height: "calc(100% - 56px)",
+          display: "flex",
+          flexDirection: "column",
+          maxWidth: "513px",
+          position: "fixed",
+          right: 0,
         },
-        ".MuiBackdrop-root": {
+        "& .MuiBackdrop-root": {
           marginTop: "56px",
         },
       }}
@@ -43,10 +56,11 @@ export const Drawer = ({
           padding: "20px",
           borderBottom: "1px solid",
           borderColor: "border.default",
-          borderTop: 0,
           display: "flex",
           gap: "8px",
           flexDirection: "column",
+          opacity: loading ? 0.3 : 1,
+          pointerEvents: loading ? "none" : "auto",
         }}
       >
         <Box
@@ -59,26 +73,44 @@ export const Drawer = ({
           <Typography variant="subtitle1" lineHeight={"19px"}>
             {title}
           </Typography>
-          <CloseIcon
-            onClick={onClose}
-            sx={{
-              cursor: "pointer",
-            }}
-            size={16}
-          />
+          <CloseIcon onClick={onClose} sx={{ cursor: "pointer" }} size={16} />
         </Box>
         <Typography variant="caption" lineHeight={"15px"} component={"p"}>
           {subTitle}
         </Typography>
       </Box>
+
       <Box
         sx={{
+          flex: 1,
+          overflowY: "auto",
           padding: "24px 20px 59px 20px",
-          borderTop: 0,
+          position: "relative",
+          opacity: loading ? 0.1 : 1,
+          pointerEvents: loading ? "none" : "auto",
         }}
       >
         {children}
       </Box>
+
+      {loading && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.3)",
+            backdropFilter: "blur(5px)",
+          }}
+        >
+          <CircularProgress size={28} />
+        </Box>
+      )}
     </MuiDrawer>
   );
 };

@@ -9,6 +9,7 @@ import { WorkloadSummary } from "./workload-detail/WorkloadSummary";
 import { WorkloadTabs } from "./workload-detail/WorkloadTabs";
 
 import { Drawer } from "@/components/atoms/Drawer";
+import { INITIAL_WORKLOAD_DETAIL } from "@/constants";
 import { exampleWorkload } from "@/data";
 import {
   PortDetailGroupType,
@@ -22,27 +23,33 @@ import {
   getPortNumber,
   getPortRiskLabel,
 } from "@/utils";
-import { formatNumber, formatter } from "@/utils/format";
+import {
+  formatBinarySize,
+  formatMilliCores,
+  formatNumber,
+  formatter,
+} from "@/utils/format";
 
 export const WorkloadDetail = ({
   open,
+  id,
   handleClose,
 }: {
   open: boolean;
+  id: string;
   handleClose: () => void;
 }) => {
   const [portDirection, setPortDirection] = useState<PortDirection>(
     PortDirection.INBOUND,
   );
-  const [workloadDetail, setWorkloadDetail] =
-    useState<WorkloadDetailType | null>(null);
-
-  useEffect(() => {
-    fetchWorkloadDetail();
-  }, []);
+  const [workloadDetail, setWorkloadDetail] = useState<WorkloadDetailType>(
+    INITIAL_WORKLOAD_DETAIL,
+  );
+  const [loading, setLoading] = useState(false);
 
   const fetchWorkloadDetail = useCallback(() => {
     // TODO
+    setLoading(true);
     setTimeout(() => {
       setWorkloadDetail({
         ...exampleWorkload,
@@ -57,9 +64,16 @@ export const WorkloadDetail = ({
           idle: formatter("stats.idle", "", formatNumber)(exampleWorkload),
           error: formatter("stats.error", "", formatNumber)(exampleWorkload),
           attempted: formatter("stats.attempted")(exampleWorkload),
-          namespace: formatter("namespace")(exampleWorkload),
-          latencyRtt: formatter("stats.latencyRtt", "ms")(exampleWorkload),
-          throughput: formatter("stats.throughput", "MiB/s")(exampleWorkload),
+          latencyRtt: formatter(
+            "stats.latencyRtt",
+            "",
+            formatMilliCores,
+          )(exampleWorkload),
+          throughput: formatter(
+            "stats.throughput",
+            "/s",
+            formatBinarySize,
+          )(exampleWorkload),
         },
         ports: ["inbound", "outbound"].reduce(
           (acc, direction) => {
@@ -90,12 +104,17 @@ export const WorkloadDetail = ({
           {} as Record<PortDirection, PortDetailGroupType>,
         ),
       });
-    }, 500);
+      setLoading(false);
+    }, 1000);
   }, []);
 
-  if (!workloadDetail) {
-    return <></>;
-  }
+  useEffect(() => {
+    if (!id) {
+      setWorkloadDetail(INITIAL_WORKLOAD_DETAIL);
+      return;
+    }
+    fetchWorkloadDetail();
+  }, [id]);
 
   return (
     <Drawer
@@ -103,6 +122,7 @@ export const WorkloadDetail = ({
       title={workloadDetail.workloadName}
       subTitle={workloadDetail.kind}
       onClose={handleClose}
+      loading={loading}
     >
       <WorkloadTabs
         onChangeTab={(direction) =>
@@ -110,10 +130,7 @@ export const WorkloadDetail = ({
         }
       />
       <Box sx={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-        <WorkloadSummary
-          stats={workloadDetail.stats}
-          workloadName={workloadDetail.workloadName}
-        />
+        <WorkloadSummary stats={workloadDetail.stats} />
         <PolicyApplication fetchWorkloadDetail={fetchWorkloadDetail} />
         <OpenPort
           data={workloadDetail.ports[portDirection].open}

@@ -24,6 +24,7 @@ export const WorkloadList = () => {
     Record<string, Record<string, boolean>>
   >({});
   const [selectedTabBound, setSelectedTabBound] = useState("1");
+  const [selectedWorkloadId, setSelectedWorkloadId] = useState("");
 
   useEffect(() => {
     getWorkloads();
@@ -124,6 +125,16 @@ export const WorkloadList = () => {
     console.log(formatCheckedRows);
   };
 
+  const handleShowDetail = (id: string) => {
+    detailDrawer.open();
+    setSelectedWorkloadId(id);
+  };
+
+  const handleCloseDetail = () => {
+    detailDrawer.close();
+    setSelectedWorkloadId("");
+  };
+
   return (
     <Box
       sx={{
@@ -193,7 +204,7 @@ export const WorkloadList = () => {
           width="100%"
           checkedRows={checkedRows}
           onCheckedRowsChange={setCheckedRows}
-          onRowClick={detailDrawer.open}
+          onRowClick={(row) => handleShowDetail(String(row.id))}
         ></Datagrid>
       </Box>
       <ModalClosePort
@@ -203,7 +214,8 @@ export const WorkloadList = () => {
       />
       <WorkloadDetail
         open={detailDrawer.visible}
-        handleClose={detailDrawer.close}
+        handleClose={handleCloseDetail}
+        id={selectedWorkloadId}
       />
     </Box>
   );
