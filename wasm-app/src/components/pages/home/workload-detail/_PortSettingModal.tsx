@@ -55,7 +55,11 @@ export const PortSettingModal = ({
         sx={{ overflowY: "auto", maxHeight: "586px", p: "16px 20px 0 20px" }}
       >
         {!port && (
-          <>
+          <Box
+            sx={{
+              mb: "20px",
+            }}
+          >
             <DescriptionWithDetails
               description="Please enter the port to open. You can enter it in one of the following three formats."
               details={[
@@ -64,7 +68,7 @@ export const PortSettingModal = ({
                 "Port range: enter the range with a hyphen (e.g. 30080-30090)",
               ]}
             />
-            <Box sx={{ textAlign: "center" }}>
+            <Box sx={{ textAlign: "center", mt: 1 }}>
               <Controller
                 name="port"
                 control={control}
@@ -77,7 +81,7 @@ export const PortSettingModal = ({
                 )}
               />
             </Box>
-          </>
+          </Box>
         )}
         <Box sx={{ display: "flex", flexDirection: "column" }}>
           <Box
@@ -85,7 +89,6 @@ export const PortSettingModal = ({
               display: "flex",
               alignItems: "center",
               gap: 2,
-              pt: "20px",
               pb: 2,
             }}
           >

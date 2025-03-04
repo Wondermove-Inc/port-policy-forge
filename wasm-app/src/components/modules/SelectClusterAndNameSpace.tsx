@@ -8,7 +8,7 @@ import { GkeIcon } from "../icons/GkeIcon";
 import { OkeIcon } from "../icons/OkeIcon";
 import { PrmIcon } from "../icons/PrmIcon";
 
-import { ArrowDownIcon } from "@/components/icons/ArrowDownIcon";
+import { DownIcon } from "@/components/icons/DownIcon";
 import { CheckIcon } from "@/components/icons/CheckIcon";
 import { clusters, namespaces } from "@/data";
 import { ClusterType } from "@/models";
@@ -124,7 +124,7 @@ export const SelectClusterAndNameSpace = () => {
             onChange(e.target.value)
           }
           variant="standard"
-          IconComponent={ArrowDownIcon}
+          IconComponent={DownIcon}
           renderValue={(selected: string) =>
             options.find((o) => o.value === selected)?.label || ""
           }

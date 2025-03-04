@@ -1,4 +1,4 @@
-import { AccessSource, PortKind } from "@/models";
+import { AccessSource, PortKind, WorkloadKind } from "@/models";
 
 export const getPortNumber = ({
   isRange,
@@ -48,6 +48,19 @@ export const getPortRiskLabel = (risk: number) => {
       return "Normal";
     case 2:
       return "High";
+    default:
+      return "";
+  }
+};
+
+export const getWorkloadKindLabel = (kind: string) => {
+  switch (kind) {
+    case WorkloadKind.DEPLOYMENT:
+      return "Deployment";
+    case WorkloadKind.STAGING:
+      return "Staging";
+    case WorkloadKind.PRODUCTION:
+      return "Production";
     default:
       return "";
   }

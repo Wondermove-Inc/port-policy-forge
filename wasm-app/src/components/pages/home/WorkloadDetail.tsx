@@ -22,6 +22,7 @@ import {
   getPortKindLabel,
   getPortNumber,
   getPortRiskLabel,
+  getWorkloadKindLabel,
 } from "@/utils";
 import {
   formatBinarySize,
@@ -54,6 +55,7 @@ export const WorkloadDetail = ({
       setWorkloadDetail({
         ...exampleWorkload,
         workloadName: formatter("workloadName")(exampleWorkload),
+        kind: formatter("kind", "", getWorkloadKindLabel)(exampleWorkload),
         stats: {
           active: formatter("stats.active", "", formatNumber)(exampleWorkload),
           unconnected: formatter(
@@ -129,7 +131,7 @@ export const WorkloadDetail = ({
           setPortDirection(direction as PortDirection)
         }
       />
-      <Box sx={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+      <Box>
         <WorkloadSummary stats={workloadDetail.stats} />
         <PolicyApplication fetchWorkloadDetail={fetchWorkloadDetail} />
         <OpenPort

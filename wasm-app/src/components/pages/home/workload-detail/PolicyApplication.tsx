@@ -30,6 +30,7 @@ export const PolicyApplication = ({
           display: "flex",
           gap: "12px",
           alignItems: "center",
+          mb: 3,
         }}
       >
         <Box
