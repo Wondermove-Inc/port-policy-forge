@@ -34,12 +34,12 @@ export const createNetworkOptions = () => {
       enabled: true,
       stabilization: {
         enabled: true,
-        iterations: 200,
+        iterations: 4000,
       },
       barnesHut: {
         gravitationalConstant: -2000,
         centralGravity: 0.3,
-        springLength: 110,
+        springLength: 120,
         springConstant: 0.04,
         damping: 0.09,
         avoidOverlap: 1,
