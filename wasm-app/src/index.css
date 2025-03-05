@@ -89,3 +89,7 @@ html, body {
 .vis-network {
   background-color: #191F2B;
 }
+
+.MuiFormLabel-root.MuiFormLabel-filled, .MuiInputLabel-root.Mui-focused {
+  background-color: #1E2533 !important;
+}

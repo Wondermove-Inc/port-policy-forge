@@ -94,7 +94,6 @@ export const WorkloadDetail = ({
                 direction as PortDirection
               ].closed.map((el) => ({
                 ...el,
-                risk: formatter("risk", "", getPortRiskLabel)(el),
                 type: formatter("type", "", getPortKindLabel)(el),
                 count: formatter("count", "", formatNumber)(el),
               })),
