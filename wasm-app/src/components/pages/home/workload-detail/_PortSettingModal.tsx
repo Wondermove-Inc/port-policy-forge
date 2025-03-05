@@ -52,7 +52,7 @@ export const PortSettingModal = ({
         onClose={handleClose}
       />
       <Box
-        sx={{ overflowY: "scroll", maxHeight: "586px", p: "16px 20px 0 20px" }}
+        sx={{ overflowY: "scroll", maxHeight: "586px", p: "16px 14px 0 20px" }}
       >
         {!port && (
           <Box
