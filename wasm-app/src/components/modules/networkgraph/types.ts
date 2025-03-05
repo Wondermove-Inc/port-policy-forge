@@ -13,6 +13,17 @@ export enum EdgeStatus {
   ATTEMPT,
 }
 
+export enum NodeKind {
+  DEPLOYMENT = "deployment",
+  DEMONSET = "demonset",
+  REPLICASET = "replicaset",
+  CRONJOB = "cronjob",
+  JOB = "job",
+  STATEFULSET = "statefulset",
+  ETC = "etc",
+  EXTERNAL = "external",
+}
+
 export enum NodeStatus {
   BEFORE_INITIAL_SETUP,
   COMPLETE_INITIAL_SETUP,
@@ -46,13 +57,13 @@ export type NodeStat = {
   latencyRtt?: number;
   throughput?: number;
   unconnected?: number;
-}
+};
 
 export type NodeData = {
   id: string;
   nodeSize: number;
   customLabel: string;
-  kind?: string;
+  kind?: NodeKind;
   stats?: NodeStat;
   status?: NodeStatus;
 };
@@ -100,7 +111,16 @@ export type CanvasImage = {
   errorArrow: HTMLImageElement;
   protected: HTMLImageElement;
   exclamation: HTMLImageElement;
-  deployment: HTMLImageElement;
+  kind: {
+    deployment: HTMLImageElement;
+    demonset: HTMLImageElement;
+    replicaset: HTMLImageElement;
+    cronjob: HTMLImageElement;
+    job: HTMLImageElement;
+    statefulset: HTMLImageElement;
+    etc: HTMLImageElement;
+    external: HTMLImageElement;
+  };
 };
 
 export type DrawingOptions = {

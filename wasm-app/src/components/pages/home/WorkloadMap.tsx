@@ -59,6 +59,7 @@ export const WorkloadMap = () => {
           unconnected: 10,
         },
         status: workload.status,
+        kind: workload.kind,
       };
     });
     setEdges(edges);

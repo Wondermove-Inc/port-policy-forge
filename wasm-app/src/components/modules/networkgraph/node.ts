@@ -11,6 +11,7 @@ import {
   DrawingOptions,
   EdgeStatus,
   EdgeStatusText,
+  NodeKind,
   NodeSize,
   NodeStatus,
 } from "./types";
@@ -42,7 +43,7 @@ export class NetworkNode {
     } else {
       this.drawNodePort();
     }
-    this.drawDeploymentIcon();
+    this.drawNodeKind();
     this.drawNodeLabel();
 
     if (this.options?.disabled) {
@@ -110,7 +111,7 @@ export class NetworkNode {
     this.ctx.closePath();
   }
 
-  private drawDeploymentIcon() {
+  private drawNodeKind() {
     if (!this.canvasImages) return;
     const nodeSize = this.node?.data?.nodeSize;
     let deploymentIconSize = DeploymentIconSize.MEDIUM;
@@ -120,13 +121,16 @@ export class NetworkNode {
       deploymentIconSize = DeploymentIconSize.SMALL;
     }
     this.ctx.beginPath();
-    this.ctx.drawImage(
-      this.canvasImages.deployment,
-      this.node.x - deploymentIconSize / 2,
-      this.node.y - deploymentIconSize / 2,
-      deploymentIconSize,
-      deploymentIconSize
-    );
+    if (this.node.data?.kind) {
+      this.ctx.drawImage(
+        this.canvasImages.kind[this.node.data?.kind],
+        this.node.x - deploymentIconSize / 2,
+        this.node.y - deploymentIconSize / 2,
+        deploymentIconSize,
+        deploymentIconSize
+      );
+    }
+
     this.ctx.closePath();
   }
 

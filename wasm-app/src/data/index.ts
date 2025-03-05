@@ -1,4 +1,8 @@
-import { EdgeStatus, NodeStatus } from "@/components/modules/networkgraph/types";
+import {
+  EdgeStatus,
+  NodeKind,
+  NodeStatus,
+} from "@/components/modules/networkgraph/types";
 
 export const clusters = [
   { id: "cluster1", name: "Cluster1", type: "aks" },
@@ -218,7 +222,7 @@ export const workloadList = [
 export const exampleWorkload = {
   uuid: "7431bb4f-cae8-4dbe-a542-d6f52c893271",
   workloadName: "demoworkload-1",
-  kind: "deployment",
+  kind: NodeKind.DEPLOYMENT,
   stats: {
     active: 2,
     unconnected: 8079,
@@ -425,7 +429,7 @@ export const workloadMap = [
   {
     uuid: "111",
     workloadName: "workload-1",
-    kind: "deployment",
+    kind: NodeKind.DEPLOYMENT,
     status: NodeStatus.COMPLETE_INITIAL_SETUP,
     from: [
       {
@@ -447,7 +451,7 @@ export const workloadMap = [
   {
     uuid: "222",
     workloadName: "-ad-service",
-    kind: "deployment",
+    kind: NodeKind.JOB,
     status: NodeStatus.COMPLETE_INITIAL_SETUP,
     from: [],
     to: [],
@@ -455,7 +459,7 @@ export const workloadMap = [
   {
     uuid: "333",
     workloadName: "workload-1-1",
-    kind: "deployment",
+    kind: NodeKind.DEPLOYMENT,
     from: [],
     to: [
       {
@@ -467,7 +471,7 @@ export const workloadMap = [
   {
     uuid: "444",
     workloadName: "workload-example-1",
-    kind: "deployment",
+    kind: NodeKind.DEMONSET,
     status: NodeStatus.COMPLETE_INITIAL_SETUP,
     from: [],
     to: [
@@ -480,7 +484,7 @@ export const workloadMap = [
   {
     uuid: "555",
     workloadName: "workload-example-2",
-    kind: "deployment",
+    kind: NodeKind.DEPLOYMENT,
     status: NodeStatus.COMPLETE_INITIAL_SETUP,
     from: [],
     to: [
@@ -493,7 +497,7 @@ export const workloadMap = [
   {
     uuid: "666",
     workloadName: "workload-example-3",
-    kind: "deployment",
+    kind: NodeKind.REPLICASET,
     status: NodeStatus.COMPLETE_INITIAL_SETUP,
     from: [],
     to: [
@@ -506,7 +510,7 @@ export const workloadMap = [
   {
     uuid: "777",
     workloadName: "workload-example-4",
-    kind: "deployment",
+    kind: NodeKind.CRONJOB,
     status: NodeStatus.COMPLETE_INITIAL_SETUP,
     from: [],
     to: [
@@ -519,7 +523,7 @@ export const workloadMap = [
   {
     uuid: "888",
     workloadName: "workload-example-5",
-    kind: "deployment",
+    kind: NodeKind.JOB,
     status: NodeStatus.COMPLETE_INITIAL_SETUP,
     from: [
       {
@@ -533,7 +537,7 @@ export const workloadMap = [
     uuid: "999",
     workloadName: "workload-example-6",
     status: NodeStatus.COMPLETE_INITIAL_SETUP,
-    kind: "deployment",
+    kind: NodeKind.STATEFULSET,
     from: [
       {
         workloadId: "666",
@@ -546,7 +550,7 @@ export const workloadMap = [
     uuid: "1000",
     workloadName: "workload-example-7",
     status: NodeStatus.BEFORE_INITIAL_SETUP,
-    kind: "deployment",
+    kind: NodeKind.ETC,
     from: [
       {
         workloadId: "111",
@@ -559,7 +563,7 @@ export const workloadMap = [
     uuid: "1111",
     workloadName: "workload-example-8",
     status: NodeStatus.COMPLETE_INITIAL_SETUP,
-    kind: "deployment",
+    kind: NodeKind.EXTERNAL,
     from: [
       {
         workloadId: "222",
@@ -572,7 +576,7 @@ export const workloadMap = [
     uuid: "2222",
     workloadName: "workload-example-9",
     status: NodeStatus.BEFORE_INITIAL_SETUP,
-    kind: "deployment",
+    kind: NodeKind.DEPLOYMENT,
     from: [
       {
         workloadId: "444",
@@ -585,7 +589,7 @@ export const workloadMap = [
     uuid: "3333",
     workloadName: "workload-example-10",
     status: NodeStatus.COMPLETE_INITIAL_SETUP,
-    kind: "deployment",
+    kind: NodeKind.DEPLOYMENT,
     from: [],
     to: [
       {
@@ -599,7 +603,7 @@ export const workloadMap = [
     uuid: "4444",
     workloadName: "workload-example-11",
     status: NodeStatus.BEFORE_INITIAL_SETUP,
-    kind: "deployment",
+    kind: NodeKind.DEPLOYMENT,
     from: [],
     to: [
       {
@@ -612,7 +616,7 @@ export const workloadMap = [
     uuid: "5555",
     workloadName: "workload-example-12",
     status: NodeStatus.COMPLETE_INITIAL_SETUP,
-    kind: "deployment",
+    kind: NodeKind.DEPLOYMENT,
     from: [],
     to: [
       {
@@ -625,7 +629,7 @@ export const workloadMap = [
     uuid: "6666",
     workloadName: "workload-example-13",
     status: NodeStatus.COMPLETE_INITIAL_SETUP,
-    kind: "deployment",
+    kind: NodeKind.DEPLOYMENT,
     from: [
       {
         workloadId: "4444",
