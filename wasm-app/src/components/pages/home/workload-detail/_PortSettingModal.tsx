@@ -17,6 +17,13 @@ import { AddIcon } from "@/components/icons/AddIcon";
 import { DeleteIcon } from "@/components/icons/DeleteIcon";
 import { Port, PortAccessSettingForm } from "@/models";
 
+const customStyles = {
+  ".MuiFormLabel-root.MuiFormLabel-filled, .MuiInputLabel-root.Mui-focused": {
+    bgcolor: "background.secondary",
+    typography: "caption",
+  },
+};
+
 interface PortSettingModalProps {
   isOpen: boolean;
   port?: Port | null;
@@ -75,8 +82,9 @@ export const PortSettingModal = ({
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    sx={{ width: "100% !important" }}
+                    sx={{ width: "100% !important", ...customStyles }}
                     placeholder="Port number"
+                    label="Port"
                   />
                 )}
               />
@@ -167,10 +175,7 @@ export const PortSettingModal = ({
                                 label={isInbound ? "Source" : "Destination"}
                                 sx={{
                                   flex: 1,
-                                  ".MuiFormLabel-root": {
-                                    bgcolor: "unset !important",
-                                    ml: "-5px",
-                                  },
+                                  ...customStyles,
                                 }}
                               />
                             )}
@@ -200,10 +205,7 @@ export const PortSettingModal = ({
                                     minHeight: "50px !important",
                                   },
                                 },
-                                ".MuiFormLabel-root": {
-                                  bgcolor: "unset !important",
-                                  ml: "-5px",
-                                },
+                                ...customStyles,
                               }}
                               label="Comment"
                             />
