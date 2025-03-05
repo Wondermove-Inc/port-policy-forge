@@ -5,7 +5,7 @@ export const color = {
   black: "#19191B",
   stroke: {
     default: "#4d4d4f",
-    active: "rgba(83, 139, 255, 1)",
+    active: "#125AED",
   },
   fill: {
     default: "#2d323d",

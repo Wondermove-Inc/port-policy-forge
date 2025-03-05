@@ -3,6 +3,7 @@ import WorkloadArrowIcon from "../../../assets/icons/workload-arrow.svg?inline";
 import WorkloadDeploymentIcon from "../../../assets/icons/workload-deployment.svg?inline";
 import WorkloadExclamationIcon from "../../../assets/icons/workload-exclamation.svg?inline";
 import WorkloadProtectedIcon from "../../../assets/icons/workload-protected.svg?inline";
+import { color } from "./constants";
 
 export const loadImage = (src: string): Promise<HTMLImageElement> => {
   return new Promise<HTMLImageElement>((resolve) => {
@@ -15,9 +16,9 @@ export const loadImage = (src: string): Promise<HTMLImageElement> => {
 };
 
 export const loadAllImages = async (): Promise<CanvasImage> => {
-  const idleColor = "#FFA800";
-  const errorColor = "#EB4136";
-  const activeColor = "#538BFF";
+  const idleColor = color.idle;
+  const errorColor = color.error;
+  const activeColor = color.active;
   
   const workloadArrowIdleIcon = WorkloadArrowIcon.replace(
     /stroke=['"]%23[0-9a-fA-F]{3,6}['"]/g,

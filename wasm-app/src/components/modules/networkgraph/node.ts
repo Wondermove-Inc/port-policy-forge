@@ -61,7 +61,7 @@ export class NetworkNode {
       this.ctx.arc(
         this.node.x,
         this.node.y,
-        nodeSize / 2 + 20,
+        nodeSize / 2 + 24,
         0,
         2 * Math.PI,
         false
@@ -74,7 +74,7 @@ export class NetworkNode {
       this.ctx.arc(
         this.node.x,
         this.node.y,
-        nodeSize / 2 + 10,
+        nodeSize / 2 + 12,
         0,
         2 * Math.PI,
         false
