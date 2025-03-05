@@ -38,7 +38,7 @@ export const TabsViewMode = () => {
             },
             textTransform: "none",
             typography: "captionBold",
-            color: "interaction.primaryContrastBackground",
+            color: "#538BFF4D",
             padding: "0",
             height: "37px",
             width: "72px",
