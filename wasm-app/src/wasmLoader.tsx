@@ -1,3 +1,4 @@
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 let wasmPromise: Promise<WebAssembly.Instance> | null = null;
 
 export function loadWasm(): Promise<WebAssembly.Instance> {
@@ -7,7 +8,7 @@ export function loadWasm(): Promise<WebAssembly.Instance> {
       const response = await fetch('/main.wasm');
       const { instance } = await WebAssembly.instantiateStreaming(
         response,
-        goWasm.importObject
+        goWasm.importObject,
       );
       goWasm.run(instance);
       return instance;

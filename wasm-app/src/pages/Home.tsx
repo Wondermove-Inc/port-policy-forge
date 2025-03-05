@@ -1,35 +1,37 @@
-import { useState } from 'react'
+import { Box } from "@mui/material";
 
-declare global {
-  interface Window {
-    MyGoFunc(url: string): Promise<Response>
-  }
-}
+import { SelectClusterAndNameSpace } from "@/components/modules/SelectClusterAndNameSpace";
+import { TabsViewMode } from "@/components/modules/TabsViewMode";
+import { WorkloadList } from "@/components/pages/home/WorkloadList";
+import { WorkloadMap } from "@/components/pages/home/WorkloadMap";
+import { useCommonStore } from "@/store";
 
-const Home = () => {
-  const [result, setResult] = useState<string>('');
-
-  // const handleCallMyGoFunc = async () => {
-  //   try {
-  //     const url = 'http://localhost:3001/clusters'
-  //     const response = await window.MyGoFunc(url);  
-  //     const text = await response.text();
-  //     setResult(text);
-  //   } catch (error) {
-  //     console.error("Error fetching logs:", error);
-  //     setResult(`Error: ${error}`);
-  //   }
-  // }
+export const Home = () => {
+  const { isViewList } = useCommonStore();
 
   return (
-    <div>
-      <h2>Home Page</h2>
-      {/* <button onClick={handleCallMyGoFunc}>Call MyGoFunc</button>
-      <div style={{ marginTop: '20px' }}>
-        <pre>{result}</pre>
-      </div> */}
-    </div>
+    <Box
+      sx={{
+        height: "100%",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          position: "absolute",
+          right: 0,
+          top: 0,
+          zIndex: 88,
+          width: "100%",
+          padding: "20px",
+          alignItems: "center",
+        }}
+      >
+        <SelectClusterAndNameSpace />
+        <TabsViewMode />
+      </Box>
+      {isViewList ? <WorkloadList /> : <WorkloadMap />}
+    </Box>
   );
-}
-
-export default Home
+};

@@ -1,0 +1,35 @@
+version: "3.7"
+
+services:
+  traefik:
+    image: "traefik:v3.2"
+    container_name: "traefik"
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.web.address=:80"
+    ports:
+      - "80:80"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - port-policy-forge-nw
+  web:
+    container_name: web
+    image: web:latest
+    environment:
+      - NEXT_PUBLIC_API_ENDPOINT
+    build:
+      context: wasm-app
+    networks:
+      - port-policy-forge-nw
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.web.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.web.entrypoints=web"
+      - "traefik.http.routers.web.middlewares=auth"
+      - "traefik.http.middlewares.auth.basicauth.users=${BASIC_AUTH}"
+networks:
+  port-policy-forge-nw:
+    external: true
