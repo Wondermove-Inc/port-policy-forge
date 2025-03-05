@@ -15,6 +15,15 @@ export const BaseIcon = ({
   color,
   ...props
 }: BaseIconProps) => {
+  const getColor = (path: keyof typeof palette): string | undefined => {
+    const keys = path.split(".") as [keyof typeof palette, string?];
+    const section = palette[keys[0]];
+
+    return typeof section === "object" && keys[1]
+      ? (section as Record<string, string>)[keys[1]]
+      : (section as string);
+  };
+
   return (
     <SvgIcon
       sx={{
@@ -23,7 +32,7 @@ export const BaseIcon = ({
         ...sx,
         ...(color && {
           "& path": {
-            fill: palette[color as keyof typeof palette] || "inherit",
+            fill: getColor(color as keyof typeof palette) || "inherit",
           },
         }),
       }}

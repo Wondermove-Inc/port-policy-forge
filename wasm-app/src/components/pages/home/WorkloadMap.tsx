@@ -8,18 +8,23 @@ import NetworkGraph from "@/components/modules/networkgraph/networkGraph";
 import {
   EdgeData,
   EdgeStatus,
+  EdgeStatusText,
   NodeData,
   NodeSize,
 } from "@/components/modules/networkgraph/types";
 import { ViewFilter } from "@/components/pages/home/workload-map/ViewFilter";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { useWasmContext } from "@/wasm.provider";
+import { workloadMap } from "@/data";
 
 export const WorkloadMap = () => {
   const wasmCtx = useWasmContext();
   const [edges, setEdges] = useState<EdgeData[]>([]);
   const [nodes, setNodes] = useState<NodeData[]>([]);
   const [activeNodeId, setActiveNodeId] = useState<string>();
+  const [displayPorts, setDisplayPorts] = useState<EdgeStatusText[]>([
+    EdgeStatusText.ERROR,
+  ]);
   const detailDrawer = useDisclosure();
   useEffect(() => {
     if (!detailDrawer.visible) {
@@ -27,18 +32,18 @@ export const WorkloadMap = () => {
     }
   }, [detailDrawer.visible]);
   useEffect(() => {
-    const workloads = wasmCtx.getWorkloads("");
+    const workloads = workloadMap
     const edges = workloads.reduce((pre, current) => {
       const fromEdges: EdgeData[] = current.from.map((f) => ({
         from: f.workloadId,
         to: current.uuid,
-        status: EdgeStatus.ACCESS_ATTEMPTS,
+        status: f.status,
       }));
 
       const toEdges: EdgeData[] = current.to.map((t) => ({
         from: current.uuid,
         to: t.workloadId,
-        status: EdgeStatus.ACCESS_ATTEMPTS,
+        status: t.status,
       }));
 
       return [...pre, ...fromEdges, ...toEdges] as EdgeData[];
@@ -49,6 +54,12 @@ export const WorkloadMap = () => {
         id: workload.uuid,
         customLabel: workload.workloadName,
         nodeSize: NodeSize.MEDIUM,
+        stats: {
+          active: 10,
+          unconnected: 10,
+        },
+        status: workload.status,
+        kind: workload.kind,
       };
     });
     setEdges(edges);
@@ -56,8 +67,8 @@ export const WorkloadMap = () => {
   }, []);
 
   const handleNodeClick = (nodeId: string) => {
-    setActiveNodeId(nodeId);
-    detailDrawer.open();
+    // setActiveNodeId(nodeId);
+    // detailDrawer.open();
   };
 
   return (
@@ -72,6 +83,7 @@ export const WorkloadMap = () => {
       }}
     >
       <NetworkGraph
+        displayPorts={displayPorts}
         edges={edges}
         nodes={nodes}
         activeNodeId={activeNodeId}

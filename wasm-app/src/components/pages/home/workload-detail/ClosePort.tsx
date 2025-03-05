@@ -10,7 +10,9 @@ import { CloseIcon } from "@/components/icons/CloseIcon";
 import { WarningIcon } from "@/components/icons/WarningIcon";
 import { CollapsibleTable } from "@/components/modules/CollapsibleTable";
 import { useDisclosure } from "@/hooks/useDisclosure";
-import { Port } from "@/models";
+import { Port, PortRisk } from "@/models";
+import { getPortRiskLabel } from "@/utils";
+import { formatter } from "@/utils/format";
 
 type ClosePortProps = {
   data: Port[];
@@ -49,10 +51,18 @@ export const ClosePort = ({ data, fetchWorkloadDetail }: ClosePortProps) => {
         id: "risk",
         label: "Risk",
         sortable: false,
-        width: emptyData ? 90 : 65,
-        render: (record: Port) => (
-          <Typography color="status.danger">{record.risk}</Typography>
-        ),
+        width: emptyData ? 90 : 85,
+        render: (record: Port) => {
+          const isHighRisk = record.risk === PortRisk.HIGH;
+          return (
+            <Typography
+              variant="b2_r"
+              color={isHighRisk ? "status.danger" : ""}
+            >
+              {formatter("risk", "", getPortRiskLabel)(record)}
+            </Typography>
+          );
+        },
       },
       {
         id: "type",
@@ -81,7 +91,7 @@ export const ClosePort = ({ data, fetchWorkloadDetail }: ClosePortProps) => {
                 <Typography
                   variant="label_m"
                   color="primary.dark"
-                  sx={{ cursor: "pointer" }}
+                  sx={{ cursor: "pointer", textAlign: "center" }}
                   onClick={openAllowPortModal.open}
                 >
                   Open the access
@@ -103,7 +113,7 @@ export const ClosePort = ({ data, fetchWorkloadDetail }: ClosePortProps) => {
                   }}
                   onClick={openClearHistoryModal.open}
                 >
-                  <CloseIcon size={16} color="#FFFFFF66" />
+                  <CloseIcon size={16} color="text.tertiary" />
                 </Box>
               ),
             },

@@ -8,6 +8,7 @@ import { useCommonStore } from "@/store";
 
 export const Home = () => {
   const { isViewList } = useCommonStore();
+
   return (
     <Box
       sx={{

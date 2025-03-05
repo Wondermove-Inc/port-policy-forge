@@ -24,8 +24,10 @@ export const PortDetail = ({ record }: { record: Port }) => {
   return (
     <Box
       sx={{
+        border: "none !important",
         "&>div": {
           p: "20px",
+          borderColor: "action.disabledBackground",
         },
       }}
     >

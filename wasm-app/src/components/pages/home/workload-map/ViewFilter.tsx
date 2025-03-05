@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Box } from "@mui/material";
-import { Autocomplete, Toggle, Typography } from "@skuber/components";
+import { Toggle, Typography } from "@skuber/components";
 
 import { CloseIcon } from "@/components/icons/CloseIcon";
 import { EyeIcon } from "@/components/icons/EyeIcon";

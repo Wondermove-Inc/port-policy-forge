@@ -52,7 +52,7 @@ export const PortSettingModal = ({
         onClose={handleClose}
       />
       <Box
-        sx={{ overflowY: "auto", maxHeight: "586px", p: "16px 20px 0 20px" }}
+        sx={{ overflowY: "scroll", maxHeight: "586px", p: "16px 11px 0 20px" }}
       >
         {!port && (
           <Box
@@ -77,6 +77,7 @@ export const PortSettingModal = ({
                     {...field}
                     sx={{ width: "100% !important" }}
                     placeholder="Port number"
+                    label="Port"
                   />
                 )}
               />
@@ -167,9 +168,6 @@ export const PortSettingModal = ({
                                 label={isInbound ? "Source" : "Destination"}
                                 sx={{
                                   flex: 1,
-                                  ".MuiFormLabel-root": {
-                                    bgcolor: "unset !important",
-                                  },
                                 }}
                               />
                             )}
@@ -198,9 +196,6 @@ export const PortSettingModal = ({
                                   "&.MuiInputBase-multiline textarea": {
                                     minHeight: "50px !important",
                                   },
-                                },
-                                ".MuiFormLabel-root": {
-                                  bgcolor: "unset !important",
                                 },
                               }}
                               label="Comment"

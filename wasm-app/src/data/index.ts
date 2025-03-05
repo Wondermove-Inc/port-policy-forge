@@ -1,3 +1,9 @@
+import {
+  EdgeStatus,
+  NodeKind,
+  NodeStatus,
+} from "@/components/modules/networkgraph/types";
+
 export const clusters = [
   { id: "cluster1", name: "Cluster1", type: "aks" },
   { id: "cluster2", name: "Cluster2123213123", type: "gke" },
@@ -12,7 +18,7 @@ export const namespaces = [
 
 export const workloadList = [
   {
-    id: "ID1",
+    id: "1",
     name: "Workload Name 1",
     type: "Type",
     unconnectedPort: 2,
@@ -22,7 +28,7 @@ export const workloadList = [
     closedPortAttempted: 0,
   },
   {
-    id: "ID33",
+    id: "2",
     name: "Workload Name 2",
     type: "Type",
     unconnectedPort: 3,
@@ -41,12 +47,182 @@ export const workloadList = [
     errorPort: 0,
     closedPortAttempted: 2,
   },
+  {
+    id: "4",
+    name: "Workload Name 4",
+    type: "Type",
+    unconnectedPort: 0,
+    idlePort: 0,
+    activePort: 0,
+    errorPort: 0,
+    closedPortAttempted: 2,
+  },
+  {
+    id: "5",
+    name: "Workload Name 5",
+    type: "Type",
+    unconnectedPort: 0,
+    idlePort: 0,
+    activePort: 0,
+    errorPort: 0,
+    closedPortAttempted: 2,
+  },
+  {
+    id: "6",
+    name: "Workload Name 6",
+    type: "Type",
+    unconnectedPort: 0,
+    idlePort: 0,
+    activePort: 0,
+    errorPort: 0,
+    closedPortAttempted: 2,
+  },
+  {
+    id: "7",
+    name: "Workload Name 7",
+    type: "Type",
+    unconnectedPort: 0,
+    idlePort: 0,
+    activePort: 0,
+    errorPort: 0,
+    closedPortAttempted: 2,
+  },
+  {
+    id: "8",
+    name: "Workload Name 8",
+    type: "Type",
+    unconnectedPort: 0,
+    idlePort: 0,
+    activePort: 0,
+    errorPort: 0,
+    closedPortAttempted: 2,
+  },
+  {
+    id: "9",
+    name: "Workload Name 9",
+    type: "Type",
+    unconnectedPort: 0,
+    idlePort: 0,
+    activePort: 0,
+    errorPort: 0,
+    closedPortAttempted: 2,
+  },
+  {
+    id: "10",
+    name: "Workload Name 10",
+    type: "Type",
+    unconnectedPort: 0,
+    idlePort: 0,
+    activePort: 0,
+    errorPort: 0,
+    closedPortAttempted: 2,
+  },
+  {
+    id: "11",
+    name: "Workload Name 11",
+    type: "Type",
+    unconnectedPort: 0,
+    idlePort: 0,
+    activePort: 0,
+    errorPort: 0,
+    closedPortAttempted: 2,
+  },
+  {
+    id: "12",
+    name: "Workload Name 12",
+    type: "Type",
+    unconnectedPort: 0,
+    idlePort: 0,
+    activePort: 0,
+    errorPort: 0,
+    closedPortAttempted: 2,
+  },
+  {
+    id: "13",
+    name: "Workload Name 13",
+    type: "Type",
+    unconnectedPort: 0,
+    idlePort: 0,
+    activePort: 0,
+    errorPort: 0,
+    closedPortAttempted: 2,
+  },
+  {
+    id: "14",
+    name: "Workload Name 14",
+    type: "Type",
+    unconnectedPort: 0,
+    idlePort: 0,
+    activePort: 0,
+    errorPort: 0,
+    closedPortAttempted: 2,
+  },
+  {
+    id: "15",
+    name: "Workload Name 15",
+    type: "Type",
+    unconnectedPort: 0,
+    idlePort: 0,
+    activePort: 0,
+    errorPort: 0,
+    closedPortAttempted: 2,
+  },
+  {
+    id: "16",
+    name: "Workload Name 16",
+    type: "Type",
+    unconnectedPort: 0,
+    idlePort: 0,
+    activePort: 0,
+    errorPort: 0,
+    closedPortAttempted: 2,
+  },
+  {
+    id: "17",
+    name: "Workload Name 17",
+    type: "Type",
+    unconnectedPort: 0,
+    idlePort: 0,
+    activePort: 0,
+    errorPort: 0,
+    closedPortAttempted: 2,
+  },
+  {
+    id: "18",
+    name: "Workload Name 18",
+    type: "Type",
+    unconnectedPort: 0,
+    idlePort: 0,
+    activePort: 0,
+    errorPort: 0,
+    closedPortAttempted: 2,
+  },
+  {
+    id: "19",
+    name: "Workload Name 19",
+    type: "Type",
+    unconnectedPort: 0,
+    idlePort: 0,
+    activePort: 0,
+    errorPort: 0,
+    closedPortAttempted: 2,
+  },
+  {
+    id: "20",
+    name: "Workload Name 20",
+    type: "Type",
+    unconnectedPort: 0,
+    idlePort: 0,
+    activePort: 0,
+    errorPort: 0,
+    closedPortAttempted: 2,
+  },
 ];
 
 export const exampleWorkload = {
   uuid: "7431bb4f-cae8-4dbe-a542-d6f52c893271",
-  workloadName: "demo-workload-1",
-  kind: "deployment",
+  workloadName: "demoworkload-1",
+  kind: NodeKind.DEPLOYMENT,
   stats: {
     active: 2,
     unconnected: 8079,
@@ -70,6 +246,7 @@ export const exampleWorkload = {
           status: 0,
           direction: "inbound",
           source: null,
+          access: 0,
           isOpen: true,
           risk: 0,
           type: "internal",
@@ -86,6 +263,7 @@ export const exampleWorkload = {
           status: 1,
           direction: "inbound",
           source: null,
+          access: 1,
           isOpen: true,
           risk: 0,
           type: "internal",
@@ -105,6 +283,7 @@ export const exampleWorkload = {
           status: 0,
           direction: "inbound",
           source: null,
+          access: 3,
           isOpen: true,
           risk: 0,
           type: "internal",
@@ -118,16 +297,23 @@ export const exampleWorkload = {
           isRange: false,
           portNumber: 8080,
           portRange: null,
+          access: 0,
           status: 2,
           direction: "inbound",
           source: [
             {
               ip: "192.168.1.100",
               port: 51234,
+              comment:
+                "Working on deploying a front-end application, making it accessible only from an internal test server.",
+              createdAt: "2023-02-21T11:19:22+09:00",
             },
             {
               ip: "192.168.1.101",
               port: 51234,
+              comment:
+                "Working on deploying a front-end application, making it accessible only from an internal test server.",
+              createdAt: "2023-02-21T11:19:22+09:00",
             },
           ],
           isOpen: true,
@@ -145,7 +331,7 @@ export const exampleWorkload = {
           isRange: false,
           portNumber: 50051,
           portRange: null,
-          status: 4,
+          status: EdgeStatus.SYSTEM,
           direction: "inbound",
           source: [
             {
@@ -166,7 +352,7 @@ export const exampleWorkload = {
           isRange: false,
           portNumber: 50052,
           portRange: null,
-          status: 4,
+          status: EdgeStatus.SYSTEM,
           direction: "inbound",
           source: [
             {
@@ -192,11 +378,15 @@ export const exampleWorkload = {
           portNumber: 9000,
           portRange: null,
           status: 0,
+          access: 0,
           direction: "outbound",
           source: [
             {
               ip: "10.0.0.1",
               port: 12345,
+              comment:
+                "Working on deploying a front-end application, making it accessible only from an internal test server.",
+              createdAt: "2023-02-21T11:19:22+09:00",
             },
           ],
           isOpen: true,
@@ -214,7 +404,7 @@ export const exampleWorkload = {
           isRange: false,
           portNumber: 9001,
           portRange: null,
-          status: 4,
+          status: EdgeStatus.SYSTEM,
           direction: "outbound",
           source: [
             {
@@ -234,3 +424,218 @@ export const exampleWorkload = {
     },
   },
 };
+
+export const workloadMap = [
+  {
+    uuid: "111",
+    workloadName: "workload-1",
+    kind: NodeKind.DEPLOYMENT,
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
+    from: [
+      {
+        workloadId: "222",
+        status: EdgeStatus.IDLE,
+      },
+    ],
+    to: [
+      {
+        workloadId: "444",
+        status: 2,
+      },
+      {
+        workloadId: "555",
+        status: EdgeStatus.ERROR,
+      },
+    ],
+  },
+  {
+    uuid: "222",
+    workloadName: "-ad-service",
+    kind: NodeKind.JOB,
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
+    from: [],
+    to: [],
+  },
+  {
+    uuid: "333",
+    workloadName: "workload-1-1",
+    kind: NodeKind.DEPLOYMENT,
+    from: [],
+    to: [
+      {
+        workloadId: "222",
+        status: EdgeStatus.SYSTEM,
+      },
+    ],
+  },
+  {
+    uuid: "444",
+    workloadName: "workload-example-1",
+    kind: NodeKind.DEMONSET,
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
+    from: [],
+    to: [
+      {
+        workloadId: "333",
+        status: EdgeStatus.SYSTEM,
+      },
+    ],
+  },
+  {
+    uuid: "555",
+    workloadName: "workload-example-2",
+    kind: NodeKind.DEPLOYMENT,
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
+    from: [],
+    to: [
+      {
+        workloadId: "444",
+        status: EdgeStatus.SYSTEM,
+      },
+    ],
+  },
+  {
+    uuid: "666",
+    workloadName: "workload-example-3",
+    kind: NodeKind.REPLICASET,
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
+    from: [],
+    to: [
+      {
+        workloadId: "444",
+        status: EdgeStatus.SYSTEM,
+      },
+    ],
+  },
+  {
+    uuid: "777",
+    workloadName: "workload-example-4",
+    kind: NodeKind.CRONJOB,
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
+    from: [],
+    to: [
+      {
+        workloadId: "444",
+        status: EdgeStatus.SYSTEM,
+      },
+    ],
+  },
+  {
+    uuid: "888",
+    workloadName: "workload-example-5",
+    kind: NodeKind.JOB,
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
+    from: [
+      {
+        workloadId: "777",
+        status: EdgeStatus.SYSTEM,
+      },
+    ],
+    to: [],
+  },
+  {
+    uuid: "999",
+    workloadName: "workload-example-6",
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
+    kind: NodeKind.STATEFULSET,
+    from: [
+      {
+        workloadId: "666",
+        status: EdgeStatus.SYSTEM,
+      },
+    ],
+    to: [],
+  },
+  {
+    uuid: "1000",
+    workloadName: "workload-example-7",
+    status: NodeStatus.BEFORE_INITIAL_SETUP,
+    kind: NodeKind.ETC,
+    from: [
+      {
+        workloadId: "111",
+        status: EdgeStatus.ATTEMPT,
+      },
+    ],
+    to: [],
+  },
+  {
+    uuid: "1111",
+    workloadName: "workload-example-8",
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
+    kind: NodeKind.EXTERNAL,
+    from: [
+      {
+        workloadId: "222",
+        status: EdgeStatus.SYSTEM,
+      },
+    ],
+    to: [],
+  },
+  {
+    uuid: "2222",
+    workloadName: "workload-example-9",
+    status: NodeStatus.BEFORE_INITIAL_SETUP,
+    kind: NodeKind.DEPLOYMENT,
+    from: [
+      {
+        workloadId: "444",
+        status: EdgeStatus.SYSTEM,
+      },
+    ],
+    to: [],
+  },
+  {
+    uuid: "3333",
+    workloadName: "workload-example-10",
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
+    kind: NodeKind.DEPLOYMENT,
+    from: [],
+    to: [
+      {
+        workloadId: "555",
+        status: EdgeStatus.SYSTEM,
+      },
+    ],
+  },
+
+  {
+    uuid: "4444",
+    workloadName: "workload-example-11",
+    status: NodeStatus.BEFORE_INITIAL_SETUP,
+    kind: NodeKind.DEPLOYMENT,
+    from: [],
+    to: [
+      {
+        workloadId: "5555",
+        status: EdgeStatus.SYSTEM,
+      },
+    ],
+  },
+  {
+    uuid: "5555",
+    workloadName: "workload-example-12",
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
+    kind: NodeKind.DEPLOYMENT,
+    from: [],
+    to: [
+      {
+        workloadId: "4444",
+        status: EdgeStatus.SYSTEM,
+      },
+    ],
+  },
+  {
+    uuid: "6666",
+    workloadName: "workload-example-13",
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
+    kind: NodeKind.DEPLOYMENT,
+    from: [
+      {
+        workloadId: "4444",
+        status: EdgeStatus.SYSTEM,
+      },
+    ],
+    to: [],
+  },
+];

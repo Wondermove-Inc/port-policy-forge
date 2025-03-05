@@ -1,12 +1,7 @@
-import { HTMLAttributes, JSXElementConstructor, useMemo } from "react";
+import { useMemo } from "react";
 
 import { Box, Checkbox, SxProps, Theme, Typography } from "@mui/material";
-import {
-  DataGrid,
-  DataGridProps,
-  GridColDef,
-  NoRowsOverlayPropsOverrides,
-} from "@mui/x-data-grid";
+import { DataGrid, DataGridProps, GridColDef } from "@mui/x-data-grid";
 
 import { DatagridListEmpty } from "./DatagridEmpty";
 
@@ -14,7 +9,25 @@ import { CheckBoxIcon } from "@/components/icons/CheckBoxIcon";
 import { IndeterminateIcon } from "@/components/icons/IndeterminateIcon";
 
 const CustomNoResultOverlay = () => {
-  return <DatagridListEmpty title={"No Data"} description={"No Data"} />;
+  return (
+    <DatagridListEmpty title={"No search results found. "} description={""} />
+  );
+};
+const noRowsOverlay = () => {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100%",
+        typography: "body1",
+        color: "grey.500",
+      }}
+    >
+      There is no data to display.
+    </Box>
+  );
 };
 export type CustomGridColDef = GridColDef & {
   enableCheckBox?: boolean;
@@ -26,11 +39,6 @@ export const Datagrid = (
     emptyHeight?: number | string;
     height?: number | string;
     width?: number | string;
-    noRowsOverlay: JSXElementConstructor<
-      HTMLAttributes<HTMLDivElement> & {
-        sx?: SxProps<Theme> | undefined;
-      } & NoRowsOverlayPropsOverrides
-    >;
     hasSearch?: boolean;
     checkedRows: Record<string, Record<string, boolean>>;
     onCheckedRowsChange?: (
@@ -41,7 +49,6 @@ export const Datagrid = (
   const {
     columns,
     sx,
-    noRowsOverlay,
     hasSearch,
     width = "100%",
     height = "100%",
@@ -226,11 +233,11 @@ export const Datagrid = (
 
   return (
     <DataGrid
+      loading={props.loading}
       rowHeight={rowHeight}
       columnHeaderHeight={44}
       sx={{
         minHeight: 110,
-        maxHeight: 594,
         width,
         height: tableHeight,
         borderWidth: "0",
@@ -248,6 +255,8 @@ export const Datagrid = (
           fontWeight: "300",
           color: "text.default",
           borderTop: "none",
+          cursor: "pointer",
+          flex: 1,
         },
         "& .MuiDataGrid-columnHeader": {
           typography: "body1",
@@ -257,8 +266,11 @@ export const Datagrid = (
           borderRadius: "0px !important",
           color: "text.default",
         },
-        "& .MuiDataGrid-filler, & .MuiDataGrid-scrollbarFiller": {
-          backgroundColor: "background.elevated",
+        "& .MuiDataGrid-scrollbarFiller": {
+          display: "none",
+        },
+        "& .MuiDataGrid-filler": {
+          display: "none",
         },
         ".MuiDataGrid-main": {
           height: tableHeight,
@@ -266,10 +278,17 @@ export const Datagrid = (
         ".MuiDataGrid-scrollbar": {
           display: "none",
         },
+        ".MuiDataGrid-cellEmpty": {
+          display: "none",
+        },
         "& .MuiDataGrid-row--borderBottom .MuiDataGrid-columnHeader": {
           borderBottom: "1px solid",
           borderTop: "1px solid",
           borderColor: "border.default",
+          flex: 1,
+        },
+        "& .MuiDataGrid-columnHeaderTitle": {
+          fontWeight: 600,
         },
         "& .MuiDataGrid-row": {
           borderBottom: "1px solid",
@@ -326,7 +345,7 @@ export const Datagrid = (
                 backdropFilter: "blur(10px)",
               }
             : {
-                backgroundColor: "background.secondary",
+                backgroundColor: "none",
               }),
         },
         "& .MuiDataGrid-scrollbar": {

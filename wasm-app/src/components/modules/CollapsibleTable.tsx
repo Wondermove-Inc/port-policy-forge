@@ -162,6 +162,7 @@ export const CollapsibleTable = <T,>({
                               align={column.align}
                               width={column.width}
                               sx={{
+                                borderColor: "border.elevated",
                                 ...column.sx,
                               }}
                             >
@@ -188,10 +189,14 @@ export const CollapsibleTable = <T,>({
                                       )}
                                     </IconButton>
                                   )}
-                                  {cellContent}
+                                  <Typography variant="b2_r">
+                                    {cellContent}
+                                  </Typography>
                                 </Box>
                               ) : (
-                                cellContent
+                                <Typography variant="b2_r">
+                                  {cellContent}
+                                </Typography>
                               )}
                             </TableCell>
                           );
@@ -203,6 +208,7 @@ export const CollapsibleTable = <T,>({
                             colSpan={columns.length}
                             sx={{
                               padding: "0 !important",
+                              border: "none",
                             }}
                           >
                             <Collapse in={isOpen} timeout="auto" unmountOnExit>

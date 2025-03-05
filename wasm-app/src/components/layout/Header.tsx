@@ -12,7 +12,12 @@ export const Header = () => {
         borderColor: "border.default",
       }}
     >
-      <Typography color="text.primary" variant="h2" lineHeight="27px">
+      <Typography
+        color="text.primary"
+        variant="h2"
+        lineHeight="27px"
+        fontFamily="Montserrat"
+      >
         Port Policy Forge
       </Typography>
     </Box>

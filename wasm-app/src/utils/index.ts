@@ -23,9 +23,9 @@ export const getAccessLabel = (access: number) => {
     case AccessSource.ALLOW_ALL:
       return "Allow all sources";
     case AccessSource.ALLOW_EXPECT:
-      return "allow except some sources";
+      return "Allow except some sources";
     case AccessSource.ALLOW_ONLY:
-      return "allow only some sources";
+      return "Allow only some sources";
     default:
       return "Allow all access";
   }

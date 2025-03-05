@@ -6,11 +6,35 @@ export type Coord = {
 };
 
 export enum EdgeStatus {
-  DEFAULT,
+  SYSTEM,
   IDLE,
   ACTIVE,
   ERROR,
-  ACCESS_ATTEMPTS,
+  ATTEMPT,
+}
+
+export enum NodeKind {
+  DEPLOYMENT = "deployment",
+  DEMONSET = "demonset",
+  REPLICASET = "replicaset",
+  CRONJOB = "cronjob",
+  JOB = "job",
+  STATEFULSET = "statefulset",
+  ETC = "etc",
+  EXTERNAL = "external",
+}
+
+export enum NodeStatus {
+  BEFORE_INITIAL_SETUP,
+  COMPLETE_INITIAL_SETUP,
+}
+
+export enum EdgeStatusText {
+  SYSTEM = "system",
+  IDLE = "edle",
+  ACTIVE = "active",
+  ERROR = "error",
+  ATTEMPT = "attempt",
 }
 
 export enum NodeSize {
@@ -25,10 +49,23 @@ export enum DeploymentIconSize {
   BIG = 40,
 }
 
+export type NodeStat = {
+  active?: number;
+  attempted?: number;
+  error?: number;
+  idle?: number;
+  latencyRtt?: number;
+  throughput?: number;
+  unconnected?: number;
+};
+
 export type NodeData = {
   id: string;
   nodeSize: number;
   customLabel: string;
+  kind?: NodeKind;
+  stats?: NodeStat;
+  status?: NodeStatus;
 };
 
 export type NetworkNodeData = {
@@ -74,13 +111,23 @@ export type CanvasImage = {
   errorArrow: HTMLImageElement;
   protected: HTMLImageElement;
   exclamation: HTMLImageElement;
-  deployment: HTMLImageElement;
+  kind: {
+    deployment: HTMLImageElement;
+    demonset: HTMLImageElement;
+    replicaset: HTMLImageElement;
+    cronjob: HTMLImageElement;
+    job: HTMLImageElement;
+    statefulset: HTMLImageElement;
+    etc: HTMLImageElement;
+    external: HTMLImageElement;
+  };
 };
 
 export type DrawingOptions = {
   hoverNodeId?: string;
   connectedEdges?: IdType[];
   connectedNodes?: IdType[];
+  displayPorts?: EdgeStatusText[];
   disabled?: boolean;
 };
 
@@ -88,3 +135,13 @@ export type WorkloadConnector = {
   workloadId: string;
   status: number;
 };
+
+export interface EdgeStyle {
+  strokeStyle: string;
+  label?: string;
+  backgroundColor?: string;
+  borderColor?: string;
+  textColor?: string;
+  arrowKey: keyof CanvasImage;
+  lineDash: number[];
+}
