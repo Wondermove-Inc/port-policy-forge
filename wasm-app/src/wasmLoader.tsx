@@ -4,7 +4,7 @@ export function loadWasm(): Promise<WebAssembly.Instance> {
   if (!wasmPromise) {
     wasmPromise = (async () => {
       const goWasm = new (window as any).Go();
-      const response = await fetch('main.wasm');
+      const response = await fetch('/main.wasm');
       const { instance } = await WebAssembly.instantiateStreaming(
         response,
         goWasm.importObject

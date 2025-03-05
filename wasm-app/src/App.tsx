@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import '../public/wasm_exec.js';  
+import '../public/wasm_exec.js' 
 import { Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home.tsx';
 import Namespace from './pages/Namespace';
@@ -17,6 +17,7 @@ const App = () => {
   const [isWasmLoaded, setIsWasmLoaded] = useState(false)
 
   useEffect(() => {
+    console.log('wasm loading ...')
     loadWasm()
       .then(() => setIsWasmLoaded(true))
       .catch((err) => {

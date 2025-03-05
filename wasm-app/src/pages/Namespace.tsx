@@ -17,7 +17,6 @@ type NamespaceData = {
   result: NamespaceType[];
 };
 
-// wasmListNamespace는 원본 JSON 문자열과 파싱된 네임스페이스 배열을 함께 반환합니다.
 function wasmListNamespace(): Promise<NamespaceData> {
   return new Promise((resolve, reject) => {
     try {
