@@ -89,7 +89,7 @@ export const Drawer = ({
         sx={{
           flex: 1,
           overflowY: "scroll",
-          padding: "24px 15px 24px 20px",
+          padding: "24px 11px 24px 20px",
           position: "relative",
           opacity: loading ? 0.1 : 1,
           pointerEvents: loading ? "none" : "auto",
