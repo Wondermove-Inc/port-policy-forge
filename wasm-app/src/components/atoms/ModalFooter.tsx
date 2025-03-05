@@ -62,6 +62,9 @@ export const ModalFooter = ({
               loading ? <CircularProgress size={16} color="inherit" /> : null
             }
             onClick={onClickConfirmButton}
+            sx={{
+              color: "text.primary",
+            }}
           >
             {confirmButtonTitle}
           </Button>

@@ -211,6 +211,7 @@ export const WorkloadList = () => {
         ></Datagrid>
       </Box>
       <ModalClosePort
+        title="Close Selected Ports"
         open={closePortModal.visible}
         onClose={closePortModal.close}
         onConfirm={handleConfirmClosePort}
