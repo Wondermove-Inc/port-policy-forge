@@ -248,6 +248,11 @@ export const Datagrid = (
           fontWeight: "300",
           color: "text.default",
           borderTop: "none",
+<<<<<<< Updated upstream
+=======
+          cursor: "pointer",
+          flex: 1,
+>>>>>>> Stashed changes
         },
         "& .MuiDataGrid-columnHeader": {
           typography: "body1",
@@ -257,8 +262,16 @@ export const Datagrid = (
           borderRadius: "0px !important",
           color: "text.default",
         },
+<<<<<<< Updated upstream
         "& .MuiDataGrid-filler, & .MuiDataGrid-scrollbarFiller": {
           backgroundColor: "background.elevated",
+=======
+        "& .MuiDataGrid-scrollbarFiller": {
+          display: "none",
+        },
+        "& .MuiDataGrid-filler": {
+          display: "none",
+>>>>>>> Stashed changes
         },
         ".MuiDataGrid-main": {
           height: tableHeight,
@@ -266,10 +279,14 @@ export const Datagrid = (
         ".MuiDataGrid-scrollbar": {
           display: "none",
         },
+        ".MuiDataGrid-cellEmpty": {
+          display: "none",
+        },
         "& .MuiDataGrid-row--borderBottom .MuiDataGrid-columnHeader": {
           borderBottom: "1px solid",
           borderTop: "1px solid",
           borderColor: "border.default",
+          flex: 1,
         },
         "& .MuiDataGrid-row": {
           borderBottom: "1px solid",
