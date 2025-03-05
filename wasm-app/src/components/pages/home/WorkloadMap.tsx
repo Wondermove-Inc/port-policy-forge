@@ -15,6 +15,7 @@ import {
 import { ViewFilter } from "@/components/pages/home/workload-map/ViewFilter";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { useWasmContext } from "@/wasm.provider";
+import { workloadMap } from "@/data";
 
 export const WorkloadMap = () => {
   const wasmCtx = useWasmContext();
@@ -31,18 +32,18 @@ export const WorkloadMap = () => {
     }
   }, [detailDrawer.visible]);
   useEffect(() => {
-    const workloads = wasmCtx.getWorkloads("");
+    const workloads = workloadMap
     const edges = workloads.reduce((pre, current) => {
       const fromEdges: EdgeData[] = current.from.map((f) => ({
         from: f.workloadId,
         to: current.uuid,
-        status: EdgeStatus.ATTEMPT,
+        status: EdgeStatus.SYSTEM,
       }));
 
       const toEdges: EdgeData[] = current.to.map((t) => ({
         from: current.uuid,
         to: t.workloadId,
-        status: EdgeStatus.ATTEMPT,
+        status: EdgeStatus.SYSTEM,
       }));
 
       return [...pre, ...fromEdges, ...toEdges] as EdgeData[];
@@ -53,6 +54,10 @@ export const WorkloadMap = () => {
         id: workload.uuid,
         customLabel: workload.workloadName,
         nodeSize: NodeSize.MEDIUM,
+        stats: {
+          active: 10,
+          unconnected: 10,
+        },
       };
     });
     setEdges(edges);

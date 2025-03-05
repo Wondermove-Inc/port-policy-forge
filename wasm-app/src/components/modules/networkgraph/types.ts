@@ -33,10 +33,22 @@ export enum DeploymentIconSize {
   BIG = 40,
 }
 
+export type NodeStat = {
+  active?: number;
+  attempted?: number;
+  error?: number;
+  idle?: number;
+  latencyRtt?: number;
+  throughput?: number;
+  unconnected?: number;
+}
+
 export type NodeData = {
   id: string;
   nodeSize: number;
   customLabel: string;
+  kind?: string;
+  stats?: NodeStat;
 };
 
 export type NetworkNodeData = {

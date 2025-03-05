@@ -418,3 +418,208 @@ export const exampleWorkload = {
     },
   },
 };
+
+export const workloadMap = [
+  {
+    uuid: "111",
+    workloadName: "-workload-1",
+    kind: "deployment",
+    from: [
+      {
+        workloadId: "222",
+        status: 4,
+      },
+    ],
+    to: [
+      {
+        workloadId: "444",
+        status: 2,
+      },
+      {
+        workloadId: "555",
+        status: 2,
+      },
+    ],
+  },
+  {
+    uuid: "222",
+    workloadName: "-ad-service",
+    kind: "deployment",
+    from: [],
+    to: [
+      {
+        workloadId: "111",
+        status: 4,
+      },
+    ],
+  },
+  {
+    uuid: "333",
+    workloadName: "-workload-1-1",
+    kind: "deployment",
+    from: [],
+    to: [
+      {
+        workloadId: "222",
+        status: 4,
+      },
+    ],
+  },
+  {
+    uuid: "444",
+    workloadName: "-workload-example-1",
+    kind: "deployment",
+    from: [],
+    to: [
+      {
+        workloadId: "333",
+        status: 4,
+      },
+    ],
+  },
+  {
+    uuid: "555",
+    workloadName: "-workload-example-2",
+    kind: "deployment",
+    from: [],
+    to: [
+      {
+        workloadId: "444",
+        status: 4,
+      },
+    ],
+  },
+  {
+    uuid: "666",
+    workloadName: "-workload-example-3",
+    kind: "deployment",
+    from: [],
+    to: [
+      {
+        workloadId: "444",
+        status: 4,
+      },
+    ],
+  },
+  {
+    uuid: "777",
+    workloadName: "-workload-example-4",
+    kind: "deployment",
+    from: [],
+    to: [
+      {
+        workloadId: "444",
+        status: 4,
+      },
+    ],
+  },
+  {
+    uuid: "888",
+    workloadName: "-workload-example-5",
+    kind: "deployment",
+    from: [
+      {
+        workloadId: "777",
+        status: 4,
+      },
+    ],
+    to: [],
+  },
+  {
+    uuid: "999",
+    workloadName: "-workload-example-6",
+    kind: "deployment",
+    from: [
+      {
+        workloadId: "666",
+        status: 4,
+      },
+    ],
+    to: [],
+  },
+  {
+    uuid: "1000",
+    workloadName: "-workload-example-7",
+    kind: "deployment",
+    from: [
+      {
+        workloadId: "111",
+        status: 4,
+      },
+    ],
+    to: [],
+  },
+  {
+    uuid: "1111",
+    workloadName: "-workload-example-8",
+    kind: "deployment",
+    from: [
+      {
+        workloadId: "222",
+        status: 4,
+      },
+    ],
+    to: [],
+  },
+  {
+    uuid: "2222",
+    workloadName: "-workload-example-9",
+    kind: "deployment",
+    from: [
+      {
+        workloadId: "444",
+        status: 4,
+      },
+    ],
+    to: [],
+  },
+  {
+    uuid: "3333",
+    workloadName: "-workload-example-10",
+    kind: "deployment",
+    from: [],
+    to: [
+      {
+        workloadId: "555",
+        status: 4,
+      },
+    ],
+  },
+
+  {
+    uuid: "4444",
+    workloadName: "-workload-example-11",
+    kind: "deployment",
+    from: [],
+    to: [
+      {
+        workloadId: "5555",
+        status: 4,
+      },
+    ],
+  },
+  {
+    uuid: "5555",
+    workloadName: "-workload-example-12",
+    kind: "deployment",
+    from: [],
+    to: [
+      {
+        workloadId: "4444",
+        status: 4,
+      },
+    ],
+  },
+  {
+    uuid: "6666",
+    workloadName: "-workload-example-13",
+    kind: "deployment",
+    from: [
+      {
+        workloadId: "4444",
+        status: 4,
+      },
+    ],
+    to: [],
+  },
+];

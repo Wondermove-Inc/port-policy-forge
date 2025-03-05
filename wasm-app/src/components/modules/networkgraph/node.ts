@@ -1,4 +1,9 @@
-import { color, DISABLED_GLOBAL_ALPHA, EXCLAMATION_SIZE, GLOBAL_ALPHA } from "./constants";
+import {
+  color,
+  DISABLED_GLOBAL_ALPHA,
+  EXCLAMATION_SIZE,
+  GLOBAL_ALPHA,
+} from "./constants";
 import {
   CanvasImage,
   CustomNode,
@@ -31,10 +36,14 @@ export class NetworkNode {
       this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
     }
     this.drawNodeBackground();
-    this.drawExclamationIcon();
+    const errorPorts = this.getErrorPorts();
+    if (errorPorts.length === 0) {
+      this.drawExclamationIcon();
+    } else {
+      this.drawNodePort();
+    }
     this.drawDeploymentIcon();
     this.drawNodeLabel();
-    this.drawNodePort();
 
     if (this.options?.disabled) {
       this.ctx.globalAlpha = GLOBAL_ALPHA;
@@ -154,16 +163,7 @@ export class NetworkNode {
   }
 
   private drawNodePort() {
-    const ports: { status: EdgeStatus; numberOfPorts: number }[] = [
-      {
-        status: EdgeStatus.ERROR,
-        numberOfPorts: 10,
-      },
-      {
-        status: EdgeStatus.IDLE,
-        numberOfPorts: 20,
-      },
-    ];
+    const ports = this.getErrorPorts();
     const ARC_RADIUS = 10;
     for (let i = 0; i < ports.length; i++) {
       let x = this.node.x + ARC_RADIUS + 14;
@@ -181,9 +181,27 @@ export class NetworkNode {
       this.ctx.fill();
       this.ctx.closePath();
       this.ctx.font = "bold 10px Arial";
+      const portStr = ports[i].total <= 99 ? ports[i].total.toString() : "99+";
       this.ctx.fillStyle =
         ports[i].status === EdgeStatus.ERROR ? color.white : color.black;
-      this.ctx.fillText(ports[i].numberOfPorts.toString(), x, y);
+      this.ctx.fillText(portStr, x, y);
     }
+  }
+
+  private getErrorPorts() {
+    const ports: { status: EdgeStatus; total: number }[] = [
+      {
+        status: EdgeStatus.ERROR,
+        total:
+          (this.node.data?.stats?.error || 0) +
+          (this.node.data?.stats?.attempted || 0),
+      },
+      {
+        status: EdgeStatus.IDLE,
+        total: this.node.data?.stats?.idle || 0,
+      },
+    ].filter((port) => port.total > 0);
+
+    return ports;
   }
 }
