@@ -16,7 +16,6 @@ import { ModalFooter } from "@/components/atoms/ModalFooter";
 import { AddIcon } from "@/components/icons/AddIcon";
 import { DeleteIcon } from "@/components/icons/DeleteIcon";
 import { Port, PortAccessSettingForm } from "@/models";
-import { inputLabelCustom } from "@/styles";
 
 interface PortSettingModalProps {
   isOpen: boolean;
@@ -76,7 +75,7 @@ export const PortSettingModal = ({
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    sx={{ width: "100% !important", ...inputLabelCustom }}
+                    sx={{ width: "100% !important" }}
                     placeholder="Port number"
                     label="Port"
                   />
@@ -169,7 +168,6 @@ export const PortSettingModal = ({
                                 label={isInbound ? "Source" : "Destination"}
                                 sx={{
                                   flex: 1,
-                                  ...inputLabelCustom,
                                 }}
                               />
                             )}
@@ -199,7 +197,6 @@ export const PortSettingModal = ({
                                     minHeight: "50px !important",
                                   },
                                 },
-                                ...inputLabelCustom,
                               }}
                               label="Comment"
                             />
