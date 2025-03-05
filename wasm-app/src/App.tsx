@@ -29,6 +29,7 @@ const App = () => {
   const [isWasmLoaded, setIsWasmLoaded] = useState(false);
 
   useEffect(() => {
+    console.log('wasm loading ...')
     loadWasm()
       .then(() => setIsWasmLoaded(true))
       .catch((err) => {

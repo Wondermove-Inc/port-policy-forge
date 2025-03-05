@@ -1,3 +1,3 @@
-module my-react-wasm-app/go
+module wasm-go
 
 go 1.22.10
