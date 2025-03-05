@@ -16,13 +16,7 @@ import { ModalFooter } from "@/components/atoms/ModalFooter";
 import { AddIcon } from "@/components/icons/AddIcon";
 import { DeleteIcon } from "@/components/icons/DeleteIcon";
 import { Port, PortAccessSettingForm } from "@/models";
-
-const customStyles = {
-  ".MuiFormLabel-root.MuiFormLabel-filled, .MuiInputLabel-root.Mui-focused": {
-    bgcolor: "background.secondary",
-    typography: "caption",
-  },
-};
+import { inputLabelCustom } from "@/styles";
 
 interface PortSettingModalProps {
   isOpen: boolean;
@@ -59,7 +53,7 @@ export const PortSettingModal = ({
         onClose={handleClose}
       />
       <Box
-        sx={{ overflowY: "auto", maxHeight: "586px", p: "16px 20px 0 20px" }}
+        sx={{ overflowY: "scroll", maxHeight: "586px", p: "16px 20px 0 20px" }}
       >
         {!port && (
           <Box
@@ -82,7 +76,7 @@ export const PortSettingModal = ({
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    sx={{ width: "100% !important", ...customStyles }}
+                    sx={{ width: "100% !important", ...inputLabelCustom }}
                     placeholder="Port number"
                     label="Port"
                   />
@@ -175,7 +169,7 @@ export const PortSettingModal = ({
                                 label={isInbound ? "Source" : "Destination"}
                                 sx={{
                                   flex: 1,
-                                  ...customStyles,
+                                  ...inputLabelCustom,
                                 }}
                               />
                             )}
@@ -205,7 +199,7 @@ export const PortSettingModal = ({
                                     minHeight: "50px !important",
                                   },
                                 },
-                                ...customStyles,
+                                ...inputLabelCustom,
                               }}
                               label="Comment"
                             />

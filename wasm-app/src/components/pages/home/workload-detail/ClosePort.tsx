@@ -10,7 +10,9 @@ import { CloseIcon } from "@/components/icons/CloseIcon";
 import { WarningIcon } from "@/components/icons/WarningIcon";
 import { CollapsibleTable } from "@/components/modules/CollapsibleTable";
 import { useDisclosure } from "@/hooks/useDisclosure";
-import { Port } from "@/models";
+import { Port, PortRisk } from "@/models";
+import { getPortRiskLabel } from "@/utils";
+import { formatter } from "@/utils/format";
 
 type ClosePortProps = {
   data: Port[];
@@ -50,9 +52,17 @@ export const ClosePort = ({ data, fetchWorkloadDetail }: ClosePortProps) => {
         label: "Risk",
         sortable: false,
         width: emptyData ? 90 : 85,
-        render: (record: Port) => (
-          <Typography color="status.danger">{record.risk}</Typography>
-        ),
+        render: (record: Port) => {
+          const isHighRisk = record.risk === PortRisk.HIGH;
+          return (
+            <Typography
+              variant="b2_r"
+              color={isHighRisk ? "status.danger" : ""}
+            >
+              {formatter("risk", "", getPortRiskLabel)(record)}
+            </Typography>
+          );
+        },
       },
       {
         id: "type",
