@@ -2,14 +2,16 @@ import { IdType } from "vis-network";
 import {
   ARROW_SIZE,
   color,
+  DISABLED_GLOBAL_ALPHA,
   EDGE_STYLES,
   FONT,
+  GLOBAL_ALPHA,
   LABEL_BORDER_RADIUS,
   LABEL_RECT_HEIGHT,
   LABEL_RECT_WIDTH,
   LINE_WIDTH,
 } from "./constants";
-import { CanvasImage, CustomEdge, EdgeStatus, NodeSize } from "./types";
+import { CanvasImage, CustomEdge, NodeSize } from "./types";
 
 export class NetworkEdge {
   ctx: CanvasRenderingContext2D;
@@ -17,6 +19,7 @@ export class NetworkEdge {
   canvasImages: CanvasImage;
   options: {
     connectedEdges?: IdType[];
+    hoverNodeId?: string;
   };
   coords: {
     fromX: number;
@@ -31,6 +34,7 @@ export class NetworkEdge {
     canvasImages: CanvasImage,
     options: {
       connectedEdges?: IdType[];
+      hoverNodeId?: string;
     }
   ) {
     this.canvasImages = canvasImages;
@@ -59,9 +63,10 @@ export class NetworkEdge {
 
   public draw() {
     const isActiveEdge = this.options?.connectedEdges?.includes(this.edge.id);
+    const disabled = !!this.options.hoverNodeId && !isActiveEdge;
     this.ctx.save();
-    this.drawEdgeLine(isActiveEdge);
-    this.drawEdgeArrow(isActiveEdge);
+    this.drawEdgeLine(isActiveEdge, disabled);
+    this.drawEdgeArrow(isActiveEdge, disabled);
   }
 
   public drawLabel() {
@@ -72,11 +77,13 @@ export class NetworkEdge {
     }
   }
 
-  private drawEdgeLine(isActiveEdge?: boolean) {
+  private drawEdgeLine(isActiveEdge?: boolean, disabled?: boolean) {
     this.ctx.beginPath();
     this.ctx.lineWidth = LINE_WIDTH;
     this.ctx.lineJoin = "round";
-
+    if (disabled) {
+      this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
+    }
     if (isActiveEdge) {
       const edgeStatus = this.edge.data?.status;
       const styleKey = edgeStatus ? String(edgeStatus) : "DEFAULT";
@@ -94,6 +101,7 @@ export class NetworkEdge {
     this.ctx.stroke();
     this.ctx.closePath();
     this.ctx.setLineDash([0, 0]);
+    this.ctx.globalAlpha = GLOBAL_ALPHA;
   }
 
   private drawEdgeLabel() {
@@ -175,8 +183,11 @@ export class NetworkEdge {
     this.ctx.fill();
   }
 
-  private drawEdgeArrow(isActiveEdge?: boolean) {
+  private drawEdgeArrow(isActiveEdge?: boolean, disabled?: boolean) {
     let arrowKey: keyof CanvasImage = "arrow";
+    if (disabled) {
+      this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA
+    }
     if (isActiveEdge) {
       const edgeStatus = this.edge.data?.status;
       const styleKey = edgeStatus ? String(edgeStatus) : "DEFAULT";
@@ -197,14 +208,14 @@ export class NetworkEdge {
     this.ctx.translate(arrowX, arrowY);
     this.ctx.rotate(this.coords.angle + Math.PI / 2);
     this.ctx.drawImage(
-      arrowImage,
+      arrowImage as HTMLImageElement,
       -ARROW_SIZE / 2,
       -ARROW_SIZE / 2,
       ARROW_SIZE,
       ARROW_SIZE
     );
-
     this.ctx.restore();
+    this.ctx.globalAlpha = GLOBAL_ALPHA;
   }
 
   private getLineOffset(nodeSize: NodeSize | undefined): number {

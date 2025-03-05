@@ -228,6 +228,7 @@ const handleAfterDrawing = (
     if (edge) {
       const networkEdge = new NetworkEdge(ctx, edge, canvasImages, {
         connectedEdges: options?.connectedEdges,
+        hoverNodeId: options?.hoverNodeId,
       });
       networkEdge.draw();
     }
@@ -238,6 +239,7 @@ const handleAfterDrawing = (
     if (edge) {
       const networkEdge = new NetworkEdge(ctx, edge, canvasImages, {
         connectedEdges: options?.connectedEdges,
+        hoverNodeId: options?.hoverNodeId,
       });
       networkEdge.drawLabel();
     }
