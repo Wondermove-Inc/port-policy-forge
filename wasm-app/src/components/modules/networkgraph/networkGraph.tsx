@@ -232,6 +232,16 @@ const handleAfterDrawing = (
       networkEdge.draw();
     }
   }
+  // Draw label after draw line completed
+  for (const edgeId in networkEdges) {
+    const edge = networkEdges[edgeId];
+    if (edge) {
+      const networkEdge = new NetworkEdge(ctx, edge, canvasImages, {
+        connectedEdges: options?.connectedEdges,
+      });
+      networkEdge.drawLabel();
+    }
+  }
 
   for (const nodeId in networkNodes) {
     const node = networkNodes[nodeId];

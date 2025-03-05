@@ -12,6 +12,7 @@ import {
   EdgeStatus,
   EdgeStatusText,
   NodeSize,
+  NodeStatus,
 } from "./types";
 
 export class NetworkNode {
@@ -36,8 +37,7 @@ export class NetworkNode {
       this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
     }
     this.drawNodeBackground();
-    const errorPorts = this.getErrorPorts();
-    if (errorPorts.length === 0) {
+    if (this.node.data?.status === NodeStatus.BEFORE_INITIAL_SETUP) {
       this.drawExclamationIcon();
     } else {
       this.drawNodePort();
@@ -151,7 +151,7 @@ export class NetworkNode {
         protectedAddImageWidth / 2 -
         imageToTextSpacing,
       this.node.y + nodeSize / 2 + 15,
-      100
+      textWidth
     );
 
     this.ctx.drawImage(

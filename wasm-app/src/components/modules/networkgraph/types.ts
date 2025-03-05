@@ -13,6 +13,11 @@ export enum EdgeStatus {
   ATTEMPT,
 }
 
+export enum NodeStatus {
+  BEFORE_INITIAL_SETUP,
+  COMPLETE_INITIAL_SETUP,
+}
+
 export enum EdgeStatusText {
   SYSTEM = "system",
   IDLE = "edle",
@@ -49,6 +54,7 @@ export type NodeData = {
   customLabel: string;
   kind?: string;
   stats?: NodeStat;
+  status?: NodeStatus;
 };
 
 export type NetworkNodeData = {

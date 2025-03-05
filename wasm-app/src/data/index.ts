@@ -1,3 +1,5 @@
+import { EdgeStatus, NodeStatus } from "@/components/modules/networkgraph/types";
+
 export const clusters = [
   { id: "cluster1", name: "Cluster1", type: "aks" },
   { id: "cluster2", name: "Cluster2123213123", type: "gke" },
@@ -215,7 +217,7 @@ export const workloadList = [
 
 export const exampleWorkload = {
   uuid: "7431bb4f-cae8-4dbe-a542-d6f52c893271",
-  workloadName: "demo-workload-1",
+  workloadName: "demoworkload-1",
   kind: "deployment",
   stats: {
     active: 2,
@@ -325,7 +327,7 @@ export const exampleWorkload = {
           isRange: false,
           portNumber: 50051,
           portRange: null,
-          status: 4,
+          status: EdgeStatus.SYSTEM,
           direction: "inbound",
           source: [
             {
@@ -346,7 +348,7 @@ export const exampleWorkload = {
           isRange: false,
           portNumber: 50052,
           portRange: null,
-          status: 4,
+          status: EdgeStatus.SYSTEM,
           direction: "inbound",
           source: [
             {
@@ -398,7 +400,7 @@ export const exampleWorkload = {
           isRange: false,
           portNumber: 9001,
           portRange: null,
-          status: 4,
+          status: EdgeStatus.SYSTEM,
           direction: "outbound",
           source: [
             {
@@ -422,12 +424,13 @@ export const exampleWorkload = {
 export const workloadMap = [
   {
     uuid: "111",
-    workloadName: "-workload-1",
+    workloadName: "workload-1",
     kind: "deployment",
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
     from: [
       {
         workloadId: "222",
-        status: 4,
+        status: EdgeStatus.IDLE,
       },
     ],
     to: [
@@ -437,7 +440,7 @@ export const workloadMap = [
       },
       {
         workloadId: "555",
-        status: 2,
+        status: EdgeStatus.ERROR,
       },
     ],
   },
@@ -445,179 +448,188 @@ export const workloadMap = [
     uuid: "222",
     workloadName: "-ad-service",
     kind: "deployment",
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
     from: [],
-    to: [
-      {
-        workloadId: "111",
-        status: 4,
-      },
-    ],
+    to: [],
   },
   {
     uuid: "333",
-    workloadName: "-workload-1-1",
+    workloadName: "workload-1-1",
     kind: "deployment",
     from: [],
     to: [
       {
         workloadId: "222",
-        status: 4,
+        status: EdgeStatus.SYSTEM,
       },
     ],
   },
   {
     uuid: "444",
-    workloadName: "-workload-example-1",
+    workloadName: "workload-example-1",
     kind: "deployment",
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
     from: [],
     to: [
       {
         workloadId: "333",
-        status: 4,
+        status: EdgeStatus.SYSTEM,
       },
     ],
   },
   {
     uuid: "555",
-    workloadName: "-workload-example-2",
+    workloadName: "workload-example-2",
     kind: "deployment",
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
     from: [],
     to: [
       {
         workloadId: "444",
-        status: 4,
+        status: EdgeStatus.SYSTEM,
       },
     ],
   },
   {
     uuid: "666",
-    workloadName: "-workload-example-3",
+    workloadName: "workload-example-3",
     kind: "deployment",
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
     from: [],
     to: [
       {
         workloadId: "444",
-        status: 4,
+        status: EdgeStatus.SYSTEM,
       },
     ],
   },
   {
     uuid: "777",
-    workloadName: "-workload-example-4",
+    workloadName: "workload-example-4",
     kind: "deployment",
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
     from: [],
     to: [
       {
         workloadId: "444",
-        status: 4,
+        status: EdgeStatus.SYSTEM,
       },
     ],
   },
   {
     uuid: "888",
-    workloadName: "-workload-example-5",
+    workloadName: "workload-example-5",
     kind: "deployment",
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
     from: [
       {
         workloadId: "777",
-        status: 4,
+        status: EdgeStatus.SYSTEM,
       },
     ],
     to: [],
   },
   {
     uuid: "999",
-    workloadName: "-workload-example-6",
+    workloadName: "workload-example-6",
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
     kind: "deployment",
     from: [
       {
         workloadId: "666",
-        status: 4,
+        status: EdgeStatus.SYSTEM,
       },
     ],
     to: [],
   },
   {
     uuid: "1000",
-    workloadName: "-workload-example-7",
+    workloadName: "workload-example-7",
+    status: NodeStatus.BEFORE_INITIAL_SETUP,
     kind: "deployment",
     from: [
       {
         workloadId: "111",
-        status: 4,
+        status: EdgeStatus.ATTEMPT,
       },
     ],
     to: [],
   },
   {
     uuid: "1111",
-    workloadName: "-workload-example-8",
+    workloadName: "workload-example-8",
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
     kind: "deployment",
     from: [
       {
         workloadId: "222",
-        status: 4,
+        status: EdgeStatus.SYSTEM,
       },
     ],
     to: [],
   },
   {
     uuid: "2222",
-    workloadName: "-workload-example-9",
+    workloadName: "workload-example-9",
+    status: NodeStatus.BEFORE_INITIAL_SETUP,
     kind: "deployment",
     from: [
       {
         workloadId: "444",
-        status: 4,
+        status: EdgeStatus.SYSTEM,
       },
     ],
     to: [],
   },
   {
     uuid: "3333",
-    workloadName: "-workload-example-10",
+    workloadName: "workload-example-10",
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
     kind: "deployment",
     from: [],
     to: [
       {
         workloadId: "555",
-        status: 4,
+        status: EdgeStatus.SYSTEM,
       },
     ],
   },
 
   {
     uuid: "4444",
-    workloadName: "-workload-example-11",
+    workloadName: "workload-example-11",
+    status: NodeStatus.BEFORE_INITIAL_SETUP,
     kind: "deployment",
     from: [],
     to: [
       {
         workloadId: "5555",
-        status: 4,
+        status: EdgeStatus.SYSTEM,
       },
     ],
   },
   {
     uuid: "5555",
-    workloadName: "-workload-example-12",
+    workloadName: "workload-example-12",
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
     kind: "deployment",
     from: [],
     to: [
       {
         workloadId: "4444",
-        status: 4,
+        status: EdgeStatus.SYSTEM,
       },
     ],
   },
   {
     uuid: "6666",
-    workloadName: "-workload-example-13",
+    workloadName: "workload-example-13",
+    status: NodeStatus.COMPLETE_INITIAL_SETUP,
     kind: "deployment",
     from: [
       {
         workloadId: "4444",
-        status: 4,
+        status: EdgeStatus.SYSTEM,
       },
     ],
     to: [],

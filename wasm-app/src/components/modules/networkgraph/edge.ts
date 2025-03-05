@@ -9,7 +9,7 @@ import {
   LABEL_RECT_WIDTH,
   LINE_WIDTH,
 } from "./constants";
-import { CanvasImage, CustomEdge, NodeSize } from "./types";
+import { CanvasImage, CustomEdge, EdgeStatus, NodeSize } from "./types";
 
 export class NetworkEdge {
   ctx: CanvasRenderingContext2D;
@@ -61,10 +61,15 @@ export class NetworkEdge {
     const isActiveEdge = this.options?.connectedEdges?.includes(this.edge.id);
     this.ctx.save();
     this.drawEdgeLine(isActiveEdge);
+    this.drawEdgeArrow(isActiveEdge);
+  }
+
+  public drawLabel() {
+    const isActiveEdge = this.options?.connectedEdges?.includes(this.edge.id);
+    this.ctx.save();
     if (isActiveEdge) {
       this.drawEdgeLabel();
     }
-    this.drawEdgeArrow(isActiveEdge);
   }
 
   private drawEdgeLine(isActiveEdge?: boolean) {
@@ -98,7 +103,6 @@ export class NetworkEdge {
     const styleKey = String(edgeStatus);
     const style = EDGE_STYLES[styleKey];
 
-    // Chỉ vẽ nhãn cho các trạng thái cụ thể
     if (
       !style ||
       !style.label ||

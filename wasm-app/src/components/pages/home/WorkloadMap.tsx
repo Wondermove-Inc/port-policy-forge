@@ -37,13 +37,13 @@ export const WorkloadMap = () => {
       const fromEdges: EdgeData[] = current.from.map((f) => ({
         from: f.workloadId,
         to: current.uuid,
-        status: EdgeStatus.SYSTEM,
+        status: f.status,
       }));
 
       const toEdges: EdgeData[] = current.to.map((t) => ({
         from: current.uuid,
         to: t.workloadId,
-        status: EdgeStatus.SYSTEM,
+        status: t.status,
       }));
 
       return [...pre, ...fromEdges, ...toEdges] as EdgeData[];
@@ -58,6 +58,7 @@ export const WorkloadMap = () => {
           active: 10,
           unconnected: 10,
         },
+        status: workload.status,
       };
     });
     setEdges(edges);
@@ -65,8 +66,8 @@ export const WorkloadMap = () => {
   }, []);
 
   const handleNodeClick = (nodeId: string) => {
-    setActiveNodeId(nodeId);
-    detailDrawer.open();
+    // setActiveNodeId(nodeId);
+    // detailDrawer.open();
   };
 
   return (
