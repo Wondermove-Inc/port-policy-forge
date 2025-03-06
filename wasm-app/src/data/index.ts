@@ -221,7 +221,7 @@ export const workloadList = [
 
 export const exampleWorkload = {
   uuid: "7431bb4f-cae8-4dbe-a542-d6f52c893271",
-  workloadName: "demoworkload-1",
+  workloadName: "demo workload-1",
   kind: NodeKind.DEPLOYMENT,
   stats: {
     active: 2,

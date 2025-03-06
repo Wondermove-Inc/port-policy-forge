@@ -19,7 +19,6 @@ import {
   getAccessLabel,
   getPortKindLabel,
   getPortNumber,
-  getPortRiskLabel,
   getWorkloadKindLabel,
 } from "@/utils";
 import {

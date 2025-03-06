@@ -10,10 +10,10 @@ import { PrmIcon } from "../icons/PrmIcon";
 
 import { CheckIcon } from "@/components/icons/CheckIcon";
 import { DownIcon } from "@/components/icons/DownIcon";
-import { clusters, namespaces } from "@/data";
+import { clusters } from "@/data";
 import { ClusterType } from "@/models";
-import { useCommonStore } from "@/store";
 import { wasmListNamespace } from "@/services/listNamespaces";
+import { useCommonStore } from "@/store";
 
 type Option = {
   value: string;
@@ -56,15 +56,14 @@ export const SelectClusterAndNameSpace = () => {
   const getNamespaces = () => {
     wasmListNamespace()
       .then((data) => {
-        const newNamespaces = data.result
-          .map((namespace) => ({
-            value: namespace.namespaceName,
-            label: namespace.namespaceName,
-          }));
-          setNamespaceOptions(newNamespaces);
-          setSelectedNamespace(newNamespaces[0]?.value || "");
+        const newNamespaces = data.result.map((namespace) => ({
+          value: namespace.namespaceName,
+          label: namespace.namespaceName,
+        }));
+        setNamespaceOptions(newNamespaces);
+        setSelectedNamespace(newNamespaces[0]?.value || "");
       })
-      .catch((err) => {
+      .catch(() => {
         // TODO: add loading and show error
         // setError(String(err));
         // setLoading(false);

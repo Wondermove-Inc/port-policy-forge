@@ -11,9 +11,9 @@ import { CheckBoxIcon } from "@/components/icons/CheckBoxIcon";
 import { ModalClosePort } from "@/components/modules/ModalClosePort";
 import { SearchComplete } from "@/components/modules/SearchComplete";
 import { useDisclosure } from "@/hooks/useDisclosure";
-import { formatNumber } from "@/utils/format";
 import { wasmListWorkloads, WorkloadResource } from "@/services/listWorkloads";
 import { useCommonStore } from "@/store";
+import { formatNumber } from "@/utils/format";
 
 export const WorkloadList = () => {
   const { selectedNamespace } = useCommonStore();
@@ -35,15 +35,18 @@ export const WorkloadList = () => {
 
   const getWorkloads = () => {
     setLoading(true);
+    console.log(selectedTabBound);
     wasmListWorkloads(selectedNamespace)
       .then((data) => {
-        setWorkloads(data.result.map((item) => ({
-          ...item,
-          id: item.uuid
-        })));
+        setWorkloads(
+          data.result.map((item) => ({
+            ...item,
+            id: item.uuid,
+          })),
+        );
         setLoading(false);
       })
-      .catch((err) => {
+      .catch(() => {
         // TODO: show error
         // setError(String(err));
         setLoading(false);
