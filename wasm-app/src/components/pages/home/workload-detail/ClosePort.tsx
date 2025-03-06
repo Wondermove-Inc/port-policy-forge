@@ -12,7 +12,7 @@ import { CollapsibleTable } from "@/components/modules/CollapsibleTable";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { Port, PortRisk } from "@/models";
 import { getPortRiskLabel } from "@/utils";
-import { formatter } from "@/utils/format";
+import { formatNumber, formatter } from "@/utils/format";
 
 type ClosePortProps = {
   data: Port[];
@@ -139,7 +139,7 @@ export const ClosePort = ({ data, fetchWorkloadDetail }: ClosePortProps) => {
             paddingY: "6.5px",
           }}
         >
-          {`Closed Port Attempted (${data?.length || 0})`}
+          {`Closed Port Attempted (${formatNumber(data.length)})`}
         </Typography>
         <WarningIcon size={20} />
       </Box>

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { Box, Typography } from "@mui/material";
 import { Button } from "@skuber/components";
@@ -10,34 +10,22 @@ import { Datagrid, CustomGridColDef } from "@/components/atoms/Datagrid";
 import { CheckBoxIcon } from "@/components/icons/CheckBoxIcon";
 import { ModalClosePort } from "@/components/modules/ModalClosePort";
 import { SearchComplete } from "@/components/modules/SearchComplete";
-import { workloadList } from "@/data";
 import { useDisclosure } from "@/hooks/useDisclosure";
-import { WorkloadListItem } from "@/models";
+import { useCommonStore } from "@/store";
+import { getWorkloadKindLabel } from "@/utils";
 import { formatNumber } from "@/utils/format";
 
 export const WorkloadList = () => {
+  const { workloads, workloadsLoading } = useCommonStore();
+
   const closePortModal = useDisclosure();
   const detailDrawer = useDisclosure();
-
-  const [workloads, setWorkloads] = useState<WorkloadListItem[]>([]);
-  const [loading, setLoading] = useState(true);
   const [checkedRows, setCheckedRows] = useState<
     Record<string, Record<string, boolean>>
   >({});
   const [selectedTabBound, setSelectedTabBound] = useState("1");
+  const [filteredWorkloadId, setFilterWorkloadId] = useState("");
   const [selectedWorkloadId, setSelectedWorkloadId] = useState("");
-
-  useEffect(() => {
-    getWorkloads();
-  }, []);
-
-  const getWorkloads = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setWorkloads(workloadList);
-    }, 500);
-  };
 
   const renderCellWithEmptyValue = (value: string, color: string) => {
     return (
@@ -54,11 +42,12 @@ export const WorkloadList = () => {
   };
 
   const columns: CustomGridColDef[] = [
-    { field: "name", headerName: "Name", flex: 1 },
+    { field: "workloadName", headerName: "Name", flex: 1 },
     {
-      field: "type",
+      field: "kind",
       headerName: "Type",
       flex: 1,
+      valueGetter: (value) => getWorkloadKindLabel(value),
     },
     {
       field: "unconnectedPort",
@@ -119,6 +108,14 @@ export const WorkloadList = () => {
     );
   }, [checkedRows]);
 
+  const filteredWorkloads = useMemo(() => {
+    console.log(selectedTabBound);
+    if (!filteredWorkloadId) {
+      return workloads;
+    }
+    return workloads.filter((item) => item.uuid === filteredWorkloadId);
+  }, [filteredWorkloadId, workloads]);
+
   const handleChangeTabBound = (newValue: string) => {
     setSelectedTabBound(newValue);
     setCheckedRows({});
@@ -175,9 +172,12 @@ export const WorkloadList = () => {
         >
           <SearchComplete
             options={workloads.map((item) => ({
-              id: item.id,
-              label: item.name,
+              id: item.uuid,
+              label: item.workloadName,
             }))}
+            onChange={(option) => {
+              setFilterWorkloadId(option?.id || "");
+            }}
             placeholder="Search for workloads"
           />
           <Button
@@ -200,9 +200,9 @@ export const WorkloadList = () => {
       <Box sx={{ marginTop: "24px", padding: "0 12px", width: "100%" }}>
         <Datagrid
           columns={columns}
-          rows={workloads}
+          rows={filteredWorkloads}
           hasSearch={false}
-          loading={loading}
+          loading={workloadsLoading}
           height="calc(100vh - 240px)"
           width="100%"
           checkedRows={checkedRows}
@@ -211,6 +211,7 @@ export const WorkloadList = () => {
         ></Datagrid>
       </Box>
       <ModalClosePort
+        title="Close Selected Ports"
         open={closePortModal.visible}
         onClose={closePortModal.close}
         onConfirm={handleConfirmClosePort}

@@ -1,3 +1,4 @@
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 import {
   Autocomplete as MuiAutocomplete,
   SxProps,
@@ -8,20 +9,23 @@ import {
 import { CloseIcon } from "../icons/CloseIcon";
 import { SearchIcon } from "../icons/SearchIcon";
 
+type Option = {
+  id: string;
+  label: string;
+};
+
 export type SearchCompleteProps = {
-  options: {
-    id: string;
-    label: string;
-  }[];
+  options: Option[];
   sx?: SxProps<Theme>;
   placeholder?: string;
+  onChange: (option: Option) => void;
 };
 
 export const SearchComplete = (props: SearchCompleteProps) => {
   return (
     <MuiAutocomplete
       disableClearable={false}
-      clearOnBlur={false}
+      clearOnBlur={true}
       clearIcon={<CloseIcon size={14} />}
       {...props}
       noOptionsText="no results"
@@ -88,6 +92,9 @@ export const SearchComplete = (props: SearchCompleteProps) => {
           }}
         />
       )}
+      onChange={(e: any, option: any) => {
+        props.onChange(option);
+      }}
     />
   );
 };

@@ -55,13 +55,21 @@ export const getPortRiskLabel = (risk: number) => {
 
 export const getWorkloadKindLabel = (kind: string) => {
   switch (kind) {
-    case WorkloadKind.DEPLOYMENT:
+    case WorkloadKind.Deployment:
       return "Deployment";
-    case WorkloadKind.STAGING:
-      return "Staging";
-    case WorkloadKind.PRODUCTION:
-      return "Production";
+    case WorkloadKind.Demonset:
+      return "Demonset";
+    case WorkloadKind.Replicaset:
+      return "Replicaset";
+    case WorkloadKind.Cronjob:
+      return "Cronjob";
+    case WorkloadKind.Job:
+      return "Job";
+    case WorkloadKind.Cronjob:
+      return "Cronjob";
+    case WorkloadKind.Statefulset:
+      return "Statefulset";
     default:
-      return "";
+      return "ETC";
   }
 };

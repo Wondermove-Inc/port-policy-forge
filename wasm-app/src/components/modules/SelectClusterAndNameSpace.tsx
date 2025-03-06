@@ -10,8 +10,9 @@ import { PrmIcon } from "../icons/PrmIcon";
 
 import { CheckIcon } from "@/components/icons/CheckIcon";
 import { DownIcon } from "@/components/icons/DownIcon";
-import { clusters, namespaces } from "@/data";
+import { clusters } from "@/data";
 import { ClusterType } from "@/models";
+import { wasmListNamespace } from "@/services/listNamespaces";
 import { useCommonStore } from "@/store";
 
 type Option = {
@@ -21,16 +22,12 @@ type Option = {
 };
 
 export const SelectClusterAndNameSpace = () => {
+  const [selectedCluster, setSelectedCluster] = useState("");
   const [clusterOptions, setClusterOptions] = useState<Option[]>([]);
   const [namespaceOptions, setNamespaceOptions] = useState<Option[]>([]);
   const [openSelect, setOpenSelect] = useState<string | null>(null);
 
-  const {
-    selectedCluster,
-    setSelectedCluster,
-    selectedNamespace,
-    setSelectedNamespace,
-  } = useCommonStore();
+  const { selectedNamespace, setSelectedNamespace } = useCommonStore();
 
   useEffect(() => {
     getClusters();
@@ -41,28 +38,30 @@ export const SelectClusterAndNameSpace = () => {
   }, [selectedCluster]);
 
   const getClusters = () => {
-    setTimeout(() => {
-      const newClusters = clusters.map((cluster) => ({
-        value: cluster.id,
-        label: cluster.name,
-        type: cluster.type as ClusterType,
-      }));
-      setClusterOptions(newClusters);
-      setSelectedCluster(newClusters[0]?.value || "");
-    }, 500);
+    const newClusters = clusters.map((cluster) => ({
+      value: cluster.id,
+      label: cluster.name,
+      type: cluster.type as ClusterType,
+    }));
+    setClusterOptions(newClusters);
+    setSelectedCluster(newClusters[0]?.value || "");
   };
 
   const getNamespaces = () => {
-    setTimeout(() => {
-      const newNamespaces = namespaces
-        .filter((namespace) => namespace.clusterId === selectedCluster)
-        .map((namespace) => ({
-          value: namespace.id,
-          label: namespace.name,
+    wasmListNamespace()
+      .then((data) => {
+        const newNamespaces = data.result.map((namespace) => ({
+          value: namespace.namespaceName,
+          label: namespace.namespaceName,
         }));
-      setNamespaceOptions(newNamespaces);
-      setSelectedNamespace(newNamespaces[0]?.value || "");
-    }, 500);
+        setNamespaceOptions(newNamespaces);
+        setSelectedNamespace(newNamespaces[0]?.value || "");
+      })
+      .catch(() => {
+        // TODO: add loading and show error
+        // setError(String(err));
+        // setLoading(false);
+      });
   };
 
   const handleClusterChange = (value: string) => {

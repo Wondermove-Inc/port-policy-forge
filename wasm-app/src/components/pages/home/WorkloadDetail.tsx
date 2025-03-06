@@ -19,7 +19,6 @@ import {
   getAccessLabel,
   getPortKindLabel,
   getPortNumber,
-  getPortRiskLabel,
   getWorkloadKindLabel,
 } from "@/utils";
 import {
@@ -78,21 +77,21 @@ export const WorkloadDetail = ({
         ports: ["inbound", "outbound"].reduce(
           (acc, direction) => {
             acc[direction as PortDirection] = {
-              open: exampleWorkload.ports[direction as PortDirection].open.map(
-                (el) => ({
-                  ...el,
-                  portNumber: getPortNumber({
-                    isRange: el.isRange,
-                    portRange: el.portRange as PortRangeType,
-                    portNumber: el.portNumber,
-                  }),
-                  sourceNumber: formatter("source", "", (el) => el.length)(el),
-                  access: formatter("access", "", getAccessLabel)(el),
+              open: (
+                exampleWorkload.ports[direction as PortDirection].open || []
+              ).map((el) => ({
+                ...el,
+                portNumber: getPortNumber({
+                  isRange: el.isRange,
+                  portRange: el.portRange as PortRangeType,
+                  portNumber: el.portNumber,
                 }),
-              ),
-              closed: exampleWorkload.ports[
-                direction as PortDirection
-              ].closed.map((el) => ({
+                sourceNumber: formatter("source", "", (el) => el.length)(el),
+                access: formatter("access", "", getAccessLabel)(el),
+              })),
+              closed: (
+                exampleWorkload.ports[direction as PortDirection].closed || []
+              ).map((el) => ({
                 ...el,
                 type: formatter("type", "", getPortKindLabel)(el),
                 count: formatter("count", "", formatNumber)(el),

@@ -20,6 +20,7 @@ import {
   PortAccessSettingForm,
   PortDirection,
 } from "@/models";
+import { formatNumber } from "@/utils/format";
 import { openPortSchema } from "@/validations";
 
 type OpenPortProps = {
@@ -174,7 +175,7 @@ export const OpenPort = ({
         }}
       >
         <Typography variant="subtitle1" component={"p"}>
-          {`Open (${data?.length || 0})`}
+          {`Open (${formatNumber(data.length)})`}
         </Typography>
         <Button
           variant="outlined"

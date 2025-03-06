@@ -2,8 +2,14 @@ package main
 
 import (
 	"encoding/json"
+	"strconv"
 	"syscall/js"
+	"wasm-go/mock"
+	"wasm-go/model"
+	"wasm-go/utils"
 )
+
+var workloadDetails map[string]model.WorkloadDetail = nil
 
 func main() {
 	done := make(chan struct{}, 0)
@@ -11,16 +17,17 @@ func main() {
 	js.Global().Set("listNamespace", js.FuncOf(listNamespace))
 	js.Global().Set("listWorkloads", js.FuncOf(listWorkloads))
 	js.Global().Set("getWorkloadDetail", js.FuncOf(getWorkloadDetail))
+	js.Global().Set("openPort", js.FuncOf(openPort))
+	js.Global().Set("editPort", js.FuncOf(editPort))
+	js.Global().Set("closeOpenedPort", js.FuncOf(closeOpenedPort))
+	js.Global().Set("openClosedPort", js.FuncOf(openClosedPort))
+	js.Global().Set("clearClosedPortHistory", js.FuncOf(clearClosedPortHistory))
 
 	<-done
 }
 
 func listNamespace(this js.Value, p []js.Value) interface{} {
-	namespaces := []Namespace{
-		{ID: 0, NamespaceName: "default"},
-		{ID: 1, NamespaceName: "kube-system"},
-		{ID: 2, NamespaceName: "cilium"},
-	}
+	namespaces := mock.MockNamespaces
 	response := map[string]interface{}{
 		"result": namespaces,
 	}
@@ -31,211 +38,488 @@ func listNamespace(this js.Value, p []js.Value) interface{} {
 func listWorkloads(this js.Value, p []js.Value) interface{} {
 	nsName := p[0].String()
 
-	workload1 := WorkloadResource{
-		UUID:         "7431bb4f-cae8-4dbe-a542-d6f52c893271",
-		WorkloadName: nsName + "-workload-1",
-		Kind:         "deployment",
-		From: []Relation{
-			{WorkloadId: "7f2552b4-ab40-4120-a6d9-16507024922b", Status: 4},
-			{WorkloadId: "1b8892b1-58bc-464f-9401-b31eb2a9db99", Status: 4},
-		},
-		To: []Relation{
-			{WorkloadId: "afbcb3d5-67e8-4f4b-9d8f-f0f124abc2f2", Status: 2},
-			{WorkloadId: "b726573d-4914-42ab-be5e-fb1daecec08b", Status: 2},
-		},
-	}
-
-	workload2 := WorkloadResource{
-		UUID:         "7f2552b4-ab40-4120-a6d9-16507024922b",
-		WorkloadName: nsName + "-ad-service",
-		Kind:         "deployment",
-		From:         []Relation{},
-		To: []Relation{
-			{WorkloadId: "7431bb4f-cae8-4dbe-a542-d6f52c893271", Status: 4},
-		},
-	}
-
-	resources := []WorkloadResource{workload1, workload2}
-	finalResponse := map[string]interface{}{
+	resources := mock.MockWorkloads[nsName]
+	response := map[string]interface{}{
 		"result": resources,
 	}
-	b, _ := json.Marshal(finalResponse)
+	b, _ := json.Marshal(response)
 	return string(b)
 }
 
 func getWorkloadDetail(this js.Value, p []js.Value) interface{} {
 	workloadID := p[0].String()
-	detail := WorkloadDetail{
-		UUID:         workloadID,
-		WorkloadName: "demo-workload-1",
-		Kind:         "deployment",
-		Stats: Stats{
-			Active:      2,
-			Unconnected: 8079,
-			Idle:        1,
-			Error:       0,
-			Attempted:   2,
-			LatencyRtt:  float64Ptr(1.39),
-			Throughput:  469.89,
-		},
-		Ports: map[string]PortDetailGroup{
-			"inbound": {
-				Open: []Port{
-					{
-						ID:                0,
-						IsRange:           true,
-						PortNumber:        nil,
-						PortRange:         &PortRange{Start: "0", End: "4999"},
-						Status:            0,
-						Direction:         "inbound",
-						Source:            nil,
-						IsOpen:            true,
-						Risk:              0,
-						Type:              "internal",
-						Count:             nil,
-						LastConnection:    nil,
-						LastSrcIP:         nil,
-						LastConnectionLog: nil,
-					},
-					{
-						ID:                1,
-						IsRange:           true,
-						PortNumber:        intPtr(5000),
-						PortRange:         nil,
-						Status:            1,
-						Direction:         "inbound",
-						Source:            nil,
-						IsOpen:            true,
-						Risk:              0,
-						Type:              "internal",
-						Count:             nil,
-						LastConnection:    "2023-02-21T11:19:22+09:00",
-						LastSrcIP:         "10.10.1.19",
-						LastConnectionLog: "Connection Log",
-					},
-					{
-						ID:                2,
-						IsRange:           true,
-						PortNumber:        nil,
-						PortRange:         &PortRange{Start: "5001", End: "8079"},
-						Status:            0,
-						Direction:         "inbound",
-						Source:            nil,
-						IsOpen:            true,
-						Risk:              0,
-						Type:              "internal",
-						Count:             nil,
-						LastConnection:    nil,
-						LastSrcIP:         nil,
-						LastConnectionLog: nil,
-					},
-					{
-						ID:                3,
-						IsRange:           false,
-						PortNumber:        intPtr(8080),
-						PortRange:         nil,
-						Status:            2,
-						Direction:         "inbound",
-						Source:            []PortSource{{IP: "192.168.1.100", Port: 51234}},
-						IsOpen:            true,
-						Risk:              0,
-						Type:              "internal",
-						Count:             nil,
-						LastConnection:    "2022-02-21T11:19:22+09:00",
-						LastSrcIP:         "10.10.1.19",
-						LastConnectionLog: "Connection Log",
-					},
-				},
-				Closed: []Port{
-					{
-						ID:                4,
-						IsRange:           false,
-						PortNumber:        intPtr(50051),
-						PortRange:         nil,
-						Status:            4,
-						Direction:         "inbound",
-						Source:            []PortSource{{IP: "192.168.1.100", Port: 51234}},
-						IsOpen:            false,
-						Risk:              2,
-						Type:              "internal",
-						Count:             10,
-						LastConnection:    "2023-02-21T11:19:22+09:00",
-						LastSrcIP:         "10.10.1.19",
-						LastConnectionLog: "Connection Log",
-					},
-					{
-						ID:                5,
-						IsRange:           false,
-						PortNumber:        intPtr(50052),
-						PortRange:         nil,
-						Status:            4,
-						Direction:         "inbound",
-						Source:            []PortSource{{IP: "192.168.1.100", Port: 51234}},
-						IsOpen:            false,
-						Risk:              1,
-						Type:              "internal",
-						Count:             4,
-						LastConnection:    "2023-02-21T11:19:22+09:00",
-						LastSrcIP:         "10.10.1.19",
-						LastConnectionLog: "Connection Log",
-					},
-				},
-			},
-			"outbound": {
-				Open: []Port{
-					{
-						ID:                6,
-						IsRange:           false,
-						PortNumber:        intPtr(9000),
-						PortRange:         nil,
-						Status:            0,
-						Direction:         "outbound",
-						Source:            []PortSource{{IP: "10.0.0.1", Port: 12345}},
-						IsOpen:            true,
-						Risk:              0,
-						Type:              "external",
-						Count:             nil,
-						LastConnection:    "2023-02-21T12:00:00+09:00",
-						LastSrcIP:         "10.0.0.2",
-						LastConnectionLog: "Outbound connection log",
-					},
-				},
-				Closed: []Port{
-					{
-						ID:                7,
-						IsRange:           false,
-						PortNumber:        intPtr(9001),
-						PortRange:         nil,
-						Status:            4,
-						Direction:         "outbound",
-						Source:            []PortSource{{IP: "10.0.0.1", Port: 12345}},
-						IsOpen:            false,
-						Risk:              2,
-						Type:              "external",
-						Count:             5,
-						LastConnection:    "2023-02-21T12:05:00+09:00",
-						LastSrcIP:         "10.0.0.2",
-						LastConnectionLog: "Outbound closed connection log",
-					},
-				},
-			},
-		},
+
+	if workloadDetails == nil {
+		workloadDetails = mock.MockWorkloadDetails
 	}
-	return string(mustMarshal(detail))
+
+	selectedWorkload := workloadDetails[workloadID]
+	response := map[string]interface{}{
+		"result": selectedWorkload,
+	}
+	b, _ := json.Marshal(response)
+
+	return string(b)
 }
 
-func intPtr(n int) *int {
-	return &n
-}
+func openPort(this js.Value, p []js.Value) interface{} {
+	requestJSON := p[0].String()
 
-func float64Ptr(f float64) *float64 {
-	return &f
-}
+	var req model.PortControlBase
+	if err := json.Unmarshal([]byte(requestJSON), &req); err != nil {
+		return string(utils.MustMarshal(map[string]string{"error": "invalid request: " + err.Error()}))
+	}
 
-func mustMarshal(v interface{}) []byte {
-	b, err := json.Marshal(v)
+	// workloadDetails 초기화
+	if workloadDetails == nil {
+		workloadDetails = mock.MockWorkloadDetails
+	}
+
+	wDetail, ok := workloadDetails[req.WorkloadUUID]
+	if !ok {
+		return string(utils.MustMarshal(map[string]string{"error": "workload not found"}))
+	}
+
+	var group *model.PortDetailGroup
+	switch req.Flag {
+	case 0:
+		// Inbound
+		group = &wDetail.Inbound.Ports
+	case 1:
+		// Outbound
+		group = &wDetail.Outbound.Ports
+	default:
+		return string(utils.MustMarshal(map[string]string{"error": "unknown flag"}))
+	}
+
+	ports, isRange, err := utils.ParsePortSpec(req.PortSpec)
 	if err != nil {
-		return []byte("{}")
+		return string(utils.MustMarshal(map[string]string{"error": "invalid port spec: " + err.Error()}))
 	}
-	return b
+
+	var portSources []model.AccessSource
+	if req.AccessPolicy == model.OnlySpecific || req.AccessPolicy == model.ExcludeSpecific {
+		for _, s := range req.Sources {
+			portSources = append(portSources, model.AccessSource{
+				IP:       s.IP,
+				Protocol: s.Protocol,
+				Comment:  s.Comment,
+			})
+		}
+	}
+
+	if isRange {
+		// 포트 범위 하나만 생성
+		newPort := model.Port{
+			ID:         len(group.Open),
+			IsRange:    true,
+			PortNumber: nil,
+			PortRange: &model.PortRange{
+				Start: strconv.Itoa(ports[0]),
+				End:   strconv.Itoa(ports[len(ports)-1]),
+			},
+			Status:                 utils.IntPtr(0),
+			AccessPolicy:           req.AccessPolicy,
+			AccessSources:          portSources,
+			IsOpen:                 true,
+			Count:                  0,
+			LastConnectionDate:     nil,
+			LastConnectionEndpoint: nil,
+			LastConnectionLog:      nil,
+		}
+		group.Open = append(group.Open, newPort)
+	} else {
+		// 단일/다중 포트 (하이픈 없이 , 로 구분되었을 때)
+		for _, portNum := range ports {
+			newPort := model.Port{
+				ID:                     len(group.Open),
+				IsRange:                false,
+				PortNumber:             utils.IntPtr(portNum),
+				PortRange:              nil,
+				Status:                 utils.IntPtr(0),
+				AccessPolicy:           req.AccessPolicy,
+				AccessSources:          portSources,
+				IsOpen:                 true,
+				Count:                  0,
+				LastConnectionDate:     nil,
+				LastConnectionEndpoint: nil,
+				LastConnectionLog:      nil,
+			}
+			group.Open = append(group.Open, newPort)
+		}
+	}
+
+	workloadDetails[req.WorkloadUUID] = wDetail
+
+	response := map[string]interface{}{
+		"result":          "port opened",
+		"request":         req,
+		"updatedWorkload": wDetail,
+	}
+	b, _ := json.Marshal(response)
+	return string(b)
 }
+
+func closeOpenedPort(this js.Value, p []js.Value) interface{} {
+	requestJSON := p[0].String()
+	var req model.PortControlRequest
+	if err := json.Unmarshal([]byte(requestJSON), &req); err != nil {
+		return string(utils.MustMarshal(map[string]string{"error": "invalid request: " + err.Error()}))
+	}
+
+	// workloadDetails 초기화 (없다면 mock 데이터 로드)
+	if workloadDetails == nil {
+		workloadDetails = mock.MockWorkloadDetails
+	}
+
+	wDetail, ok := workloadDetails[req.WorkloadUUID]
+	if !ok {
+		return string(utils.MustMarshal(map[string]string{"error": "workload not found"}))
+	}
+
+	var group *model.PortDetailGroup
+	switch req.Flag {
+	case 0:
+		group = &wDetail.Inbound.Ports
+	case 1:
+		group = &wDetail.Outbound.Ports
+	default:
+		return string(utils.MustMarshal(map[string]string{"error": "unknown flag"}))
+	}
+
+	ports, isRange, err := utils.ParsePortSpec(req.PortSpec)
+	if err != nil {
+		return string(utils.MustMarshal(map[string]string{"error": "invalid port spec: " + err.Error()}))
+	}
+	if len(ports) == 0 {
+		return string(utils.MustMarshal(map[string]string{"error": "no port specified"}))
+	}
+
+	var targetPort *model.Port
+	var portIndex int = -1
+
+	if isRange {
+		startStr := strconv.Itoa(ports[0])
+		endStr := strconv.Itoa(ports[len(ports)-1])
+		for i, p := range group.Open {
+			if p.IsRange && p.PortRange != nil {
+				if p.PortRange.Start == startStr && p.PortRange.End == endStr {
+					targetPort = &group.Open[i]
+					portIndex = i
+					break
+				}
+			}
+		}
+		if targetPort == nil {
+			return string(utils.MustMarshal(map[string]string{"error": "port range not found"}))
+		}
+	} else {
+		singlePort := ports[0]
+		for i, p := range group.Open {
+			if !p.IsRange && p.PortNumber != nil && *p.PortNumber == singlePort {
+				targetPort = &group.Open[i]
+				portIndex = i
+				break
+			}
+		}
+		if targetPort == nil {
+			return string(utils.MustMarshal(map[string]string{"error": "port not found"}))
+		}
+	}
+
+	group.Open = append(group.Open[:portIndex], group.Open[portIndex+1:]...)
+
+	workloadDetails[req.WorkloadUUID] = wDetail
+
+	response := map[string]interface{}{
+		"result":          "port closed",
+		"request":         req,
+		"updatedWorkload": wDetail,
+	}
+	b, _ := json.Marshal(response)
+	return string(b)
+}
+
+func editPort(this js.Value, p []js.Value) interface{} {
+	requestJSON := p[0].String()
+
+	var req model.PortControlBase
+	if err := json.Unmarshal([]byte(requestJSON), &req); err != nil {
+		return string(utils.MustMarshal(map[string]string{"error": "invalid request: " + err.Error()}))
+	}
+
+	// workloadDetails 초기화
+	if workloadDetails == nil {
+		workloadDetails = mock.MockWorkloadDetails
+	}
+
+	wDetail, ok := workloadDetails[req.WorkloadUUID]
+	if !ok {
+		return string(utils.MustMarshal(map[string]string{"error": "workload not found"}))
+	}
+
+	var group *model.PortDetailGroup
+	switch req.Flag {
+	case 0:
+		// Inbound
+		group = &wDetail.Inbound.Ports
+	case 1:
+		// Outbound
+		group = &wDetail.Outbound.Ports
+	default:
+		return string(utils.MustMarshal(map[string]string{"error": "unknown flag"}))
+	}
+
+	// Assuming only a single port is valid
+	ports, _, err := utils.ParsePortSpec(req.PortSpec)
+	if err != nil {
+		return string(utils.MustMarshal(map[string]string{"error": "invalid port spec: " + err.Error()}))
+	}
+
+	singlePort := ports[0]
+
+	targetPort, portIndex := utils.FindPort(*group, singlePort)
+	if targetPort == nil {
+		return string(utils.MustMarshal(map[string]string{"error": "port not found"}))
+	}
+
+	var newSources []model.AccessSource
+	if req.AccessPolicy == model.OnlySpecific || req.AccessPolicy == model.ExcludeSpecific {
+		for _, s := range req.Sources {
+			newSources = append(newSources, model.AccessSource{
+				IP:       s.IP,
+				Protocol: s.Protocol,
+				Comment:  s.Comment,
+			})
+		}
+	}
+
+	targetPort.AccessPolicy = req.AccessPolicy
+	targetPort.AccessSources = newSources
+
+	group.Open[portIndex] = *targetPort
+
+	workloadDetails[req.WorkloadUUID] = wDetail
+
+	response := map[string]interface{}{
+		"result":          "port edited successfully",
+		"request":         req,
+		"updatedWorkload": wDetail,
+	}
+	b, _ := json.Marshal(response)
+	return string(b)
+}
+
+func openClosedPort(this js.Value, p []js.Value) interface{} {
+	var req model.PortControlRequest
+	if err := json.Unmarshal([]byte(p[0].String()), &req); err != nil {
+		return string(utils.MustMarshal(map[string]string{"error": "invalid request: " + err.Error()}))
+	}
+
+	// workloadDetails 초기화
+	if workloadDetails == nil {
+		workloadDetails = mock.MockWorkloadDetails
+	}
+
+	wDetail, ok := workloadDetails[req.WorkloadUUID]
+	if !ok {
+		return string(utils.MustMarshal(map[string]string{"error": "workload not found"}))
+	}
+
+	var group *model.PortDetailGroup
+	switch req.Flag {
+	case 0:
+		group = &wDetail.Inbound.Ports
+	case 1:
+		group = &wDetail.Outbound.Ports
+	default:
+		return string(utils.MustMarshal(map[string]string{"error": "unknown flag"}))
+	}
+
+	ports, isRange, err := utils.ParsePortSpec(req.PortSpec)
+	if err != nil {
+		return string(utils.MustMarshal(map[string]string{"error": "invalid port spec: " + err.Error()}))
+	}
+	if len(ports) == 0 {
+		return string(utils.MustMarshal(map[string]string{"error": "no port specified"}))
+	}
+
+	var targetPort *model.Port
+	var portIndex int = -1
+
+	if isRange {
+		startStr := strconv.Itoa(ports[0])
+		endStr := strconv.Itoa(ports[len(ports)-1])
+		for i, p := range group.Closed {
+			if p.IsRange && p.PortRange != nil {
+				if p.PortRange.Start == startStr && p.PortRange.End == endStr {
+					targetPort = &group.Closed[i]
+					portIndex = i
+					break
+				}
+			}
+		}
+		if targetPort == nil {
+			return string(utils.MustMarshal(map[string]string{"error": "port range not found in closed ports"}))
+		}
+	} else {
+		singlePort := ports[0]
+		for i, p := range group.Closed {
+			if !p.IsRange && p.PortNumber != nil && *p.PortNumber == singlePort {
+				targetPort = &group.Closed[i]
+				portIndex = i
+				break
+			}
+		}
+		if targetPort == nil {
+			return string(utils.MustMarshal(map[string]string{"error": "port not found in closed ports"}))
+		}
+	}
+
+	if targetPort.Count == 0 {
+		return string(utils.MustMarshal(map[string]string{"error": "port has no connection attempt; cannot re-open"}))
+	}
+
+	targetPort.AccessPolicy = model.AllowAllAccess
+	targetPort.Risk = utils.IntPtr(0)
+	// 포트를 열린 상태로 전환 (Status 0: unconnected, IsOpen true)
+	targetPort.Status = utils.IntPtr(0)
+	targetPort.IsOpen = true
+
+	group.Closed = append(group.Closed[:portIndex], group.Closed[portIndex+1:]...)
+	group.Open = append(group.Open, *targetPort)
+
+	workloadDetails[req.WorkloadUUID] = wDetail
+
+	response := map[string]interface{}{
+		"result":          "closed port allowed and re-opened with allow-all policy",
+		"request":         req,
+		"updatedWorkload": wDetail,
+	}
+	b, _ := json.Marshal(response)
+	return string(b)
+}
+
+func clearClosedPortHistory(this js.Value, p []js.Value) interface{} {
+	requestJSON := p[0].String()
+	var req model.PortControlRequest
+	if err := json.Unmarshal([]byte(requestJSON), &req); err != nil {
+		return string(utils.MustMarshal(map[string]string{"error": "invalid request: " + err.Error()}))
+	}
+
+	// workloadDetails 초기화 (없다면 mock 데이터 로드)
+	if workloadDetails == nil {
+		workloadDetails = mock.MockWorkloadDetails
+	}
+
+	wDetail, ok := workloadDetails[req.WorkloadUUID]
+	if !ok {
+		return string(utils.MustMarshal(map[string]string{"error": "workload not found"}))
+	}
+
+	var group *model.PortDetailGroup
+	switch req.Flag {
+	case 0:
+		group = &wDetail.Inbound.Ports
+	case 1:
+		group = &wDetail.Outbound.Ports
+	default:
+		return string(utils.MustMarshal(map[string]string{"error": "unknown flag"}))
+	}
+
+	ports, isRange, err := utils.ParsePortSpec(req.PortSpec)
+	if err != nil {
+		return string(utils.MustMarshal(map[string]string{"error": "invalid port spec: " + err.Error()}))
+	}
+	if len(ports) == 0 {
+		return string(utils.MustMarshal(map[string]string{"error": "no port specified"}))
+	}
+
+	var targetPort *model.Port
+	var portIndex int = -1
+
+	if isRange {
+		startStr := strconv.Itoa(ports[0])
+		endStr := strconv.Itoa(ports[len(ports)-1])
+		for i, p := range group.Closed {
+			if p.IsRange && p.PortRange != nil {
+				if p.PortRange.Start == startStr && p.PortRange.End == endStr {
+					targetPort = &group.Closed[i]
+					portIndex = i
+					break
+				}
+			}
+		}
+		if targetPort == nil {
+			return string(utils.MustMarshal(map[string]string{"error": "port range not found in closed ports"}))
+		}
+	} else {
+		singlePort := ports[0]
+		for i, p := range group.Closed {
+			if !p.IsRange && p.PortNumber != nil && *p.PortNumber == singlePort {
+				targetPort = &group.Closed[i]
+				portIndex = i
+				break
+			}
+		}
+		if targetPort == nil {
+			return string(utils.MustMarshal(map[string]string{"error": "port not found in closed ports"}))
+		}
+	}
+
+	group.Closed = append(group.Closed[:portIndex], group.Closed[portIndex+1:]...)
+
+	workloadDetails[req.WorkloadUUID] = wDetail
+
+	response := map[string]interface{}{
+		"result":          "closed port history cleared and port removed from closed array",
+		"request":         req,
+		"updatedWorkload": wDetail,
+	}
+	b, _ := json.Marshal(response)
+	return string(b)
+}
+
+// func MyGoFunc() js.Func {
+// 	return js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+// 		requestUrl := args[0].String()
+
+// 		handler := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+// 			resolve := args[0]
+// 			reject := args[1]
+
+// 			go func() {
+// 				res, err := http.DefaultClient.Get(requestUrl)
+// 				if err != nil {
+// 					errorConstructor := js.Global().Get("Error")
+// 					errorObject := errorConstructor.New(err.Error())
+// 					reject.Invoke(errorObject)
+// 					return
+// 				}
+// 				defer res.Body.Close()
+
+// 				data, err := ioutil.ReadAll(res.Body)
+// 				if err != nil {
+// 					errorConstructor := js.Global().Get("Error")
+// 					errorObject := errorConstructor.New(err.Error())
+// 					reject.Invoke(errorObject)
+// 					return
+// 				}
+
+// 				arrayConstructor := js.Global().Get("Uint8Array")
+// 				dataJS := arrayConstructor.New(len(data))
+// 				js.CopyBytesToJS(dataJS, data)
+
+// 				responseConstructor := js.Global().Get("Response")
+// 				response := responseConstructor.New(dataJS)
+
+// 				resolve.Invoke(response)
+// 			}()
+
+// 			return nil
+// 		})
+
+// 		promiseConstructor := js.Global().Get("Promise")
+// 		return promiseConstructor.New(handler)
+// 	})
+// }

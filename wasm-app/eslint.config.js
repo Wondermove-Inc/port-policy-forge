@@ -16,6 +16,10 @@ export default [
       "wasm-go",
       "src/App.tsx",
       "src/components/modules/networkgraph",
+      "src/components/modules/networkgraph",
+      "src/pages/WorkloadDetail.tsx",
+      "src/wasmLoader.tsx",
+      "src/components/pages/home/WorkloadMap.tsx",
     ],
   },
   {
@@ -95,7 +99,14 @@ export default [
         "error",
         {
           cspell: {
-            words: ["skuber", "networkgraph", "milli"],
+            words: [
+              "skuber",
+              "networkgraph",
+              "milli",
+              "replicaset",
+              "demonset",
+              "statefulset",
+            ],
           },
         },
       ],
