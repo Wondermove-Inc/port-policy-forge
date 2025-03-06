@@ -11,7 +11,7 @@ import {
   LABEL_RECT_WIDTH,
   LINE_WIDTH,
 } from "./constants";
-import { CanvasImage, CustomEdge, NodeSize } from "./types";
+import { CanvasImage, CustomEdge, EdgeStatus, NodeSize } from "./types";
 
 export class NetworkEdge {
   ctx: CanvasRenderingContext2D;
@@ -20,6 +20,7 @@ export class NetworkEdge {
   options: {
     connectedEdges?: IdType[];
     hoverNodeId?: string;
+    activeEdgeId?: string;
   };
   coords: {
     fromX: number;
@@ -35,6 +36,7 @@ export class NetworkEdge {
     options: {
       connectedEdges?: IdType[];
       hoverNodeId?: string;
+      activeEdgeId?: string;
     }
   ) {
     this.canvasImages = canvasImages;
@@ -72,9 +74,17 @@ export class NetworkEdge {
   public drawLabel() {
     const isActiveEdge = this.options?.connectedEdges?.includes(this.edge.id);
     this.ctx.save();
-    if (isActiveEdge) {
-      this.drawEdgeLabel();
+    if (this.isEdgeConnected()) {
+      this.drawEdgeConnectLabel();
+    } else {
+      if (isActiveEdge) {
+        this.drawEdgeLabel();
+      }
     }
+  }
+
+  private isEdgeConnected() {
+    return this.options.activeEdgeId === this.edge.id;
   }
 
   private drawEdgeLine(isActiveEdge?: boolean, disabled?: boolean) {
@@ -96,12 +106,52 @@ export class NetworkEdge {
       this.ctx.setLineDash([0, 0]);
     }
 
+    if (this.isEdgeConnected()) {
+      this.ctx.setLineDash([0, 0]);
+      this.ctx.strokeStyle = color.active;
+    }
+
     this.ctx.moveTo(this.coords.fromX, this.coords.fromY);
     this.ctx.lineTo(this.coords.toX, this.coords.toY);
     this.ctx.stroke();
     this.ctx.closePath();
     this.ctx.setLineDash([0, 0]);
     this.ctx.globalAlpha = GLOBAL_ALPHA;
+  }
+
+  private drawEdgeConnectLabel() {
+    const centerX = (this.coords.fromX + this.coords.toX) / 2;
+    const centerY = (this.coords.fromY + this.coords.toY) / 2;
+    this.ctx.save();
+    this.ctx.font = FONT;
+    this.ctx.textAlign = "center";
+    this.ctx.textBaseline = "middle";
+    this.ctx.translate(centerX, centerY);
+    let textAngle = this.coords.angle;
+    if (textAngle > Math.PI / 2 || textAngle < -Math.PI / 2) {
+      textAngle += Math.PI;
+    }
+    // this.ctx.rotate(textAngle);
+    this.ctx.fillStyle = color.active;
+    this.ctx.beginPath();
+    this.ctx.arc(0, 0, 12, 0, 2 * Math.PI, false);
+    this.ctx.fillStyle = color.active;
+    this.ctx.fill();
+    this.ctx.lineWidth = 1;
+    this.ctx.strokeStyle = color.active;
+    this.ctx.stroke();
+    this.ctx.lineWidth = LINE_WIDTH;
+    const SIZE = 14;
+    // this.ctx.rotate(this.coords.angle + Math.PI / 2);
+    this.ctx.drawImage(
+      this.canvasImages.lineConnected,
+      -SIZE / 2,
+      -SIZE / 2,
+      SIZE,
+      SIZE
+    );
+    this.ctx.fillStyle = color.white;
+    this.ctx.restore();
   }
 
   private drawEdgeLabel() {
@@ -186,13 +236,17 @@ export class NetworkEdge {
   private drawEdgeArrow(isActiveEdge?: boolean, disabled?: boolean) {
     let arrowKey: keyof CanvasImage = "arrow";
     if (disabled) {
-      this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA
+      this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
     }
     if (isActiveEdge) {
       const edgeStatus = this.edge.data?.status;
-      const styleKey = edgeStatus ? String(edgeStatus) : "DEFAULT";
+      const styleKey = edgeStatus ? String(edgeStatus) : EdgeStatus.ACTIVE;
       const style = EDGE_STYLES[styleKey] || EDGE_STYLES.DEFAULT;
       arrowKey = style.arrowKey;
+    }
+
+    if (this.isEdgeConnected()) {
+      arrowKey = EDGE_STYLES[EdgeStatus.ACTIVE].arrowKey;
     }
 
     const arrowImage = this.canvasImages[arrowKey];
