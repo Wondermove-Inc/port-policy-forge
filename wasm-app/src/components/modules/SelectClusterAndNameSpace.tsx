@@ -57,7 +57,7 @@ export const SelectClusterAndNameSpace = () => {
       const newNamespaces = namespaces
         .filter((namespace) => namespace.clusterId === selectedCluster)
         .map((namespace) => ({
-          value: namespace.id,
+          value: namespace.name,
           label: namespace.name,
         }));
       setNamespaceOptions(newNamespaces);

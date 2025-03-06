@@ -19,12 +19,6 @@ import "./index.css";
 import { WasmProvider } from "./wasm.provider.tsx";
 import { PageLoading } from "./components/layout/PageLoading.tsx";
 
-declare global {
-  interface Window {
-    Go: any;
-  }
-}
-
 const App = () => {
   const [isWasmLoaded, setIsWasmLoaded] = useState(false);
 

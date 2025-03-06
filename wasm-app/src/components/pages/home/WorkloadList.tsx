@@ -10,16 +10,16 @@ import { Datagrid, CustomGridColDef } from "@/components/atoms/Datagrid";
 import { CheckBoxIcon } from "@/components/icons/CheckBoxIcon";
 import { ModalClosePort } from "@/components/modules/ModalClosePort";
 import { SearchComplete } from "@/components/modules/SearchComplete";
-import { workloadList } from "@/data";
 import { useDisclosure } from "@/hooks/useDisclosure";
-import { WorkloadListItem } from "@/models";
 import { formatNumber } from "@/utils/format";
+import { wasmListWorkloads, WorkloadResource } from "@/services/listWorkloads";
+import { useCommonStore } from "@/store";
 
 export const WorkloadList = () => {
+  const { selectedNamespace } = useCommonStore();
   const closePortModal = useDisclosure();
   const detailDrawer = useDisclosure();
-
-  const [workloads, setWorkloads] = useState<WorkloadListItem[]>([]);
+  const [workloads, setWorkloads] = useState<WorkloadResource[]>([]);
   const [loading, setLoading] = useState(true);
   const [checkedRows, setCheckedRows] = useState<
     Record<string, Record<string, boolean>>
@@ -28,15 +28,26 @@ export const WorkloadList = () => {
   const [selectedWorkloadId, setSelectedWorkloadId] = useState("");
 
   useEffect(() => {
-    getWorkloads();
-  }, []);
+    if (selectedNamespace) {
+      getWorkloads();
+    }
+  }, [selectedNamespace]);
 
   const getWorkloads = () => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setWorkloads(workloadList);
-    }, 500);
+    wasmListWorkloads("default")
+      .then((data) => {
+        setWorkloads(data.result.map((item) => ({
+          ...item,
+          id: item.uuid
+        })));
+        setLoading(false);
+      })
+      .catch((err) => {
+        // TODO: show error
+        // setError(String(err));
+        setLoading(false);
+      });
   };
 
   const renderCellWithEmptyValue = (value: string, color: string) => {
@@ -54,9 +65,9 @@ export const WorkloadList = () => {
   };
 
   const columns: CustomGridColDef[] = [
-    { field: "name", headerName: "Name", flex: 1 },
+    { field: "workloadName", headerName: "Name", flex: 1 },
     {
-      field: "type",
+      field: "kind",
       headerName: "Type",
       flex: 1,
     },
