@@ -25,7 +25,7 @@ export const WorkloadList = () => {
   const [checkedRows, setCheckedRows] = useState<
     Record<string, Record<string, boolean>>
   >({});
-  const [selectedTabBound, setSelectedTabBound] = useState("1");
+  const [selectedTabBound, setSelectedTabBound] = useState("Inbound");
   const [filteredWorkloadId, setFilterWorkloadId] = useState("");
   const [selectedWorkloadId, setSelectedWorkloadId] = useState("");
 
@@ -126,15 +126,34 @@ export const WorkloadList = () => {
   }, [checkedRows]);
 
   const formatCheckedRows = useMemo(() => {
-    return Object.fromEntries(
-      Object.entries(checkedRows).map(([key, value]) => [
-        key,
-        Object.keys(value).filter(
-          (k) => k !== "allChecked" && k !== "isIndeterminate" && value[k],
-        ),
-      ]),
-    );
-  }, [checkedRows]);
+    const result: {
+      workloadUuid: string;
+      flag: string;
+      status: string[];
+    }[] = [];
+
+    const statusMap: Record<string, string> = {
+      unconnectedPort: "unconnectedPort",
+      idlePort: "idlePort",
+      activePort: "activePort",
+      errorPort: "errorPort",
+    };
+    const portMap: Record<string, string[]> = {};
+    Object.entries(checkedRows).forEach(([statusKey, ports]) => {
+      Object.entries(ports).forEach(([portId, value]) => {
+        if (portId === "allChecked" || portId === "isIndeterminate") return;
+        if (value) {
+          if (!portMap[portId]) portMap[portId] = [];
+          portMap[portId].push(statusMap[statusKey]);
+        }
+      });
+    });
+    Object.entries(portMap).forEach(([id, status]) => {
+      result.push({ workloadUuid: id, flag: selectedTabBound, status });
+    });
+
+    return result;
+  }, [checkedRows, selectedTabBound]);
 
   const filteredWorkloads = useMemo(() => {
     if (!filteredWorkloadId) {
