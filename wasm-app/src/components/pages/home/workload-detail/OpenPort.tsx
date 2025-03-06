@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Box } from "@mui/material";
 import { Button, Typography } from "@skuber/components";
 import { useForm } from "react-hook-form";
@@ -13,7 +14,13 @@ import { BadgePortStatus } from "@/components/modules/BadgePortStatus";
 import { CollapsibleTable } from "@/components/modules/CollapsibleTable";
 import { ModalClosePort } from "@/components/modules/ModalClosePort";
 import { useDisclosure } from "@/hooks/useDisclosure";
-import { Port, PortAccessSettingForm, PortDirection } from "@/models";
+import {
+  AccessPolicy,
+  Port,
+  PortAccessSettingForm,
+  PortDirection,
+} from "@/models";
+import { openPortSchema } from "@/validations";
 
 type OpenPortProps = {
   data: Port[];
@@ -35,18 +42,21 @@ export const OpenPort = ({
 
   const form = useForm<PortAccessSettingForm>({
     defaultValues: {
-      sources: [
+      workloadUuid: "",
+      flag: portDirection,
+      portSpec: "",
+      accessSources: [
         {
-          source: "",
-          type: "",
+          ip: "",
+          protocol: "",
           comment: "",
         },
       ],
+      accessPolicy: AccessPolicy.ALLOW_ONLY,
       allowFullAccess: false,
-      access: 3,
-      port: null,
     },
     mode: "onChange",
+    resolver: yupResolver(openPortSchema),
   });
 
   const columns = useMemo(

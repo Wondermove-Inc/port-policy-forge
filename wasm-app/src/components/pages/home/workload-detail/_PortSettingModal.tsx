@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import { Box, FormControlLabel, RadioGroup, TextField } from "@mui/material";
 import {
   Button,
@@ -15,7 +17,7 @@ import { DescriptionWithDetails } from "@/components/atoms/DescriptionWithDetail
 import { ModalFooter } from "@/components/atoms/ModalFooter";
 import { AddIcon } from "@/components/icons/AddIcon";
 import { DeleteIcon } from "@/components/icons/DeleteIcon";
-import { Port, PortAccessSettingForm } from "@/models";
+import { AccessPolicy, Port, PortAccessSettingForm } from "@/models";
 
 interface PortSettingModalProps {
   isOpen: boolean;
@@ -34,16 +36,29 @@ export const PortSettingModal = ({
   handleClose,
   form,
 }: PortSettingModalProps) => {
-  const { control, watch } = form;
+  const {
+    control,
+    watch,
+    setValue,
+    formState: { errors, isValid },
+  } = form;
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "sources",
+    name: "accessSources",
   });
 
-  const handleAddSource = () => append({ source: "", type: "", comment: "" });
+  const handleAddSource = () => append({ ip: "", protocol: "", comment: "" });
 
   const allowFullAccess = watch("allowFullAccess");
+
+  useEffect(() => {
+    // TODO : && not edit
+    if (!allowFullAccess) {
+      setValue("accessPolicy", AccessPolicy.ALLOW_ONLY);
+      setValue("accessSources", [{ ip: "", protocol: "", comment: "" }]);
+    }
+  }, [allowFullAccess, remove]);
 
   return (
     <Modal width={646} open={isOpen} onClose={handleClose}>
@@ -70,7 +85,7 @@ export const PortSettingModal = ({
             />
             <Box sx={{ textAlign: "center", mt: 1 }}>
               <Controller
-                name="port"
+                name="portSpec"
                 control={control}
                 render={({ field }) => (
                   <TextField
@@ -78,6 +93,8 @@ export const PortSettingModal = ({
                     sx={{ width: "100% !important" }}
                     placeholder="Port number"
                     label="Port"
+                    error={!!errors.portSpec}
+                    helperText={errors.portSpec?.message}
                   />
                 )}
               />
@@ -106,7 +123,7 @@ export const PortSettingModal = ({
             <>
               <Box sx={{ px: "10px", pb: "16px" }}>
                 <Controller
-                  name="access"
+                  name="accessPolicy"
                   control={control}
                   render={({ field }) => (
                     <RadioGroup
@@ -117,7 +134,7 @@ export const PortSettingModal = ({
                     >
                       <FormControlLabel
                         sx={{ display: "flex", gap: 1 }}
-                        value="3"
+                        value={AccessPolicy.ALLOW_ONLY}
                         control={<Radio />}
                         label={
                           isInbound
@@ -127,7 +144,7 @@ export const PortSettingModal = ({
                       />
                       <FormControlLabel
                         sx={{ display: "flex", gap: 1 }}
-                        value="1"
+                        value={AccessPolicy.ALLOW_EXCLUDE}
                         control={<Radio />}
                         label={
                           isInbound
@@ -160,7 +177,7 @@ export const PortSettingModal = ({
                           sx={{ display: "flex", alignItems: "center", gap: 1 }}
                         >
                           <Controller
-                            name={`sources.${index}.source`}
+                            name={`accessSources.${index}.ip`}
                             control={control}
                             render={({ field }) => (
                               <TextField
@@ -173,7 +190,7 @@ export const PortSettingModal = ({
                             )}
                           />
                           <Controller
-                            name={`sources.${index}.type`}
+                            name={`accessSources.${index}.protocol`}
                             control={control}
                             render={({ field }) => (
                               <Select
@@ -185,7 +202,7 @@ export const PortSettingModal = ({
                           />
                         </Box>
                         <Controller
-                          name={`sources.${index}.comment`}
+                          name={`accessSources.${index}.comment`}
                           control={control}
                           render={({ field }) => (
                             <Textarea
@@ -241,6 +258,7 @@ export const PortSettingModal = ({
         confirmButtonTitle="Apply"
         onClickCancelButton={handleClose}
         onClickConfirmButton={form.handleSubmit(handleSubmit)}
+        disabled={!isValid}
       />
     </Modal>
   );

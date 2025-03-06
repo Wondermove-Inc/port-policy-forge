@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hookform/resolvers": "^4.1.3",
     "@mui/material": "6.1.6",
     "@mui/x-data-grid": "^7.27.0",
     "@skuber/components": "^1.0.3",

@@ -88,20 +88,22 @@ export type WorkloadDetailType = {
 };
 
 export type PortAccessSettingForm = {
-  sources: {
-    source: string;
-    type: string;
+  workloadUuid: string;
+  flag: PortDirection;
+  portSpec: string;
+  accessPolicy?: AccessPolicy;
+  allowFullAccess: boolean;
+  accessSources?: {
+    ip: string;
+    protocol: string;
     comment: string;
   }[];
-  port?: number | null;
-  allowFullAccess: boolean;
-  access: number | null;
 };
 
-export enum AccessSource {
-  ALLOW_ALL = 0,
-  ALLOW_EXPECT = 1,
-  ALLOW_ONLY = 3,
+export enum AccessPolicy {
+  ALLOW_ALL = "allow-all",
+  ALLOW_EXCLUDE = "exclude-specific",
+  ALLOW_ONLY = "only-specific",
 }
 
 export enum PortRisk {
