@@ -42,15 +42,13 @@ export const SelectClusterAndNameSpace = () => {
   }, [selectedCluster]);
 
   const getClusters = () => {
-    setTimeout(() => {
-      const newClusters = clusters.map((cluster) => ({
-        value: cluster.id,
-        label: cluster.name,
-        type: cluster.type as ClusterType,
-      }));
-      setClusterOptions(newClusters);
-      setSelectedCluster(newClusters[0]?.value || "");
-    }, 500);
+    const newClusters = clusters.map((cluster) => ({
+      value: cluster.id,
+      label: cluster.name,
+      type: cluster.type as ClusterType,
+    }));
+    setClusterOptions(newClusters);
+    setSelectedCluster(newClusters[0]?.value || "");
   };
 
   const getNamespaces = () => {

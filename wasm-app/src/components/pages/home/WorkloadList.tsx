@@ -13,6 +13,7 @@ import { SearchComplete } from "@/components/modules/SearchComplete";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { wasmListWorkloads, WorkloadResource } from "@/services/listWorkloads";
 import { useCommonStore } from "@/store";
+import { getWorkloadKindLabel } from "@/utils";
 import { formatNumber } from "@/utils/format";
 
 export const WorkloadList = () => {
@@ -25,6 +26,7 @@ export const WorkloadList = () => {
     Record<string, Record<string, boolean>>
   >({});
   const [selectedTabBound, setSelectedTabBound] = useState("1");
+  const [filteredWorkloadId, setFilterWorkloadId] = useState("");
   const [selectedWorkloadId, setSelectedWorkloadId] = useState("");
 
   useEffect(() => {
@@ -73,6 +75,7 @@ export const WorkloadList = () => {
       field: "kind",
       headerName: "Type",
       flex: 1,
+      valueGetter: (value) => getWorkloadKindLabel(value),
     },
     {
       field: "unconnectedPort",
@@ -133,6 +136,13 @@ export const WorkloadList = () => {
     );
   }, [checkedRows]);
 
+  const filteredWorkloads = useMemo(() => {
+    if (!filteredWorkloadId) {
+      return workloads;
+    }
+    return workloads.filter((item) => item.uuid === filteredWorkloadId);
+  }, [filteredWorkloadId, workloads]);
+
   const handleChangeTabBound = (newValue: string) => {
     setSelectedTabBound(newValue);
     setCheckedRows({});
@@ -189,9 +199,12 @@ export const WorkloadList = () => {
         >
           <SearchComplete
             options={workloads.map((item) => ({
-              id: item.id,
-              label: item.name,
+              id: item.uuid,
+              label: item.workloadName,
             }))}
+            onChange={(option) => {
+              setFilterWorkloadId(option?.id || "");
+            }}
             placeholder="Search for workloads"
           />
           <Button
@@ -214,7 +227,7 @@ export const WorkloadList = () => {
       <Box sx={{ marginTop: "24px", padding: "0 12px", width: "100%" }}>
         <Datagrid
           columns={columns}
-          rows={workloads}
+          rows={filteredWorkloads}
           hasSearch={false}
           loading={loading}
           height="calc(100vh - 240px)"

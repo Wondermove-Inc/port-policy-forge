@@ -99,7 +99,14 @@ export default [
         "error",
         {
           cspell: {
-            words: ["skuber", "networkgraph", "milli"],
+            words: [
+              "skuber",
+              "networkgraph",
+              "milli",
+              "replicaset",
+              "demonset",
+              "statefulset",
+            ],
           },
         },
       ],

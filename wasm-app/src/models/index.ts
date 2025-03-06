@@ -24,12 +24,6 @@ export enum PortKind {
   EXTERNAL = "external",
 }
 
-export enum WorkloadKind {
-  DEPLOYMENT = "deployment",
-  STAGING = "staging",
-  PRODUCTION = "production",
-}
-
 export type PortRangeType = {
   start: string;
   end: string;
@@ -118,13 +112,11 @@ export const STATUS_MAP: Record<number, Stats> = {
   4: Stats.ATTEMPTED,
 };
 
-export type WorkloadListItem = {
-  id: string;
-  name: string;
-  type: string;
-  unconnectedPort: number;
-  idlePort: number;
-  activePort: number;
-  errorPort: number;
-  closedPortAttempted: number;
-};
+export enum WorkloadKind {
+  Deployment = "deployment",
+  Demonset = "demonset",
+  Replicaset = "replicaset",
+  Cronjob = "cronjob",
+  Job = "job",
+  Statefulset = "statefulset",
+}
