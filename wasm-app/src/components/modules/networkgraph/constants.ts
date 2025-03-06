@@ -60,6 +60,11 @@ export const EDGE_STYLES: Record<string, EdgeStyle> = {
     arrowKey: "errorArrow",
     lineDash: [2, 2],
   },
+  [EdgeStatus.ACTIVE]: {
+    strokeStyle: color.active,
+    arrowKey: "activeArrow",
+    lineDash: [0, 0],
+  },
   DEFAULT: {
     strokeStyle: color.active,
     arrowKey: "activeArrow",

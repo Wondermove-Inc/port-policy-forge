@@ -1,5 +1,5 @@
 import { Edge, IdType, Network, Node } from "vis-network";
-
+import { DataSet } from "vis-network/standalone";
 export type Coord = {
   x: number;
   y: number;
@@ -49,7 +49,7 @@ export enum DeploymentIconSize {
   BIG = 40,
 }
 
-export type NodeStat = {
+export type NodeStats = {
   active?: number;
   attempted?: number;
   error?: number;
@@ -64,8 +64,15 @@ export type NodeData = {
   nodeSize: number;
   customLabel: string;
   kind?: NodeKind;
-  stats?: NodeStat;
   status?: NodeStatus;
+  inbound?: {
+    stats?: NodeStats;
+  };
+  outbound?: {
+    stats?: NodeStats;
+  };
+  from?: { workloadId: string; status: EdgeStatus }[];
+  to?: { workloadId: string; status: EdgeStatus }[];
 };
 
 export type NetworkNodeData = {
@@ -99,8 +106,12 @@ export type CustomNode = Partial<Node> & {
 
 export type CustomNetwork = Network & {
   body: {
-    edges: CustomEdge[];
-    nodes: CustomNode[];
+    edges: { [key: string]: CustomEdge };
+    nodes: { [key: string]: CustomNode };
+    data: {
+      edges: DataSet<EdgeData>;
+      nodes: DataSet<NodeData>;
+    };
   };
 };
 
@@ -121,14 +132,13 @@ export type CanvasImage = {
     etc: HTMLImageElement;
     external: HTMLImageElement;
   };
+  lineConnected: HTMLImageElement;
 };
 
 export type DrawingOptions = {
   hoverNodeId?: string;
   connectedEdges?: IdType[];
   connectedNodes?: IdType[];
-  displayPorts?: EdgeStatusText[];
-  disabled?: boolean;
 };
 
 export type WorkloadConnector = {

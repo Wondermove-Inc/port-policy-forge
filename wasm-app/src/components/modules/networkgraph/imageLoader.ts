@@ -11,6 +11,7 @@ import WorkloadExternalIcon from "../../../assets/icons/workload-kind-external.s
 
 import WorkloadExclamationIcon from "../../../assets/icons/workload-exclamation.svg?inline";
 import WorkloadProtectedIcon from "../../../assets/icons/workload-protected.svg?inline";
+import WorkloadLineConnectedIcon from "../../../assets/icons/workload-line-connected.svg?inline";
 import { color } from "./constants";
 
 export const loadImage = (src: string): Promise<HTMLImageElement> => {
@@ -58,6 +59,7 @@ export const loadAllImages = async (): Promise<CanvasImage> => {
     loadImage(WorkloadStatefulsetIcon),
     loadImage(WorkloadEtcIcon),
     loadImage(WorkloadExternalIcon),
+    loadImage(WorkloadLineConnectedIcon),
   ]);
 
   return {
@@ -77,5 +79,6 @@ export const loadAllImages = async (): Promise<CanvasImage> => {
       etc: images[12],
       external: images[13],
     },
+    lineConnected: images[14],
   };
 };

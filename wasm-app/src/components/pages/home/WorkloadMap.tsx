@@ -6,30 +6,21 @@ import { WorkloadDetail } from "./WorkloadDetail";
 
 import NetworkGraph from "@/components/modules/networkgraph/networkGraph";
 import {
+  CustomNetwork,
   EdgeData,
-  EdgeStatusText,
   NodeData,
   NodeSize,
 } from "@/components/modules/networkgraph/types";
 import { ViewFilter } from "@/components/pages/home/workload-map/ViewFilter";
 import { workloadMap } from "@/data";
 import { useDisclosure } from "@/hooks/useDisclosure";
-import { useWasmContext } from "@/wasm.provider";
 
 export const WorkloadMap = () => {
-  const wasmCtx = useWasmContext();
   const [edges, setEdges] = useState<EdgeData[]>([]);
   const [nodes, setNodes] = useState<NodeData[]>([]);
-  const [activeNodeId, setActiveNodeId] = useState<string>();
-  const [displayPorts, setDisplayPorts] = useState<EdgeStatusText[]>([
-    EdgeStatusText.ERROR,
-  ]);
+  const [network, setNetwork] = useState<CustomNetwork>();
   const detailDrawer = useDisclosure();
-  useEffect(() => {
-    if (!detailDrawer.visible) {
-      setActiveNodeId(undefined);
-    }
-  }, [detailDrawer.visible]);
+
   useEffect(() => {
     const workloads = workloadMap;
     const edges = workloads.reduce((pre, current) => {
@@ -50,6 +41,7 @@ export const WorkloadMap = () => {
 
     const nodes = workloads.map<NodeData>((workload) => {
       return {
+        ...workload,
         id: workload.uuid,
         customLabel: workload.workloadName,
         nodeSize: NodeSize.MEDIUM,
@@ -57,17 +49,28 @@ export const WorkloadMap = () => {
           active: 10,
           unconnected: 10,
         },
-        status: workload.status,
-        kind: workload.kind,
       };
     });
     setEdges(edges);
     setNodes(nodes);
   }, []);
 
-  const handleNodeClick = (nodeId: string) => {
-    // setActiveNodeId(nodeId);
-    // detailDrawer.open();
+  const handleEdgeDisconnected = (edgeId: string) => {
+    const isConfirmed = confirm("Confirm remove edgeId " + edgeId);
+    if (isConfirmed) {
+      network?.body.data.edges.remove(edgeId);
+      const edge = edges.find((edge) => edge.id === edgeId);
+      if (edge) {
+        const fromConnectNodes = network?.getConnectedNodes(edge.from);
+        const toConnectEdges = network?.getConnectedNodes(edge.to);
+        if (fromConnectNodes?.length === 0) {
+          network?.body.data.nodes.remove(edge.from);
+        }
+        if (toConnectEdges?.length === 0) {
+          network?.body.data.nodes.remove(edge.to);
+        }
+      }
+    }
   };
 
   return (
@@ -82,14 +85,14 @@ export const WorkloadMap = () => {
       }}
     >
       <NetworkGraph
-        displayPorts={displayPorts}
         edges={edges}
         nodes={nodes}
-        activeNodeId={activeNodeId}
-        onNodeClick={handleNodeClick}
+        setNetwork={setNetwork}
+        onEdgeDisconnected={handleEdgeDisconnected}
       />
       <ViewFilter />
       <WorkloadDetail
+        id=""
         open={detailDrawer.visible}
         handleClose={detailDrawer.close}
       />

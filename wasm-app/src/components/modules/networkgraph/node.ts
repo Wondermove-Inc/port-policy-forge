@@ -10,8 +10,6 @@ import {
   DeploymentIconSize,
   DrawingOptions,
   EdgeStatus,
-  EdgeStatusText,
-  NodeKind,
   NodeSize,
   NodeStatus,
 } from "./types";
@@ -34,7 +32,7 @@ export class NetworkNode {
   }
 
   public draw() {
-    if (this.options?.disabled) {
+    if (this.isDisabled()) {
       this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
     }
     this.drawNodeBackground();
@@ -46,7 +44,7 @@ export class NetworkNode {
     this.drawNodeKind();
     this.drawNodeLabel();
 
-    if (this.options?.disabled) {
+    if (this.isDisabled()) {
       this.ctx.globalAlpha = GLOBAL_ALPHA;
     }
   }
@@ -98,8 +96,6 @@ export class NetworkNode {
   }
 
   private drawExclamationIcon() {
-    if (!this.canvasImages) return;
-
     this.ctx.beginPath();
     this.ctx.drawImage(
       this.canvasImages.exclamation,
@@ -112,7 +108,6 @@ export class NetworkNode {
   }
 
   private drawNodeKind() {
-    if (!this.canvasImages) return;
     const nodeSize = this.node?.data?.nodeSize;
     let deploymentIconSize = DeploymentIconSize.MEDIUM;
     if (nodeSize === NodeSize.BIG) {
@@ -147,27 +142,42 @@ export class NetworkNode {
     const protectedAddImageWidth = this.canvasImages.protected.width;
     const imageToTextSpacing = 2;
 
+    let labelX = this.node.x - textWidth / 2 - imageToTextSpacing;
+
+    if (this.node.data?.status === NodeStatus.COMPLETE_INITIAL_SETUP) {
+      labelX += protectedAddImageWidth / 2;
+    }
     this.ctx.beginPath();
     this.ctx.fillText(
       label as string,
-      this.node.x -
-        textWidth / 2 +
-        protectedAddImageWidth / 2 -
-        imageToTextSpacing,
+      labelX,
       this.node.y + nodeSize / 2 + 15,
       textWidth
     );
 
-    this.ctx.drawImage(
-      this.canvasImages.protected,
-      this.node.x - textWidth / 2 - protectedAddImageWidth,
-      this.node.y + nodeSize / 2 + 6
-    );
+    if (this.node.data?.status === NodeStatus.COMPLETE_INITIAL_SETUP) {
+      this.ctx.drawImage(
+        this.canvasImages.protected,
+        this.node.x - textWidth / 2 - protectedAddImageWidth,
+        this.node.y + nodeSize / 2 + 6
+      );
+    }
+
     this.ctx.closePath();
   }
 
   private drawNodePort() {
-    const ports = this.getErrorPorts();
+    const { idle, attempted, error } = this.getStats();
+    const ports = [
+      {
+        status: EdgeStatus.IDLE,
+        total: idle,
+      },
+      {
+        status: EdgeStatus.ERROR,
+        total: attempted + error,
+      },
+    ].filter((p) => p.total);
     const ARC_RADIUS = 10;
     for (let i = 0; i < ports.length; i++) {
       let x = this.node.x + ARC_RADIUS + 14;
@@ -192,20 +202,30 @@ export class NetworkNode {
     }
   }
 
-  private getErrorPorts() {
-    const ports: { status: EdgeStatus; total: number }[] = [
-      {
-        status: EdgeStatus.ERROR,
-        total:
-          (this.node.data?.stats?.error || 0) +
-          (this.node.data?.stats?.attempted || 0),
-      },
-      {
-        status: EdgeStatus.IDLE,
-        total: this.node.data?.stats?.idle || 0,
-      },
-    ].filter((port) => port.total > 0);
+  private getStats() {
+    const inboundStats = this.node.data?.inbound?.stats;
+    const outboundStats = this.node.data?.outbound?.stats;
+    const active = (inboundStats?.active || 0) + (outboundStats?.active || 0);
+    const attempted =
+      (inboundStats?.attempted || 0) + (outboundStats?.attempted || 0);
+    const error = (inboundStats?.error || 0) + (outboundStats?.error || 0);
+    const idle = (inboundStats?.idle || 0) + (outboundStats?.idle || 0);
+    const unconnected =
+      (inboundStats?.unconnected || 0) + (outboundStats?.unconnected || 0);
+    return {
+      active: active,
+      attempted: attempted,
+      error: error,
+      idle: idle,
+      unconnected: unconnected,
+    };
+  }
 
-    return ports;
+  private isDisabled() {
+    return (
+      this.options?.hoverNodeId &&
+      !this.options?.connectedNodes?.includes(this.node.id) &&
+      this.options.hoverNodeId !== this.node.id
+    );
   }
 }

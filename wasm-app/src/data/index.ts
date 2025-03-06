@@ -447,6 +447,24 @@ export const workloadMap = [
         status: EdgeStatus.ERROR,
       },
     ],
+    inbound: {
+      stats: {
+        active: 10,
+        unconnected: 5,
+        error: 5,
+        idle: 10,
+        attempted: 40,
+      },
+    },
+    outbound: {
+      stats: {
+        active: 10,
+        unconnected: 5,
+        error: 5,
+        idle: 10,
+        attempted: 40,
+      },
+    },
   },
   {
     uuid: "222",
@@ -455,6 +473,24 @@ export const workloadMap = [
     status: NodeStatus.COMPLETE_INITIAL_SETUP,
     from: [],
     to: [],
+    inbound: {
+      stats: {
+        active: 10,
+        unconnected: 5,
+        error: 5,
+        idle: 0,
+        attempted: 40,
+      },
+    },
+    outbound: {
+      stats: {
+        active: 10,
+        unconnected: 5,
+        error: 5,
+        idle: 0,
+        attempted: 40,
+      },
+    },
   },
   {
     uuid: "333",
@@ -467,6 +503,24 @@ export const workloadMap = [
         status: EdgeStatus.SYSTEM,
       },
     ],
+    inbound: {
+      stats: {
+        active: 10,
+        unconnected: 5,
+        error: 0,
+        idle: 10,
+        attempted: 0,
+      },
+    },
+    outbound: {
+      stats: {
+        active: 0,
+        unconnected: 0,
+        error: 0,
+        idle: 2,
+        attempted: 0,
+      },
+    },
   },
   {
     uuid: "444",
@@ -597,45 +651,5 @@ export const workloadMap = [
         status: EdgeStatus.SYSTEM,
       },
     ],
-  },
-
-  {
-    uuid: "4444",
-    workloadName: "workload-example-11",
-    status: NodeStatus.BEFORE_INITIAL_SETUP,
-    kind: NodeKind.DEPLOYMENT,
-    from: [],
-    to: [
-      {
-        workloadId: "5555",
-        status: EdgeStatus.SYSTEM,
-      },
-    ],
-  },
-  {
-    uuid: "5555",
-    workloadName: "workload-example-12",
-    status: NodeStatus.COMPLETE_INITIAL_SETUP,
-    kind: NodeKind.DEPLOYMENT,
-    from: [],
-    to: [
-      {
-        workloadId: "4444",
-        status: EdgeStatus.SYSTEM,
-      },
-    ],
-  },
-  {
-    uuid: "6666",
-    workloadName: "workload-example-13",
-    status: NodeStatus.COMPLETE_INITIAL_SETUP,
-    kind: NodeKind.DEPLOYMENT,
-    from: [
-      {
-        workloadId: "4444",
-        status: EdgeStatus.SYSTEM,
-      },
-    ],
-    to: [],
   },
 ];
