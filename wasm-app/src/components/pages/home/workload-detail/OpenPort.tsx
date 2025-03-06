@@ -14,6 +14,7 @@ import { CollapsibleTable } from "@/components/modules/CollapsibleTable";
 import { ModalClosePort } from "@/components/modules/ModalClosePort";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { Port, PortAccessSettingForm, PortDirection } from "@/models";
+import { formatNumber } from "@/utils/format";
 
 type OpenPortProps = {
   data: Port[];
@@ -164,7 +165,7 @@ export const OpenPort = ({
         }}
       >
         <Typography variant="subtitle1" component={"p"}>
-          {`Open (${data?.length || 0})`}
+          {`Open (${formatNumber(data.length)})`}
         </Typography>
         <Button
           variant="outlined"

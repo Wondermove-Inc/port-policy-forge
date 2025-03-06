@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { Box, Typography } from "@mui/material";
 import { Button } from "@skuber/components";
@@ -11,49 +11,21 @@ import { CheckBoxIcon } from "@/components/icons/CheckBoxIcon";
 import { ModalClosePort } from "@/components/modules/ModalClosePort";
 import { SearchComplete } from "@/components/modules/SearchComplete";
 import { useDisclosure } from "@/hooks/useDisclosure";
-import { wasmListWorkloads, WorkloadResource } from "@/services/listWorkloads";
 import { useCommonStore } from "@/store";
 import { getWorkloadKindLabel } from "@/utils";
 import { formatNumber } from "@/utils/format";
 
 export const WorkloadList = () => {
-  const { selectedNamespace } = useCommonStore();
+  const { workloads, workloadsLoading } = useCommonStore();
+
   const closePortModal = useDisclosure();
   const detailDrawer = useDisclosure();
-  const [workloads, setWorkloads] = useState<WorkloadResource[]>([]);
-  const [loading, setLoading] = useState(true);
   const [checkedRows, setCheckedRows] = useState<
     Record<string, Record<string, boolean>>
   >({});
   const [selectedTabBound, setSelectedTabBound] = useState("1");
   const [filteredWorkloadId, setFilterWorkloadId] = useState("");
   const [selectedWorkloadId, setSelectedWorkloadId] = useState("");
-
-  useEffect(() => {
-    if (selectedNamespace) {
-      getWorkloads();
-    }
-  }, [selectedNamespace]);
-
-  const getWorkloads = () => {
-    setLoading(true);
-    console.log(selectedTabBound);
-    wasmListWorkloads(selectedNamespace)
-      .then((data) => {
-        setWorkloads(
-          data.result.map((item) => ({
-            ...item,
-            id: item.uuid,
-          })),
-        );
-        setLoading(false);
-      })
-      .catch(() => {
-        // TODO: show error
-        // setError(String(err));
-        setLoading(false);
-      });
-  };
 
   const renderCellWithEmptyValue = (value: string, color: string) => {
     return (
@@ -137,6 +109,7 @@ export const WorkloadList = () => {
   }, [checkedRows]);
 
   const filteredWorkloads = useMemo(() => {
+    console.log(selectedTabBound);
     if (!filteredWorkloadId) {
       return workloads;
     }
@@ -229,7 +202,7 @@ export const WorkloadList = () => {
           columns={columns}
           rows={filteredWorkloads}
           hasSearch={false}
-          loading={loading}
+          loading={workloadsLoading}
           height="calc(100vh - 240px)"
           width="100%"
           checkedRows={checkedRows}
