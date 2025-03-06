@@ -40,17 +40,34 @@ export const INITIAL_WORKLOAD_DETAIL: WorkloadDetailType = {
   uuid: "",
   workloadName: "",
   kind: "",
-  stats: {
-    active: null,
-    unconnected: null,
-    idle: null,
-    error: null,
-    attempted: null,
-    latencyRtt: null,
-    throughput: null,
+  inbound: {
+    stats: {
+      active: null,
+      unconnected: null,
+      idle: null,
+      error: null,
+      attempted: null,
+      latencyRtt: null,
+      throughput: null,
+    },
+    ports: {
+      open: [],
+      closed: [],
+    },
   },
-  ports: {
-    inbound: { open: [], closed: [] },
-    outbound: { open: [], closed: [] },
+  outbound: {
+    stats: {
+      active: null,
+      unconnected: null,
+      idle: null,
+      error: null,
+      attempted: null,
+      latencyRtt: null,
+      throughput: null,
+    },
+    ports: {
+      open: [],
+      closed: [],
+    },
   },
 };

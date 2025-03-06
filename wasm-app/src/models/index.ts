@@ -73,11 +73,14 @@ export type StatsType = {
 export type WorkloadDetailType = {
   uuid: string;
   workloadName: string;
-  kind: string;
-  stats: StatsType;
-  ports: {
-    inbound: PortDetailGroupType;
-    outbound: PortDetailGroupType;
+  kind: WorkloadKind | "";
+  inbound: {
+    stats: StatsType;
+    ports: PortDetailGroupType;
+  };
+  outbound: {
+    stats: StatsType;
+    ports: PortDetailGroupType;
   };
 };
 
