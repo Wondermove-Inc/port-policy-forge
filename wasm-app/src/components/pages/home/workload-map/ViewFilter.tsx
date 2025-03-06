@@ -6,8 +6,11 @@ import { Toggle, Typography } from "@skuber/components";
 import { CloseIcon } from "@/components/icons/CloseIcon";
 import { EyeIcon } from "@/components/icons/EyeIcon";
 import { SearchComplete } from "@/components/modules/SearchComplete";
+import { useCommonStore } from "@/store";
 
 export const ViewFilter = () => {
+  const { workloads } = useCommonStore();
+
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
@@ -92,7 +95,16 @@ export const ViewFilter = () => {
               />
             </Box>
             <Box>
-              <SearchComplete options={[]} placeholder="Search for workloads" />
+              <SearchComplete
+                options={workloads.map((item) => ({
+                  id: item.uuid,
+                  label: item.workloadName,
+                }))}
+                placeholder="Search for workloads"
+                onChange={(option) => {
+                  console.log(option);
+                }}
+              />
             </Box>
             <Box
               sx={{

@@ -1,19 +1,25 @@
 import { create } from "zustand";
 
+import { WorkloadResource } from "@/services/listWorkloads";
+
 interface CommonStore {
   isViewList: boolean;
   setIsViewList: (IsViewList: boolean) => void;
-  selectedCluster: string;
-  setSelectedCluster: (selectedCluster: string) => void;
   selectedNamespace: string;
   setSelectedNamespace: (selectedNamespace: string) => void;
+  workloads: WorkloadResource[];
+  setWorkloads: (workloads: WorkloadResource[]) => void;
+  workloadsLoading: boolean;
+  setWorkloadsLoading: (IsViewList: boolean) => void;
 }
 
 export const useCommonStore = create<CommonStore>((set) => ({
   isViewList: true,
   setIsViewList: (isViewList) => set({ isViewList }),
-  selectedCluster: "",
-  setSelectedCluster: (selectedCluster) => set({ selectedCluster }),
   selectedNamespace: "",
   setSelectedNamespace: (selectedNamespace) => set({ selectedNamespace }),
+  workloads: [],
+  setWorkloads: (workloads: WorkloadResource[]) => set({ workloads }),
+  workloadsLoading: true,
+  setWorkloadsLoading: (workloadsLoading) => set({ workloadsLoading }),
 }));

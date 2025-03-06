@@ -22,16 +22,12 @@ type Option = {
 };
 
 export const SelectClusterAndNameSpace = () => {
+  const [selectedCluster, setSelectedCluster] = useState("");
   const [clusterOptions, setClusterOptions] = useState<Option[]>([]);
   const [namespaceOptions, setNamespaceOptions] = useState<Option[]>([]);
   const [openSelect, setOpenSelect] = useState<string | null>(null);
 
-  const {
-    selectedCluster,
-    setSelectedCluster,
-    selectedNamespace,
-    setSelectedNamespace,
-  } = useCommonStore();
+  const { selectedNamespace, setSelectedNamespace } = useCommonStore();
 
   useEffect(() => {
     getClusters();
