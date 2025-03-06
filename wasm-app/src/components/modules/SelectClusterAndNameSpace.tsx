@@ -13,6 +13,7 @@ import { DownIcon } from "@/components/icons/DownIcon";
 import { clusters, namespaces } from "@/data";
 import { ClusterType } from "@/models";
 import { useCommonStore } from "@/store";
+import { wasmListNamespace } from "@/services/listNamespaces";
 
 type Option = {
   value: string;
@@ -53,16 +54,21 @@ export const SelectClusterAndNameSpace = () => {
   };
 
   const getNamespaces = () => {
-    setTimeout(() => {
-      const newNamespaces = namespaces
-        .filter((namespace) => namespace.clusterId === selectedCluster)
-        .map((namespace) => ({
-          value: namespace.name,
-          label: namespace.name,
-        }));
-      setNamespaceOptions(newNamespaces);
-      setSelectedNamespace(newNamespaces[0]?.value || "");
-    }, 500);
+    wasmListNamespace()
+      .then((data) => {
+        const newNamespaces = data.result
+          .map((namespace) => ({
+            value: namespace.namespaceName,
+            label: namespace.namespaceName,
+          }));
+          setNamespaceOptions(newNamespaces);
+          setSelectedNamespace(newNamespaces[0]?.value || "");
+      })
+      .catch((err) => {
+        // TODO: add loading and show error
+        // setError(String(err));
+        // setLoading(false);
+      });
   };
 
   const handleClusterChange = (value: string) => {
