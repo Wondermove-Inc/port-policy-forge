@@ -27,7 +27,6 @@ export function wasmListWorkloads(namespace: string): Promise<WorkloadsData> {
     try {
       const res = window.listWorkloads(namespace);
       const parsed = JSON.parse(res);
-      console.log("Parsed workloads:", parsed);
       if (!parsed.result || !Array.isArray(parsed.result)) {
         reject("Invalid response format: 'result' is missing or not an array");
       } else {

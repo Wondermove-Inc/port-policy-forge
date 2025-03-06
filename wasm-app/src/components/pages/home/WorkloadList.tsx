@@ -35,7 +35,7 @@ export const WorkloadList = () => {
 
   const getWorkloads = () => {
     setLoading(true);
-    wasmListWorkloads("default")
+    wasmListWorkloads(selectedNamespace)
       .then((data) => {
         setWorkloads(data.result.map((item) => ({
           ...item,
