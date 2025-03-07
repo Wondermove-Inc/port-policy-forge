@@ -42,17 +42,16 @@ export type Port = {
   portNumber: number | string | null;
   portRange: PortRangeType | null;
   status: number;
-  direction: string;
   isOpen: boolean;
   risk: number;
   type: string;
   count: number | null;
-  lastConnection: string | null;
-  lastSrcIp: string | null;
+  lastConnectionDate: string | null;
+  lastConnectionEndpoint: string | null;
   lastConnectionLog: string | null;
-  source: SourceType[] | null;
+  accessSources: SourceType[] | null;
   sourceNumber?: number | null;
-  access?: number;
+  accessPolicy?: AccessPolicy;
 };
 
 export type PortAccessSettingForm = {

@@ -85,8 +85,8 @@ export const OpenPort = ({
         width: isInbound ? 80 : 90,
       },
       {
-        id: "access",
-        label: "Access ",
+        id: "accessSources",
+        label: "Access",
         sortable: false,
         width: 142,
         render: (record: Port) => (
@@ -99,7 +99,7 @@ export const OpenPort = ({
             }}
           >
             <Typography variant="b2_r" color="text.primary">
-              {record.access}
+              {record.accessPolicy}
             </Typography>
             <EditIcon
               size={16}
@@ -197,7 +197,9 @@ export const OpenPort = ({
           maxWidth: "472px",
         }}
         renderDetails={(record) =>
-          record.source ? <PortDetail record={record} /> : undefined
+          !!record.accessSources?.length ? (
+            <PortDetail record={record} />
+          ) : undefined
         }
       />
       <PortSettingModal
