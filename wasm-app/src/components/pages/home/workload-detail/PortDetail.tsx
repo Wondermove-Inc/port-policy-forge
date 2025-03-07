@@ -19,7 +19,7 @@ const ShadedBox = ({ children }: { children: React.ReactNode }) => (
 );
 
 export const PortDetail = ({ record }: { record: Port }) => {
-  const isOpen = record.isOpen;
+  const isOpen = !!record.accessSources?.length;
 
   return (
     <Box
@@ -37,7 +37,7 @@ export const PortDetail = ({ record }: { record: Port }) => {
             {`Connected sources (${record.sourceNumber})`}
           </Typography>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-            {(record.source || []).map(
+            {(record.accessSources || []).map(
               ({ ip, port, comment, createdAt }: SourceType) => (
                 <Box
                   key={`${ip}-${port}`}
@@ -75,9 +75,9 @@ export const PortDetail = ({ record }: { record: Port }) => {
           {[
             {
               label: isOpen ? "Last connection" : "Last Connection attempts",
-              value: record.lastConnection,
+              value: record.lastConnectionDate,
             },
-            { label: "Last Src IP", value: record.lastSrcIp },
+            { label: "Last Src IP", value: record.lastConnectionEndpoint },
           ].map(({ label, value }) => (
             <Box
               key={label}

@@ -1,5 +1,7 @@
 import React from "react";
 
+import { DateTime } from "luxon";
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type TransformFunction = (value: any) => any;
 
@@ -74,4 +76,10 @@ export const formatMilliCores = (milliCores?: number): string => {
     return milliCores;
   }
   return (milliCores / 1000).toFixed(1) + "ms";
+};
+
+export const formatDateTime = (isoString: string) => {
+  const dt = DateTime.fromISO(isoString, { setZone: true });
+
+  return `${dt.toFormat("yyyy.MM.dd")}, ${dt.toFormat("HH:mm:ss")} (GMT ${dt.offset / 60 >= 0 ? "+" : ""}${dt.offset / 60})`;
 };

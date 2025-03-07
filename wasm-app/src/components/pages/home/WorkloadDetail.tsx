@@ -22,6 +22,7 @@ import {
 } from "@/utils";
 import {
   formatBinarySize,
+  formatDateTime,
   formatMilliCores,
   formatNumber,
   formatter,
@@ -127,13 +128,27 @@ export const WorkloadDetail = ({
             portRange: el.portRange as PortRangeType,
             portNumber: el.portNumber,
           }),
-          sourceNumber: formatter("source", "", (el) => el.length)(el),
-          access: formatter("access", "", getAccessLabel)(el),
+          sourceNumber: formatter("accessSources", "", (el) => el.length)(el),
+          accessPolicy: formatter("accessPolicy", "", getAccessLabel)(el),
+          lastConnectionDate: formatter(
+            "lastConnectionDate",
+            "",
+            formatDateTime,
+          )(el),
+          lastConnectionLog: formatter("lastConnectionLog")(el),
+          lastConnectionEndpoint: formatter("lastConnectionEndpoint")(el),
         })),
         closed: workloadDetail[direction].ports.closed.map((el) => ({
           ...el,
           type: formatter("type", "", getPortKindLabel)(el),
           count: formatter("count", "", formatNumber)(el),
+          lastConnectionDate: formatter(
+            "lastConnectionDate",
+            "",
+            formatDateTime,
+          )(el),
+          lastConnectionLog: formatter("lastConnectionLog")(el),
+          lastConnectionEndpoint: formatter("lastConnectionEndpoint")(el),
         })),
       },
     };
@@ -154,22 +169,26 @@ export const WorkloadDetail = ({
       loading={loading}
       variant={isViewList ? "temporary" : "persistent"}
     >
-      <WorkloadTabs
-        onChangeTab={(direction) =>
-          setPortDirection(direction as PortDirection)
-        }
-      />
-      <WorkloadSummary stats={workloadDetail[portDirection].stats} />
-      <PolicyApplication fetchWorkloadDetail={fetchWorkloadDetail} />
-      <OpenPort
-        data={workloadDetail[portDirection].ports.open}
-        portDirection={portDirection}
-        fetchWorkloadDetail={fetchWorkloadDetail}
-      />
-      <ClosePort
-        data={workloadDetail[portDirection].ports.closed}
-        fetchWorkloadDetail={fetchWorkloadDetail}
-      />
+      {id && (
+        <>
+          <WorkloadTabs
+            onChangeTab={(direction) =>
+              setPortDirection(direction as PortDirection)
+            }
+          />
+          <WorkloadSummary stats={workloadDetail[portDirection].stats} />
+          <PolicyApplication fetchWorkloadDetail={fetchWorkloadDetail} />
+          <OpenPort
+            data={workloadDetail[portDirection].ports.open}
+            portDirection={portDirection}
+            fetchWorkloadDetail={fetchWorkloadDetail}
+          />
+          <ClosePort
+            data={workloadDetail[portDirection].ports.closed}
+            fetchWorkloadDetail={fetchWorkloadDetail}
+          />
+        </>
+      )}
     </Drawer>
   );
 };
