@@ -43,8 +43,6 @@ export const WorkloadDetail = ({
   );
   const [loading, setLoading] = useState(false);
 
-  const { setIsDetailFromViewMap } = useCommonStore();
-
   const fetchWorkloadDetail = useCallback(() => {
     setLoading(true);
     wasmGetWorkloadDetail(id)
@@ -69,10 +67,6 @@ export const WorkloadDetail = ({
       fetchWorkloadDetail();
     }
   }, [id]);
-
-  useEffect(() => {
-    setIsDetailFromViewMap(!!id && fromViewMap);
-  }, [id, fromViewMap]);
 
   const formatDirection = (
     workloadDetail: WorkloadDetailType,
