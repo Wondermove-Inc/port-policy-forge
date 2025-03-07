@@ -49,9 +49,6 @@ export const PortDetail = ({ record }: { record: Port }) => {
                   <Typography variant="body2" color="text.primary">
                     {comment}
                   </Typography>
-                  {/* <Typography variant="caption" color="text.tertiary">
-                      {createdAt}
-                    </Typography> */}
                 </ShadedBox>
               </Box>
             ))}
