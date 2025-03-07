@@ -55,35 +55,6 @@ export type Port = {
   access?: number;
 };
 
-export type PortDetailGroupType = {
-  open: Port[];
-  closed: Port[];
-};
-
-export type StatsType = {
-  active: number | null;
-  unconnected: number | null;
-  idle: number | null;
-  error: number | null;
-  attempted: number | null;
-  latencyRtt: number | null;
-  throughput: number | null;
-};
-
-export type WorkloadDetailType = {
-  uuid: string;
-  workloadName: string;
-  kind: WorkloadKind | "";
-  inbound: {
-    stats: StatsType;
-    ports: PortDetailGroupType;
-  };
-  outbound: {
-    stats: StatsType;
-    ports: PortDetailGroupType;
-  };
-};
-
 export type PortAccessSettingForm = {
   workloadUuid: string;
   flag: PortDirection;
@@ -125,3 +96,13 @@ export enum WorkloadKind {
   Job = "job",
   Statefulset = "statefulset",
 }
+
+export type StatsType = {
+  active: number | null;
+  unconnected: number | null;
+  idle: number | null;
+  error: number | null;
+  attempted: number | null;
+  latencyRtt: number | null;
+  throughput: number | null;
+};

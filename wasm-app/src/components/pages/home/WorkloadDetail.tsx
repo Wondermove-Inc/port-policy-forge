@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 
 import { ClosePort } from "./workload-detail/ClosePort";
 import { OpenPort } from "./workload-detail/OpenPort";
@@ -8,8 +8,11 @@ import { WorkloadTabs } from "./workload-detail/WorkloadTabs";
 
 import { Drawer } from "@/components/atoms/Drawer";
 import { INITIAL_WORKLOAD_DETAIL } from "@/constants";
-import { PortDirection, PortRangeType, WorkloadDetailType } from "@/models";
-import { wasmGetWorkloadDetail } from "@/services/getworkloadDetail";
+import { PortDirection, PortRangeType } from "@/models";
+import {
+  wasmGetWorkloadDetail,
+  WorkloadDetailType,
+} from "@/services/getworkloadDetail";
 import { useCommonStore } from "@/store";
 import {
   getAccessLabel,
@@ -39,28 +42,34 @@ export const WorkloadDetail = ({
   const [workloadDetail, setWorkloadDetail] = useState<WorkloadDetailType>(
     INITIAL_WORKLOAD_DETAIL,
   );
-  const [loading, setLoading] = useState(false);
-
+  const [loading, setLoading] = useState(true);
   const { isViewList } = useCommonStore();
 
-  const fetchWorkloadDetail = useCallback(() => {
+  useEffect(() => {
+    if (id) {
+      fetchWorkloadDetail();
+    }
+  }, [id]);
+
+  const fetchWorkloadDetail = () => {
     setLoading(true);
+
     wasmGetWorkloadDetail(id)
       .then((data) => {
-        const workloadDetail = data.result;
+        const newDetailData = data.result;
         setWorkloadDetail({
-          ...workloadDetail,
-          workloadName: formatter("workloadName")(workloadDetail),
-          kind: formatter("kind", "", getWorkloadKindLabel)(workloadDetail),
-          inbound: formatDirection(workloadDetail, PortDirection.INBOUND),
-          outbound: formatDirection(workloadDetail, PortDirection.OUTBOUND),
+          ...newDetailData,
+          workloadName: formatter("workloadName")(newDetailData),
+          kind: getWorkloadKindLabel(newDetailData.kind),
+          inbound: formatDirection(newDetailData, PortDirection.INBOUND),
+          outbound: formatDirection(newDetailData, PortDirection.OUTBOUND),
         });
       })
       .catch(() => {
         // TODO: handle error
       })
       .finally(() => setLoading(false));
-  }, [id]);
+  };
 
   useEffect(() => {
     if (id) {
@@ -127,16 +136,16 @@ export const WorkloadDetail = ({
   };
 
   const handleDetailClose = () => {
-    setWorkloadDetail(INITIAL_WORKLOAD_DETAIL);
     setPortDirection(PortDirection.INBOUND);
     handleClose();
+    setWorkloadDetail(INITIAL_WORKLOAD_DETAIL);
   };
 
   return (
     <Drawer
       open={open}
-      title={workloadDetail.workloadName}
-      subTitle={workloadDetail.kind}
+      title={workloadDetail?.workloadName || ""}
+      subTitle={workloadDetail?.kind || ""}
       onClose={handleDetailClose}
       loading={loading}
       variant={isViewList ? "temporary" : "persistent"}

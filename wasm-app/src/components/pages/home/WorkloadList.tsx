@@ -109,7 +109,6 @@ export const WorkloadList = () => {
   }, [checkedRows]);
 
   const filteredWorkloads = useMemo(() => {
-    console.log(selectedTabBound);
     if (!filteredWorkloadId) {
       return workloads;
     }

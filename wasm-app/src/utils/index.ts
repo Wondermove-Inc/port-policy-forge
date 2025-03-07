@@ -12,7 +12,7 @@ export const getPortNumber = ({
   };
   portNumber: string | number | null;
 }) => {
-  if (isRange) {
+  if (isRange && portRange) {
     return `${portRange.start} ~ ${portRange.end}`;
   }
   return portNumber;

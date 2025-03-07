@@ -1,4 +1,5 @@
-import { Stats, WorkloadDetailType } from "@/models";
+import { Stats } from "@/models";
+import { WorkloadDetailType } from "@/services/getworkloadDetail";
 
 export const PORT_STATUS_MAP: Record<
   Stats,
