@@ -1,13 +1,13 @@
-import { ChangeEvent, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import { Box } from "@mui/material";
 import { Toggle, Typography } from "@skuber/components";
 
 import { CloseIcon } from "@/components/icons/CloseIcon";
 import { EyeIcon } from "@/components/icons/EyeIcon";
+import { FilterPorts } from "@/components/modules/networkgraph/types";
 import { SearchComplete } from "@/components/modules/SearchComplete";
 import { useCommonStore } from "@/store";
-import { FilterPorts } from "@/components/modules/networkgraph/types";
 
 type ViewFilterProps = {
   filterPorts: FilterPorts;

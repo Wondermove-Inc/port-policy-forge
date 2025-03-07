@@ -150,6 +150,7 @@ export const WorkloadList = () => {
             })),
           );
           setWorkloadsLoading(false);
+          setClosedWorkloads([]);
         });
       })
       .catch((error) => {
