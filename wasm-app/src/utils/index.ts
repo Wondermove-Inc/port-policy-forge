@@ -1,4 +1,4 @@
-import { AccessSource, PortKind, WorkloadKind } from "@/models";
+import { AccessPolicy, PortKind, WorkloadKind } from "@/models";
 
 export const getPortNumber = ({
   isRange,
@@ -18,13 +18,13 @@ export const getPortNumber = ({
   return portNumber;
 };
 
-export const getAccessLabel = (access: number) => {
+export const getAccessLabel = (access: string) => {
   switch (access) {
-    case AccessSource.ALLOW_ALL:
+    case AccessPolicy.ALLOW_ALL:
       return "Allow all sources";
-    case AccessSource.ALLOW_EXPECT:
+    case AccessPolicy.ALLOW_EXCLUDE:
       return "Allow except some sources";
-    case AccessSource.ALLOW_ONLY:
+    case AccessPolicy.ALLOW_ONLY:
       return "Allow only some sources";
     default:
       return "Allow all access";
