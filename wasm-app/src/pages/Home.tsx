@@ -10,7 +10,7 @@ import { wasmListWorkloads } from "@/services/listWorkloads";
 import { useCommonStore } from "@/store";
 
 export const Home = () => {
-  const { isViewList, selectedNamespace, setWorkloadsLoading, setWorkloads } =
+  const { isViewList, isDetailFromMap, selectedNamespace, setWorkloadsLoading, setWorkloads } =
     useCommonStore();
 
   useEffect(() => {
@@ -52,7 +52,7 @@ export const Home = () => {
           left: 0,
           top: 0,
           zIndex: 88,
-          width: isViewList ? "calc(100%)" : "calc(100% - 512px)",
+          width: !isDetailFromMap ? "calc(100%)" : "calc(100% - 512px)",
           padding: "20px",
           alignItems: "center",
         }}

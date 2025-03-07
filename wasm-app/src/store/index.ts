@@ -11,6 +11,8 @@ interface CommonStore {
   setWorkloads: (workloads: WorkloadResource[]) => void;
   workloadsLoading: boolean;
   setWorkloadsLoading: (IsViewList: boolean) => void;
+  isDetailFromMap: boolean;
+  setIsDetailFromMap: (isWorkloadDetailView: boolean) => void;
 }
 
 export const useCommonStore = create<CommonStore>((set) => ({
@@ -22,4 +24,6 @@ export const useCommonStore = create<CommonStore>((set) => ({
   setWorkloads: (workloads: WorkloadResource[]) => set({ workloads }),
   workloadsLoading: true,
   setWorkloadsLoading: (workloadsLoading) => set({ workloadsLoading }),
+  isDetailFromMap: false,
+  setIsDetailFromMap: (isDetailFromMap) => set({ isDetailFromMap }),
 }));

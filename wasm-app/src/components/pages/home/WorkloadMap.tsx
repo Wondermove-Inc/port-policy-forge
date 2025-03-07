@@ -106,7 +106,7 @@ export const WorkloadMap = () => {
   return (
     <Box
       sx={{
-        width: "100%",
+        width: selectedWorkloadId ? "calc(100% - 512px)" : "100%",
         height: "100%",
         position: "absolute",
         top: 0,

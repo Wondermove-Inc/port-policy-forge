@@ -43,13 +43,17 @@ export const WorkloadDetail = ({
     INITIAL_WORKLOAD_DETAIL,
   );
   const [loading, setLoading] = useState(true);
-  const { isViewList } = useCommonStore();
+  const { setIsDetailFromMap, isViewList } = useCommonStore();
 
   useEffect(() => {
     if (id) {
       fetchWorkloadDetail();
     }
   }, [id]);
+
+  useEffect(() => {
+    setIsDetailFromMap(!!id && !isViewList);
+  }, [id, isViewList]);
 
   const fetchWorkloadDetail = () => {
     setLoading(true);
