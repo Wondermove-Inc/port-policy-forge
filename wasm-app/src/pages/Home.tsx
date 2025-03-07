@@ -10,8 +10,13 @@ import { wasmListWorkloads } from "@/services/listWorkloads";
 import { useCommonStore } from "@/store";
 
 export const Home = () => {
-  const { isViewList, isDetailFromMap, selectedNamespace, setWorkloadsLoading, setWorkloads } =
-    useCommonStore();
+  const {
+    isViewList,
+    isDetailFromMap,
+    selectedNamespace,
+    setWorkloadsLoading,
+    setWorkloads,
+  } = useCommonStore();
 
   useEffect(() => {
     if (selectedNamespace) {
