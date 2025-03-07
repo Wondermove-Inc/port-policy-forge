@@ -1,3 +1,5 @@
+import { Stats } from "@/models";
+
 type Relation = {
   workloadId: string;
   status: number;
@@ -9,11 +11,12 @@ export type WorkloadResource = {
   kind: string;
   from: Relation[];
   to: Relation[];
-  // stats: Stats;
-  // ports: {
-  //   open: Port[];
-  //   closed: Port[];
-  // };
+  inbound: {
+    stats: Stats
+  }
+  outbound: {
+    stats: Stats
+  }
 };
 
 type WorkloadsData = {

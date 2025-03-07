@@ -14,6 +14,8 @@ import { useDisclosure } from "@/hooks/useDisclosure";
 import { useCommonStore } from "@/store";
 import { getWorkloadKindLabel } from "@/utils";
 import { formatNumber } from "@/utils/format";
+import { WorkloadResource } from "@/services/listWorkloads";
+import { PortDirection, Stats } from "@/models";
 
 export const WorkloadList = () => {
   const { workloads, workloadsLoading } = useCommonStore();
@@ -23,11 +25,12 @@ export const WorkloadList = () => {
   const [checkedRows, setCheckedRows] = useState<
     Record<string, Record<string, boolean>>
   >({});
-  const [selectedTabBound, setSelectedTabBound] = useState("1");
+  const [selectedTabBound, setSelectedTabBound] = useState<PortDirection>(PortDirection.INBOUND);
   const [filteredWorkloadId, setFilterWorkloadId] = useState("");
   const [selectedWorkloadId, setSelectedWorkloadId] = useState("");
 
-  const renderCellWithEmptyValue = (value: string, color: string) => {
+  const renderCellWithEmptyValue = (row: WorkloadResource, status: string, color: string) => {
+    const value = row[selectedTabBound].stats[status as keyof Stats]
     return (
       <Typography
         sx={{
@@ -50,44 +53,43 @@ export const WorkloadList = () => {
       valueGetter: (value) => getWorkloadKindLabel(value),
     },
     {
-      field: "unconnectedPort",
+      field: "unconnected",
       headerName: "Unconnected Port",
       flex: 1,
       enableCheckBox: true,
-      renderCell: ({ value }) =>
-        renderCellWithEmptyValue(value, "status.warning"),
+      renderCell: ({ row, field }) =>
+        renderCellWithEmptyValue(row, field, "status.warning"),
     },
     {
-      field: "idlePort",
+      field: "idle",
       headerName: "Idle port",
       flex: 1,
       enableCheckBox: true,
-      renderCell: ({ value }) =>
-        renderCellWithEmptyValue(value, "status.warning"),
+      renderCell: ({ row, field, }) =>
+        renderCellWithEmptyValue(row, field, "status.warning"),
     },
     {
-      field: "activePort",
+      field: "active",
       headerName: "Active port",
       flex: 1,
       enableCheckBox: true,
-      renderCell: ({ value }) =>
-        renderCellWithEmptyValue(value, "interaction.primaryContrast"),
+      renderCell: ({ row, field, }) =>
+        renderCellWithEmptyValue(row, field, "interaction.primaryContrast"),
     },
     {
-      field: "errorPort",
+      field: "error",
       headerName: "Error port",
       flex: 1,
       enableCheckBox: true,
-      disabled: true,
-      renderCell: ({ value }) =>
-        renderCellWithEmptyValue(value, "status.danger"),
+      renderCell: ({ row, field }) =>
+        renderCellWithEmptyValue(row, field, "status.danger"),
     },
     {
-      field: "closedPortAttempted",
+      field: "attempted",
       headerName: "Closed Port Attempted",
       flex: 1,
-      renderCell: ({ value }) =>
-        renderCellWithEmptyValue(value, "status.danger"),
+      renderCell: ({ row, field, }) =>
+        renderCellWithEmptyValue(row, field, "status.danger"),
     },
   ];
 
