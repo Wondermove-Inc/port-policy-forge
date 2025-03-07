@@ -18,19 +18,22 @@ let network: CustomNetwork | null = null;
 export type NetworkGraphProps = {
   nodes: NodeData[];
   edges: EdgeData[];
+  activeNodeId: string;
   onEdgeDisconnected?: (edgeId: string) => void;
+  onNodeSelected?: (nodeId: string) => void;
   setNetwork: (n: CustomNetwork) => void;
 };
 
 const NetworkGraph = ({
   edges,
   nodes,
+  activeNodeId,
+  onNodeSelected,
   onEdgeDisconnected,
   setNetwork,
 }: NetworkGraphProps) => {
   const containerRef = useRef(null);
   const [canvasImages, setCanvasImages] = useState<CanvasImage>();
-  const [activeNodeId, setActiveNodeId] = useState("");
   const [activeEdgeId, setActiveEdgeId] = useState("");
   const hoverNodeId = useRef<string>("");
   useEffect(() => {
@@ -64,6 +67,7 @@ const NetworkGraph = ({
       network.off("afterDrawing");
       network.off("blurNode");
       network.off("click");
+      hoverNodeId.current = ""
     }
 
     network.on("afterDrawing", (ctx: CanvasRenderingContext2D) => {
@@ -125,7 +129,7 @@ const NetworkGraph = ({
         y: properties.event.srcEvent.offsetY,
       });
       if (nodeId) {
-        setActiveNodeId(nodeId as string);
+        onNodeSelected?.(nodeId as string)
       }
 
       const clickPosition = {

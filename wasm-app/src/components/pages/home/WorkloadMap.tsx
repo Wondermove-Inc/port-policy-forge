@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Box } from "@mui/material";
 
@@ -14,12 +14,16 @@ import {
 import { ViewFilter } from "@/components/pages/home/workload-map/ViewFilter";
 import { workloadMap } from "@/data";
 import { useDisclosure } from "@/hooks/useDisclosure";
+import { ModalConfirm } from "@/components/atoms/ModalConfirm";
 
 export const WorkloadMap = () => {
   const [edges, setEdges] = useState<EdgeData[]>([]);
   const [nodes, setNodes] = useState<NodeData[]>([]);
+  const [activeNodeId, setActiveNodeId] = useState("");
   const [network, setNetwork] = useState<CustomNetwork>();
+  const selectedEdgeId = useRef("");
   const detailDrawer = useDisclosure();
+  const modalClosePort = useDisclosure();
 
   useEffect(() => {
     const workloads = workloadMap;
@@ -55,22 +59,41 @@ export const WorkloadMap = () => {
     setNodes(nodes);
   }, []);
 
+  useEffect(() => {
+    if (!detailDrawer.visible) {
+      setActiveNodeId("");
+    }
+  }, [detailDrawer.visible]);
+
+  const handleOnNodeSelected = (nodeId: string) => {
+    setActiveNodeId(nodeId);
+    detailDrawer.open();
+  };
+
   const handleEdgeDisconnected = (edgeId: string) => {
-    const isConfirmed = confirm("Confirm remove edgeId " + edgeId);
-    if (isConfirmed) {
-      network?.body.data.edges.remove(edgeId);
-      const edge = edges.find((edge) => edge.id === edgeId);
-      if (edge) {
-        const fromConnectNodes = network?.getConnectedNodes(edge.from);
-        const toConnectEdges = network?.getConnectedNodes(edge.to);
-        if (fromConnectNodes?.length === 0) {
-          network?.body.data.nodes.remove(edge.from);
-        }
-        if (toConnectEdges?.length === 0) {
-          network?.body.data.nodes.remove(edge.to);
-        }
+    selectedEdgeId.current = edgeId;
+    modalClosePort.open();
+  };
+
+  const handleClosePort = () => {
+    modalClosePort.close();
+    network?.body.data.edges.remove(selectedEdgeId.current);
+    const edge = edges.find((edge) => edge.id === selectedEdgeId.current);
+    if (edge) {
+      const fromConnectNodes = network?.getConnectedNodes(edge.from);
+      const toConnectEdges = network?.getConnectedNodes(edge.to);
+      if (fromConnectNodes?.length === 0) {
+        network?.body.data.nodes.remove(edge.from);
+      }
+      if (toConnectEdges?.length === 0) {
+        network?.body.data.nodes.remove(edge.to);
       }
     }
+  };
+
+  const handleCancelClosePort = () => {
+    selectedEdgeId.current = "";
+    modalClosePort.close();
   };
 
   return (
@@ -87,12 +110,25 @@ export const WorkloadMap = () => {
       <NetworkGraph
         edges={edges}
         nodes={nodes}
+        activeNodeId={activeNodeId}
         setNetwork={setNetwork}
         onEdgeDisconnected={handleEdgeDisconnected}
+        onNodeSelected={handleOnNodeSelected}
       />
       <ViewFilter />
+      <ModalConfirm
+        title="Close Port Access"
+        description="When you block that source or destination access to a specific port, it changes to the following"
+        descriptionDetails={[
+          "The source or destination will no longer be able to access the server on the specified port.",
+          "The access restriction settings for the port are updated.",
+        ]}
+        open={modalClosePort.visible}
+        onClose={handleCancelClosePort}
+        onConfirm={handleClosePort}
+      />
       <WorkloadDetail
-        id=""
+        id="7431bb4f-cae8-4dbe-a542-d6f52c893271"
         open={detailDrawer.visible}
         handleClose={detailDrawer.close}
       />
