@@ -138,7 +138,6 @@ export const WorkloadMap = () => {
         id={selectedWorkloadId}
         open={detailDrawer.visible}
         handleClose={handleCloseDetail}
-        fromViewMap
       />
     </Box>
   );

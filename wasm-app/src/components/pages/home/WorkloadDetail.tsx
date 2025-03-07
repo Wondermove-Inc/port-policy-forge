@@ -27,12 +27,10 @@ import {
 export const WorkloadDetail = ({
   open,
   id,
-  fromViewMap = false,
   handleClose,
 }: {
   open: boolean;
   id: string;
-  fromViewMap?: boolean;
   handleClose: () => void;
 }) => {
   const [portDirection, setPortDirection] = useState<PortDirection>(
@@ -42,6 +40,8 @@ export const WorkloadDetail = ({
     INITIAL_WORKLOAD_DETAIL,
   );
   const [loading, setLoading] = useState(false);
+
+  const { isViewList } = useCommonStore();
 
   const fetchWorkloadDetail = useCallback(() => {
     setLoading(true);
@@ -139,7 +139,7 @@ export const WorkloadDetail = ({
       subTitle={workloadDetail.kind}
       onClose={handleDetailClose}
       loading={loading}
-      variant={fromViewMap ? "persistent" : "temporary"}
+      variant={isViewList ? "temporary" : "persistent"}
     >
       <WorkloadTabs
         onChangeTab={(direction) =>
