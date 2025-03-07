@@ -14,9 +14,12 @@ var workloadDetails map[string]model.WorkloadDetail = nil
 func main() {
 	done := make(chan struct{}, 0)
 
+	js.Global().Set("listClusters", js.FuncOf(listClusters))
 	js.Global().Set("listNamespace", js.FuncOf(listNamespace))
 	js.Global().Set("listWorkloads", js.FuncOf(listWorkloads))
 	js.Global().Set("getWorkloadDetail", js.FuncOf(getWorkloadDetail))
+	js.Global().Set("closeNotActivePorts", js.FuncOf(closeNotActivePorts))
+	js.Global().Set("closePortsByStatus", js.FuncOf(closePortsByStatus))
 	js.Global().Set("openPort", js.FuncOf(openPort))
 	js.Global().Set("editPort", js.FuncOf(editPort))
 	js.Global().Set("closeOpenedPort", js.FuncOf(closeOpenedPort))
@@ -26,8 +29,19 @@ func main() {
 	<-done
 }
 
+func listClusters(this js.Value, p []js.Value) interface{} {
+	clusters := mock.MockClusters
+	response := map[string]interface{}{
+		"result": clusters,
+	}
+	b, _ := json.Marshal(response)
+	return string(b)
+}
+
 func listNamespace(this js.Value, p []js.Value) interface{} {
-	namespaces := mock.MockNamespaces
+	clusterID := p[0].String()
+
+	namespaces := mock.MockNamespaces[clusterID]
 	response := map[string]interface{}{
 		"result": namespaces,
 	}
@@ -62,6 +76,149 @@ func getWorkloadDetail(this js.Value, p []js.Value) interface{} {
 	return string(b)
 }
 
+func closePortsByStatus(this js.Value, p []js.Value) interface{} {
+	requestJSON := p[0].String()
+
+	var requests []model.ClosePortsByStatusRequest
+	if err := json.Unmarshal([]byte(requestJSON), &requests); err != nil {
+		return string(utils.MustMarshal(map[string]string{"error": "invalid request: " + err.Error()}))
+	}
+
+	if workloadDetails == nil {
+		workloadDetails = mock.MockWorkloadDetails
+	}
+
+	var updatedWorkloads []model.WorkloadDetail
+	totalClosedCount := 0
+
+	for _, req := range requests {
+		wDetail, ok := workloadDetails[req.WorkloadUUID]
+		if !ok {
+			continue // Skip if workload not found
+		}
+		var group *model.PortDetailGroup
+
+		switch req.Flag {
+		case "0":
+			group = &wDetail.Inbound.Ports
+		case "1":
+			group = &wDetail.Outbound.Ports
+		default:
+			return string(utils.MustMarshal(map[string]string{"error": "unknown flag"}))
+		}
+
+		var statusCodes []int
+		for _, status := range req.Status {
+			switch status {
+			case "active":
+				statusCodes = append(statusCodes, 1)
+			case "idle":
+				statusCodes = append(statusCodes, 2)
+			case "error":
+				statusCodes = append(statusCodes, 3)
+			case "attempt":
+				statusCodes = append(statusCodes, 4)
+			case "unconnected":
+				statusCodes = append(statusCodes, 0)
+			}
+		}
+
+		var portsToClose []model.Port
+		var remainingOpenPorts []model.Port
+
+		for _, port := range group.Open {
+			shouldClose := false
+			if port.Status != nil {
+				for _, code := range statusCodes {
+					if *port.Status == code {
+						shouldClose = true
+						break
+					}
+				}
+			}
+
+			if shouldClose {
+				port.IsOpen = false
+				if port.Risk == nil {
+					port.Risk = utils.IntPtr(0)
+				}
+
+				portsToClose = append(portsToClose, port)
+			} else {
+				remainingOpenPorts = append(remainingOpenPorts, port)
+			}
+		}
+
+		group.Open = remainingOpenPorts
+		group.Closed = append(group.Closed, portsToClose...)
+
+		workloadDetails[req.WorkloadUUID] = wDetail
+
+		updatedWorkloads = append(updatedWorkloads, wDetail)
+		totalClosedCount += len(portsToClose)
+	}
+
+	response := map[string]interface{}{
+		"result":          "ports closed",
+		"request":         requests,
+		"updatedWorkload": updatedWorkloads,
+	}
+
+	b, _ := json.Marshal(response)
+	return string(b)
+}
+
+func closeNotActivePorts(this js.Value, p []js.Value) interface{} {
+	requestJSON := p[0].String()
+
+	var req model.CloseNotActivePortsRequest
+	if err := json.Unmarshal([]byte(requestJSON), &req); err != nil {
+		return string(utils.MustMarshal(map[string]string{"error": "invalid request: " + err.Error()}))
+	}
+
+	// workloadDetails 초기화 (없다면 mock 데이터 로드)
+	if workloadDetails == nil {
+		workloadDetails = mock.MockWorkloadDetails
+	}
+
+	wDetail, ok := workloadDetails[req.WorkloadUUID]
+	if !ok {
+		return string(utils.MustMarshal(map[string]string{"error": "workload not found"}))
+	}
+
+	var group *model.PortDetailGroup
+	switch req.Flag {
+	case 0:
+		// Inbound
+		group = &wDetail.Inbound.Ports
+	case 1:
+		// Outbound
+		group = &wDetail.Outbound.Ports
+	default:
+		return string(utils.MustMarshal(map[string]string{"error": "unknown flag"}))
+	}
+
+	// Active가 아닌 포트들을 식별
+	var newOpenPorts []model.Port
+
+	for _, port := range group.Open {
+		if *port.Status == 1 {
+			newOpenPorts = append(newOpenPorts, port)
+		}
+	}
+
+	group.Open = newOpenPorts
+
+	workloadDetails[req.WorkloadUUID] = wDetail
+
+	response := map[string]interface{}{
+		"result":          "non-active ports closed",
+		"updatedWorkload": wDetail,
+	}
+
+	b, _ := json.Marshal(response)
+	return string(b)
+}
 func openPort(this js.Value, p []js.Value) interface{} {
 	requestJSON := p[0].String()
 
@@ -98,7 +255,7 @@ func openPort(this js.Value, p []js.Value) interface{} {
 	}
 
 	var portSources []model.AccessSource
-	if req.AccessPolicy == model.OnlySpecific || req.AccessPolicy == model.ExcludeSpecific {
+	if req.AccessPolicy == model.ONLY_SPECIFIC || req.AccessPolicy == model.EXCLUDE_SPECIFIC {
 		for _, s := range req.Sources {
 			portSources = append(portSources, model.AccessSource{
 				IP:       s.IP,
@@ -284,7 +441,7 @@ func editPort(this js.Value, p []js.Value) interface{} {
 	}
 
 	var newSources []model.AccessSource
-	if req.AccessPolicy == model.OnlySpecific || req.AccessPolicy == model.ExcludeSpecific {
+	if req.AccessPolicy == model.ONLY_SPECIFIC || req.AccessPolicy == model.EXCLUDE_SPECIFIC {
 		for _, s := range req.Sources {
 			newSources = append(newSources, model.AccessSource{
 				IP:       s.IP,
@@ -380,7 +537,7 @@ func openClosedPort(this js.Value, p []js.Value) interface{} {
 		return string(utils.MustMarshal(map[string]string{"error": "port has no connection attempt; cannot re-open"}))
 	}
 
-	targetPort.AccessPolicy = model.AllowAllAccess
+	targetPort.AccessPolicy = model.AllOW_All_ACCESS
 	targetPort.Risk = utils.IntPtr(0)
 	// 포트를 열린 상태로 전환 (Status 0: unconnected, IsOpen true)
 	targetPort.Status = utils.IntPtr(0)
