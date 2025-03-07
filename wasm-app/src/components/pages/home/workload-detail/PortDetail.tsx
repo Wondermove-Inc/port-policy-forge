@@ -98,7 +98,11 @@ export const PortDetail = ({ record }: { record: Port }) => {
             {isOpen ? "Last Connection Log" : "Last Connection attempts Log"}
           </Typography>
           <ShadedBox>
-            <Typography variant="body2" color="text.primary">
+            <Typography
+              variant="body2"
+              color="text.primary"
+              fontFamily={"Roboto Mono"}
+            >
               {record.lastConnectionLog}
             </Typography>
           </ShadedBox>

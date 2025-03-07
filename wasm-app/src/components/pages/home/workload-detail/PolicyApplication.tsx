@@ -49,7 +49,7 @@ export const PolicyApplication = ({
           >
             <InfoIcon size={16} />
             <Typography variant="b1_m">
-              Apply a service policy to close unused ports{" "}
+              Apply a service policies to close unused ports{" "}
             </Typography>
           </Box>
           <Typography variant="b2_r" color="text.secondary">
@@ -75,11 +75,11 @@ export const PolicyApplication = ({
         onClose={policyApplicationModal.close}
         onConfirm={handleApplyPolicy}
         title="Apply a service policy"
-        description="Close all unused ports according to service policy."
+        description="Close all unused ports according to service policy. Closing unconnected ports makes the following changes."
         descriptionDetails={[
-          " All ports that are not currently active are closed.",
-          " Closed ports will no longer be accessible externally.",
-          " To reopen a port, you must manually reset it.",
+          "All ports that are not currently active are closed.",
+          "Closed ports will no longer be accessible externally.",
+          "To reopen a port, you must manually reset it.",
         ]}
       />
     </>

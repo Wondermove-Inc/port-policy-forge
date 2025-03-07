@@ -10,8 +10,13 @@ import { wasmListWorkloads } from "@/services/listWorkloads";
 import { useCommonStore } from "@/store";
 
 export const Home = () => {
-  const { isViewList, selectedNamespace, setWorkloadsLoading, setWorkloads } =
-    useCommonStore();
+  const {
+    isViewList,
+    selectedNamespace,
+    setWorkloadsLoading,
+    setWorkloads,
+    isDetailFromViewMap,
+  } = useCommonStore();
 
   useEffect(() => {
     if (selectedNamespace) {
@@ -49,10 +54,10 @@ export const Home = () => {
           display: "flex",
           justifyContent: "space-between",
           position: "absolute",
-          right: 0,
+          left: 0,
           top: 0,
           zIndex: 88,
-          width: "100%",
+          width: isDetailFromViewMap ? "calc(100% - 512px)" : "calc(100%)",
           padding: "20px",
           alignItems: "center",
         }}

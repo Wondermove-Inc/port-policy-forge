@@ -10,6 +10,7 @@ import { Drawer } from "@/components/atoms/Drawer";
 import { INITIAL_WORKLOAD_DETAIL } from "@/constants";
 import { PortDirection, PortRangeType, WorkloadDetailType } from "@/models";
 import { wasmGetWorkloadDetail } from "@/services/getworkloadDetail";
+import { useCommonStore } from "@/store";
 import {
   getAccessLabel,
   getPortKindLabel,
@@ -26,10 +27,12 @@ import {
 export const WorkloadDetail = ({
   open,
   id,
+  fromViewMap = false,
   handleClose,
 }: {
   open: boolean;
   id: string;
+  fromViewMap?: boolean;
   handleClose: () => void;
 }) => {
   const [portDirection, setPortDirection] = useState<PortDirection>(
@@ -39,6 +42,8 @@ export const WorkloadDetail = ({
     INITIAL_WORKLOAD_DETAIL,
   );
   const [loading, setLoading] = useState(false);
+
+  const { setIsDetailFromViewMap } = useCommonStore();
 
   const fetchWorkloadDetail = useCallback(() => {
     setLoading(true);
@@ -60,12 +65,14 @@ export const WorkloadDetail = ({
   }, [id]);
 
   useEffect(() => {
-    if (!id) {
-      setWorkloadDetail(INITIAL_WORKLOAD_DETAIL);
-      return;
+    if (id) {
+      fetchWorkloadDetail();
     }
-    fetchWorkloadDetail();
   }, [id]);
+
+  useEffect(() => {
+    setIsDetailFromViewMap(!!id && fromViewMap);
+  }, [id, fromViewMap]);
 
   const formatDirection = (
     workloadDetail: WorkloadDetailType,
@@ -125,13 +132,20 @@ export const WorkloadDetail = ({
     };
   };
 
+  const handleDetailClose = () => {
+    setWorkloadDetail(INITIAL_WORKLOAD_DETAIL);
+    setPortDirection(PortDirection.INBOUND);
+    handleClose();
+  };
+
   return (
     <Drawer
       open={open}
       title={workloadDetail.workloadName}
       subTitle={workloadDetail.kind}
-      onClose={handleClose}
+      onClose={handleDetailClose}
       loading={loading}
+      variant={fromViewMap ? "persistent" : "temporary"}
     >
       <WorkloadTabs
         onChangeTab={(direction) =>

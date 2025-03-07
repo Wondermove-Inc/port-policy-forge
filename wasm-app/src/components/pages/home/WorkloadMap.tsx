@@ -20,6 +20,7 @@ export const WorkloadMap = () => {
   const [edges, setEdges] = useState<EdgeData[]>([]);
   const [nodes, setNodes] = useState<NodeData[]>([]);
   const [activeNodeId, setActiveNodeId] = useState("");
+  const [selectedWorkloadId, setSelectedWorkloadId] = useState("");
   const [network, setNetwork] = useState<CustomNetwork>();
   const selectedEdgeId = useRef("");
   const detailDrawer = useDisclosure();
@@ -67,6 +68,7 @@ export const WorkloadMap = () => {
 
   const handleOnNodeSelected = (nodeId: string) => {
     setActiveNodeId(nodeId);
+    setSelectedWorkloadId("7431bb4f-cae8-4dbe-a542-d6f52c893271");
     detailDrawer.open();
   };
 
@@ -94,6 +96,11 @@ export const WorkloadMap = () => {
   const handleCancelClosePort = () => {
     selectedEdgeId.current = "";
     modalClosePort.close();
+  };
+
+  const handleCloseDetail = () => {
+    detailDrawer.close();
+    setSelectedWorkloadId("");
   };
 
   return (
@@ -128,9 +135,10 @@ export const WorkloadMap = () => {
         onConfirm={handleClosePort}
       />
       <WorkloadDetail
-        id="7431bb4f-cae8-4dbe-a542-d6f52c893271"
+        id={selectedWorkloadId}
         open={detailDrawer.visible}
-        handleClose={detailDrawer.close}
+        handleClose={handleCloseDetail}
+        fromViewMap
       />
     </Box>
   );
