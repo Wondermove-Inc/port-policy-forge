@@ -8,7 +8,9 @@ declare global {
     editPort: (requestJSON: string) => string;
     closeOpenedPort: (requestJSON: string) => string;
     openClosedPort: (requestJSON: string) => string;
-    clearClosedPortHistory: (requestJSON: string) => string; // WASM에 노출된 함수
+    clearClosedPortHistory: (requestJSON: string) => string;
+    closePortsByStatus: (requestJSON: string) => string;
+    closeNotActivePorts: (requestJSON: string) => string;
   }
 }
 
@@ -86,6 +88,19 @@ export type PortCloseRequest = {
   portSpec: string; // ex: "8080" 또는 "8080-8091"
 };
 
+// ClosePortsByStatusRequest: 상태별 포트 닫기 요청 구조체
+export type ClosePortsByStatusRequest = {
+  workloadUuid: string;
+  flag: string; // "0": inbound, "1": outbound
+  status: string[]; // 상태 배열: "active", "idle", "error", "attempt", "unconnected"
+};
+
+// CloseNotActivePortsRequest: 활성 상태가 아닌 포트 닫기 요청 구조체
+export type CloseNotActivePortsRequest = {
+  workloadUuid: string;
+  flag: number; // 0: inbound, 1: outbound
+};
+
 function wasmGetWorkloadDetail(workloadId: string): Promise<WorkloadDetail> {
   return new Promise((resolve, reject) => {
     try {
@@ -132,7 +147,7 @@ function wasmEditPort(request: PortControlBaseRequest): Promise<any> {
   });
 }
 
-function wasmcloseOpenedPort(request: PortCloseRequest): Promise<any> {
+function wasmCloseOpenedPort(request: PortCloseRequest): Promise<any> {
   return new Promise((resolve, reject) => {
     try {
       const requestJSON = JSON.stringify(request);
@@ -149,7 +164,7 @@ function wasmcloseOpenedPort(request: PortCloseRequest): Promise<any> {
   });
 }
 
-function wasmopenClosedPort(request: PortCloseRequest): Promise<any> {
+function wasmOpenClosedPort(request: PortCloseRequest): Promise<any> {
   return new Promise((resolve, reject) => {
     try {
       const requestJSON = JSON.stringify(request);
@@ -183,6 +198,42 @@ function wasmClearClosedPortHistory(request: PortCloseRequest): Promise<any> {
   });
 }
 
+// 새로 추가한 closePortsByStatus 호출 함수
+function wasmClosePortsByStatus(requests: ClosePortsByStatusRequest[]): Promise<any> {
+  return new Promise((resolve, reject) => {
+    try {
+      const requestJSON = JSON.stringify(requests);
+      const res = window.closePortsByStatus(requestJSON);
+      const parsed = JSON.parse(res);
+      if (parsed.error) {
+        reject(parsed.error);
+      } else {
+        resolve(parsed);
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+// 새로 추가한 closeNotActivePorts 호출 함수
+function wasmCloseNotActivePorts(request: CloseNotActivePortsRequest): Promise<any> {
+  return new Promise((resolve, reject) => {
+    try {
+      const requestJSON = JSON.stringify(request);
+      const res = window.closeNotActivePorts(requestJSON);
+      const parsed = JSON.parse(res);
+      if (parsed.error) {
+        reject(parsed.error);
+      } else {
+        resolve(parsed);
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
 // 헬퍼: 주어진 포트에 대한 PortSpec 문자열 반환
 const getPortSpec = (port: Port): string => {
   if (port.isRange && port.portRange) {
@@ -204,10 +255,11 @@ const WorkloadDetailComponent: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // 모달 표시 상태: 인바운드 / 아웃바운드 / 에딧
+  // 모달 표시 상태들
   const [showInboundModal, setShowInboundModal] = useState(false);
   const [showOutboundModal, setShowOutboundModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showStatusFilterModal, setShowStatusFilterModal] = useState(false);
 
   // [A] 인바운드 모달 입력값
   const [inboundPortSpec, setInboundPortSpec] = useState("");
@@ -225,17 +277,32 @@ const WorkloadDetailComponent: React.FC = () => {
   const [editAccessPolicy, setEditAccessPolicy] = useState<AccessPolicy>("allow-all");
   const [editSources, setEditSources] = useState<AccessSource[]>([]);
 
+  // [D] 상태 필터 모달 입력값
+  const [filterDirection, setFilterDirection] = useState<string>("0"); // "0": inbound, "1": outbound
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+
   // 상태/위험도 매핑
   const statusMapping: { [key: number]: string } = {
     0: "unconnected",
     1: "active",
     2: "idle",
+    3: "error",
+    4: "attempt"
   };
   const riskMapping: { [key: number]: string } = {
     0: "normal",
     1: "high",
     2: "very high",
   };
+
+  // 상태 필터 옵션
+  const statusOptions = [
+    { value: "active", label: "Active" },
+    { value: "idle", label: "Idle" },
+    { value: "error", label: "Error" },
+    { value: "attempt", label: "Attempted" },
+    { value: "unconnected", label: "Unconnected" }
+  ];
 
   useEffect(() => {
     if (workloadId) {
@@ -327,31 +394,8 @@ const WorkloadDetailComponent: React.FC = () => {
       });
   };
 
-  // ClosePort: Open된 포트를 닫음
-  type PortCloseRequest = {
-    workloadUuid: string;
-    flag: number;
-    portSpec: string;
-  };
-
-  const wasmcloseOpenedPort = (request: PortCloseRequest): Promise<any> => {
-    return new Promise((resolve, reject) => {
-      try {
-        const requestJSON = JSON.stringify(request);
-        const res = window.closeOpenedPort(requestJSON);
-        const parsed = JSON.parse(res);
-        if (parsed.error) {
-          reject(parsed.error);
-        } else {
-          resolve(parsed);
-        }
-      } catch (error) {
-        reject(error);
-      }
-    });
-  };
-
-  const handlecloseOpenedPort = (flag: number, port: Port) => {
+  // CloseOpenedPort: Open된 포트를 닫음
+  const handleCloseOpenedPort = (flag: number, port: Port) => {
     if (!workloadId) return;
     const spec = getPortSpec(port);
     if (!window.confirm(`Are you sure you want to close port ${spec}?`)) return;
@@ -362,7 +406,7 @@ const WorkloadDetailComponent: React.FC = () => {
       portSpec: spec,
     };
 
-    wasmcloseOpenedPort(request)
+    wasmCloseOpenedPort(request)
       .then(() => {
         loadWorkloadDetail(workloadId);
       })
@@ -371,25 +415,8 @@ const WorkloadDetailComponent: React.FC = () => {
       });
   };
 
-  // openClosedPort: 닫힌 포트를 allow-all 정책으로 재오픈
-  const wasmopenClosedPort = (request: PortCloseRequest): Promise<any> => {
-    return new Promise((resolve, reject) => {
-      try {
-        const requestJSON = JSON.stringify(request);
-        const res = window.openClosedPort(requestJSON);
-        const parsed = JSON.parse(res);
-        if (parsed.error) {
-          reject(parsed.error);
-        } else {
-          resolve(parsed);
-        }
-      } catch (error) {
-        reject(error);
-      }
-    });
-  };
-
-  const handleopenClosedPort = (flag: number, port: Port) => {
+  // OpenClosedPort: 닫힌 포트를 allow-all 정책으로 재오픈
+  const handleOpenClosedPort = (flag: number, port: Port) => {
     if (!workloadId) return;
     const spec = getPortSpec(port);
     if (!window.confirm(`Are you sure you want to allow (re-open) closed port ${spec}?`)) return;
@@ -400,7 +427,7 @@ const WorkloadDetailComponent: React.FC = () => {
       portSpec: spec,
     };
 
-    wasmopenClosedPort(request)
+    wasmOpenClosedPort(request)
       .then(() => {
         loadWorkloadDetail(workloadId);
       })
@@ -409,24 +436,7 @@ const WorkloadDetailComponent: React.FC = () => {
       });
   };
 
-  // clearClosedPortHistory: 닫힌 포트의 접속 기록을 삭제 (Count, LastConnectionDate, LastConnectionEndpoint, LastConnectionLog 초기화)
-  const wasmClearClosedPortHistory = (request: PortCloseRequest): Promise<any> => {
-    return new Promise((resolve, reject) => {
-      try {
-        const requestJSON = JSON.stringify(request);
-        const res = window.clearClosedPortHistory(requestJSON);
-        const parsed = JSON.parse(res);
-        if (parsed.error) {
-          reject(parsed.error);
-        } else {
-          resolve(parsed);
-        }
-      } catch (error) {
-        reject(error);
-      }
-    });
-  };
-
+  // ClearClosedPortHistory: 닫힌 포트의 접속 기록을 삭제
   const handleClearClosedPortHistory = (flag: number, port: Port) => {
     if (!workloadId) return;
     const spec = getPortSpec(port);
@@ -443,6 +453,67 @@ const WorkloadDetailComponent: React.FC = () => {
       .catch((err) => {
         alert("Failed to clear closed port history: " + err);
       });
+  };
+
+  // ClosePortsByStatus: 상태별 포트 닫기
+  const handleClosePortsByStatus = () => {
+    if (!workloadId || selectedStatuses.length === 0) {
+      alert("Please select at least one status");
+      return;
+    }
+
+    if (!window.confirm(`Close all ports with statuses: ${selectedStatuses.join(", ")}?`)) {
+      return;
+    }
+
+    const request: ClosePortsByStatusRequest[] = [
+      {
+        workloadUuid: workloadId,
+        flag: filterDirection,
+        status: selectedStatuses
+      }
+    ];
+
+    wasmClosePortsByStatus(request)
+      .then((result) => {
+        loadWorkloadDetail(workloadId);
+        setShowStatusFilterModal(false);
+        setSelectedStatuses([]);
+      })
+      .catch((err) => {
+        alert(`Failed to close ports by status: ${err}`);
+      });
+  };
+
+  // CloseNotActivePorts: 활성 상태가 아닌 모든 포트 닫기
+  const handleCloseNotActivePorts = (flag: number) => {
+    if (!workloadId) return;
+    
+    if (!window.confirm(`Close all non-active ports for ${flag === 0 ? 'inbound' : 'outbound'}?`)) {
+      return;
+    }
+    
+    const request: CloseNotActivePortsRequest = {
+      workloadUuid: workloadId,
+      flag: flag
+    };
+    
+    wasmCloseNotActivePorts(request)
+      .then((result) => {
+        loadWorkloadDetail(workloadId);
+      })
+      .catch((err) => {
+        alert(`Failed to close non-active ports: ${err}`);
+      });
+  };
+
+  // 상태 체크박스 토글
+  const handleStatusChange = (status: string) => {
+    if (selectedStatuses.includes(status)) {
+      setSelectedStatuses(selectedStatuses.filter(s => s !== status));
+    } else {
+      setSelectedStatuses([...selectedStatuses, status]);
+    }
   };
 
   // 모달에서 AccessSources 추가/삭제 (Inbound/Outbound/EDIT 각각)
@@ -522,16 +593,6 @@ const WorkloadDetailComponent: React.FC = () => {
     setEditSources([]);
   };
 
-  // 헬퍼: 주어진 포트에 대한 PortSpec 문자열 반환
-  const getPortSpec = (port: Port): string => {
-    if (port.isRange && port.portRange) {
-      return `${port.portRange.start}-${port.portRange.end}`;
-    } else if (port.portNumber) {
-      return String(port.portNumber);
-    }
-    return "";
-  };
-
   if (loading) return <p>Loading workload detail for {workloadId}...</p>;
   if (error) return <p>Error: {error}</p>;
   if (!detail) return <p>No detail available.</p>;
@@ -601,14 +662,13 @@ const WorkloadDetailComponent: React.FC = () => {
             {port.isOpen ? (
               <>
                 <button onClick={() => openEditModal(flag, port)}>Edit</button>
-                <button onClick={() => handlecloseOpenedPort(flag, port)} style={{ marginLeft: '0.5rem' }}>
+                <button onClick={() => handleCloseOpenedPort(flag, port)} style={{ marginLeft: '0.5rem' }}>
                   Close
                 </button>
               </>
             ) : (
               <>
-                <button onClick={() => handleopenClosedPort(flag, port)}>Allow</button>
-                {/* 만약 접속 시도가 있었다면 Clear 버튼 추가 */}
+                <button onClick={() => handleOpenClosedPort(flag, port)}>Allow</button>
                 {port.count && port.count > 0 && (
                   <button onClick={() => handleClearClosedPortHistory(flag, port)} style={{ marginLeft: '0.5rem' }}>
                     Clear
@@ -766,7 +826,7 @@ const WorkloadDetailComponent: React.FC = () => {
             Open Port
           </button>
           <button onClick={() => setShowOutboundModal(false)}>Cancel</button>
-        </div>
+          </div>
       </>
     );
   };
@@ -833,6 +893,61 @@ const WorkloadDetailComponent: React.FC = () => {
     );
   };
 
+  // 상태 필터 모달
+  const renderStatusFilterModal = () => {
+    if (!showStatusFilterModal) return null;
+    
+    return renderModalOverlay(
+      <>
+        <h3>Close Ports by Status</h3>
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Direction: </label>
+          <select 
+            value={filterDirection} 
+            onChange={(e) => setFilterDirection(e.target.value)}
+            style={{ marginBottom: '0.5rem' }}
+          >
+            <option value="0">Inbound</option>
+            <option value="1">Outbound</option>
+          </select>
+        </div>
+        
+        <div style={{ marginBottom: '1rem' }}>
+          <label style={{ display: 'block', marginBottom: '0.5rem' }}>Select Statuses to Close:</label>
+          {statusOptions.map(option => (
+            <div key={option.value} style={{ marginBottom: '0.3rem' }}>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={selectedStatuses.includes(option.value)}
+                  onChange={() => handleStatusChange(option.value)}
+                  style={{ marginRight: '0.5rem' }}
+                />
+                {option.label}
+              </label>
+            </div>
+          ))}
+        </div>
+        
+        <div style={{ marginTop: '1rem' }}>
+          <button 
+            onClick={handleClosePortsByStatus} 
+            disabled={selectedStatuses.length === 0}
+            style={{ marginRight: '0.5rem' }}
+          >
+            Close Matching Ports
+          </button>
+          <button onClick={() => {
+            setShowStatusFilterModal(false);
+            setSelectedStatuses([]);
+          }}>
+            Cancel
+          </button>
+        </div>
+      </>
+    );
+  };
+
   return (
     <div>
       <h2>Workload Detail: {detail.workloadName}</h2>
@@ -848,8 +963,24 @@ const WorkloadDetailComponent: React.FC = () => {
 
       {/* ==== Inbound Ports ==== */}
       <h3>Inbound Ports</h3>
-      <h4 style={{ display: 'inline-block', marginRight: '1rem' }}>Open</h4>
-      <button onClick={() => setShowInboundModal(true)}>+ Open Inbound Port</button>
+      <div style={{ marginBottom: '1rem' }}>
+        <h4 style={{ display: 'inline-block', marginRight: '1rem' }}>Open</h4>
+        <button onClick={() => setShowInboundModal(true)} style={{ marginRight: '0.5rem' }}>
+          + Open Inbound Port
+        </button>
+        <button 
+          onClick={() => {
+            setFilterDirection("0");
+            setShowStatusFilterModal(true);
+          }}
+          style={{ marginRight: '0.5rem' }}
+        >
+          Close by Status
+        </button>
+        <button onClick={() => handleCloseNotActivePorts(0)}>
+          Close Non-Active
+        </button>
+      </div>
       {renderInboundModal()}
       {renderPortTable(detail.inbound.ports.open, 0)}
 
@@ -866,8 +997,24 @@ const WorkloadDetailComponent: React.FC = () => {
 
       {/* ==== Outbound Ports ==== */}
       <h3>Outbound Ports</h3>
-      <h4 style={{ display: 'inline-block', marginRight: '1rem' }}>Open</h4>
-      <button onClick={() => setShowOutboundModal(true)}>+ Open Outbound Port</button>
+      <div style={{ marginBottom: '1rem' }}>
+        <h4 style={{ display: 'inline-block', marginRight: '1rem' }}>Open</h4>
+        <button onClick={() => setShowOutboundModal(true)} style={{ marginRight: '0.5rem' }}>
+          + Open Outbound Port
+        </button>
+        <button 
+          onClick={() => {
+            setFilterDirection("1");
+            setShowStatusFilterModal(true);
+          }}
+          style={{ marginRight: '0.5rem' }}
+        >
+          Close by Status
+        </button>
+        <button onClick={() => handleCloseNotActivePorts(1)}>
+          Close Non-Active
+        </button>
+      </div>
       {renderOutboundModal()}
       {renderPortTable(detail.outbound.ports.open, 1)}
 
@@ -876,6 +1023,9 @@ const WorkloadDetailComponent: React.FC = () => {
 
       {/* ==== Edit Modal ==== */}
       {renderEditModal()}
+      
+      {/* ==== Status Filter Modal ==== */}
+      {renderStatusFilterModal()}
 
       <Link to={`/namespace/${namespaceName}`} style={{ display: 'block', marginTop: '2rem' }}>
         Back to Workloads List

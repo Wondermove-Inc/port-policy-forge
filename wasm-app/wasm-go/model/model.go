@@ -1,5 +1,23 @@
 package model
 
+// === Related to listCluster ===
+
+type clusterType string
+
+const (
+	EKS_CLUSTER clusterType = "eks"
+	AKS_CLUSTER clusterType = "aks"
+	NKS_CLUSTER clusterType = "nks"
+)
+
+type Cluster struct {
+	ID          int         `json:"id"`
+	ClusterName string      `json:"clusterName"`
+	ClusterType clusterType `json:"clusterType"`
+}
+
+// ===
+
 // === Related to listNamespace ===
 
 type Namespace struct {
@@ -11,17 +29,33 @@ type Namespace struct {
 
 // === Related to listWorkload ===
 
+type WorkloadStatus string
+
+const (
+	BEFORE_INIT_SETUP WorkloadStatus = "before-init-setup"
+	COMPLETE_SETUP    WorkloadStatus = "complete-setup"
+)
+
 type Workload struct {
-	UUID         string     `json:"uuid"`
-	WorkloadName string     `json:"workloadName"`
-	Kind         string     `json:"kind"`
-	From         []Relation `json:"from"`
-	To           []Relation `json:"to"`
+	UUID                    string         `json:"uuid"`
+	WorkloadName            string         `json:"workloadName"`
+	ConnectedWorkloadStatus WorkloadStatus `json:"connected_workload_status"`
+	PolicySettingBadge      bool           `json:"policy_setting_badge"`
+	Kind                    string         `json:"kind"`
+	Usage                   float64        `json:"usage"` // CPU Usage (e.g 70%: 0.7, 50%: 0.5)
+	From                    []Relation     `json:"from"`
+	To                      []Relation     `json:"to"`
+	Inbound                 TrafficStats   `json:"inbound"`
+	Outbound                TrafficStats   `json:"outbound"`
 }
 
 type Relation struct {
 	WorkloadId string `json:"workloadId"`
 	Status     int    `json:"status"`
+}
+
+type TrafficStats struct {
+	Stats Stats `json:"stats"`
 }
 
 // ===
@@ -31,9 +65,9 @@ type Relation struct {
 type AccessPolicy string
 
 const (
-	AllowAllAccess  AccessPolicy = "allow-all"
-	OnlySpecific    AccessPolicy = "only-specific"
-	ExcludeSpecific AccessPolicy = "exclude-specific"
+	AllOW_All_ACCESS AccessPolicy = "allow-all"
+	ONLY_SPECIFIC    AccessPolicy = "only-specific"
+	EXCLUDE_SPECIFIC AccessPolicy = "exclude-specific"
 )
 
 type PortRange struct {
@@ -94,6 +128,9 @@ type Port struct {
 
 	// Log information for the last connection (string or null).
 	LastConnectionLog interface{} `json:"lastConnectionLog"`
+
+	// Workload UUID of the last connection (string or null).
+	LasstConnectionWorkloadUUID interface{} `json:"lastConnectionWorkloadUUID"`
 }
 
 type Stats struct {
@@ -142,22 +179,31 @@ type PortControlBase struct {
 
 // ===
 
-// === Related to closeOpenedPort ===
-
-// type PortCloseRequest struct {
-// 	WorkloadUUID string `json:"workloadUuid"`
-// 	Flag         int    `json:"flag"`     // 0: inbound, 1: outbound
-// 	PortSpec     string `json:"portSpec"` // ex: "8080" 또는 "8080-8091"
-// }
-
-// ===
-
 // === Related to openClosedPort, closeClosedPort and clearClosedPortHistory ===
 
 type PortControlRequest struct {
 	WorkloadUUID string `json:"workloadUuid"`
 	Flag         int    `json:"flag"`     // 0: inbound, 1: outbound
 	PortSpec     string `json:"portSpec"` // ex: "8080" 또는 "8080-8091"
+}
+
+// ===
+
+// === Related to closeNotActicePorts ===
+
+type CloseNotActivePortsRequest struct {
+	WorkloadUUID string `json:"workloadUuid"`
+	Flag         int    `json:"flag"` // 0: inbound, 1: outbound
+}
+
+// ===
+
+// === Related to ClosePortByStatus ===
+
+type ClosePortsByStatusRequest struct {
+	WorkloadUUID string   `json:"workloadUuid"`
+	Flag         string   `json:"flag"`   // 0: inbound, 1: outbound
+	Status       []string `json:"status"` // array of status names: "active", "idle", "unconnected" etc
 }
 
 // ===

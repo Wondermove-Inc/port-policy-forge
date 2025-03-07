@@ -5,18 +5,41 @@ import (
 	"wasm-go/utils"
 )
 
-var MockNamespaces = []model.Namespace{
-	{ID: 0, NamespaceName: "default"},
-	{ID: 1, NamespaceName: "kube-system"},
-	{ID: 2, NamespaceName: "cilium"},
+var MockClusters = []model.Cluster{
+	{
+		ID:          0,
+		ClusterName: "cluster1",
+		ClusterType: model.EKS_CLUSTER,
+	},
+	{
+		ID:          1,
+		ClusterName: "cluster2",
+		ClusterType: model.AKS_CLUSTER,
+	},
+}
+
+var MockNamespaces = map[string][]model.Namespace{
+	"0": {
+		{ID: 0, NamespaceName: "default"},
+		{ID: 1, NamespaceName: "kube-system"},
+		{ID: 2, NamespaceName: "cilium"},
+	},
+	"1": {
+		{ID: 3, NamespaceName: "default"},
+		{ID: 4, NamespaceName: "kube-system"},
+		{ID: 5, NamespaceName: "cilium"},
+	},
 }
 
 var MockWorkloads = map[string][]model.Workload{
 	"default": {
 		{
-			UUID:         "7431bb4f-cae8-4dbe-a542-d6f52c893271",
-			WorkloadName: "default-workload-1",
-			Kind:         "deployment",
+			UUID:                    "7431bb4f-cae8-4dbe-a542-d6f52c893271",
+			WorkloadName:            "default-workload-1",
+			ConnectedWorkloadStatus: model.BEFORE_INIT_SETUP,
+			PolicySettingBadge:      true,
+			Kind:                    "deployment",
+			Usage:                   0.7, // 70% CPU usage
 			From: []model.Relation{
 				{WorkloadId: "7f2552b4-ab40-4120-a6d9-16507024922b", Status: 4},
 				{WorkloadId: "1b8892b1-58bc-464f-9401-b31eb2a9db99", Status: 4},
@@ -25,22 +48,72 @@ var MockWorkloads = map[string][]model.Workload{
 				{WorkloadId: "afbcb3d5-67e8-4f4b-9d8f-f0f124abc2f2", Status: 2},
 				{WorkloadId: "b726573d-4914-42ab-be5e-fb1daecec08b", Status: 2},
 			},
+			Inbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      1,
+					Unconnected: 8079,
+					Idle:        1,
+					Error:       0,
+					Attempted:   2,
+					LatencyRtt:  utils.Float64Ptr(1.39),
+					Throughput:  469.89,
+				},
+			},
+			Outbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      0,
+					Unconnected: 0,
+					Idle:        0,
+					Error:       0,
+					Attempted:   0,
+					LatencyRtt:  utils.Float64Ptr(0.0),
+					Throughput:  0.0,
+				},
+			},
 		},
 		{
-			UUID:         "7f2552b4-ab40-4120-a6d9-16507024922b",
-			WorkloadName: "default-workload-2",
-			Kind:         "deployment",
-			From:         []model.Relation{},
+			UUID:                    "7f2552b4-ab40-4120-a6d9-16507024922b",
+			WorkloadName:            "default-workload-2",
+			ConnectedWorkloadStatus: model.COMPLETE_SETUP,
+			PolicySettingBadge:      true,
+			Kind:                    "deployment",
+			Usage:                   0.5, // 50% CPU usage
+			From:                    []model.Relation{},
 			To: []model.Relation{
 				{WorkloadId: "7431bb4f-cae8-4dbe-a542-d6f52c893271", Status: 4},
+			},
+			Inbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      3,
+					Unconnected: 5000,
+					Idle:        0,
+					Error:       1,
+					Attempted:   3,
+					LatencyRtt:  utils.Float64Ptr(2.50),
+					Throughput:  350.75,
+				},
+			},
+			Outbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      0,
+					Unconnected: 0,
+					Idle:        0,
+					Error:       0,
+					Attempted:   0,
+					LatencyRtt:  utils.Float64Ptr(0),
+					Throughput:  0,
+				},
 			},
 		},
 	},
 	"kube-system": {
 		{
-			UUID:         "7431bb4f-cae8-4dbe-a542-d6f52c893271",
-			WorkloadName: "dns-autoscaler",
-			Kind:         "deployment",
+			UUID:                    "7431bb4f-cae8-4dbe-a542-d6f52c893271",
+			WorkloadName:            "dns-autoscaler",
+			ConnectedWorkloadStatus: model.BEFORE_INIT_SETUP,
+			PolicySettingBadge:      true,
+			Kind:                    "deployment",
+			Usage:                   0.7,
 			From: []model.Relation{
 				{WorkloadId: "7f2552b4-ab40-4120-a6d9-16507024922b", Status: 4},
 				{WorkloadId: "1b8892b1-58bc-464f-9401-b31eb2a9db99", Status: 4},
@@ -49,22 +122,72 @@ var MockWorkloads = map[string][]model.Workload{
 				{WorkloadId: "afbcb3d5-67e8-4f4b-9d8f-f0f124abc2f2", Status: 2},
 				{WorkloadId: "b726573d-4914-42ab-be5e-fb1daecec08b", Status: 2},
 			},
+			Inbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      1,
+					Unconnected: 1000,
+					Idle:        1,
+					Error:       0,
+					Attempted:   2,
+					LatencyRtt:  utils.Float64Ptr(1.0),
+					Throughput:  200.0,
+				},
+			},
+			Outbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      0,
+					Unconnected: 0,
+					Idle:        0,
+					Error:       0,
+					Attempted:   0,
+					LatencyRtt:  utils.Float64Ptr(0.0),
+					Throughput:  0.0,
+				},
+			},
 		},
 		{
-			UUID:         "7f2552b4-ab40-4120-a6d9-16507024922b",
-			WorkloadName: "metrics-server",
-			Kind:         "deployment",
-			From:         []model.Relation{},
+			UUID:                    "7f2552b4-ab40-4120-a6d9-16507024922b",
+			WorkloadName:            "metrics-server",
+			ConnectedWorkloadStatus: model.COMPLETE_SETUP,
+			PolicySettingBadge:      true,
+			Kind:                    "deployment",
+			Usage:                   0.5,
+			From:                    []model.Relation{},
 			To: []model.Relation{
 				{WorkloadId: "7431bb4f-cae8-4dbe-a542-d6f52c893271", Status: 4},
+			},
+			Inbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      2,
+					Unconnected: 2000,
+					Idle:        0,
+					Error:       0,
+					Attempted:   1,
+					LatencyRtt:  utils.Float64Ptr(1.5),
+					Throughput:  150.0,
+				},
+			},
+			Outbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      0,
+					Unconnected: 0,
+					Idle:        0,
+					Error:       0,
+					Attempted:   0,
+					LatencyRtt:  utils.Float64Ptr(0),
+					Throughput:  0,
+				},
 			},
 		},
 	},
 	"cilium": {
 		{
-			UUID:         "7431bb4f-cae8-4dbe-a542-d6f52c893271",
-			WorkloadName: "cilium-monitor",
-			Kind:         "deployment",
+			UUID:                    "7431bb4f-cae8-4dbe-a542-d6f52c893271",
+			WorkloadName:            "cilium-monitor",
+			ConnectedWorkloadStatus: model.BEFORE_INIT_SETUP,
+			PolicySettingBadge:      true,
+			Kind:                    "deployment",
+			Usage:                   0.6,
 			From: []model.Relation{
 				{WorkloadId: "7f2552b4-ab40-4120-a6d9-16507024922b", Status: 4},
 				{WorkloadId: "1b8892b1-58bc-464f-9401-b31eb2a9db99", Status: 4},
@@ -73,14 +196,61 @@ var MockWorkloads = map[string][]model.Workload{
 				{WorkloadId: "afbcb3d5-67e8-4f4b-9d8f-f0f124abc2f2", Status: 2},
 				{WorkloadId: "b726573d-4914-42ab-be5e-fb1daecec08b", Status: 2},
 			},
+			Inbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      1,
+					Unconnected: 3000,
+					Idle:        1,
+					Error:       0,
+					Attempted:   2,
+					LatencyRtt:  utils.Float64Ptr(1.2),
+					Throughput:  250.0,
+				},
+			},
+			Outbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      0,
+					Unconnected: 0,
+					Idle:        0,
+					Error:       0,
+					Attempted:   0,
+					LatencyRtt:  utils.Float64Ptr(0),
+					Throughput:  0,
+				},
+			},
 		},
 		{
-			UUID:         "7f2552b4-ab40-4120-a6d9-16507024922b",
-			WorkloadName: "cilium-agent",
-			Kind:         "deployment",
-			From:         []model.Relation{},
+			UUID:                    "7f2552b4-ab40-4120-a6d9-16507024922b",
+			WorkloadName:            "cilium-agent",
+			ConnectedWorkloadStatus: model.COMPLETE_SETUP,
+			PolicySettingBadge:      true,
+			Kind:                    "deployment",
+			Usage:                   0.5,
+			From:                    []model.Relation{},
 			To: []model.Relation{
 				{WorkloadId: "7431bb4f-cae8-4dbe-a542-d6f52c893271", Status: 4},
+			},
+			Inbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      2,
+					Unconnected: 2500,
+					Idle:        0,
+					Error:       1,
+					Attempted:   3,
+					LatencyRtt:  utils.Float64Ptr(2.0),
+					Throughput:  300.0,
+				},
+			},
+			Outbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      0,
+					Unconnected: 0,
+					Idle:        0,
+					Error:       0,
+					Attempted:   0,
+					LatencyRtt:  utils.Float64Ptr(0),
+					Throughput:  0,
+				},
 			},
 		},
 	},
@@ -104,17 +274,18 @@ var MockWorkloadDetails = map[string]model.WorkloadDetail{
 			Ports: model.PortDetailGroup{
 				Open: []model.Port{
 					{
-						ID:                     0,
-						IsRange:                false,
-						PortNumber:             utils.IntPtr(8080),
-						Status:                 utils.IntPtr(1), // active
-						Direction:              "inbound",
-						IsOpen:                 true,
-						Count:                  3,
-						AccessPolicy:           model.AllowAllAccess,
-						LastConnectionDate:     "2023-03-21T10:15:00+09:00",
-						LastConnectionEndpoint: "192.168.1.101",
-						LastConnectionLog:      "192.168.10.101:34562 -> 172.16.0.236:8080 (TCP Flags: ACK)",
+						ID:                          0,
+						IsRange:                     false,
+						PortNumber:                  utils.IntPtr(8080),
+						Status:                      utils.IntPtr(1), // active
+						Direction:                   "inbound",
+						IsOpen:                      true,
+						Count:                       3,
+						AccessPolicy:                model.AllOW_All_ACCESS,
+						LastConnectionDate:          "2023-03-21T10:15:00+09:00",
+						LastConnectionEndpoint:      "192.168.1.101",
+						LastConnectionLog:           "192.168.10.101:34562 -> 172.16.0.236:8080 (TCP Flags: ACK)",
+						LasstConnectionWorkloadUUID: "7f2552b4-ab40-4120-a6d9-16507024922b",
 					},
 					{
 						ID:           1,
@@ -124,7 +295,7 @@ var MockWorkloadDetails = map[string]model.WorkloadDetail{
 						Direction:    "inbound",
 						IsOpen:       true,
 						Count:        0,
-						AccessPolicy: model.OnlySpecific,
+						AccessPolicy: model.ONLY_SPECIFIC,
 						AccessSources: []model.AccessSource{
 							{
 								IP:       "192.168.1.101",
@@ -141,7 +312,7 @@ var MockWorkloadDetails = map[string]model.WorkloadDetail{
 						Status:       utils.IntPtr(0), // unconnected
 						IsOpen:       true,
 						Count:        0,
-						AccessPolicy: model.AllowAllAccess,
+						AccessPolicy: model.AllOW_All_ACCESS,
 					},
 					{
 						ID:                     3,
@@ -151,7 +322,7 @@ var MockWorkloadDetails = map[string]model.WorkloadDetail{
 						Direction:              "inbound",
 						IsOpen:                 true,
 						Count:                  1,
-						AccessPolicy:           model.AllowAllAccess,
+						AccessPolicy:           model.AllOW_All_ACCESS,
 						LastConnectionDate:     "2022-03-21T10:15:00+09:00",
 						LastConnectionEndpoint: "192.168.1.101",
 						LastConnectionLog:      "remote-node -> 172.16.0.236:9090 (health)",
@@ -199,7 +370,7 @@ var MockWorkloadDetails = map[string]model.WorkloadDetail{
 						LastConnectionDate:     "2023-03-21T10:20:00+09:00",
 						LastConnectionEndpoint: "192.168.1.102",
 						LastConnectionLog:      "172.16.0.236:9000 -> (health)",
-						AccessPolicy:           model.AllowAllAccess,
+						AccessPolicy:           model.AllOW_All_ACCESS,
 						AccessSources:          nil,
 					},
 				},
@@ -235,7 +406,7 @@ var MockWorkloadDetails = map[string]model.WorkloadDetail{
 						Direction:              "inbound",
 						IsOpen:                 true,
 						Count:                  3,
-						AccessPolicy:           model.AllowAllAccess,
+						AccessPolicy:           model.AllOW_All_ACCESS,
 						LastConnectionDate:     "2023-03-21T10:15:00+09:00",
 						LastConnectionEndpoint: "192.168.1.101",
 						LastConnectionLog:      "...",
@@ -248,7 +419,7 @@ var MockWorkloadDetails = map[string]model.WorkloadDetail{
 						Direction:    "inbound",
 						IsOpen:       true,
 						Count:        1,
-						AccessPolicy: model.OnlySpecific,
+						AccessPolicy: model.ONLY_SPECIFIC,
 						AccessSources: []model.AccessSource{
 							{
 								IP:       "192.168.1.101",
@@ -264,7 +435,7 @@ var MockWorkloadDetails = map[string]model.WorkloadDetail{
 						Status:       utils.IntPtr(2), // idle
 						IsOpen:       true,
 						Count:        0,
-						AccessPolicy: model.AllowAllAccess,
+						AccessPolicy: model.AllOW_All_ACCESS,
 					},
 				},
 				Closed: []model.Port{
@@ -309,7 +480,7 @@ var MockWorkloadDetails = map[string]model.WorkloadDetail{
 						LastConnectionDate:     "2023-03-21T10:20:00+09:00",
 						LastConnectionEndpoint: "192.168.1.102",
 						LastConnectionLog:      "outbound log...",
-						AccessPolicy:           model.AllowAllAccess,
+						AccessPolicy:           model.AllOW_All_ACCESS,
 						AccessSources:          nil,
 					},
 				},

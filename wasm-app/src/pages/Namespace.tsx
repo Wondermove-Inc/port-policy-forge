@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 declare global {
   interface Window {
-    listNamespace: () => string;
+    listNamespace: (clusterId: string) => string;
   }
 }
 
@@ -18,10 +18,10 @@ type NamespaceData = {
   result: NamespaceType[];
 };
 
-function wasmListNamespace(): Promise<NamespaceData> {
+function wasmListNamespace(clusterId: string): Promise<NamespaceData> {
   return new Promise((resolve, reject) => {
     try {
-      const raw = window.listNamespace();
+      const raw = window.listNamespace(clusterId);
       const parsed = JSON.parse(raw);
       console.log("Parsed output:", parsed);
       resolve({ raw, result: parsed.result });
@@ -38,7 +38,7 @@ const Namespace = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    wasmListNamespace()
+    wasmListNamespace("0")
       .then((data) => {
         setNamespaces(data.result);
         setRawData(data.raw);
