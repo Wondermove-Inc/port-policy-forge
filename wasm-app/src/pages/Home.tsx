@@ -49,10 +49,10 @@ export const Home = () => {
           display: "flex",
           justifyContent: "space-between",
           position: "absolute",
-          right: 0,
+          left: 0,
           top: 0,
           zIndex: 88,
-          width: "100%",
+          width: isViewList ? "calc(100%)" : "calc(100% - 512px)",
           padding: "20px",
           alignItems: "center",
         }}

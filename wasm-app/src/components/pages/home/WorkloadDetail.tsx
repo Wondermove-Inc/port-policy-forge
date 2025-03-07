@@ -10,6 +10,7 @@ import { Drawer } from "@/components/atoms/Drawer";
 import { INITIAL_WORKLOAD_DETAIL } from "@/constants";
 import { PortDirection, PortRangeType, WorkloadDetailType } from "@/models";
 import { wasmGetWorkloadDetail } from "@/services/getworkloadDetail";
+import { useCommonStore } from "@/store";
 import {
   getAccessLabel,
   getPortKindLabel,
@@ -40,6 +41,8 @@ export const WorkloadDetail = ({
   );
   const [loading, setLoading] = useState(false);
 
+  const { isViewList } = useCommonStore();
+
   const fetchWorkloadDetail = useCallback(() => {
     setLoading(true);
     wasmGetWorkloadDetail(id)
@@ -60,11 +63,9 @@ export const WorkloadDetail = ({
   }, [id]);
 
   useEffect(() => {
-    if (!id) {
-      setWorkloadDetail(INITIAL_WORKLOAD_DETAIL);
-      return;
+    if (id) {
+      fetchWorkloadDetail();
     }
-    fetchWorkloadDetail();
   }, [id]);
 
   const formatDirection = (
@@ -125,13 +126,20 @@ export const WorkloadDetail = ({
     };
   };
 
+  const handleDetailClose = () => {
+    setWorkloadDetail(INITIAL_WORKLOAD_DETAIL);
+    setPortDirection(PortDirection.INBOUND);
+    handleClose();
+  };
+
   return (
     <Drawer
       open={open}
       title={workloadDetail.workloadName}
       subTitle={workloadDetail.kind}
-      onClose={handleClose}
+      onClose={handleDetailClose}
       loading={loading}
+      variant={isViewList ? "temporary" : "persistent"}
     >
       <WorkloadTabs
         onChangeTab={(direction) =>

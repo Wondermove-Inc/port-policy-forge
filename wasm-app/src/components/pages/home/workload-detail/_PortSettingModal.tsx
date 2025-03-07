@@ -234,7 +234,7 @@ export const PortSettingModal = ({
                   variant="text"
                   size="extraSmall"
                   sx={{
-                    width: 94,
+                    minWidth: 94,
                     height: 24,
                     color: "text.primary",
                     display: "flex",
@@ -246,7 +246,9 @@ export const PortSettingModal = ({
                   onClick={handleAddSource}
                 >
                   <AddIcon size={16} color="white" />
-                  <Typography variant="labelBold">Add Source</Typography>
+                  <Typography variant="labelBold">
+                    {isInbound ? "Add Source" : "Add Destination"}
+                  </Typography>
                 </Button>
               </Box>
             </>
