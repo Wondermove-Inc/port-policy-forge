@@ -169,22 +169,26 @@ export const WorkloadDetail = ({
       loading={loading}
       variant={isViewList ? "temporary" : "persistent"}
     >
-      <WorkloadTabs
-        onChangeTab={(direction) =>
-          setPortDirection(direction as PortDirection)
-        }
-      />
-      <WorkloadSummary stats={workloadDetail[portDirection].stats} />
-      <PolicyApplication fetchWorkloadDetail={fetchWorkloadDetail} />
-      <OpenPort
-        data={workloadDetail[portDirection].ports.open}
-        portDirection={portDirection}
-        fetchWorkloadDetail={fetchWorkloadDetail}
-      />
-      <ClosePort
-        data={workloadDetail[portDirection].ports.closed}
-        fetchWorkloadDetail={fetchWorkloadDetail}
-      />
+      {id && (
+        <>
+          <WorkloadTabs
+            onChangeTab={(direction) =>
+              setPortDirection(direction as PortDirection)
+            }
+          />
+          <WorkloadSummary stats={workloadDetail[portDirection].stats} />
+          <PolicyApplication fetchWorkloadDetail={fetchWorkloadDetail} />
+          <OpenPort
+            data={workloadDetail[portDirection].ports.open}
+            portDirection={portDirection}
+            fetchWorkloadDetail={fetchWorkloadDetail}
+          />
+          <ClosePort
+            data={workloadDetail[portDirection].ports.closed}
+            fetchWorkloadDetail={fetchWorkloadDetail}
+          />
+        </>
+      )}
     </Drawer>
   );
 };
