@@ -74,15 +74,15 @@ export enum AccessPolicy {
 }
 
 export enum PortRisk {
-  NULL = 0,
-  NORMAL = 1,
-  HIGH = 2,
+  NORMAL = 0,
+  HIGH = 1,
+  VERY_HIGH = 2,
 }
 
 export const STATUS_MAP: Record<number, Stats> = {
   0: Stats.UNCONNECTED,
-  1: Stats.IDLE,
-  2: Stats.ACTIVE,
+  1: Stats.ACTIVE,
+  2: Stats.IDLE,
   3: Stats.ERROR,
   4: Stats.ATTEMPTED,
 };
