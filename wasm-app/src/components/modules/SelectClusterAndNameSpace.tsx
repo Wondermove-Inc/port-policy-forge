@@ -10,8 +10,8 @@ import { PrmIcon } from "../icons/PrmIcon";
 
 import { CheckIcon } from "@/components/icons/CheckIcon";
 import { DownIcon } from "@/components/icons/DownIcon";
-import { clusters } from "@/data";
 import { ClusterType } from "@/models";
+import { wasmListClusters } from "@/services/listClusters";
 import { wasmListNamespace } from "@/services/listNamespaces";
 import { useCommonStore } from "@/store";
 
@@ -38,17 +38,24 @@ export const SelectClusterAndNameSpace = () => {
   }, [selectedCluster]);
 
   const getClusters = () => {
-    const newClusters = clusters.map((cluster) => ({
-      value: cluster.id,
-      label: cluster.name,
-      type: cluster.type as ClusterType,
-    }));
-    setClusterOptions(newClusters);
-    setSelectedCluster(newClusters[0]?.value || "");
+    wasmListClusters().then((data) => {
+      const newClusters = data.result.map((cluster) => ({
+        value: cluster.id.toString(),
+        label: cluster.clusterName,
+        type: cluster.clusterType,
+      }));
+      setClusterOptions(newClusters);
+      setSelectedCluster(newClusters[0]?.value || "");
+    });
   };
 
   const getNamespaces = () => {
-    wasmListNamespace()
+    if (selectedCluster === null || selectedCluster === undefined) {
+      setNamespaceOptions([]);
+      setSelectedNamespace("");
+    }
+
+    wasmListNamespace("0")
       .then((data) => {
         const newNamespaces = data.result.map((namespace) => ({
           value: namespace.namespaceName,
