@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 
 import { Box } from "@mui/material";
 import { Toggle, Typography } from "@skuber/components";
@@ -7,9 +7,18 @@ import { CloseIcon } from "@/components/icons/CloseIcon";
 import { EyeIcon } from "@/components/icons/EyeIcon";
 import { SearchComplete } from "@/components/modules/SearchComplete";
 import { useCommonStore } from "@/store";
+import { FilterPorts } from "@/components/modules/networkgraph/types";
 
-export const ViewFilter = () => {
+type ViewFilterProps = {
+  filterPorts: FilterPorts;
+  onChangeFilter: (filterPorts: FilterPorts) => void;
+};
+export const ViewFilter = ({
+  filterPorts,
+  onChangeFilter,
+}: ViewFilterProps) => {
   const { workloads } = useCommonStore();
+  const filterPortRef = useRef<FilterPorts>(filterPorts);
 
   const [open, setOpen] = useState(false);
 
@@ -19,6 +28,13 @@ export const ViewFilter = () => {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleOnChange = (type: keyof FilterPorts, checked: boolean) => {
+    filterPortRef.current[type] = checked;
+    onChangeFilter({
+      ...filterPortRef.current,
+    });
   };
 
   return (
@@ -124,7 +140,10 @@ export const ViewFilter = () => {
                 <Typography variant="body2" color="text.primary">
                   System Ports
                 </Typography>
-                <Toggle />
+                <Toggle
+                  defaultChecked={filterPorts.system}
+                  onChange={(_, checked) => handleOnChange("system", checked)}
+                />
               </Box>
               <Box
                 display="flex"
@@ -134,7 +153,10 @@ export const ViewFilter = () => {
                 <Typography variant="body2" color="text.primary">
                   Error Ports
                 </Typography>
-                <Toggle />
+                <Toggle
+                  defaultChecked={filterPorts.error}
+                  onChange={(_, checked) => handleOnChange("error", checked)}
+                />
               </Box>
               <Box
                 display="flex"
@@ -144,7 +166,12 @@ export const ViewFilter = () => {
                 <Typography variant="body2" color="text.primary">
                   Connection Attempt Ports
                 </Typography>
-                <Toggle />
+                <Toggle
+                  defaultChecked={filterPorts.attempted}
+                  onChange={(_, checked) =>
+                    handleOnChange("attempted", checked)
+                  }
+                />
               </Box>
               <Box
                 display="flex"
@@ -154,7 +181,10 @@ export const ViewFilter = () => {
                 <Typography variant="body2" color="text.primary">
                   Idle Ports
                 </Typography>
-                <Toggle />
+                <Toggle
+                  defaultChecked={filterPorts.idle}
+                  onChange={(_, checked) => handleOnChange("idle", checked)}
+                />
               </Box>
             </Box>
           </Box>

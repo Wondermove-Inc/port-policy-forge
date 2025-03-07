@@ -140,6 +140,7 @@ export type DrawingOptions = {
   activeNodeId?: string;
   connectedEdges?: IdType[];
   connectedNodes?: IdType[];
+  filterPorts?: FilterPorts;
 };
 
 export type WorkloadConnector = {
@@ -155,4 +156,11 @@ export interface EdgeStyle {
   textColor?: string;
   arrowKey: keyof CanvasImage;
   lineDash: number[];
+}
+
+export type FilterPorts = {
+  system: boolean;
+  error: boolean;
+  attempted: boolean;
+  idle: boolean;
 }

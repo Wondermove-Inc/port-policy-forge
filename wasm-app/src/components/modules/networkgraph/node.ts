@@ -170,17 +170,30 @@ export class NetworkNode {
   }
 
   private drawNodePort() {
+    const filterPorts = this.options.filterPorts;
     const { idle, attempted, error } = this.getStats();
-    const ports = [
-      {
+    let ports = [];
+    if (filterPorts?.idle) {
+      ports.push({
         status: EdgeStatus.IDLE,
         total: idle,
-      },
-      {
+      });
+    }
+    if (filterPorts?.error || filterPorts?.attempted) {
+      let total = 0;
+      if (filterPorts?.error && filterPorts?.attempted) {
+        total = attempted + error;
+      } else if (filterPorts.error) {
+        total = error;
+      } else {
+        total = attempted;
+      }
+      ports.push({
         status: EdgeStatus.ERROR,
-        total: attempted + error,
-      },
-    ].filter((p) => p.total);
+        total: total,
+      });
+    }
+    ports = ports.filter((p) => p.total);
     const ARC_RADIUS = 10;
     for (let i = 0; i < ports.length; i++) {
       let x = this.node.x + ARC_RADIUS + 14;

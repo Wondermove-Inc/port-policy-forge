@@ -7,6 +7,7 @@ import {
   CustomNetwork,
   NodeData,
   NetworkNodeData,
+  FilterPorts,
 } from "./types";
 import { NetworkEdge } from "./edge";
 import { NetworkNode } from "./node";
@@ -19,6 +20,7 @@ export type NetworkGraphProps = {
   nodes: NodeData[];
   edges: EdgeData[];
   activeNodeId: string;
+  filterPorts?: FilterPorts;
   onEdgeDisconnected?: (edgeId: string) => void;
   onNodeSelected?: (nodeId: string) => void;
   setNetwork: (n: CustomNetwork) => void;
@@ -28,6 +30,7 @@ const NetworkGraph = ({
   edges,
   nodes,
   activeNodeId,
+  filterPorts,
   onNodeSelected,
   onEdgeDisconnected,
   setNetwork,
@@ -76,10 +79,12 @@ const NetworkGraph = ({
           hoverNodeId: hoverNodeId.current,
           activeNodeId: activeNodeId,
           activeEdgeId: activeEdgeId,
+          filterPorts: filterPorts,
         });
       } else {
         handleAfterDrawing(ctx, canvasImages, {
           activeEdgeId: activeEdgeId,
+          filterPorts: filterPorts,
         });
       }
     });
@@ -95,6 +100,7 @@ const NetworkGraph = ({
         handleAfterDrawing(ctx, canvasImages, {
           hoverNodeId: params.node,
           activeEdgeId: activeEdgeId,
+          filterPorts: filterPorts,
         });
       });
     });
@@ -109,6 +115,7 @@ const NetworkGraph = ({
       network?.on("afterDrawing", (ctx: CanvasRenderingContext2D) => {
         handleAfterDrawing(ctx, canvasImages, {
           activeEdgeId: activeEdgeId,
+          filterPorts: filterPorts,
         });
       });
     });
@@ -172,7 +179,7 @@ const NetworkGraph = ({
       network?.off("blurNode");
       network?.off("click");
     };
-  }, [canvasImages, edges, nodes, activeNodeId, activeEdgeId]);
+  }, [canvasImages, edges, nodes, activeNodeId, activeEdgeId, filterPorts]);
 
   useEffect(() => {
     return () => {
@@ -197,6 +204,7 @@ const handleAfterDrawing = (
     hoverNodeId?: string;
     activeNodeId?: string;
     activeEdgeId?: string;
+    filterPorts?: FilterPorts;
   }
 ) => {
   if (!canvasImages || !network) {
@@ -252,6 +260,7 @@ const handleAfterDrawing = (
     const networkNode = new NetworkNode(ctx, node, canvasImages, {
       hoverNodeId: options?.hoverNodeId,
       activeNodeId: options?.activeNodeId,
+      filterPorts: options?.filterPorts,
       connectedEdges: connectedEdges,
       connectedNodes: connectedNodes,
     });

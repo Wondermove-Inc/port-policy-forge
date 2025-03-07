@@ -8,6 +8,7 @@ import NetworkGraph from "@/components/modules/networkgraph/networkGraph";
 import {
   CustomNetwork,
   EdgeData,
+  FilterPorts,
   NodeData,
   NodeSize,
 } from "@/components/modules/networkgraph/types";
@@ -19,6 +20,13 @@ import { ModalConfirm } from "@/components/atoms/ModalConfirm";
 export const WorkloadMap = () => {
   const [edges, setEdges] = useState<EdgeData[]>([]);
   const [nodes, setNodes] = useState<NodeData[]>([]);
+  const initFilterPorts: FilterPorts = {
+    attempted: true,
+    error: true,
+    idle: true,
+    system: false,
+  };
+  const [filterPorts, setFilterPorts] = useState<FilterPorts>(initFilterPorts);
   const [activeNodeId, setActiveNodeId] = useState("");
   const [selectedWorkloadId, setSelectedWorkloadId] = useState("");
   const [network, setNetwork] = useState<CustomNetwork>();
@@ -103,6 +111,10 @@ export const WorkloadMap = () => {
     setSelectedWorkloadId("");
   };
 
+  const handleChangeFilter = (filterPorts: FilterPorts) => {
+    setFilterPorts(filterPorts);
+  };
+
   return (
     <Box
       sx={{
@@ -117,12 +129,16 @@ export const WorkloadMap = () => {
       <NetworkGraph
         edges={edges}
         nodes={nodes}
+        filterPorts={filterPorts}
         activeNodeId={activeNodeId}
         setNetwork={setNetwork}
         onEdgeDisconnected={handleEdgeDisconnected}
         onNodeSelected={handleOnNodeSelected}
       />
-      <ViewFilter />
+      <ViewFilter
+        filterPorts={initFilterPorts}
+        onChangeFilter={handleChangeFilter}
+      />
       <ModalConfirm
         title="Close Port Access"
         description="When you block that source or destination access to a specific port, it changes to the following"
