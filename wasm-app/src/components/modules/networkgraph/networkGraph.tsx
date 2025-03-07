@@ -67,14 +67,14 @@ const NetworkGraph = ({
       network.off("afterDrawing");
       network.off("blurNode");
       network.off("click");
-      hoverNodeId.current = ""
+      hoverNodeId.current = "";
     }
 
     network.on("afterDrawing", (ctx: CanvasRenderingContext2D) => {
-      const currentNodeId = activeNodeId || hoverNodeId.current;
-      if (currentNodeId) {
+      if (hoverNodeId.current || activeNodeId) {
         handleAfterDrawing(ctx, canvasImages, {
-          hoverNodeId: currentNodeId,
+          hoverNodeId: hoverNodeId.current,
+          activeNodeId: activeNodeId,
           activeEdgeId: activeEdgeId,
         });
       } else {
@@ -129,7 +129,7 @@ const NetworkGraph = ({
         y: properties.event.srcEvent.offsetY,
       });
       if (nodeId) {
-        onNodeSelected?.(nodeId as string)
+        onNodeSelected?.(nodeId as string);
       }
 
       const clickPosition = {
@@ -195,19 +195,20 @@ const handleAfterDrawing = (
   canvasImages: CanvasImage,
   options?: {
     hoverNodeId?: string;
+    activeNodeId?: string;
     activeEdgeId?: string;
   }
 ) => {
   if (!canvasImages || !network) {
     return;
   }
-  const connectedEdges: IdType[] = options?.hoverNodeId
-    ? network?.getConnectedEdges(options?.hoverNodeId as string)
+  const activeNodeId = (options?.hoverNodeId ||
+    options?.activeNodeId) as string;
+  const connectedEdges: IdType[] = activeNodeId
+    ? network?.getConnectedEdges(activeNodeId)
     : [];
   const connectedNodes: IdType[] = (
-    options?.hoverNodeId
-      ? network?.getConnectedNodes(options?.hoverNodeId as string)
-      : []
+    activeNodeId ? network?.getConnectedNodes(activeNodeId) : []
   ) as IdType[];
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   const networkEdges = network.body.edges;
@@ -229,6 +230,7 @@ const handleAfterDrawing = (
     const networkEdge = new NetworkEdge(ctx, edge, canvasImages, {
       connectedEdges: connectedEdges,
       hoverNodeId: options?.hoverNodeId,
+      activeNodeId: options?.activeNodeId,
       activeEdgeId: options?.activeEdgeId,
     });
     networkEdge.draw();
@@ -239,6 +241,7 @@ const handleAfterDrawing = (
     const networkEdge = new NetworkEdge(ctx, edge, canvasImages, {
       connectedEdges: connectedEdges,
       hoverNodeId: options?.hoverNodeId,
+      activeNodeId: options?.activeNodeId,
       activeEdgeId: options?.activeEdgeId,
     });
     networkEdge.drawLabel();
@@ -248,6 +251,7 @@ const handleAfterDrawing = (
     const node = networkNodes[nodeId];
     const networkNode = new NetworkNode(ctx, node, canvasImages, {
       hoverNodeId: options?.hoverNodeId,
+      activeNodeId: options?.activeNodeId,
       connectedEdges: connectedEdges,
       connectedNodes: connectedNodes,
     });

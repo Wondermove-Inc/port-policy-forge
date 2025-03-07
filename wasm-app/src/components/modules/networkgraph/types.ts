@@ -137,6 +137,7 @@ export type CanvasImage = {
 
 export type DrawingOptions = {
   hoverNodeId?: string;
+  activeNodeId?: string;
   connectedEdges?: IdType[];
   connectedNodes?: IdType[];
 };

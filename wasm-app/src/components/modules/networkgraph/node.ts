@@ -50,36 +50,39 @@ export class NetworkNode {
   }
 
   private drawNodeBackground() {
-    const isHovered = !!this.options?.hoverNodeId;
+    const activeNodeId = this.options?.hoverNodeId || this.options.activeNodeId;
+    const isActive = !!activeNodeId;
     this.ctx.lineWidth = 2;
     const nodeSize = this.node?.data?.nodeSize || 0;
 
-    if (isHovered && this.options?.hoverNodeId === this.node.id) {
-      this.ctx.fillStyle = color.fill.interaction100;
-      this.ctx.beginPath();
-      this.ctx.arc(
-        this.node.x,
-        this.node.y,
-        nodeSize / 2 + 24,
-        0,
-        2 * Math.PI,
-        false
-      );
-      this.ctx.closePath();
-      this.ctx.fill();
+    if (isActive && activeNodeId === this.node.id) {
+      if (!!this.options?.hoverNodeId) {
+        this.ctx.fillStyle = color.fill.interaction100;
+        this.ctx.beginPath();
+        this.ctx.arc(
+          this.node.x,
+          this.node.y,
+          nodeSize / 2 + 24,
+          0,
+          2 * Math.PI,
+          false
+        );
+        this.ctx.closePath();
+        this.ctx.fill();
 
-      this.ctx.fillStyle = color.fill.interaction200;
-      this.ctx.beginPath();
-      this.ctx.arc(
-        this.node.x,
-        this.node.y,
-        nodeSize / 2 + 12,
-        0,
-        2 * Math.PI,
-        false
-      );
-      this.ctx.closePath();
-      this.ctx.fill();
+        this.ctx.fillStyle = color.fill.interaction200;
+        this.ctx.beginPath();
+        this.ctx.arc(
+          this.node.x,
+          this.node.y,
+          nodeSize / 2 + 12,
+          0,
+          2 * Math.PI,
+          false
+        );
+        this.ctx.closePath();
+        this.ctx.fill();
+      }
 
       this.ctx.strokeStyle = color.stroke.active;
       this.ctx.fillStyle = color.fill.active;
@@ -222,10 +225,11 @@ export class NetworkNode {
   }
 
   private isDisabled() {
+    const nodeId = this.options.hoverNodeId || this.options.activeNodeId;
     return (
-      this.options?.hoverNodeId &&
+      nodeId &&
       !this.options?.connectedNodes?.includes(this.node.id) &&
-      this.options.hoverNodeId !== this.node.id
+      nodeId !== this.node.id
     );
   }
 }

@@ -20,6 +20,7 @@ export class NetworkEdge {
   options: {
     connectedEdges?: IdType[];
     hoverNodeId?: string;
+    activeNodeId?: string;
     activeEdgeId?: string;
   };
   coords: {
@@ -36,6 +37,7 @@ export class NetworkEdge {
     options: {
       connectedEdges?: IdType[];
       hoverNodeId?: string;
+      activeNodeId?: string;
       activeEdgeId?: string;
     }
   ) {
@@ -65,7 +67,9 @@ export class NetworkEdge {
 
   public draw() {
     const isActiveEdge = this.options?.connectedEdges?.includes(this.edge.id);
-    const disabled = !!this.options.hoverNodeId && !isActiveEdge;
+    const disabled =
+      (!!this.options.hoverNodeId || !!this.options.activeNodeId) &&
+      !isActiveEdge;
     this.ctx.save();
     this.drawEdgeLine(isActiveEdge, disabled);
     this.drawEdgeArrow(isActiveEdge, disabled);
@@ -77,7 +81,7 @@ export class NetworkEdge {
     if (this.isEdgeConnected()) {
       this.drawEdgeConnectLabel();
     } else {
-      if (isActiveEdge) {
+      if (isActiveEdge && !this.options.activeNodeId) {
         this.drawEdgeLabel();
       }
     }
