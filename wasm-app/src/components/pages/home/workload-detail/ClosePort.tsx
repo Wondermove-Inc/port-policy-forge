@@ -53,7 +53,9 @@ export const ClosePort = ({ data, fetchWorkloadDetail }: ClosePortProps) => {
         sortable: false,
         width: emptyData ? 90 : 85,
         render: (record: Port) => {
-          const isHighRisk = record.risk === PortRisk.HIGH;
+          const isHighRisk = [PortRisk.HIGH, PortRisk.VERY_HIGH].includes(
+            record.risk as PortRisk,
+          );
           return (
             <Typography
               variant="b2_r"

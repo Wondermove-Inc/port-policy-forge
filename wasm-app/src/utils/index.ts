@@ -1,4 +1,4 @@
-import { AccessPolicy, PortKind, WorkloadKind } from "@/models";
+import { AccessPolicy, PortKind, PortRisk, WorkloadKind } from "@/models";
 
 export const getPortNumber = ({
   isRange,
@@ -44,10 +44,12 @@ export const getPortKindLabel = (kind: string) => {
 
 export const getPortRiskLabel = (risk: number) => {
   switch (risk) {
-    case 1:
-      return "Normal";
-    case 2:
-      return "High";
+    case PortRisk.NORMAL:
+      return "normal";
+    case PortRisk.HIGH:
+      return "high";
+    case PortRisk.VERY_HIGH:
+      return "very high";
     default:
       return "";
   }

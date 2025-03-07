@@ -43,7 +43,7 @@ export const formatNumber = (value: number) => {
   if (value !== 0 && value !== null && value !== undefined) {
     return value.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
   } else {
-    return 0;
+    return "";
   }
 };
 

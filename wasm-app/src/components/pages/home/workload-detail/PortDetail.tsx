@@ -37,26 +37,24 @@ export const PortDetail = ({ record }: { record: Port }) => {
             {`Connected sources (${record.sourceNumber})`}
           </Typography>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-            {(record.accessSources || []).map(
-              ({ ip, port, comment, createdAt }: SourceType) => (
-                <Box
-                  key={`${ip}-${port}`}
-                  sx={{ display: "flex", flexDirection: "column", gap: 1 }}
-                >
-                  <Typography variant="body1" color="text.primary">
-                    {`${ip}/${port}`}
+            {(record.accessSources || []).map(({ ip, comment }: SourceType) => (
+              <Box
+                key={ip}
+                sx={{ display: "flex", flexDirection: "column", gap: 1 }}
+              >
+                <Typography variant="body1" color="text.primary">
+                  {ip}
+                </Typography>
+                <ShadedBox>
+                  <Typography variant="body2" color="text.primary">
+                    {comment}
                   </Typography>
-                  <ShadedBox>
-                    <Typography variant="body2" color="text.primary">
-                      {comment}
-                    </Typography>
-                    <Typography variant="caption" color="text.tertiary">
+                  {/* <Typography variant="caption" color="text.tertiary">
                       {createdAt}
-                    </Typography>
-                  </ShadedBox>
-                </Box>
-              ),
-            )}
+                    </Typography> */}
+                </ShadedBox>
+              </Box>
+            ))}
           </Box>
         </Box>
       )}
