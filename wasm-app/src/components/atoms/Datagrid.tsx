@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Box, Checkbox, SxProps, Theme, Typography } from "@mui/material";
 import { DataGrid, DataGridProps, GridColDef } from "@mui/x-data-grid";
@@ -34,16 +34,53 @@ export type CustomGridColDef = GridColDef & {
   disabled?: boolean;
 };
 
+export type TableSelectionRow = {
+  id: string;
+  columns: string[];
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const formatCheckedRows = (checkedRows: any) => {
+  const idMap: Record<string, string[]> = {};
+
+  Object.keys(checkedRows).forEach((status) => {
+    const statusObject = checkedRows[status];
+    Object.keys(statusObject).forEach((id: string) => {
+      if (["allChecked", "isIndeterminate"].includes(id)) {
+        return;
+      }
+      if (!idMap[id]) {
+        idMap[id] = [];
+      }
+      if (statusObject[id]) {
+        idMap[id].push(status);
+      } else {
+        idMap[id] = idMap[id].filter((item) => item !== status);
+      }
+    });
+  });
+
+  const result = Object.keys(idMap)
+    .map((id) => {
+      const statuses = idMap[id];
+      if (statuses.length) {
+        return { id, columns: statuses };
+      }
+      return null;
+    })
+    .filter(Boolean);
+
+  return result as TableSelectionRow[];
+};
+
 export const Datagrid = (
   props: DataGridProps & {
     emptyHeight?: number | string;
     height?: number | string;
     width?: number | string;
     hasSearch?: boolean;
-    checkedRows: Record<string, Record<string, boolean>>;
-    onCheckedRowsChange?: (
-      checkedRows: Record<string, Record<string, boolean>>,
-    ) => void;
+    selectionRows?: TableSelectionRow[];
+    onCheckedRowsChange?: (data: TableSelectionRow[]) => void;
   },
 ) => {
   const {
@@ -54,18 +91,29 @@ export const Datagrid = (
     height = "100%",
     rowHeight = 64,
     emptyHeight,
-    checkedRows,
     onCheckedRowsChange,
+    selectionRows,
     ...rest
   } = props;
+  const [checkedRows, setCheckedRows] = useState<
+    Record<string, Record<string, boolean>>
+  >({});
   const rows = props.rows ?? [];
   const tableHeight = rows?.length || !emptyHeight ? height : emptyHeight;
+
+  useEffect(() => {
+    if (!selectionRows?.length) {
+      setCheckedRows({});
+    }
+  }, [selectionRows]);
 
   const updateCheckedRows = (
     newCheckedRows: Record<string, Record<string, boolean>>,
   ) => {
-    onCheckedRowsChange?.(newCheckedRows);
+    setCheckedRows(newCheckedRows);
+    onCheckedRowsChange?.(formatCheckedRows(newCheckedRows));
   };
+
   const handleToggleColumnCheck = (columnField: string) => {
     const isChecked = !checkedRows[columnField]?.allChecked;
     const updatedRows = Object.fromEntries(
@@ -215,6 +263,7 @@ export const Datagrid = (
       );
     },
   }));
+
   const columnStyles = useMemo(() => {
     return Object.keys(checkedRows).reduce<Record<string, SxProps<Theme>>>(
       (acc, field) => {

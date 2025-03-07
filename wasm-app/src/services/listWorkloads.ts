@@ -12,11 +12,11 @@ export type WorkloadResource = {
   from: Relation[];
   to: Relation[];
   inbound: {
-    stats: Stats
-  }
+    stats: Stats;
+  };
   outbound: {
-    stats: Stats
-  }
+    stats: Stats;
+  };
 };
 
 type WorkloadsData = {

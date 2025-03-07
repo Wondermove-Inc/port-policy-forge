@@ -6,31 +6,49 @@ import { Button } from "@skuber/components";
 import { WorkloadTabs } from "./workload-detail/WorkloadTabs";
 import { WorkloadDetail } from "./WorkloadDetail";
 
-import { Datagrid, CustomGridColDef } from "@/components/atoms/Datagrid";
+import {
+  Datagrid,
+  CustomGridColDef,
+  TableSelectionRow,
+} from "@/components/atoms/Datagrid";
+import { ModalConfirm } from "@/components/atoms/ModalConfirm";
 import { CheckBoxIcon } from "@/components/icons/CheckBoxIcon";
-import { ModalClosePort } from "@/components/modules/ModalClosePort";
 import { SearchComplete } from "@/components/modules/SearchComplete";
 import { useDisclosure } from "@/hooks/useDisclosure";
+import { PortDirection, Stats } from "@/models";
+import { wasmClosePortsByStatus } from "@/services/closePortsByStatus";
+import { wasmListWorkloads, WorkloadResource } from "@/services/listWorkloads";
 import { useCommonStore } from "@/store";
 import { getWorkloadKindLabel } from "@/utils";
 import { formatNumber } from "@/utils/format";
-import { WorkloadResource } from "@/services/listWorkloads";
-import { PortDirection, Stats } from "@/models";
 
 export const WorkloadList = () => {
-  const { workloads, workloadsLoading } = useCommonStore();
+  const {
+    workloads,
+    setWorkloads,
+    workloadsLoading,
+    setWorkloadsLoading,
+    selectedNamespace,
+  } = useCommonStore();
 
   const closePortModal = useDisclosure();
   const detailDrawer = useDisclosure();
-  const [checkedRows, setCheckedRows] = useState<
-    Record<string, Record<string, boolean>>
-  >({});
-  const [selectedTabBound, setSelectedTabBound] = useState<PortDirection>(PortDirection.INBOUND);
+  const [selectedTabBound, setSelectedTabBound] = useState<PortDirection>(
+    PortDirection.INBOUND,
+  );
   const [filteredWorkloadId, setFilterWorkloadId] = useState("");
   const [selectedWorkloadId, setSelectedWorkloadId] = useState("");
+  const [closedWorkloads, setClosedWorkloads] = useState<TableSelectionRow[]>(
+    [],
+  );
+  const [closePortLoading, setClosePortLoading] = useState(false);
 
-  const renderCellWithEmptyValue = (row: WorkloadResource, status: string, color: string) => {
-    const value = row[selectedTabBound].stats[status as keyof Stats]
+  const renderCellWithEmptyValue = (
+    row: WorkloadResource,
+    status: string,
+    color: string,
+  ) => {
+    const value = row[selectedTabBound].stats[status as keyof Stats];
     return (
       <Typography
         sx={{
@@ -65,7 +83,7 @@ export const WorkloadList = () => {
       headerName: "Idle port",
       flex: 1,
       enableCheckBox: true,
-      renderCell: ({ row, field, }) =>
+      renderCell: ({ row, field }) =>
         renderCellWithEmptyValue(row, field, "status.warning"),
     },
     {
@@ -73,7 +91,7 @@ export const WorkloadList = () => {
       headerName: "Active port",
       flex: 1,
       enableCheckBox: true,
-      renderCell: ({ row, field, }) =>
+      renderCell: ({ row, field }) =>
         renderCellWithEmptyValue(row, field, "interaction.primaryContrast"),
     },
     {
@@ -88,27 +106,14 @@ export const WorkloadList = () => {
       field: "attempted",
       headerName: "Closed Port Attempted",
       flex: 1,
-      renderCell: ({ row, field, }) =>
+      renderCell: ({ row, field }) =>
         renderCellWithEmptyValue(row, field, "status.danger"),
     },
   ];
 
   const isCheckedPort = useMemo(() => {
-    return Object.values(checkedRows).some((port) =>
-      Object.values(port).includes(true),
-    );
-  }, [checkedRows]);
-
-  const formatCheckedRows = useMemo(() => {
-    return Object.fromEntries(
-      Object.entries(checkedRows).map(([key, value]) => [
-        key,
-        Object.keys(value).filter(
-          (k) => k !== "allChecked" && k !== "isIndeterminate" && value[k],
-        ),
-      ]),
-    );
-  }, [checkedRows]);
+    return closedWorkloads?.length > 0;
+  }, [closedWorkloads]);
 
   const filteredWorkloads = useMemo(() => {
     if (!filteredWorkloadId) {
@@ -117,13 +122,43 @@ export const WorkloadList = () => {
     return workloads.filter((item) => item.uuid === filteredWorkloadId);
   }, [filteredWorkloadId, workloads]);
 
+  const handleSelectionChange = (data: TableSelectionRow[]) => {
+    setClosedWorkloads(data);
+  };
+
   const handleChangeTabBound = (newValue: string) => {
-    setSelectedTabBound(newValue);
-    setCheckedRows({});
+    setSelectedTabBound(newValue as PortDirection);
+    setClosedWorkloads([]);
   };
   const handleConfirmClosePort = () => {
-    closePortModal.close();
-    console.log(formatCheckedRows);
+    setClosePortLoading(true);
+    wasmClosePortsByStatus(
+      closedWorkloads.map((item) => ({
+        workloadUuid: item.id,
+        flag: selectedTabBound === PortDirection.INBOUND ? "0" : "1",
+        status: item.columns,
+      })),
+    )
+      .then(() => {
+        setWorkloadsLoading(true);
+        closePortModal.close();
+        wasmListWorkloads(selectedNamespace).then((data) => {
+          setWorkloads(
+            data.result.map((item) => ({
+              ...item,
+              id: item.uuid,
+            })),
+          );
+          setWorkloadsLoading(false);
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        // TODO: handle error
+      })
+      .finally(() => {
+        setClosePortLoading(false);
+      });
   };
 
   const handleShowDetail = (id: string) => {
@@ -206,16 +241,22 @@ export const WorkloadList = () => {
           loading={workloadsLoading}
           height="calc(100vh - 240px)"
           width="100%"
-          checkedRows={checkedRows}
-          onCheckedRowsChange={setCheckedRows}
+          onCheckedRowsChange={handleSelectionChange}
           onRowClick={(row) => handleShowDetail(String(row.id))}
+          selectionRows={closedWorkloads}
         ></Datagrid>
       </Box>
-      <ModalClosePort
+      <ModalConfirm
         title="Close Selected Ports"
+        description="Closing an port makes the following changes"
+        descriptionDetails={[
+          "Closed ports will no longer be accessible externally.",
+          "To reopen a port, you must manually reset it.",
+        ]}
         open={closePortModal.visible}
         onClose={closePortModal.close}
         onConfirm={handleConfirmClosePort}
+        loading={closePortLoading}
       />
       <WorkloadDetail
         open={detailDrawer.visible}

@@ -1,4 +1,5 @@
-import { Box, Button, CircularProgress } from "@mui/material";
+import { Box } from "@mui/material";
+import { Button } from "@skuber/components";
 
 type ModalFooterProps = {
   cancelButtonTitle?: string;
@@ -58,9 +59,7 @@ export const ModalFooter = ({
             variant="contained"
             size="small"
             disabled={disabled}
-            startIcon={
-              loading ? <CircularProgress size={16} color="inherit" /> : null
-            }
+            loading={loading}
             onClick={onClickConfirmButton}
             sx={{
               color: "text.primary",

@@ -10,6 +10,7 @@ type ModalConfirmProps = {
   title: string;
   description: string;
   descriptionDetails: string[];
+  loading?: boolean;
 };
 
 export const ModalConfirm = ({
@@ -19,6 +20,7 @@ export const ModalConfirm = ({
   title,
   description,
   descriptionDetails,
+  loading,
 }: ModalConfirmProps) => {
   return (
     <Modal width={434} open={open} onClose={onClose}>
@@ -34,6 +36,7 @@ export const ModalConfirm = ({
         confirmButtonTitle="Confirm"
         onClickCancelButton={onClose}
         onClickConfirmButton={onConfirm}
+        loading={loading}
       />
     </Modal>
   );
