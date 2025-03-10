@@ -39,11 +39,13 @@ export const SelectClusterAndNameSpace = () => {
 
   const getClusters = () => {
     wasmListClusters().then((data) => {
-      const newClusters = data.result.map((cluster) => ({
-        value: cluster.id.toString(),
-        label: cluster.clusterName,
-        type: cluster.clusterType,
-      })).sort((a, b) => a.label.localeCompare(b.label));
+      const newClusters = data.result
+        .map((cluster) => ({
+          value: cluster.id.toString(),
+          label: cluster.clusterName,
+          type: cluster.clusterType,
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label));
       setClusterOptions(newClusters);
       setSelectedCluster(newClusters[0]?.value || "");
     });
@@ -57,10 +59,12 @@ export const SelectClusterAndNameSpace = () => {
 
     wasmListNamespace("0")
       .then((data) => {
-        const newNamespaces = data.result.map((namespace) => ({
-          value: namespace.namespaceName,
-          label: namespace.namespaceName,
-        })).sort((a, b) => a.label.localeCompare(b.label));
+        const newNamespaces = data.result
+          .map((namespace) => ({
+            value: namespace.namespaceName,
+            label: namespace.namespaceName,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label));
         setNamespaceOptions(newNamespaces);
         setSelectedNamespace(newNamespaces[0]?.value || "");
       })

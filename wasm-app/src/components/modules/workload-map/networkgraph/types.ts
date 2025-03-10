@@ -1,3 +1,6 @@
+import { Edge, IdType, Network, Node } from "vis-network";
+import { DataSet } from "vis-network/standalone";
+
 import {
   FilterPorts,
   StatsType,
@@ -5,8 +8,6 @@ import {
   WorkloadPortStatus,
   WorkloadStatus,
 } from "@/models";
-import { Edge, IdType, Network, Node } from "vis-network";
-import { DataSet } from "vis-network/standalone";
 export type Coord = {
   x: number;
   y: number;

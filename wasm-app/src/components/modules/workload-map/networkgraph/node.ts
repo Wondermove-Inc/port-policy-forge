@@ -1,4 +1,3 @@
-import { WorkloadPortStatus, WorkloadStatus } from "@/models";
 import {
   color,
   DISABLED_GLOBAL_ALPHA,
@@ -13,6 +12,8 @@ import {
   NodeSize,
 } from "./types";
 
+import { WorkloadPortStatus, WorkloadStatus } from "@/models";
+
 export class NetworkNode {
   ctx: CanvasRenderingContext2D;
   node: CustomNode;
@@ -22,7 +23,7 @@ export class NetworkNode {
     ctx: CanvasRenderingContext2D,
     node: CustomNode,
     canvasImages: CanvasImage,
-    options: DrawingOptions
+    options: DrawingOptions,
   ) {
     this.ctx = ctx;
     this.node = node;
@@ -64,7 +65,7 @@ export class NetworkNode {
           nodeSize / 2 + 24,
           0,
           2 * Math.PI,
-          false
+          false,
         );
         this.ctx.closePath();
         this.ctx.fill();
@@ -77,7 +78,7 @@ export class NetworkNode {
           nodeSize / 2 + 12,
           0,
           2 * Math.PI,
-          false
+          false,
         );
         this.ctx.closePath();
         this.ctx.fill();
@@ -104,7 +105,7 @@ export class NetworkNode {
       this.node.x + 14,
       this.node.y - (this.node?.data?.nodeSize || 0) / 2 - 1,
       EXCLAMATION_SIZE,
-      EXCLAMATION_SIZE
+      EXCLAMATION_SIZE,
     );
     this.ctx.closePath();
   }
@@ -124,7 +125,7 @@ export class NetworkNode {
         this.node.x - deploymentIconSize / 2,
         this.node.y - deploymentIconSize / 2,
         deploymentIconSize,
-        deploymentIconSize
+        deploymentIconSize,
       );
     }
 
@@ -154,14 +155,14 @@ export class NetworkNode {
       label as string,
       labelX,
       this.node.y + nodeSize / 2 + 15,
-      textWidth
+      textWidth,
     );
 
     if (this.node.data?.status === WorkloadStatus.COMPLETE_INITIAL_SETUP) {
       this.ctx.drawImage(
         this.canvasImages.protected,
         this.node.x - textWidth / 2 - protectedAddImageWidth,
-        this.node.y + nodeSize / 2 + 6
+        this.node.y + nodeSize / 2 + 6,
       );
     }
 
@@ -212,7 +213,9 @@ export class NetworkNode {
       this.ctx.font = "bold 10px Arial";
       const portStr = ports[i].total <= 99 ? ports[i].total.toString() : "99+";
       this.ctx.fillStyle =
-        ports[i].status === WorkloadPortStatus.ERROR ? color.white : color.black;
+        ports[i].status === WorkloadPortStatus.ERROR
+          ? color.white
+          : color.black;
       this.ctx.fillText(portStr, x, y);
     }
   }

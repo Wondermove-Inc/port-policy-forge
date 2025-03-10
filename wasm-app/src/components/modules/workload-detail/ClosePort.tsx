@@ -39,12 +39,12 @@ export const ClosePort = ({ data, fetchWorkloadDetail }: ClosePortProps) => {
     const emptyData = data.length === 0;
     return [
       {
-        id: "portNumber",
+        id: "portNumberLabel",
         label: "Number",
         sortable: false,
         width: emptyData ? 112 : 85,
         render: (record: Port) => (
-          <Typography variant="b2_m">{record.portNumber}</Typography>
+          <Typography variant="b2_m">{record.portNumberLabel}</Typography>
         ),
       },
       {

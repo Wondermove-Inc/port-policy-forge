@@ -3,8 +3,8 @@ import { useMemo, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { Button } from "@skuber/components";
 
-import { WorkloadTabs } from "../workload-detail/WorkloadTabs";
 import { WorkloadDetail } from "../workload-detail/WorkloadDetail";
+import { WorkloadTabs } from "../workload-detail/WorkloadTabs";
 
 import {
   Datagrid,

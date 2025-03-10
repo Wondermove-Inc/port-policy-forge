@@ -29,10 +29,12 @@ export const Home = () => {
     wasmListWorkloads(selectedNamespace)
       .then((data) => {
         setWorkloads(
-          data.result.map((item) => ({
-            ...item,
-            id: item.uuid,
-          })).sort((a, b) => a.workloadName.localeCompare(b.workloadName))
+          data.result
+            .map((item) => ({
+              ...item,
+              id: item.uuid,
+            }))
+            .sort((a, b) => a.workloadName.localeCompare(b.workloadName)),
         );
         setWorkloadsLoading(false);
       })

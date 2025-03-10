@@ -58,7 +58,7 @@ export const ModalFooter = ({
           <Button
             variant="contained"
             size="small"
-            disabled={disabled}
+            disabled={disabled || loading}
             loading={loading}
             onClick={onClickConfirmButton}
             sx={{

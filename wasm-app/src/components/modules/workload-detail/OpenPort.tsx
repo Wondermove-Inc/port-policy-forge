@@ -8,18 +8,21 @@ import { useForm } from "react-hook-form";
 import { PortSettingModal } from "./_PortSettingModal";
 import { PortDetail } from "./PortDetail";
 
+import { ModalConfirm } from "@/components/atoms/ModalConfirm";
 import { AddIcon } from "@/components/icons/AddIcon";
 import { EditIcon } from "@/components/icons/EditIcon";
 import { BadgePortStatus } from "@/components/modules/common/BadgePortStatus";
 import { CollapsibleTable } from "@/components/modules/common/CollapsibleTable";
-import { ModalClosePort } from "@/components/modules/common/ModalClosePort";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import {
   AccessPolicy,
   Port,
   PortAccessSettingForm,
   PortDirection,
+  PortRangeType,
 } from "@/models";
+import { wasmCloseOpenedPort } from "@/services/closeOpenedPort";
+import { getPortNumberValue } from "@/utils";
 import { formatNumber } from "@/utils/format";
 import { openPortSchema } from "@/validations";
 
@@ -27,17 +30,20 @@ type OpenPortProps = {
   data: Port[];
   portDirection: PortDirection;
   fetchWorkloadDetail: () => void;
+  workloadUuid: string;
 };
 
 export const OpenPort = ({
   data,
   portDirection,
   fetchWorkloadDetail,
+  workloadUuid,
 }: OpenPortProps) => {
   const openPortModal = useDisclosure();
   const closePortModal = useDisclosure();
 
-  const [recordSelected, setRecordSelected] = useState<Port | null>(null);
+  const [selectedPort, setSelectedPort] = useState<Port | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const isInbound = portDirection === PortDirection.INBOUND;
 
@@ -63,12 +69,12 @@ export const OpenPort = ({
   const columns = useMemo(
     () => [
       {
-        id: "portNumber",
+        id: "portNumberLabel",
         label: "Number",
         sortable: false,
         width: isInbound ? 80 : 70,
         render: (record: Port) => (
-          <Typography variant="b2_m">{record.portNumber}</Typography>
+          <Typography variant="b2_m">{record.portNumberLabel}</Typography>
         ),
       },
       {
@@ -104,7 +110,7 @@ export const OpenPort = ({
             <EditIcon
               size={16}
               sx={{ cursor: "pointer" }}
-              onClick={() => handleEdit(record)}
+              onClick={() => openEditPortModal(record)}
             />
           </Box>
         ),
@@ -117,12 +123,12 @@ export const OpenPort = ({
         sx: {
           textAlign: "center",
         },
-        render: () => (
+        render: (record: Port) => (
           <Typography
             variant="b2_r"
             color="primary.dark"
             sx={{ cursor: "pointer" }}
-            onClick={closePortModal.open}
+            onClick={() => openClosePortModal(record)}
           >
             Close
           </Typography>
@@ -132,27 +138,62 @@ export const OpenPort = ({
     [portDirection],
   );
 
-  const handleEdit = (record: Port) => {
-    setRecordSelected(record);
+  const openClosePortModal = (record: Port) => {
+    setSelectedPort(record);
+    closePortModal.open();
+  };
+
+  const openEditPortModal = (record: Port) => {
+    setSelectedPort(record);
     openPortModal.open();
   };
 
-  const handleClose = () => {
-    setRecordSelected(null);
+  const handleEditPortClose = () => {
+    setSelectedPort(null);
     form.reset();
     openPortModal.close();
   };
 
-  const handleSubmit = () => {
+  const handlePortEdit = () => {
     // TODO
     fetchWorkloadDetail();
-    handleClose();
+    handleEditPortClose();
   };
 
   const handlePortClose = () => {
-    // TODO
-    fetchWorkloadDetail();
-    closePortModal.close();
+    if (!selectedPort) {
+      return;
+    }
+    setLoading(true);
+    console.log({
+      workloadUuid: workloadUuid,
+      flag: selectedPort?.direction === PortDirection.INBOUND ? 0 : 1,
+      portSpec: getPortNumberValue({
+        isRange: selectedPort.isRange,
+        portRange: selectedPort.portRange as PortRangeType,
+        portNumber: selectedPort.portNumber,
+      }),
+    });
+    wasmCloseOpenedPort({
+      workloadUuid: workloadUuid,
+      flag: selectedPort?.direction === PortDirection.INBOUND ? 0 : 1,
+      portSpec: getPortNumberValue({
+        isRange: selectedPort.isRange,
+        portRange: selectedPort.portRange as PortRangeType,
+        portNumber: selectedPort.portNumber,
+      }),
+    })
+      .then(() => {
+        fetchWorkloadDetail();
+        closePortModal.close();
+      })
+      .catch((error) => {
+        // TODO: handle error
+        alert(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -204,16 +245,23 @@ export const OpenPort = ({
       />
       <PortSettingModal
         isOpen={openPortModal.visible}
-        handleClose={handleClose}
-        handleSubmit={handleSubmit}
-        port={recordSelected}
+        handleClose={handleEditPortClose}
+        handleSubmit={handlePortEdit}
+        port={selectedPort}
         isInbound={isInbound}
         form={form}
       />
-      <ModalClosePort
+      <ModalConfirm
         open={closePortModal.visible}
         onClose={closePortModal.close}
         onConfirm={handlePortClose}
+        title="Close ports "
+        description="Closing an port makes the following changes"
+        descriptionDetails={[
+          "Closed ports will no longer be accessible externally.",
+          "To reopen a port, you must manually reset it.",
+        ]}
+        loading={loading}
       />
     </Box>
   );

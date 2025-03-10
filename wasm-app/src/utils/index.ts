@@ -1,6 +1,6 @@
 import { AccessPolicy, PortKind, PortRisk, WorkloadKind } from "@/models";
 
-export const getPortNumber = ({
+export const getPortNumberLabel = ({
   isRange,
   portRange,
   portNumber,
@@ -10,12 +10,30 @@ export const getPortNumber = ({
     start: string;
     end: string;
   };
-  portNumber: string | number | null;
+  portNumber: number | null;
 }) => {
   if (isRange && portRange) {
     return `${portRange.start} ~ ${portRange.end}`;
   }
-  return portNumber;
+  return portNumber ? `${portNumber}` : "";
+};
+
+export const getPortNumberValue = ({
+  isRange,
+  portRange,
+  portNumber,
+}: {
+  isRange: boolean;
+  portRange: {
+    start: string;
+    end: string;
+  };
+  portNumber: number | null;
+}) => {
+  if (isRange && portRange) {
+    return `${portRange.start}-${portRange.end}`;
+  }
+  return portNumber ? `${portNumber}` : "";
 };
 
 export const getAccessLabel = (access: string) => {

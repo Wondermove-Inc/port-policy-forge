@@ -39,19 +39,21 @@ export type SourceType = {
 export type Port = {
   id: number;
   isRange: boolean;
-  portNumber: number | string | null;
+  portNumber: number | null;
+  portNumberLabel: string;
   portRange: PortRangeType | null;
   status: number;
+  direction: string;
+  accessPolicy?: AccessPolicy;
+  accessSources: SourceType[] | null;
   isOpen: boolean;
   risk: number;
-  type: string;
   count: number | null;
   lastConnectionDate: string | null;
   lastConnectionEndpoint: string | null;
   lastConnectionLog: string | null;
-  accessSources: SourceType[] | null;
+  lastConnectionWorkloadUUID: string | null;
   sourceNumber?: number | null;
-  accessPolicy?: AccessPolicy;
 };
 
 export type PortAccessSettingForm = {
@@ -113,7 +115,7 @@ export enum WorkloadPortStatus {
 
 export enum WorkloadPortStatusText {
   SYSTEM = "system",
-  IDLE = "edle",
+  IDLE = "idle",
   ACTIVE = "active",
   ERROR = "error",
   ATTEMPT = "attempt",
@@ -134,4 +136,4 @@ export type FilterPorts = {
   error: boolean;
   attempted: boolean;
   idle: boolean;
-}
+};

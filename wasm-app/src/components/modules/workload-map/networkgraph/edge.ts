@@ -1,4 +1,5 @@
 import { IdType } from "vis-network";
+
 import {
   ARROW_SIZE,
   color,
@@ -12,6 +13,7 @@ import {
   LINE_WIDTH,
 } from "./constants";
 import { CanvasImage, CustomEdge, DrawingOptions, NodeSize } from "./types";
+
 import { WorkloadPortStatus } from "@/models";
 
 export class NetworkEdge {
@@ -143,7 +145,7 @@ export class NetworkEdge {
       -SIZE / 2,
       -SIZE / 2,
       SIZE,
-      SIZE
+      SIZE,
     );
     this.ctx.fillStyle = color.white;
     this.ctx.restore();
@@ -188,7 +190,7 @@ export class NetworkEdge {
       -LABEL_RECT_HEIGHT / 2,
       LABEL_RECT_WIDTH,
       LABEL_RECT_HEIGHT,
-      LABEL_BORDER_RADIUS
+      LABEL_BORDER_RADIUS,
     );
 
     this.ctx.strokeStyle = style.borderColor;
@@ -206,7 +208,7 @@ export class NetworkEdge {
     y: number,
     width: number,
     height: number,
-    radius: number
+    radius: number,
   ) {
     this.ctx.beginPath();
     this.ctx.moveTo(x + radius, y);
@@ -218,7 +220,7 @@ export class NetworkEdge {
       y + height,
       x + width - radius,
       y + height,
-      radius
+      radius,
     );
     this.ctx.lineTo(x + radius, y + height);
     this.ctx.arcTo(x, y + height, x, y + height - radius, radius);
@@ -263,7 +265,7 @@ export class NetworkEdge {
       -ARROW_SIZE / 2,
       -ARROW_SIZE / 2,
       ARROW_SIZE,
-      ARROW_SIZE
+      ARROW_SIZE,
     );
     this.ctx.restore();
     this.ctx.globalAlpha = GLOBAL_ALPHA;

@@ -1,4 +1,5 @@
 import { IdType } from "vis-network";
+
 import { NetworkEdge } from "./edge";
 import { NetworkNode } from "./node";
 import { CanvasImage, CustomNetwork } from "./types";
@@ -44,7 +45,7 @@ export const networkDrawing = (
   options?: {
     hoverNodeId?: string;
     activeEdgeId?: string;
-  }
+  },
 ) => {
   if (!canvasImages || !network) {
     return;

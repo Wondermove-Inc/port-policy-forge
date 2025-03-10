@@ -1,10 +1,11 @@
 import { Position } from "vis-network";
+
 import { Coord } from "./types";
 
 export function calculatePositionAlongEdge(
   clickPos: Coord,
   fromPos: Position,
-  toPos: Position
+  toPos: Position,
 ) {
   const edgeVector = {
     x: toPos.x - fromPos.x,
@@ -15,7 +16,7 @@ export function calculatePositionAlongEdge(
     y: clickPos.y - fromPos.y,
   };
   const edgeLength = Math.sqrt(
-    edgeVector.x * edgeVector.x + edgeVector.y * edgeVector.y
+    edgeVector.x * edgeVector.x + edgeVector.y * edgeVector.y,
   );
   const dotProduct =
     (clickVector.x * edgeVector.x + clickVector.y * edgeVector.y) / edgeLength;

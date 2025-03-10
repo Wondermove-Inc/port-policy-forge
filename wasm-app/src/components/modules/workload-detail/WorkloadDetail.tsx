@@ -17,7 +17,7 @@ import { useCommonStore } from "@/store";
 import {
   getAccessLabel,
   getPortKindLabel,
-  getPortNumber,
+  getPortNumberLabel,
   getWorkloadKindLabel,
 } from "@/utils";
 import {
@@ -123,7 +123,7 @@ export const WorkloadDetail = ({
       ports: {
         open: workloadDetail[direction].ports.open.map((el) => ({
           ...el,
-          portNumber: getPortNumber({
+          portNumberLabel: getPortNumberLabel({
             isRange: el.isRange,
             portRange: el.portRange as PortRangeType,
             portNumber: el.portNumber,
@@ -182,6 +182,7 @@ export const WorkloadDetail = ({
             data={workloadDetail[portDirection].ports.open}
             portDirection={portDirection}
             fetchWorkloadDetail={fetchWorkloadDetail}
+            workloadUuid={workloadDetail.uuid}
           />
           <ClosePort
             data={workloadDetail[portDirection].ports.closed}

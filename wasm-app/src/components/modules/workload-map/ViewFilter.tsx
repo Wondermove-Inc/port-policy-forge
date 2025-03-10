@@ -5,8 +5,8 @@ import { Toggle, Typography } from "@skuber/components";
 
 import { CloseIcon } from "@/components/icons/CloseIcon";
 import { EyeIcon } from "@/components/icons/EyeIcon";
-import { FilterPorts } from "@/components/modules/workload-map/networkgraph/types";
 import { SearchComplete } from "@/components/modules/common/SearchComplete";
+import { FilterPorts } from "@/components/modules/workload-map/networkgraph/types";
 import { useCommonStore } from "@/store";
 
 type ViewFilterProps = {

@@ -1,5 +1,6 @@
-import { WorkloadPortStatus } from "@/models";
 import { EdgeStyle } from "./types";
+
+import { WorkloadPortStatus } from "@/models";
 
 export const color = {
   white: "#fff",

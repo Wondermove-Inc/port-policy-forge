@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+
 import { IdType, Network } from "vis-network";
+
+import { NetworkEdge } from "./edge";
 import { ImageLoader } from "./imageLoader";
+import { createNetworkOptions } from "./network";
+import { NetworkNode } from "./node";
 import {
   CanvasImage,
   EdgeData,
@@ -9,10 +14,8 @@ import {
   NetworkNodeData,
   DrawingOptions,
 } from "./types";
-import { NetworkEdge } from "./edge";
-import { NetworkNode } from "./node";
 import { calculatePositionAlongEdge } from "./utils";
-import { createNetworkOptions } from "./network";
+
 import { FilterPorts } from "@/models";
 
 let network: CustomNetwork | null = null;
@@ -63,7 +66,7 @@ const NetworkGraph = ({
       network = new Network(
         containerRef.current,
         data,
-        options
+        options,
       ) as CustomNetwork;
     }
     if (activeNodeId) {
@@ -160,7 +163,7 @@ const NetworkGraph = ({
             const clickRatio = calculatePositionAlongEdge(
               clickPosition,
               fromNodePos,
-              toNodePos
+              toNodePos,
             );
             if (clickRatio > 0.42 && clickRatio < 0.58) {
               onEdgeDisconnected?.(edge.id as string);
@@ -200,7 +203,7 @@ const NetworkGraph = ({
 const handleAfterDrawing = (
   ctx: CanvasRenderingContext2D,
   canvasImages: CanvasImage,
-  options?: DrawingOptions
+  options?: DrawingOptions,
 ) => {
   if (!canvasImages || !network) {
     return;
