@@ -36,12 +36,25 @@ const (
 	COMPLETE_SETUP    WorkloadStatus = "complete-setup"
 )
 
+type WorkloadKind string
+
+const (
+	WORKLOAD_KIND_DEPLOYMENT  WorkloadKind = "deployment"
+	WORKLOAD_KIND_DEMONSET    WorkloadKind = "demonset"
+	WORKLOAD_KIND_REPLICASET  WorkloadKind = "replicaset"
+	WORKLOAD_KIND_CRONJOB     WorkloadKind = "cronjob"
+	WORKLOAD_KIND_JOB         WorkloadKind = "job"
+	WORKLOAD_KIND_STATEFULSET WorkloadKind = "statefulset"
+	WORKLOAD_KIND_ETC         WorkloadKind = "etc"
+	WORKLOAD_KIND_EXTERNAL    WorkloadKind = "external"
+)
+
 type Workload struct {
 	UUID                    string         `json:"uuid"`
 	WorkloadName            string         `json:"workloadName"`
 	ConnectedWorkloadStatus WorkloadStatus `json:"connected_workload_status"`
 	PolicySettingBadge      bool           `json:"policy_setting_badge"`
-	Kind                    string         `json:"kind"`
+	Kind                    WorkloadKind   `json:"kind"`
 	Usage                   float64        `json:"usage"` // CPU Usage (e.g 70%: 0.7, 50%: 0.5)
 	From                    []Relation     `json:"from"`
 	To                      []Relation     `json:"to"`
@@ -144,11 +157,11 @@ type Stats struct {
 }
 
 type WorkloadDetail struct {
-	UUID         string      `json:"uuid"`
-	WorkloadName string      `json:"workloadName"`
-	Kind         string      `json:"kind"`
-	Inbound      TrafficInfo `json:"inbound"`
-	Outbound     TrafficInfo `json:"outbound"`
+	UUID         string       `json:"uuid"`
+	WorkloadName string       `json:"workloadName"`
+	Kind         WorkloadKind `json:"kind"`
+	Inbound      TrafficInfo  `json:"inbound"`
+	Outbound     TrafficInfo  `json:"outbound"`
 }
 
 type TrafficInfo struct {
