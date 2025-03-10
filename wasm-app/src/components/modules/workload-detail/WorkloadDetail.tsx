@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
-import { ClosePort } from "./workload-detail/ClosePort";
-import { OpenPort } from "./workload-detail/OpenPort";
-import { PolicyApplication } from "./workload-detail/PolicyApplication";
-import { WorkloadSummary } from "./workload-detail/WorkloadSummary";
-import { WorkloadTabs } from "./workload-detail/WorkloadTabs";
+import { ClosePort } from "./ClosePort";
+import { OpenPort } from "./OpenPort";
+import { PolicyApplication } from "./PolicyApplication";
+import { WorkloadSummary } from "./WorkloadSummary";
+import { WorkloadTabs } from "./WorkloadTabs";
 
 import { Drawer } from "@/components/atoms/Drawer";
 import { INITIAL_WORKLOAD_DETAIL } from "@/constants";

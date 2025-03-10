@@ -2,16 +2,16 @@ import { useEffect, useRef, useState } from "react";
 
 import { Box } from "@mui/material";
 
-import { WorkloadDetail } from "./WorkloadDetail";
+import { WorkloadDetail } from "../workload-detail/WorkloadDetail";
 
-import NetworkGraph from "@/components/modules/networkgraph/networkGraph";
+import NetworkGraph from "@/components/modules/workload-map/networkgraph/networkGraph";
 import {
   CustomNetwork,
   EdgeData,
   NodeData,
   NodeSize,
-} from "@/components/modules/networkgraph/types";
-import { ViewFilter } from "@/components/pages/home/workload-map/ViewFilter";
+} from "@/components/modules/workload-map/networkgraph/types";
+import { ViewFilter } from "@/components/modules/workload-map/ViewFilter";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { ModalConfirm } from "@/components/atoms/ModalConfirm";
 import { useCommonStore } from "@/store";

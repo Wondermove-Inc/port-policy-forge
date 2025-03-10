@@ -2,7 +2,7 @@ import {
   EdgeStatus,
   NodeKind,
   NodeStatus,
-} from "@/components/modules/networkgraph/types";
+} from "@/components/modules/workload-map/networkgraph/types";
 
 export const clusters = [
   { id: "cluster1", name: "Cluster1", type: "aks" },

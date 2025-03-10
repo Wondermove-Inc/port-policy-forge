@@ -8,7 +8,7 @@ import { PortDetail } from "./PortDetail";
 import { ModalConfirm } from "@/components/atoms/ModalConfirm";
 import { CloseIcon } from "@/components/icons/CloseIcon";
 import { WarningIcon } from "@/components/icons/WarningIcon";
-import { CollapsibleTable } from "@/components/modules/CollapsibleTable";
+import { CollapsibleTable } from "@/components/modules/common/CollapsibleTable";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { Port, PortRisk } from "@/models";
 import { getPortRiskLabel } from "@/utils";

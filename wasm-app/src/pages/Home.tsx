@@ -2,10 +2,10 @@ import { useEffect } from "react";
 
 import { Box } from "@mui/material";
 
-import { SelectClusterAndNameSpace } from "@/components/modules/SelectClusterAndNameSpace";
-import { TabsViewMode } from "@/components/modules/TabsViewMode";
-import { WorkloadList } from "@/components/pages/home/WorkloadList";
-import { WorkloadMap } from "@/components/pages/home/WorkloadMap";
+import { SelectClusterAndNameSpace } from "@/components/modules/common/SelectClusterAndNameSpace";
+import { TabsViewMode } from "@/components/modules/common/TabsViewMode";
+import { WorkloadList } from "@/components/modules/workload-list/WorkloadList";
+import { WorkloadMap } from "@/components/modules/workload-map/WorkloadMap";
 import { wasmListWorkloads } from "@/services/listWorkloads";
 import { useCommonStore } from "@/store";
 

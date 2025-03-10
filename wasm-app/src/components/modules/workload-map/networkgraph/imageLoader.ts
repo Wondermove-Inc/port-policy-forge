@@ -1,17 +1,17 @@
 import { CanvasImage } from "./types";
-import WorkloadArrowIcon from "../../../assets/icons/workload-arrow.svg?inline";
-import WorkloadDeploymentIcon from "../../../assets/icons/workload-kind-deployment.svg?inline";
-import WorkloadDemonsetIcon from "../../../assets/icons/workload-kind-demonset.svg?inline";
-import WorkloadReplicasetIcon from "../../../assets/icons/workload-kind-replicaset.svg?inline";
-import WorkloadCronjobIcon from "../../../assets/icons/workload-kind-cronjob.svg?inline";
-import WorkloadJobIcon from "../../../assets/icons/workload-kind-job.svg?inline";
-import WorkloadStatefulsetIcon from "../../../assets/icons/workload-kind-statefulset.svg?inline";
-import WorkloadEtcIcon from "../../../assets/icons/workload-kind-etc.svg?inline";
-import WorkloadExternalIcon from "../../../assets/icons/workload-kind-external.svg?inline";
+import WorkloadArrowIcon from "@/assets/icons/workload-arrow.svg?inline";
+import WorkloadDeploymentIcon from "@/assets/icons/workload-kind-deployment.svg?inline";
+import WorkloadDemonsetIcon from "@/assets/icons/workload-kind-demonset.svg?inline";
+import WorkloadReplicasetIcon from "@/assets/icons/workload-kind-replicaset.svg?inline";
+import WorkloadCronjobIcon from "@/assets/icons/workload-kind-cronjob.svg?inline";
+import WorkloadJobIcon from "@/assets/icons/workload-kind-job.svg?inline";
+import WorkloadStatefulsetIcon from "@/assets/icons/workload-kind-statefulset.svg?inline";
+import WorkloadEtcIcon from "@/assets/icons/workload-kind-etc.svg?inline";
+import WorkloadExternalIcon from "@/assets/icons/workload-kind-external.svg?inline";
 
-import WorkloadExclamationIcon from "../../../assets/icons/workload-exclamation.svg?inline";
-import WorkloadProtectedIcon from "../../../assets/icons/workload-protected.svg?inline";
-import WorkloadLineConnectedIcon from "../../../assets/icons/workload-line-connected.svg?inline";
+import WorkloadExclamationIcon from "@/assets/icons/workload-exclamation.svg?inline";
+import WorkloadProtectedIcon from "@/assets/icons/workload-protected.svg?inline";
+import WorkloadLineConnectedIcon from "@/assets/icons/workload-line-connected.svg?inline";
 import { color } from "./constants";
 
 export class ImageLoader {

@@ -3,8 +3,8 @@ import { useMemo, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { Button } from "@skuber/components";
 
-import { WorkloadTabs } from "./workload-detail/WorkloadTabs";
-import { WorkloadDetail } from "./WorkloadDetail";
+import { WorkloadTabs } from "../workload-detail/WorkloadTabs";
+import { WorkloadDetail } from "../workload-detail/WorkloadDetail";
 
 import {
   Datagrid,
@@ -13,7 +13,7 @@ import {
 } from "@/components/atoms/Datagrid";
 import { ModalConfirm } from "@/components/atoms/ModalConfirm";
 import { CheckBoxIcon } from "@/components/icons/CheckBoxIcon";
-import { SearchComplete } from "@/components/modules/SearchComplete";
+import { SearchComplete } from "@/components/modules/common/SearchComplete";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { PortDirection, Stats } from "@/models";
 import { wasmClosePortsByStatus } from "@/services/closePortsByStatus";

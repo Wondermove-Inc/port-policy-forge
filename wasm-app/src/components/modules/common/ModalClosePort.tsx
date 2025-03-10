@@ -1,4 +1,4 @@
-import { ModalConfirm } from "../atoms/ModalConfirm";
+import { ModalConfirm } from "../../atoms/ModalConfirm";
 
 type ModalClosePortProps = {
   open: boolean;

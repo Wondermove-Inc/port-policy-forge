@@ -10,9 +10,9 @@ import { PortDetail } from "./PortDetail";
 
 import { AddIcon } from "@/components/icons/AddIcon";
 import { EditIcon } from "@/components/icons/EditIcon";
-import { BadgePortStatus } from "@/components/modules/BadgePortStatus";
-import { CollapsibleTable } from "@/components/modules/CollapsibleTable";
-import { ModalClosePort } from "@/components/modules/ModalClosePort";
+import { BadgePortStatus } from "@/components/modules/common/BadgePortStatus";
+import { CollapsibleTable } from "@/components/modules/common/CollapsibleTable";
+import { ModalClosePort } from "@/components/modules/common/ModalClosePort";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import {
   AccessPolicy,
