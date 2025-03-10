@@ -32,7 +32,7 @@ export const Home = () => {
           data.result.map((item) => ({
             ...item,
             id: item.uuid,
-          })),
+          })).sort((a, b) => a.workloadName.localeCompare(b.workloadName))
         );
         setWorkloadsLoading(false);
       })

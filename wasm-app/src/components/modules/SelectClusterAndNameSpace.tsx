@@ -43,7 +43,7 @@ export const SelectClusterAndNameSpace = () => {
         value: cluster.id.toString(),
         label: cluster.clusterName,
         type: cluster.clusterType,
-      }));
+      })).sort((a, b) => a.label.localeCompare(b.label));
       setClusterOptions(newClusters);
       setSelectedCluster(newClusters[0]?.value || "");
     });
@@ -60,7 +60,7 @@ export const SelectClusterAndNameSpace = () => {
         const newNamespaces = data.result.map((namespace) => ({
           value: namespace.namespaceName,
           label: namespace.namespaceName,
-        }));
+        })).sort((a, b) => a.label.localeCompare(b.label));
         setNamespaceOptions(newNamespaces);
         setSelectedNamespace(newNamespaces[0]?.value || "");
       })
