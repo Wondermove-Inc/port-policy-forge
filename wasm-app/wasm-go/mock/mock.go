@@ -42,12 +42,9 @@ var MockWorkloads = map[string][]model.Workload{
 			Usage:                   0.7, // 70% CPU usage
 			From: []model.Relation{
 				{WorkloadId: "7f2552b4-ab40-4120-a6d9-16507024922b", Status: 4},
-				{WorkloadId: "1b8892b1-58bc-464f-9401-b31eb2a9db99", Status: 4},
+				{WorkloadId: "e7b5421a-e185-44e7-bd82-cdde1b60ff2a", Status: 4},
 			},
-			To: []model.Relation{
-				{WorkloadId: "afbcb3d5-67e8-4f4b-9d8f-f0f124abc2f2", Status: 2},
-				{WorkloadId: "b726573d-4914-42ab-be5e-fb1daecec08b", Status: 2},
-			},
+			To: []model.Relation{},
 			Inbound: model.TrafficStats{
 				Stats: model.Stats{
 					Active:      1,
@@ -80,7 +77,7 @@ var MockWorkloads = map[string][]model.Workload{
 			Usage:                   0.5, // 50% CPU usage
 			From:                    []model.Relation{},
 			To: []model.Relation{
-				{WorkloadId: "7431bb4f-cae8-4dbe-a542-d6f52c893271", Status: 4},
+				{WorkloadId: "ebc762a3-54d7-4837-add6-8f42392a6bc7", Status: 4},
 			},
 			Inbound: model.TrafficStats{
 				Stats: model.Stats{
@@ -582,18 +579,18 @@ var MockWorkloadDetails = map[string]model.WorkloadDetail{
 			Ports: model.PortDetailGroup{
 				Open: []model.Port{
 					{
-						ID:                          0,
-						IsRange:                     false,
-						PortNumber:                  utils.IntPtr(8080),
-						Status:                      utils.IntPtr(1), // active
-						Direction:                   "inbound",
-						IsOpen:                      true,
-						Count:                       3,
-						AccessPolicy:                model.AllOW_All_ACCESS,
-						LastConnectionDate:          "2023-03-21T10:15:00+09:00",
-						LastConnectionEndpoint:      "192.168.1.101",
-						LastConnectionLog:           "192.168.10.101:34562 -> 172.16.0.236:8080 (TCP Flags: ACK)",
-						LasstConnectionWorkloadUUID: "7f2552b4-ab40-4120-a6d9-16507024922b",
+						ID:                         0,
+						IsRange:                    false,
+						PortNumber:                 utils.IntPtr(8080),
+						Status:                     utils.IntPtr(1), // active
+						Direction:                  "inbound",
+						IsOpen:                     true,
+						Count:                      3,
+						AccessPolicy:               model.AllOW_All_ACCESS,
+						LastConnectionDate:         "2023-03-21T10:15:00+09:00",
+						LastConnectionEndpoint:     "192.168.1.101",
+						LastConnectionLog:          "192.168.10.101:34562 -> 172.16.0.236:8080 (TCP Flags: ACK)",
+						LastConnectionWorkloadUUID: "e7b5421a-e185-44e7-bd82-cdde1b60ff2a",
 					},
 					{
 						ID:           1,
@@ -638,17 +635,18 @@ var MockWorkloadDetails = map[string]model.WorkloadDetail{
 				},
 				Closed: []model.Port{
 					{
-						ID:                     4,
-						IsRange:                false,
-						PortNumber:             utils.IntPtr(8082),
-						Status:                 nil,
-						Direction:              "inbound",
-						IsOpen:                 false,
-						Risk:                   utils.IntPtr(2),
-						Count:                  10,
-						LastConnectionDate:     "2023-03-21T10:20:00+09:00",
-						LastConnectionEndpoint: "192.168.1.102",
-						LastConnectionLog:      "remote-node -> 172.16.0.236:8082 (health)",
+						ID:                         4,
+						IsRange:                    false,
+						PortNumber:                 utils.IntPtr(8082),
+						Status:                     nil,
+						Direction:                  "inbound",
+						IsOpen:                     false,
+						Risk:                       utils.IntPtr(2),
+						Count:                      10,
+						LastConnectionDate:         "2023-03-21T10:20:00+09:00",
+						LastConnectionEndpoint:     "192.168.1.102",
+						LastConnectionLog:          "remote-node -> 172.16.0.236:8082 (health)",
+						LastConnectionWorkloadUUID: "7f2552b4-ab40-4120-a6d9-16507024922b",
 					},
 				},
 			},

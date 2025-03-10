@@ -143,7 +143,7 @@ type Port struct {
 	LastConnectionLog interface{} `json:"lastConnectionLog"`
 
 	// Workload UUID of the last connection (string or null).
-	LasstConnectionWorkloadUUID interface{} `json:"lastConnectionWorkloadUUID"`
+	LastConnectionWorkloadUUID interface{} `json:"lastConnectionWorkloadUUID"`
 }
 
 type Stats struct {

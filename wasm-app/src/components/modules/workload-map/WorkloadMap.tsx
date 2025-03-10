@@ -23,7 +23,7 @@ export const WorkloadMap = () => {
   const [networkGraphRenderKey, setNetworkGraphRenderKey] = useState<number>(
     new Date().getTime()
   );
-  const { workloads } = useCommonStore();
+  const { workloads, portHover } = useCommonStore();
   const initFilterPorts: FilterPorts = {
     attempted: true,
     error: true,
@@ -146,6 +146,7 @@ export const WorkloadMap = () => {
         nodes={nodes}
         filterPorts={filterPorts}
         activeNodeId={activeNodeId}
+        portHover={portHover}
         setNetwork={setNetwork}
         onEdgeDisconnected={handleEdgeDisconnected}
         onNodeSelected={handleOnNodeSelected}

@@ -4,7 +4,6 @@ import { IdType, Network } from "vis-network";
 
 import { NetworkEdge } from "./edge";
 import { ImageLoader } from "./imageLoader";
-import { createNetworkOptions } from "./network";
 import { NetworkNode } from "./node";
 import {
   CanvasImage,
@@ -15,8 +14,8 @@ import {
   DrawingOptions,
 } from "./types";
 import { calculatePositionAlongEdge } from "./utils";
-
-import { FilterPorts } from "@/models";
+import { createNetworkOptions } from "./network";
+import { FilterPorts, Port } from "@/models";
 
 let network: CustomNetwork | null = null;
 
@@ -25,6 +24,7 @@ export type NetworkGraphProps = {
   edges: EdgeData[];
   activeNodeId: string;
   filterPorts?: FilterPorts;
+  portHover: Port | null;
   onEdgeDisconnected?: (edgeId: string) => void;
   onNodeSelected?: (nodeId: string) => void;
   setNetwork: (n: CustomNetwork) => void;
@@ -35,6 +35,7 @@ const NetworkGraph = ({
   nodes,
   activeNodeId,
   filterPorts,
+  portHover,
   onNodeSelected,
   onEdgeDisconnected,
   setNetwork,
@@ -84,11 +85,13 @@ const NetworkGraph = ({
           activeNodeId: activeNodeId,
           activeEdgeId: activeEdgeId,
           filterPorts: filterPorts,
+          portHover,
         });
       } else {
         handleAfterDrawing(ctx, canvasImages, {
           activeEdgeId: activeEdgeId,
           filterPorts: filterPorts,
+          portHover,
         });
       }
     });
@@ -105,6 +108,7 @@ const NetworkGraph = ({
           hoverNodeId: params.node,
           activeEdgeId: activeEdgeId,
           filterPorts: filterPorts,
+          portHover,
         });
       });
     });
@@ -120,6 +124,7 @@ const NetworkGraph = ({
         handleAfterDrawing(ctx, canvasImages, {
           activeEdgeId: activeEdgeId,
           filterPorts: filterPorts,
+          portHover,
         });
       });
     });
@@ -181,7 +186,7 @@ const NetworkGraph = ({
       network?.off("blurNode");
       network?.off("click");
     };
-  }, [canvasImages, edges, nodes, activeNodeId, activeEdgeId, filterPorts]);
+  }, [canvasImages, edges, nodes, activeNodeId, activeEdgeId, filterPorts, portHover]);
 
   useEffect(() => {
     return () => {
@@ -235,9 +240,7 @@ const handleAfterDrawing = (
     const edge = networkEdges[edgeId];
     const networkEdge = new NetworkEdge(ctx, edge, canvasImages, {
       connectedEdges: connectedEdges,
-      hoverNodeId: options?.hoverNodeId,
-      activeNodeId: options?.activeNodeId,
-      activeEdgeId: options?.activeEdgeId,
+      ...options,
     });
     networkEdge.draw();
   }
@@ -246,9 +249,7 @@ const handleAfterDrawing = (
     const edge = networkEdges[edgeId];
     const networkEdge = new NetworkEdge(ctx, edge, canvasImages, {
       connectedEdges: connectedEdges,
-      hoverNodeId: options?.hoverNodeId,
-      activeNodeId: options?.activeNodeId,
-      activeEdgeId: options?.activeEdgeId,
+      ...options,
     });
     networkEdge.drawLabel();
   }
@@ -256,11 +257,9 @@ const handleAfterDrawing = (
   for (const nodeId in networkNodes) {
     const node = networkNodes[nodeId];
     const networkNode = new NetworkNode(ctx, node, canvasImages, {
-      hoverNodeId: options?.hoverNodeId,
-      activeNodeId: options?.activeNodeId,
-      filterPorts: options?.filterPorts,
       connectedEdges: connectedEdges,
       connectedNodes: connectedNodes,
+      ...options,
     });
     networkNode.draw();
   }

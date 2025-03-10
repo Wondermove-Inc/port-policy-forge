@@ -50,14 +50,25 @@ export class NetworkNode {
   }
 
   private drawNodeBackground() {
-    const activeNodeId = this.options?.hoverNodeId || this.options.activeNodeId;
-    const isActive = !!activeNodeId;
+    const isHover =
+      !!this.options?.hoverNodeId && this.options.hoverNodeId === this.node.id;
+    const isActive =
+      !!this.options.activeNodeId && this.options.activeNodeId === this.node.id;
+    const isActiveLastConnection =
+      !!this.options.portHover &&
+      this.options.portHover.lastConnectionWorkloadUUID === this.node.id;
+    const isPortClosed =
+      !!this.options.portHover && !this.options.portHover.isOpen;
     this.ctx.lineWidth = 2;
     const nodeSize = this.node?.data?.nodeSize || 0;
 
-    if (isActive && activeNodeId === this.node.id) {
-      if (!!this.options?.hoverNodeId) {
-        this.ctx.fillStyle = color.fill.interaction100;
+    if (isHover || isActive || isActiveLastConnection) {
+      if (isHover || isActiveLastConnection) {
+        if (isActiveLastConnection && isPortClosed) {
+          this.ctx.fillStyle = color.fill.errorInteraction100;
+        } else {
+          this.ctx.fillStyle = color.fill.activeInteraction100;
+        }
         this.ctx.beginPath();
         this.ctx.arc(
           this.node.x,
@@ -69,8 +80,11 @@ export class NetworkNode {
         );
         this.ctx.closePath();
         this.ctx.fill();
-
-        this.ctx.fillStyle = color.fill.interaction200;
+        if (isActiveLastConnection && isPortClosed) {
+          this.ctx.fillStyle = color.fill.errorInteraction200;
+        } else {
+          this.ctx.fillStyle = color.fill.activeInteraction200;
+        }
         this.ctx.beginPath();
         this.ctx.arc(
           this.node.x,
@@ -83,9 +97,13 @@ export class NetworkNode {
         this.ctx.closePath();
         this.ctx.fill();
       }
-
-      this.ctx.strokeStyle = color.stroke.active;
-      this.ctx.fillStyle = color.fill.active;
+      if (isActiveLastConnection && isPortClosed) {
+        this.ctx.strokeStyle = color.stroke.error;
+      this.ctx.fillStyle = color.fill.error;
+      } else {
+        this.ctx.strokeStyle = color.stroke.active;
+        this.ctx.fillStyle = color.fill.active;
+      }
     } else {
       this.ctx.fillStyle = color.fill.default;
       this.ctx.strokeStyle = color.stroke.default;

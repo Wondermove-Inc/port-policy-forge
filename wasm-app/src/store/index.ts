@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 import { WorkloadResource } from "@/services/listWorkloads";
+import { Port } from "@/models";
 
 interface CommonStore {
   isViewList: boolean;
@@ -13,6 +14,12 @@ interface CommonStore {
   setWorkloadsLoading: (IsViewList: boolean) => void;
   isDetailFromMap: boolean;
   setIsDetailFromMap: (isWorkloadDetailView: boolean) => void;
+  lastConnectionWorkload?: {
+    uuid: string;
+    isOpen: boolean;
+  } | null;
+  portHover: Port | null;
+  setPortHover: (portHover: Port | null) => void;
 }
 
 export const useCommonStore = create<CommonStore>((set) => ({
@@ -26,4 +33,6 @@ export const useCommonStore = create<CommonStore>((set) => ({
   setWorkloadsLoading: (workloadsLoading) => set({ workloadsLoading }),
   isDetailFromMap: false,
   setIsDetailFromMap: (isDetailFromMap) => set({ isDetailFromMap }),
+  portHover: null,
+  setPortHover: (portHover) => set({ portHover }),
 }));

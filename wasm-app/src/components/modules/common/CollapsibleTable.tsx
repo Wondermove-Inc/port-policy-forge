@@ -20,6 +20,8 @@ import {
 
 import { ArrowDownIcon } from "@/components/icons/ArrowDownIcon";
 import { ArrowRightIcon } from "@/components/icons/ArrowRightIcon";
+import { useCommonStore } from "@/store";
+import { Port } from "@/models";
 
 export type TableColumnProps<T> = TableCellProps & {
   id: string;
@@ -51,11 +53,19 @@ export const CollapsibleTable = <T,>({
   renderDetails,
 }: CollapsibleTableProps<T>) => {
   const [openRows, setOpenRows] = React.useState<Record<number, boolean>>({});
+  const { setPortHover } = useCommonStore();
 
   const handleToggleRow = (index: number) => {
     setOpenRows((prev) => ({ ...prev, [index]: !prev[index] }));
   };
 
+  const handleMouseEnterRow = (row: T) => {
+    setPortHover({ ...(row as Port) });
+  };
+
+  const handleMouseLeaveRow = () => {
+    setPortHover(null);
+  };
   return (
     <Box sx={{ width: "100%", ...sx }}>
       <Paper sx={{ width: "100%", boxShadow: "none" }}>
@@ -145,9 +155,14 @@ export const CollapsibleTable = <T,>({
                   return (
                     <React.Fragment key={index}>
                       <TableRow
+                        onMouseEnter={() => handleMouseEnterRow(row)}
+                        onMouseLeave={() => handleMouseLeaveRow()}
                         sx={{
                           ".MuiTableCell-body": {
                             padding: "7.5px 12px",
+                          },
+                          ":hover": {
+                            cursor: "pointer",
                           },
                         }}
                       >

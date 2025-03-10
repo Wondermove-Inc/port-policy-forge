@@ -3,6 +3,7 @@ import { DataSet } from "vis-network/standalone";
 
 import {
   FilterPorts,
+  Port,
   StatsType,
   WorkloadKind,
   WorkloadPortStatus,
@@ -108,6 +109,7 @@ export type DrawingOptions = {
   connectedEdges?: IdType[];
   connectedNodes?: IdType[];
   filterPorts?: FilterPorts;
+  portHover?: Port | null,
 };
 
 export type WorkloadConnector = {

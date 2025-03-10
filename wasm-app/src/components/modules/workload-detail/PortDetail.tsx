@@ -29,6 +29,9 @@ export const PortDetail = ({ record }: { record: Port }) => {
           p: "20px",
           borderColor: "action.disabledBackground",
         },
+        ":hover": {
+          backgroundColor: "red"
+        }
       }}
     >
       {isOpen && (
