@@ -22,7 +22,7 @@ import {
   PortRangeType,
 } from "@/models";
 import { wasmCloseOpenedPort } from "@/services/closeOpenedPort";
-import { getPortNumberValue } from "@/utils";
+import { getPortDirectionValue, getPortNumberValue } from "@/utils";
 import { formatNumber } from "@/utils/format";
 import { openPortSchema } from "@/validations";
 
@@ -165,18 +165,9 @@ export const OpenPort = ({
       return;
     }
     setLoading(true);
-    console.log({
-      workloadUuid: workloadUuid,
-      flag: selectedPort?.direction === PortDirection.INBOUND ? 0 : 1,
-      portSpec: getPortNumberValue({
-        isRange: selectedPort.isRange,
-        portRange: selectedPort.portRange as PortRangeType,
-        portNumber: selectedPort.portNumber,
-      }),
-    });
     wasmCloseOpenedPort({
       workloadUuid: workloadUuid,
-      flag: selectedPort?.direction === PortDirection.INBOUND ? 0 : 1,
+      flag: getPortDirectionValue(selectedPort.direction),
       portSpec: getPortNumberValue({
         isRange: selectedPort.isRange,
         portRange: selectedPort.portRange as PortRangeType,

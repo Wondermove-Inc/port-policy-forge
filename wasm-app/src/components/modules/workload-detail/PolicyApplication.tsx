@@ -1,23 +1,47 @@
+import { useState } from "react";
+
 import { Box } from "@mui/material";
 import { Typography } from "@skuber/components";
 
 import { ModalConfirm } from "@/components/atoms/ModalConfirm";
 import { InfoIcon } from "@/components/icons/InfoIcon";
 import { useDisclosure } from "@/hooks/useDisclosure";
+import { PortDirection } from "@/models";
+import { wasmCloseNotActivePorts } from "@/services/closeNotActivePorts";
+import { getPortDirectionValue } from "@/utils";
 
 type PolicyApplicationProps = {
   fetchWorkloadDetail: () => void;
+  portDirection: PortDirection;
+  workloadUuid: string;
 };
 
 export const PolicyApplication = ({
   fetchWorkloadDetail,
+  portDirection,
+  workloadUuid,
 }: PolicyApplicationProps) => {
   const policyApplicationModal = useDisclosure();
 
+  const [loading, setLoading] = useState(false);
+
   const handleApplyPolicy = () => {
-    // TODO
-    fetchWorkloadDetail();
-    policyApplicationModal.close();
+    setLoading(true);
+    wasmCloseNotActivePorts({
+      workloadUuid,
+      flag: getPortDirectionValue(portDirection),
+    })
+      .then(() => {
+        fetchWorkloadDetail();
+        policyApplicationModal.close();
+      })
+      .catch((error) => {
+        // TODO: handle error
+        alert(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -81,6 +105,7 @@ export const PolicyApplication = ({
           "Closed ports will no longer be accessible externally.",
           "To reopen a port, you must manually reset it.",
         ]}
+        loading={loading}
       />
     </>
   );

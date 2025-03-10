@@ -1,4 +1,10 @@
-import { AccessPolicy, PortKind, PortRisk, WorkloadKind } from "@/models";
+import {
+  AccessPolicy,
+  PortDirection,
+  PortKind,
+  PortRisk,
+  WorkloadKind,
+} from "@/models";
 
 export const getPortNumberLabel = ({
   isRange,
@@ -90,4 +96,8 @@ export const getWorkloadKindLabel = (kind: string) => {
     default:
       return "ETC";
   }
+};
+
+export const getPortDirectionValue = (direction: PortDirection) => {
+  return direction === PortDirection.INBOUND ? 0 : 1;
 };

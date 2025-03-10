@@ -177,7 +177,11 @@ export const WorkloadDetail = ({
             }
           />
           <WorkloadSummary stats={workloadDetail[portDirection].stats} />
-          <PolicyApplication fetchWorkloadDetail={fetchWorkloadDetail} />
+          <PolicyApplication
+            fetchWorkloadDetail={fetchWorkloadDetail}
+            portDirection={portDirection}
+            workloadUuid={workloadDetail.uuid}
+          />
           <OpenPort
             data={workloadDetail[portDirection].ports.open}
             portDirection={portDirection}
