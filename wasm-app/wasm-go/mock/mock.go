@@ -38,7 +38,7 @@ var MockWorkloads = map[string][]model.Workload{
 			WorkloadName:            "default-workload-1",
 			ConnectedWorkloadStatus: model.BEFORE_INIT_SETUP,
 			PolicySettingBadge:      true,
-			Kind:                    "deployment",
+			Kind:                    model.WORKLOAD_KIND_DEPLOYMENT,
 			Usage:                   0.7, // 70% CPU usage
 			From: []model.Relation{
 				{WorkloadId: "7f2552b4-ab40-4120-a6d9-16507024922b", Status: 4},
@@ -76,7 +76,7 @@ var MockWorkloads = map[string][]model.Workload{
 			WorkloadName:            "default-workload-2",
 			ConnectedWorkloadStatus: model.COMPLETE_SETUP,
 			PolicySettingBadge:      true,
-			Kind:                    "deployment",
+			Kind:                    model.WORKLOAD_KIND_DEPLOYMENT,
 			Usage:                   0.5, // 50% CPU usage
 			From:                    []model.Relation{},
 			To: []model.Relation{
@@ -98,6 +98,313 @@ var MockWorkloads = map[string][]model.Workload{
 					Active:      0,
 					Unconnected: 0,
 					Idle:        0,
+					Error:       0,
+					Attempted:   0,
+					LatencyRtt:  utils.Float64Ptr(0),
+					Throughput:  0,
+				},
+			},
+		},
+		{
+			UUID:                    "e7b5421a-e185-44e7-bd82-cdde1b60ff2a",
+			WorkloadName:            "default-workload-3",
+			ConnectedWorkloadStatus: model.BEFORE_INIT_SETUP,
+			PolicySettingBadge:      true,
+			Kind:                    model.WORKLOAD_KIND_DEMONSET,
+			Usage:                   0.2, // 50% CPU usage
+			From:                    []model.Relation{},
+			To: []model.Relation{
+				{WorkloadId: "7f2552b4-ab40-4120-a6d9-16507024922b", Status: 0},
+			},
+			Inbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      4,
+					Unconnected: 5000,
+					Idle:        0,
+					Error:       10,
+					Attempted:   15,
+					LatencyRtt:  utils.Float64Ptr(2.50),
+					Throughput:  350.75,
+				},
+			},
+			Outbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      0,
+					Unconnected: 0,
+					Idle:        0,
+					Error:       0,
+					Attempted:   0,
+					LatencyRtt:  utils.Float64Ptr(0),
+					Throughput:  0,
+				},
+			},
+		},
+		{
+			UUID:                    "ebc762a3-54d7-4837-add6-8f42392a6bc7",
+			WorkloadName:            "default-workload-4",
+			ConnectedWorkloadStatus: model.COMPLETE_SETUP,
+			PolicySettingBadge:      true,
+			Kind:                    model.WORKLOAD_KIND_CRONJOB,
+			Usage:                   0.5, // 50% CPU usage
+			From:                    []model.Relation{},
+			To: []model.Relation{
+				{WorkloadId: "7f2552b4-ab40-4120-a6d9-16507024922b", Status: 1},
+			},
+			Inbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      4,
+					Unconnected: 5000,
+					Idle:        0,
+					Error:       10,
+					Attempted:   15,
+					LatencyRtt:  utils.Float64Ptr(2.50),
+					Throughput:  350.75,
+				},
+			},
+			Outbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      0,
+					Unconnected: 0,
+					Idle:        0,
+					Error:       0,
+					Attempted:   0,
+					LatencyRtt:  utils.Float64Ptr(0),
+					Throughput:  0,
+				},
+			},
+		},
+		{
+			UUID:                    "7161198e-eeb6-48c6-a15f-6c131393402d",
+			WorkloadName:            "default-workload-5",
+			ConnectedWorkloadStatus: model.COMPLETE_SETUP,
+			PolicySettingBadge:      true,
+			Kind:                    model.WORKLOAD_KIND_JOB,
+			Usage:                   0.7, // 70% CPU usage
+			From:                    []model.Relation{},
+			To: []model.Relation{
+				{WorkloadId: "e7b5421a-e185-44e7-bd82-cdde1b60ff2a", Status: 3},
+			},
+			Inbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      4,
+					Unconnected: 5000,
+					Idle:        0,
+					Error:       10,
+					Attempted:   15,
+					LatencyRtt:  utils.Float64Ptr(2.50),
+					Throughput:  350.75,
+				},
+			},
+			Outbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      0,
+					Unconnected: 0,
+					Idle:        0,
+					Error:       0,
+					Attempted:   0,
+					LatencyRtt:  utils.Float64Ptr(0),
+					Throughput:  0,
+				},
+			},
+		},
+		{
+			UUID:                    "db123bf4-1eee-4fe1-81cc-66048d8f4ddd",
+			WorkloadName:            "default-workload-6",
+			ConnectedWorkloadStatus: model.COMPLETE_SETUP,
+			PolicySettingBadge:      true,
+			Kind:                    model.WORKLOAD_KIND_REPLICASET,
+			Usage:                   0.9, // 90% CPU usage
+			From: []model.Relation{
+				{WorkloadId: "7161198e-eeb6-48c6-a15f-6c131393402d", Status: 2},
+			},
+			To: []model.Relation{},
+			Inbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      4,
+					Unconnected: 5000,
+					Idle:        0,
+					Error:       50,
+					Attempted:   15,
+					LatencyRtt:  utils.Float64Ptr(2.50),
+					Throughput:  350.75,
+				},
+			},
+			Outbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      0,
+					Unconnected: 0,
+					Idle:        0,
+					Error:       50,
+					Attempted:   0,
+					LatencyRtt:  utils.Float64Ptr(0),
+					Throughput:  0,
+				},
+			},
+		},
+		{
+			UUID:                    "8258ce53-0681-44db-b2ef-6793473c694e",
+			WorkloadName:            "default-workload-7",
+			ConnectedWorkloadStatus: model.BEFORE_INIT_SETUP,
+			PolicySettingBadge:      true,
+			Kind:                    model.WORKLOAD_KIND_ETC,
+			Usage:                   0.2, // 20% CPU usage
+			From: []model.Relation{
+				{WorkloadId: "7161198e-eeb6-48c6-a15f-6c131393402d", Status: 2},
+				{WorkloadId: "ebc762a3-54d7-4837-add6-8f42392a6bc7", Status: 0},
+			},
+			To: []model.Relation{},
+			Inbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      4,
+					Unconnected: 5000,
+					Idle:        0,
+					Error:       100,
+					Attempted:   0,
+					LatencyRtt:  utils.Float64Ptr(2.50),
+					Throughput:  350.75,
+				},
+			},
+			Outbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      0,
+					Unconnected: 0,
+					Idle:        0,
+					Error:       0,
+					Attempted:   0,
+					LatencyRtt:  utils.Float64Ptr(0),
+					Throughput:  0,
+				},
+			},
+		},
+		{
+			UUID:                    "798df97d-11da-4409-bb4e-0621564a25e6",
+			WorkloadName:            "default-workload-8",
+			ConnectedWorkloadStatus: model.COMPLETE_SETUP,
+			PolicySettingBadge:      true,
+			Kind:                    model.WORKLOAD_KIND_EXTERNAL,
+			Usage:                   0.2, // 20% CPU usage
+			From:                    []model.Relation{},
+			To: []model.Relation{
+				{WorkloadId: "8258ce53-0681-44db-b2ef-6793473c694e", Status: 2},
+			},
+			Inbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      4,
+					Unconnected: 5000,
+					Idle:        20,
+					Error:       0,
+					Attempted:   0,
+					LatencyRtt:  utils.Float64Ptr(2.50),
+					Throughput:  350.75,
+				},
+			},
+			Outbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      0,
+					Unconnected: 0,
+					Idle:        80,
+					Error:       0,
+					Attempted:   0,
+					LatencyRtt:  utils.Float64Ptr(0),
+					Throughput:  0,
+				},
+			},
+		},
+		{
+			UUID:                    "5f2f34c3-93ba-41e6-a40d-f1e975b5922e",
+			WorkloadName:            "default-workload-9",
+			ConnectedWorkloadStatus: model.COMPLETE_SETUP,
+			PolicySettingBadge:      true,
+			Kind:                    model.WORKLOAD_KIND_STATEFULSET,
+			Usage:                   0.2, // 20% CPU usage
+			From: []model.Relation{
+				{WorkloadId: "798df97d-11da-4409-bb4e-0621564a25e6", Status: 5},
+			},
+			To: []model.Relation{
+				{WorkloadId: "8258ce53-0681-44db-b2ef-6793473c694e", Status: 2},
+			},
+			Inbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      4,
+					Unconnected: 5000,
+					Idle:        20,
+					Error:       0,
+					Attempted:   0,
+					LatencyRtt:  utils.Float64Ptr(2.50),
+					Throughput:  350.75,
+				},
+			},
+			Outbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      0,
+					Unconnected: 0,
+					Idle:        80,
+					Error:       0,
+					Attempted:   0,
+					LatencyRtt:  utils.Float64Ptr(0),
+					Throughput:  0,
+				},
+			},
+		},
+		{
+			UUID:                    "b5879ff7-7bec-48d8-b542-84ca569d2b2d",
+			WorkloadName:            "default-workload-10",
+			ConnectedWorkloadStatus: model.COMPLETE_SETUP,
+			PolicySettingBadge:      true,
+			Kind:                    model.WORKLOAD_KIND_STATEFULSET,
+			Usage:                   0, // 0% CPU usage
+			To: []model.Relation{
+				{WorkloadId: "5f2f34c3-93ba-41e6-a40d-f1e975b5922e", Status: 2},
+			},
+			Inbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      4,
+					Unconnected: 5000,
+					Idle:        20,
+					Error:       0,
+					Attempted:   0,
+					LatencyRtt:  utils.Float64Ptr(2.50),
+					Throughput:  350.75,
+				},
+			},
+			Outbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      0,
+					Unconnected: 0,
+					Idle:        80,
+					Error:       0,
+					Attempted:   0,
+					LatencyRtt:  utils.Float64Ptr(0),
+					Throughput:  0,
+				},
+			},
+		},
+		{
+			UUID:                    "bbb12ef1-6c1b-484f-81a1-0f8848a1ecc8",
+			WorkloadName:            "default-workload-11",
+			ConnectedWorkloadStatus: model.COMPLETE_SETUP,
+			PolicySettingBadge:      true,
+			Kind:                    model.WORKLOAD_KIND_STATEFULSET,
+			Usage:                   100, // 100% CPU usage
+			To: []model.Relation{
+				{WorkloadId: "5f2f34c3-93ba-41e6-a40d-f1e975b5922e", Status: 3},
+			},
+			Inbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      4,
+					Unconnected: 5000,
+					Idle:        20,
+					Error:       0,
+					Attempted:   0,
+					LatencyRtt:  utils.Float64Ptr(2.50),
+					Throughput:  350.75,
+				},
+			},
+			Outbound: model.TrafficStats{
+				Stats: model.Stats{
+					Active:      0,
+					Unconnected: 0,
+					Idle:        80,
 					Error:       0,
 					Attempted:   0,
 					LatencyRtt:  utils.Float64Ptr(0),
@@ -257,10 +564,11 @@ var MockWorkloads = map[string][]model.Workload{
 }
 
 var MockWorkloadDetails = map[string]model.WorkloadDetail{
+	// 1) default-workload-1
 	"7431bb4f-cae8-4dbe-a542-d6f52c893271": {
 		UUID:         "7431bb4f-cae8-4dbe-a542-d6f52c893271",
 		WorkloadName: "default-workload-1",
-		Kind:         "deployment",
+		Kind:         model.WORKLOAD_KIND_DEPLOYMENT,
 		Inbound: model.TrafficInfo{
 			Stats: model.Stats{
 				Active:      1,
@@ -383,7 +691,7 @@ var MockWorkloadDetails = map[string]model.WorkloadDetail{
 	"7f2552b4-ab40-4120-a6d9-16507024922b": {
 		UUID:         "7f2552b4-ab40-4120-a6d9-16507024922b",
 		WorkloadName: "default-workload-2",
-		Kind:         "deployment",
+		Kind:         model.WORKLOAD_KIND_DEPLOYMENT,
 
 		// Inbound에 기존 Stats를 할당
 		Inbound: model.TrafficInfo{
@@ -461,6 +769,969 @@ var MockWorkloadDetails = map[string]model.WorkloadDetail{
 				Active:      0,
 				Unconnected: 0,
 				Idle:        0,
+				Error:       0,
+				Attempted:   0,
+				LatencyRtt:  utils.Float64Ptr(0),
+				Throughput:  0,
+			},
+			Ports: model.PortDetailGroup{
+				Open: []model.Port{
+					{
+						ID:                     0,
+						IsRange:                false,
+						PortNumber:             utils.IntPtr(9000),
+						Status:                 utils.IntPtr(1),
+						Direction:              "outbound",
+						IsOpen:                 true,
+						Risk:                   nil,
+						Count:                  1,
+						LastConnectionDate:     "2023-03-21T10:20:00+09:00",
+						LastConnectionEndpoint: "192.168.1.102",
+						LastConnectionLog:      "outbound log...",
+						AccessPolicy:           model.AllOW_All_ACCESS,
+						AccessSources:          nil,
+					},
+				},
+				Closed: []model.Port{},
+			},
+		},
+	},
+
+	// 3) default-workload-3
+	"e7b5421a-e185-44e7-bd82-cdde1b60ff2a": {
+		UUID:         "e7b5421a-e185-44e7-bd82-cdde1b60ff2a",
+		WorkloadName: "default-workload-3",
+		Kind:         model.WORKLOAD_KIND_DEPLOYMENT,
+		Inbound: model.TrafficInfo{
+			Stats: model.Stats{
+				Active:      4,
+				Unconnected: 5000,
+				Idle:        0,
+				Error:       10,
+				Attempted:   15,
+				LatencyRtt:  utils.Float64Ptr(2.50),
+				Throughput:  350.75,
+			},
+			Ports: model.PortDetailGroup{
+				Open: []model.Port{
+					{
+						ID:                     0,
+						IsRange:                true,
+						PortNumber:             utils.IntPtr(8080),
+						Status:                 utils.IntPtr(1), // active
+						Direction:              "inbound",
+						IsOpen:                 true,
+						Count:                  3,
+						AccessPolicy:           model.AllOW_All_ACCESS,
+						LastConnectionDate:     "2023-03-21T10:15:00+09:00",
+						LastConnectionEndpoint: "192.168.1.101",
+						LastConnectionLog:      "...",
+					},
+					{
+						ID:           1,
+						IsRange:      true,
+						PortNumber:   utils.IntPtr(8081),
+						Status:       utils.IntPtr(0), // unconnected
+						Direction:    "inbound",
+						IsOpen:       true,
+						Count:        1,
+						AccessPolicy: model.ONLY_SPECIFIC,
+						AccessSources: []model.AccessSource{
+							{
+								IP:       "192.168.1.101",
+								Protocol: "tcp",
+								Comment:  "specific allowed",
+							},
+						},
+					},
+					{
+						ID:           2,
+						IsRange:      true,
+						PortRange:    &model.PortRange{Start: "8083", End: "8085"},
+						Status:       utils.IntPtr(2), // idle
+						IsOpen:       true,
+						Count:        0,
+						AccessPolicy: model.AllOW_All_ACCESS,
+					},
+				},
+				Closed: []model.Port{
+					{
+						ID:                     2,
+						IsRange:                false,
+						PortNumber:             utils.IntPtr(8082),
+						Status:                 nil,
+						Direction:              "inbound",
+						IsOpen:                 false,
+						Risk:                   utils.IntPtr(1),
+						Count:                  10,
+						LastConnectionDate:     "2023-03-21T10:20:00+09:00",
+						LastConnectionEndpoint: "192.168.1.102",
+						LastConnectionLog:      "...",
+					},
+				},
+			},
+		},
+		Outbound: model.TrafficInfo{
+			Stats: model.Stats{
+				Active:      0,
+				Unconnected: 0,
+				Idle:        0,
+				Error:       0,
+				Attempted:   0,
+				LatencyRtt:  utils.Float64Ptr(0),
+				Throughput:  0,
+			},
+			Ports: model.PortDetailGroup{
+				Open: []model.Port{
+					{
+						ID:                     0,
+						IsRange:                false,
+						PortNumber:             utils.IntPtr(9000),
+						Status:                 utils.IntPtr(1),
+						Direction:              "outbound",
+						IsOpen:                 true,
+						Risk:                   nil,
+						Count:                  1,
+						LastConnectionDate:     "2023-03-21T10:20:00+09:00",
+						LastConnectionEndpoint: "192.168.1.102",
+						LastConnectionLog:      "outbound log...",
+						AccessPolicy:           model.AllOW_All_ACCESS,
+						AccessSources:          nil,
+					},
+				},
+				Closed: []model.Port{},
+			},
+		},
+	},
+
+	// 4) default-workload-4
+	"ebc762a3-54d7-4837-add6-8f42392a6bc7": {
+		UUID:         "ebc762a3-54d7-4837-add6-8f42392a6bc7",
+		WorkloadName: "default-workload-4",
+		Kind:         model.WORKLOAD_KIND_CRONJOB,
+		Inbound: model.TrafficInfo{
+			Stats: model.Stats{
+				Active:      4,
+				Unconnected: 5000,
+				Idle:        0,
+				Error:       10,
+				Attempted:   15,
+				LatencyRtt:  utils.Float64Ptr(2.50),
+				Throughput:  350.75,
+			},
+			Ports: model.PortDetailGroup{
+				Open: []model.Port{
+					{
+						ID:                     0,
+						IsRange:                true,
+						PortNumber:             utils.IntPtr(8080),
+						Status:                 utils.IntPtr(1), // active
+						Direction:              "inbound",
+						IsOpen:                 true,
+						Count:                  3,
+						AccessPolicy:           model.AllOW_All_ACCESS,
+						LastConnectionDate:     "2023-03-21T10:15:00+09:00",
+						LastConnectionEndpoint: "192.168.1.101",
+						LastConnectionLog:      "...",
+					},
+					{
+						ID:           1,
+						IsRange:      true,
+						PortNumber:   utils.IntPtr(8081),
+						Status:       utils.IntPtr(0), // unconnected
+						Direction:    "inbound",
+						IsOpen:       true,
+						Count:        1,
+						AccessPolicy: model.ONLY_SPECIFIC,
+						AccessSources: []model.AccessSource{
+							{
+								IP:       "192.168.1.101",
+								Protocol: "tcp",
+								Comment:  "specific allowed",
+							},
+						},
+					},
+					{
+						ID:           2,
+						IsRange:      true,
+						PortRange:    &model.PortRange{Start: "8083", End: "8085"},
+						Status:       utils.IntPtr(2), // idle
+						IsOpen:       true,
+						Count:        0,
+						AccessPolicy: model.AllOW_All_ACCESS,
+					},
+				},
+				Closed: []model.Port{
+					{
+						ID:                     2,
+						IsRange:                false,
+						PortNumber:             utils.IntPtr(8082),
+						Status:                 nil,
+						Direction:              "inbound",
+						IsOpen:                 false,
+						Risk:                   utils.IntPtr(1),
+						Count:                  10,
+						LastConnectionDate:     "2023-03-21T10:20:00+09:00",
+						LastConnectionEndpoint: "192.168.1.102",
+						LastConnectionLog:      "...",
+					},
+				},
+			},
+		},
+		Outbound: model.TrafficInfo{
+			Stats: model.Stats{
+				Active:      0,
+				Unconnected: 0,
+				Idle:        0,
+				Error:       0,
+				Attempted:   0,
+				LatencyRtt:  utils.Float64Ptr(0),
+				Throughput:  0,
+			},
+			Ports: model.PortDetailGroup{
+				Open: []model.Port{
+					{
+						ID:                     0,
+						IsRange:                false,
+						PortNumber:             utils.IntPtr(9000),
+						Status:                 utils.IntPtr(1),
+						Direction:              "outbound",
+						IsOpen:                 true,
+						Risk:                   nil,
+						Count:                  1,
+						LastConnectionDate:     "2023-03-21T10:20:00+09:00",
+						LastConnectionEndpoint: "192.168.1.102",
+						LastConnectionLog:      "outbound log...",
+						AccessPolicy:           model.AllOW_All_ACCESS,
+						AccessSources:          nil,
+					},
+				},
+				Closed: []model.Port{},
+			},
+		},
+	},
+
+	// 5) default-workload-5
+	"7161198e-eeb6-48c6-a15f-6c131393402d": {
+		UUID:         "7161198e-eeb6-48c6-a15f-6c131393402d",
+		WorkloadName: "default-workload-5",
+		Kind:         model.WORKLOAD_KIND_JOB,
+		Inbound: model.TrafficInfo{
+			Stats: model.Stats{
+				Active:      4,
+				Unconnected: 5000,
+				Idle:        0,
+				Error:       10,
+				Attempted:   15,
+				LatencyRtt:  utils.Float64Ptr(2.50),
+				Throughput:  350.75,
+			},
+			Ports: model.PortDetailGroup{
+				Open: []model.Port{
+					{
+						ID:                     0,
+						IsRange:                true,
+						PortNumber:             utils.IntPtr(8080),
+						Status:                 utils.IntPtr(1), // active
+						Direction:              "inbound",
+						IsOpen:                 true,
+						Count:                  3,
+						AccessPolicy:           model.AllOW_All_ACCESS,
+						LastConnectionDate:     "2023-03-21T10:15:00+09:00",
+						LastConnectionEndpoint: "192.168.1.101",
+						LastConnectionLog:      "...",
+					},
+					{
+						ID:           1,
+						IsRange:      true,
+						PortNumber:   utils.IntPtr(8081),
+						Status:       utils.IntPtr(0), // unconnected
+						Direction:    "inbound",
+						IsOpen:       true,
+						Count:        1,
+						AccessPolicy: model.ONLY_SPECIFIC,
+						AccessSources: []model.AccessSource{
+							{
+								IP:       "192.168.1.101",
+								Protocol: "tcp",
+								Comment:  "specific allowed",
+							},
+						},
+					},
+					{
+						ID:           2,
+						IsRange:      true,
+						PortRange:    &model.PortRange{Start: "8083", End: "8085"},
+						Status:       utils.IntPtr(2), // idle
+						IsOpen:       true,
+						Count:        0,
+						AccessPolicy: model.AllOW_All_ACCESS,
+					},
+				},
+				Closed: []model.Port{
+					{
+						ID:                     2,
+						IsRange:                false,
+						PortNumber:             utils.IntPtr(8082),
+						Status:                 nil,
+						Direction:              "inbound",
+						IsOpen:                 false,
+						Risk:                   utils.IntPtr(1),
+						Count:                  10,
+						LastConnectionDate:     "2023-03-21T10:20:00+09:00",
+						LastConnectionEndpoint: "192.168.1.102",
+						LastConnectionLog:      "...",
+					},
+				},
+			},
+		},
+		Outbound: model.TrafficInfo{
+			Stats: model.Stats{
+				Active:      0,
+				Unconnected: 0,
+				Idle:        0,
+				Error:       0,
+				Attempted:   0,
+				LatencyRtt:  utils.Float64Ptr(0),
+				Throughput:  0,
+			},
+			Ports: model.PortDetailGroup{
+				Open: []model.Port{
+					{
+						ID:                     0,
+						IsRange:                false,
+						PortNumber:             utils.IntPtr(9000),
+						Status:                 utils.IntPtr(1),
+						Direction:              "outbound",
+						IsOpen:                 true,
+						Risk:                   nil,
+						Count:                  1,
+						LastConnectionDate:     "2023-03-21T10:20:00+09:00",
+						LastConnectionEndpoint: "192.168.1.102",
+						LastConnectionLog:      "outbound log...",
+						AccessPolicy:           model.AllOW_All_ACCESS,
+						AccessSources:          nil,
+					},
+				},
+				Closed: []model.Port{},
+			},
+		},
+	},
+
+	// 6) default-workload-6
+	"db123bf4-1eee-4fe1-81cc-66048d8f4ddd": {
+		UUID:         "db123bf4-1eee-4fe1-81cc-66048d8f4ddd",
+		WorkloadName: "default-workload-6",
+		Kind:         model.WORKLOAD_KIND_REPLICASET,
+		Inbound: model.TrafficInfo{
+			Stats: model.Stats{
+				Active:      4,
+				Unconnected: 5000,
+				Idle:        0,
+				Error:       50,
+				Attempted:   15,
+				LatencyRtt:  utils.Float64Ptr(2.50),
+				Throughput:  350.75,
+			},
+			Ports: model.PortDetailGroup{
+				Open: []model.Port{
+					{
+						ID:                     0,
+						IsRange:                true,
+						PortNumber:             utils.IntPtr(8080),
+						Status:                 utils.IntPtr(1), // active
+						Direction:              "inbound",
+						IsOpen:                 true,
+						Count:                  3,
+						AccessPolicy:           model.AllOW_All_ACCESS,
+						LastConnectionDate:     "2023-03-21T10:15:00+09:00",
+						LastConnectionEndpoint: "192.168.1.101",
+						LastConnectionLog:      "...",
+					},
+					{
+						ID:           1,
+						IsRange:      true,
+						PortNumber:   utils.IntPtr(8081),
+						Status:       utils.IntPtr(0), // unconnected
+						Direction:    "inbound",
+						IsOpen:       true,
+						Count:        1,
+						AccessPolicy: model.ONLY_SPECIFIC,
+						AccessSources: []model.AccessSource{
+							{
+								IP:       "192.168.1.101",
+								Protocol: "tcp",
+								Comment:  "specific allowed",
+							},
+						},
+					},
+					{
+						ID:           2,
+						IsRange:      true,
+						PortRange:    &model.PortRange{Start: "8083", End: "8085"},
+						Status:       utils.IntPtr(2), // idle
+						IsOpen:       true,
+						Count:        0,
+						AccessPolicy: model.AllOW_All_ACCESS,
+					},
+				},
+				Closed: []model.Port{
+					{
+						ID:                     2,
+						IsRange:                false,
+						PortNumber:             utils.IntPtr(8082),
+						Status:                 nil,
+						Direction:              "inbound",
+						IsOpen:                 false,
+						Risk:                   utils.IntPtr(1),
+						Count:                  10,
+						LastConnectionDate:     "2023-03-21T10:20:00+09:00",
+						LastConnectionEndpoint: "192.168.1.102",
+						LastConnectionLog:      "...",
+					},
+				},
+			},
+		},
+		Outbound: model.TrafficInfo{
+			Stats: model.Stats{
+				Active:      0,
+				Unconnected: 0,
+				Idle:        0,
+				Error:       50,
+				Attempted:   0,
+				LatencyRtt:  utils.Float64Ptr(0),
+				Throughput:  0,
+			},
+			Ports: model.PortDetailGroup{
+				Open: []model.Port{
+					{
+						ID:                     0,
+						IsRange:                false,
+						PortNumber:             utils.IntPtr(9000),
+						Status:                 utils.IntPtr(1),
+						Direction:              "outbound",
+						IsOpen:                 true,
+						Risk:                   nil,
+						Count:                  1,
+						LastConnectionDate:     "2023-03-21T10:20:00+09:00",
+						LastConnectionEndpoint: "192.168.1.102",
+						LastConnectionLog:      "outbound log...",
+						AccessPolicy:           model.AllOW_All_ACCESS,
+						AccessSources:          nil,
+					},
+				},
+				Closed: []model.Port{},
+			},
+		},
+	},
+
+	// 7) default-workload-7
+	"8258ce53-0681-44db-b2ef-6793473c694e": {
+		UUID:         "8258ce53-0681-44db-b2ef-6793473c694e",
+		WorkloadName: "default-workload-7",
+		Kind:         model.WORKLOAD_KIND_ETC,
+		Inbound: model.TrafficInfo{
+			Stats: model.Stats{
+				Active:      4,
+				Unconnected: 5000,
+				Idle:        0,
+				Error:       100,
+				Attempted:   0,
+				LatencyRtt:  utils.Float64Ptr(2.50),
+				Throughput:  350.75,
+			},
+			Ports: model.PortDetailGroup{
+				Open: []model.Port{
+					{
+						ID:                     0,
+						IsRange:                true,
+						PortNumber:             utils.IntPtr(8080),
+						Status:                 utils.IntPtr(1), // active
+						Direction:              "inbound",
+						IsOpen:                 true,
+						Count:                  3,
+						AccessPolicy:           model.AllOW_All_ACCESS,
+						LastConnectionDate:     "2023-03-21T10:15:00+09:00",
+						LastConnectionEndpoint: "192.168.1.101",
+						LastConnectionLog:      "...",
+					},
+					{
+						ID:           1,
+						IsRange:      true,
+						PortNumber:   utils.IntPtr(8081),
+						Status:       utils.IntPtr(0), // unconnected
+						Direction:    "inbound",
+						IsOpen:       true,
+						Count:        1,
+						AccessPolicy: model.ONLY_SPECIFIC,
+						AccessSources: []model.AccessSource{
+							{
+								IP:       "192.168.1.101",
+								Protocol: "tcp",
+								Comment:  "specific allowed",
+							},
+						},
+					},
+					{
+						ID:           2,
+						IsRange:      true,
+						PortRange:    &model.PortRange{Start: "8083", End: "8085"},
+						Status:       utils.IntPtr(2), // idle
+						IsOpen:       true,
+						Count:        0,
+						AccessPolicy: model.AllOW_All_ACCESS,
+					},
+				},
+				Closed: []model.Port{
+					{
+						ID:                     2,
+						IsRange:                false,
+						PortNumber:             utils.IntPtr(8082),
+						Status:                 nil,
+						Direction:              "inbound",
+						IsOpen:                 false,
+						Risk:                   utils.IntPtr(1),
+						Count:                  10,
+						LastConnectionDate:     "2023-03-21T10:20:00+09:00",
+						LastConnectionEndpoint: "192.168.1.102",
+						LastConnectionLog:      "...",
+					},
+				},
+			},
+		},
+		Outbound: model.TrafficInfo{
+			Stats: model.Stats{
+				Active:      0,
+				Unconnected: 0,
+				Idle:        0,
+				Error:       0,
+				Attempted:   0,
+				LatencyRtt:  utils.Float64Ptr(0),
+				Throughput:  0,
+			},
+			Ports: model.PortDetailGroup{
+				Open: []model.Port{
+					{
+						ID:                     0,
+						IsRange:                false,
+						PortNumber:             utils.IntPtr(9000),
+						Status:                 utils.IntPtr(1),
+						Direction:              "outbound",
+						IsOpen:                 true,
+						Risk:                   nil,
+						Count:                  1,
+						LastConnectionDate:     "2023-03-21T10:20:00+09:00",
+						LastConnectionEndpoint: "192.168.1.102",
+						LastConnectionLog:      "outbound log...",
+						AccessPolicy:           model.AllOW_All_ACCESS,
+						AccessSources:          nil,
+					},
+				},
+				Closed: []model.Port{},
+			},
+		},
+	},
+
+	// 8) default-workload-8
+	"798df97d-11da-4409-bb4e-0621564a25e6": {
+		UUID:         "798df97d-11da-4409-bb4e-0621564a25e6",
+		WorkloadName: "default-workload-8",
+		Kind:         model.WORKLOAD_KIND_EXTERNAL,
+		Inbound: model.TrafficInfo{
+			Stats: model.Stats{
+				Active:      4,
+				Unconnected: 5000,
+				Idle:        20,
+				Error:       0,
+				Attempted:   0,
+				LatencyRtt:  utils.Float64Ptr(2.50),
+				Throughput:  350.75,
+			},
+			Ports: model.PortDetailGroup{
+				Open: []model.Port{
+					{
+						ID:                     0,
+						IsRange:                true,
+						PortNumber:             utils.IntPtr(8080),
+						Status:                 utils.IntPtr(1), // active
+						Direction:              "inbound",
+						IsOpen:                 true,
+						Count:                  3,
+						AccessPolicy:           model.AllOW_All_ACCESS,
+						LastConnectionDate:     "2023-03-21T10:15:00+09:00",
+						LastConnectionEndpoint: "192.168.1.101",
+						LastConnectionLog:      "...",
+					},
+					{
+						ID:           1,
+						IsRange:      true,
+						PortNumber:   utils.IntPtr(8081),
+						Status:       utils.IntPtr(0), // unconnected
+						Direction:    "inbound",
+						IsOpen:       true,
+						Count:        1,
+						AccessPolicy: model.ONLY_SPECIFIC,
+						AccessSources: []model.AccessSource{
+							{
+								IP:       "192.168.1.101",
+								Protocol: "tcp",
+								Comment:  "specific allowed",
+							},
+						},
+					},
+					{
+						ID:           2,
+						IsRange:      true,
+						PortRange:    &model.PortRange{Start: "8083", End: "8085"},
+						Status:       utils.IntPtr(2), // idle
+						IsOpen:       true,
+						Count:        0,
+						AccessPolicy: model.AllOW_All_ACCESS,
+					},
+				},
+				Closed: []model.Port{
+					{
+						ID:                     2,
+						IsRange:                false,
+						PortNumber:             utils.IntPtr(8082),
+						Status:                 nil,
+						Direction:              "inbound",
+						IsOpen:                 false,
+						Risk:                   utils.IntPtr(1),
+						Count:                  10,
+						LastConnectionDate:     "2023-03-21T10:20:00+09:00",
+						LastConnectionEndpoint: "192.168.1.102",
+						LastConnectionLog:      "...",
+					},
+				},
+			},
+		},
+		Outbound: model.TrafficInfo{
+			Stats: model.Stats{
+				Active:      0,
+				Unconnected: 0,
+				Idle:        80,
+				Error:       0,
+				Attempted:   0,
+				LatencyRtt:  utils.Float64Ptr(0),
+				Throughput:  0,
+			},
+			Ports: model.PortDetailGroup{
+				Open: []model.Port{
+					{
+						ID:                     0,
+						IsRange:                false,
+						PortNumber:             utils.IntPtr(9000),
+						Status:                 utils.IntPtr(1),
+						Direction:              "outbound",
+						IsOpen:                 true,
+						Risk:                   nil,
+						Count:                  1,
+						LastConnectionDate:     "2023-03-21T10:20:00+09:00",
+						LastConnectionEndpoint: "192.168.1.102",
+						LastConnectionLog:      "outbound log...",
+						AccessPolicy:           model.AllOW_All_ACCESS,
+						AccessSources:          nil,
+					},
+				},
+				Closed: []model.Port{},
+			},
+		},
+	},
+
+	// 9) default-workload-9
+	"5f2f34c3-93ba-41e6-a40d-f1e975b5922e": {
+		UUID:         "5f2f34c3-93ba-41e6-a40d-f1e975b5922e",
+		WorkloadName: "default-workload-9",
+		Kind:         model.WORKLOAD_KIND_STATEFULSET,
+		Inbound: model.TrafficInfo{
+			Stats: model.Stats{
+				Active:      4,
+				Unconnected: 5000,
+				Idle:        20,
+				Error:       0,
+				Attempted:   0,
+				LatencyRtt:  utils.Float64Ptr(2.50),
+				Throughput:  350.75,
+			},
+			Ports: model.PortDetailGroup{
+				Open: []model.Port{
+					{
+						ID:                     0,
+						IsRange:                true,
+						PortNumber:             utils.IntPtr(8080),
+						Status:                 utils.IntPtr(1), // active
+						Direction:              "inbound",
+						IsOpen:                 true,
+						Count:                  3,
+						AccessPolicy:           model.AllOW_All_ACCESS,
+						LastConnectionDate:     "2023-03-21T10:15:00+09:00",
+						LastConnectionEndpoint: "192.168.1.101",
+						LastConnectionLog:      "...",
+					},
+					{
+						ID:           1,
+						IsRange:      true,
+						PortNumber:   utils.IntPtr(8081),
+						Status:       utils.IntPtr(0), // unconnected
+						Direction:    "inbound",
+						IsOpen:       true,
+						Count:        1,
+						AccessPolicy: model.ONLY_SPECIFIC,
+						AccessSources: []model.AccessSource{
+							{
+								IP:       "192.168.1.101",
+								Protocol: "tcp",
+								Comment:  "specific allowed",
+							},
+						},
+					},
+					{
+						ID:           2,
+						IsRange:      true,
+						PortRange:    &model.PortRange{Start: "8083", End: "8085"},
+						Status:       utils.IntPtr(2), // idle
+						IsOpen:       true,
+						Count:        0,
+						AccessPolicy: model.AllOW_All_ACCESS,
+					},
+				},
+				Closed: []model.Port{
+					{
+						ID:                     2,
+						IsRange:                false,
+						PortNumber:             utils.IntPtr(8082),
+						Status:                 nil,
+						Direction:              "inbound",
+						IsOpen:                 false,
+						Risk:                   utils.IntPtr(1),
+						Count:                  10,
+						LastConnectionDate:     "2023-03-21T10:20:00+09:00",
+						LastConnectionEndpoint: "192.168.1.102",
+						LastConnectionLog:      "...",
+					},
+				},
+			},
+		},
+		Outbound: model.TrafficInfo{
+			Stats: model.Stats{
+				Active:      0,
+				Unconnected: 0,
+				Idle:        80,
+				Error:       0,
+				Attempted:   0,
+				LatencyRtt:  utils.Float64Ptr(0),
+				Throughput:  0,
+			},
+			Ports: model.PortDetailGroup{
+				Open: []model.Port{
+					{
+						ID:                     0,
+						IsRange:                false,
+						PortNumber:             utils.IntPtr(9000),
+						Status:                 utils.IntPtr(1),
+						Direction:              "outbound",
+						IsOpen:                 true,
+						Risk:                   nil,
+						Count:                  1,
+						LastConnectionDate:     "2023-03-21T10:20:00+09:00",
+						LastConnectionEndpoint: "192.168.1.102",
+						LastConnectionLog:      "outbound log...",
+						AccessPolicy:           model.AllOW_All_ACCESS,
+						AccessSources:          nil,
+					},
+				},
+				Closed: []model.Port{},
+			},
+		},
+	},
+
+	// 10) default-workload-10
+	"b5879ff7-7bec-48d8-b542-84ca569d2b2d": {
+		UUID:         "b5879ff7-7bec-48d8-b542-84ca569d2b2d",
+		WorkloadName: "default-workload-10",
+		Kind:         model.WORKLOAD_KIND_STATEFULSET,
+		Inbound: model.TrafficInfo{
+			Stats: model.Stats{
+				Active:      4,
+				Unconnected: 5000,
+				Idle:        20,
+				Error:       0,
+				Attempted:   0,
+				LatencyRtt:  utils.Float64Ptr(2.50),
+				Throughput:  350.75,
+			},
+			Ports: model.PortDetailGroup{
+				Open: []model.Port{
+					{
+						ID:                     0,
+						IsRange:                true,
+						PortNumber:             utils.IntPtr(8080),
+						Status:                 utils.IntPtr(1), // active
+						Direction:              "inbound",
+						IsOpen:                 true,
+						Count:                  3,
+						AccessPolicy:           model.AllOW_All_ACCESS,
+						LastConnectionDate:     "2023-03-21T10:15:00+09:00",
+						LastConnectionEndpoint: "192.168.1.101",
+						LastConnectionLog:      "...",
+					},
+					{
+						ID:           1,
+						IsRange:      true,
+						PortNumber:   utils.IntPtr(8081),
+						Status:       utils.IntPtr(0), // unconnected
+						Direction:    "inbound",
+						IsOpen:       true,
+						Count:        1,
+						AccessPolicy: model.ONLY_SPECIFIC,
+						AccessSources: []model.AccessSource{
+							{
+								IP:       "192.168.1.101",
+								Protocol: "tcp",
+								Comment:  "specific allowed",
+							},
+						},
+					},
+					{
+						ID:           2,
+						IsRange:      true,
+						PortRange:    &model.PortRange{Start: "8083", End: "8085"},
+						Status:       utils.IntPtr(2), // idle
+						IsOpen:       true,
+						Count:        0,
+						AccessPolicy: model.AllOW_All_ACCESS,
+					},
+				},
+				Closed: []model.Port{
+					{
+						ID:                     2,
+						IsRange:                false,
+						PortNumber:             utils.IntPtr(8082),
+						Status:                 nil,
+						Direction:              "inbound",
+						IsOpen:                 false,
+						Risk:                   utils.IntPtr(1),
+						Count:                  10,
+						LastConnectionDate:     "2023-03-21T10:20:00+09:00",
+						LastConnectionEndpoint: "192.168.1.102",
+						LastConnectionLog:      "...",
+					},
+				},
+			},
+		},
+		Outbound: model.TrafficInfo{
+			Stats: model.Stats{
+				Active:      0,
+				Unconnected: 0,
+				Idle:        80,
+				Error:       0,
+				Attempted:   0,
+				LatencyRtt:  utils.Float64Ptr(0),
+				Throughput:  0,
+			},
+			Ports: model.PortDetailGroup{
+				Open: []model.Port{
+					{
+						ID:                     0,
+						IsRange:                false,
+						PortNumber:             utils.IntPtr(9000),
+						Status:                 utils.IntPtr(1),
+						Direction:              "outbound",
+						IsOpen:                 true,
+						Risk:                   nil,
+						Count:                  1,
+						LastConnectionDate:     "2023-03-21T10:20:00+09:00",
+						LastConnectionEndpoint: "192.168.1.102",
+						LastConnectionLog:      "outbound log...",
+						AccessPolicy:           model.AllOW_All_ACCESS,
+						AccessSources:          nil,
+					},
+				},
+				Closed: []model.Port{},
+			},
+		},
+	},
+
+	// 11) default-wowrkload-11
+	"bbb12ef1-6c1b-484f-81a1-0f8848a1ecc8": {
+		UUID:         "bbb12ef1-6c1b-484f-81a1-0f8848a1ecc8",
+		WorkloadName: "default-workload-11",
+		Kind:         model.WORKLOAD_KIND_STATEFULSET,
+		Inbound: model.TrafficInfo{
+			Stats: model.Stats{
+				Active:      4,
+				Unconnected: 5000,
+				Idle:        20,
+				Error:       0,
+				Attempted:   0,
+				LatencyRtt:  utils.Float64Ptr(2.50),
+				Throughput:  350.75,
+			},
+			Ports: model.PortDetailGroup{
+				Open: []model.Port{
+					{
+						ID:                     0,
+						IsRange:                true,
+						PortNumber:             utils.IntPtr(8080),
+						Status:                 utils.IntPtr(1), // active
+						Direction:              "inbound",
+						IsOpen:                 true,
+						Count:                  3,
+						AccessPolicy:           model.AllOW_All_ACCESS,
+						LastConnectionDate:     "2023-03-21T10:15:00+09:00",
+						LastConnectionEndpoint: "192.168.1.101",
+						LastConnectionLog:      "...",
+					},
+					{
+						ID:           1,
+						IsRange:      true,
+						PortNumber:   utils.IntPtr(8081),
+						Status:       utils.IntPtr(0), // unconnected
+						Direction:    "inbound",
+						IsOpen:       true,
+						Count:        1,
+						AccessPolicy: model.ONLY_SPECIFIC,
+						AccessSources: []model.AccessSource{
+							{
+								IP:       "192.168.1.101",
+								Protocol: "tcp",
+								Comment:  "specific allowed",
+							},
+						},
+					},
+					{
+						ID:           2,
+						IsRange:      true,
+						PortRange:    &model.PortRange{Start: "8083", End: "8085"},
+						Status:       utils.IntPtr(2), // idle
+						IsOpen:       true,
+						Count:        0,
+						AccessPolicy: model.AllOW_All_ACCESS,
+					},
+				},
+				Closed: []model.Port{
+					{
+						ID:                     2,
+						IsRange:                false,
+						PortNumber:             utils.IntPtr(8082),
+						Status:                 nil,
+						Direction:              "inbound",
+						IsOpen:                 false,
+						Risk:                   utils.IntPtr(1),
+						Count:                  10,
+						LastConnectionDate:     "2023-03-21T10:20:00+09:00",
+						LastConnectionEndpoint: "192.168.1.102",
+						LastConnectionLog:      "...",
+					},
+				},
+			},
+		},
+		Outbound: model.TrafficInfo{
+			Stats: model.Stats{
+				Active:      0,
+				Unconnected: 0,
+				Idle:        80,
 				Error:       0,
 				Attempted:   0,
 				LatencyRtt:  utils.Float64Ptr(0),
