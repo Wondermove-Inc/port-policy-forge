@@ -34,20 +34,19 @@ export const WorkloadMap = () => {
   const detailDrawer = useDisclosure();
   const modalClosePort = useDisclosure();
   const { workloads } = useCommonStore();
-
   useEffect(() => {
     const edges = workloads.reduce((pre, current) => {
-      const fromEdges: EdgeData[] = current.from.map((f) => ({
+      const fromEdges: EdgeData[] = current.from?.map((f) => ({
         from: f.workloadId,
         to: current.uuid,
         status: f.status,
-      }));
+      })) || [];
 
-      const toEdges: EdgeData[] = current.to.map((t) => ({
+      const toEdges: EdgeData[] = current.to?.map((t) => ({
         from: current.uuid,
         to: t.workloadId,
         status: t.status,
-      }));
+      })) || [];
 
       return [...pre, ...fromEdges, ...toEdges] as EdgeData[];
     }, [] as EdgeData[]);
