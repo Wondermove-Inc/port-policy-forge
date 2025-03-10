@@ -91,6 +91,13 @@ export const WorkloadMap = () => {
   const handleOnNodeSelected = (nodeId: string) => {
     setActiveNodeId(nodeId);
     setSelectedWorkloadId(nodeId);
+    network?.focus(nodeId, {
+      scale: 1.0,
+      animation: {
+        duration: 1000,
+        easingFunction: "easeInOutQuad",
+      },
+    });
     detailDrawer.open();
   };
 
