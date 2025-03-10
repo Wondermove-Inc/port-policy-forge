@@ -20,6 +20,10 @@ import { FilterPorts } from "@/models";
 export const WorkloadMap = () => {
   const [edges, setEdges] = useState<EdgeData[]>([]);
   const [nodes, setNodes] = useState<NodeData[]>([]);
+  const [networkGraphRenderKey, setNetworkGraphRenderKey] = useState<number>(
+    new Date().getTime()
+  );
+  const { workloads } = useCommonStore();
   const initFilterPorts: FilterPorts = {
     attempted: true,
     error: true,
@@ -33,20 +37,21 @@ export const WorkloadMap = () => {
   const selectedEdgeId = useRef("");
   const detailDrawer = useDisclosure();
   const modalClosePort = useDisclosure();
-  const { workloads } = useCommonStore();
   useEffect(() => {
     const edges = workloads.reduce((pre, current) => {
-      const fromEdges: EdgeData[] = current.from?.map((f) => ({
-        from: f.workloadId,
-        to: current.uuid,
-        status: f.status,
-      })) || [];
+      const fromEdges: EdgeData[] =
+        current.from?.map((f) => ({
+          from: f.workloadId,
+          to: current.uuid,
+          status: f.status,
+        })) || [];
 
-      const toEdges: EdgeData[] = current.to?.map((t) => ({
-        from: current.uuid,
-        to: t.workloadId,
-        status: t.status,
-      })) || [];
+      const toEdges: EdgeData[] =
+        current.to?.map((t) => ({
+          from: current.uuid,
+          to: t.workloadId,
+          status: t.status,
+        })) || [];
 
       return [...pre, ...fromEdges, ...toEdges] as EdgeData[];
     }, [] as EdgeData[]);
@@ -72,6 +77,9 @@ export const WorkloadMap = () => {
     });
     setEdges(edges);
     setNodes(nodes);
+    setNetworkGraphRenderKey(new Date().getTime());
+    setSelectedWorkloadId("");
+    detailDrawer.close();
   }, [workloads]);
 
   useEffect(() => {
@@ -82,7 +90,7 @@ export const WorkloadMap = () => {
 
   const handleOnNodeSelected = (nodeId: string) => {
     setActiveNodeId(nodeId);
-    setSelectedWorkloadId("7431bb4f-cae8-4dbe-a542-d6f52c893271");
+    setSelectedWorkloadId(nodeId);
     detailDrawer.open();
   };
 
@@ -133,6 +141,7 @@ export const WorkloadMap = () => {
       }}
     >
       <NetworkGraph
+        key={networkGraphRenderKey}
         edges={edges}
         nodes={nodes}
         filterPorts={filterPorts}

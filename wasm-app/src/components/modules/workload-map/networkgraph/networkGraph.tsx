@@ -171,9 +171,7 @@ const NetworkGraph = ({
     });
 
     network.redraw();
-
     setNetwork(network);
-
     return () => {
       network?.off("hoverNode");
       network?.off("afterDrawing");
