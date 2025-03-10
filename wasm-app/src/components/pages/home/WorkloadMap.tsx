@@ -8,14 +8,14 @@ import NetworkGraph from "@/components/modules/networkgraph/networkGraph";
 import {
   CustomNetwork,
   EdgeData,
-  FilterPorts,
   NodeData,
   NodeSize,
 } from "@/components/modules/networkgraph/types";
 import { ViewFilter } from "@/components/pages/home/workload-map/ViewFilter";
-import { workloadMap } from "@/data";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { ModalConfirm } from "@/components/atoms/ModalConfirm";
+import { useCommonStore } from "@/store";
+import { FilterPorts } from "@/models";
 
 export const WorkloadMap = () => {
   const [edges, setEdges] = useState<EdgeData[]>([]);
@@ -33,9 +33,9 @@ export const WorkloadMap = () => {
   const selectedEdgeId = useRef("");
   const detailDrawer = useDisclosure();
   const modalClosePort = useDisclosure();
+  const { workloads } = useCommonStore();
 
   useEffect(() => {
-    const workloads = workloadMap;
     const edges = workloads.reduce((pre, current) => {
       const fromEdges: EdgeData[] = current.from.map((f) => ({
         from: f.workloadId,
@@ -54,10 +54,17 @@ export const WorkloadMap = () => {
 
     const nodes = workloads.map<NodeData>((workload) => {
       return {
-        ...workload,
+        // ...workload,
         id: workload.uuid,
         customLabel: workload.workloadName,
         nodeSize: NodeSize.MEDIUM,
+        kind: workload.kind,
+        inbound: {
+          stats: workload.inbound.stats,
+        },
+        outbound: {
+          stats: workload.outbound.stats,
+        },
         stats: {
           active: 10,
           unconnected: 10,
@@ -66,7 +73,7 @@ export const WorkloadMap = () => {
     });
     setEdges(edges);
     setNodes(nodes);
-  }, []);
+  }, [workloads]);
 
   useEffect(() => {
     if (!detailDrawer.visible) {

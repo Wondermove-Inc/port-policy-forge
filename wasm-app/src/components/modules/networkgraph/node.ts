@@ -1,3 +1,4 @@
+import { WorkloadPortStatus, WorkloadStatus } from "@/models";
 import {
   color,
   DISABLED_GLOBAL_ALPHA,
@@ -7,11 +8,9 @@ import {
 import {
   CanvasImage,
   CustomNode,
-  DeploymentIconSize,
+  NodeKindSize,
   DrawingOptions,
-  EdgeStatus,
   NodeSize,
-  NodeStatus,
 } from "./types";
 
 export class NetworkNode {
@@ -36,7 +35,7 @@ export class NetworkNode {
       this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
     }
     this.drawNodeBackground();
-    if (this.node.data?.status === NodeStatus.BEFORE_INITIAL_SETUP) {
+    if (this.node.data?.status === WorkloadStatus.BEFORE_INITIAL_SETUP) {
       this.drawExclamationIcon();
     } else {
       this.drawNodePort();
@@ -112,11 +111,11 @@ export class NetworkNode {
 
   private drawNodeKind() {
     const nodeSize = this.node?.data?.nodeSize;
-    let deploymentIconSize = DeploymentIconSize.MEDIUM;
+    let deploymentIconSize = NodeKindSize.MEDIUM;
     if (nodeSize === NodeSize.BIG) {
-      deploymentIconSize = DeploymentIconSize.BIG;
+      deploymentIconSize = NodeKindSize.BIG;
     } else if (nodeSize === NodeSize.SMALL) {
-      deploymentIconSize = DeploymentIconSize.SMALL;
+      deploymentIconSize = NodeKindSize.SMALL;
     }
     this.ctx.beginPath();
     if (this.node.data?.kind) {
@@ -147,7 +146,7 @@ export class NetworkNode {
 
     let labelX = this.node.x - textWidth / 2 - imageToTextSpacing;
 
-    if (this.node.data?.status === NodeStatus.COMPLETE_INITIAL_SETUP) {
+    if (this.node.data?.status === WorkloadStatus.COMPLETE_INITIAL_SETUP) {
       labelX += protectedAddImageWidth / 2;
     }
     this.ctx.beginPath();
@@ -158,7 +157,7 @@ export class NetworkNode {
       textWidth
     );
 
-    if (this.node.data?.status === NodeStatus.COMPLETE_INITIAL_SETUP) {
+    if (this.node.data?.status === WorkloadStatus.COMPLETE_INITIAL_SETUP) {
       this.ctx.drawImage(
         this.canvasImages.protected,
         this.node.x - textWidth / 2 - protectedAddImageWidth,
@@ -175,7 +174,7 @@ export class NetworkNode {
     let ports = [];
     if (filterPorts?.idle) {
       ports.push({
-        status: EdgeStatus.IDLE,
+        status: WorkloadPortStatus.IDLE,
         total: idle,
       });
     }
@@ -189,7 +188,7 @@ export class NetworkNode {
         total = attempted;
       }
       ports.push({
-        status: EdgeStatus.ERROR,
+        status: WorkloadPortStatus.ERROR,
         total: total,
       });
     }
@@ -202,7 +201,7 @@ export class NetworkNode {
       }
       const y = this.node.y - (this.node?.data?.nodeSize || 0) / 2 + 10 - 1;
       this.ctx.fillStyle =
-        ports[i].status === EdgeStatus.ERROR ? color.error : color.idle;
+        ports[i].status === WorkloadPortStatus.ERROR ? color.error : color.idle;
       this.ctx.textAlign = "center";
       this.ctx.textBaseline = "middle";
       this.ctx.beginPath();
@@ -213,7 +212,7 @@ export class NetworkNode {
       this.ctx.font = "bold 10px Arial";
       const portStr = ports[i].total <= 99 ? ports[i].total.toString() : "99+";
       this.ctx.fillStyle =
-        ports[i].status === EdgeStatus.ERROR ? color.white : color.black;
+        ports[i].status === WorkloadPortStatus.ERROR ? color.white : color.black;
       this.ctx.fillText(portStr, x, y);
     }
   }

@@ -88,12 +88,35 @@ export const STATUS_MAP: Record<number, Stats> = {
 };
 
 export enum WorkloadKind {
-  Deployment = "deployment",
-  Demonset = "demonset",
-  Replicaset = "replicaset",
-  Cronjob = "cronjob",
-  Job = "job",
-  Statefulset = "statefulset",
+  DEPLOYMENT = "deployment",
+  DEMONSET = "demonset",
+  REPLICASET = "replicaset",
+  CRONJOB = "cronjob",
+  JOB = "job",
+  STATEFULSET = "statefulset",
+  ETC = "etc",
+  EXTERNAL = "external",
+}
+
+export enum WorkloadStatus {
+  BEFORE_INITIAL_SETUP = "before-init-setup",
+  COMPLETE_INITIAL_SETUP = "complete-setup",
+}
+
+export enum WorkloadPortStatus {
+  SYSTEM,
+  IDLE,
+  ACTIVE,
+  ERROR,
+  ATTEMPT,
+}
+
+export enum WorkloadPortStatusText {
+  SYSTEM = "system",
+  IDLE = "edle",
+  ACTIVE = "active",
+  ERROR = "error",
+  ATTEMPT = "attempt",
 }
 
 export type StatsType = {
@@ -105,3 +128,10 @@ export type StatsType = {
   latencyRtt: number | null;
   throughput: number | null;
 };
+
+export type FilterPorts = {
+  system: boolean;
+  error: boolean;
+  attempted: boolean;
+  idle: boolean;
+}

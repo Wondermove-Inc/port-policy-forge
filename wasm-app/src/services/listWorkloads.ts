@@ -1,4 +1,4 @@
-import { Stats } from "@/models";
+import { StatsType, WorkloadKind } from "@/models";
 
 type Relation = {
   workloadId: string;
@@ -8,14 +8,14 @@ type Relation = {
 export type WorkloadResource = {
   uuid: string;
   workloadName: string;
-  kind: string;
+  kind: WorkloadKind;
   from: Relation[];
   to: Relation[];
   inbound: {
-    stats: Stats;
+    stats: StatsType;
   };
   outbound: {
-    stats: Stats;
+    stats: StatsType;
   };
 };
 

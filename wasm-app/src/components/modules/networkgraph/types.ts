@@ -1,3 +1,10 @@
+import {
+  FilterPorts,
+  StatsType,
+  WorkloadKind,
+  WorkloadPortStatus,
+  WorkloadStatus,
+} from "@/models";
 import { Edge, IdType, Network, Node } from "vis-network";
 import { DataSet } from "vis-network/standalone";
 export type Coord = {
@@ -5,74 +12,32 @@ export type Coord = {
   y: number;
 };
 
-export enum EdgeStatus {
-  SYSTEM,
-  IDLE,
-  ACTIVE,
-  ERROR,
-  ATTEMPT,
-}
-
-export enum NodeKind {
-  DEPLOYMENT = "deployment",
-  DEMONSET = "demonset",
-  REPLICASET = "replicaset",
-  CRONJOB = "cronjob",
-  JOB = "job",
-  STATEFULSET = "statefulset",
-  ETC = "etc",
-  EXTERNAL = "external",
-}
-
-export enum NodeStatus {
-  BEFORE_INITIAL_SETUP,
-  COMPLETE_INITIAL_SETUP,
-}
-
-export enum EdgeStatusText {
-  SYSTEM = "system",
-  IDLE = "edle",
-  ACTIVE = "active",
-  ERROR = "error",
-  ATTEMPT = "attempt",
-}
-
 export enum NodeSize {
   SMALL = 40,
   MEDIUM = 60,
   BIG = 74,
 }
 
-export enum DeploymentIconSize {
+export enum NodeKindSize {
   SMALL = 20,
   MEDIUM = 30,
   BIG = 40,
 }
 
-export type NodeStats = {
-  active?: number;
-  attempted?: number;
-  error?: number;
-  idle?: number;
-  latencyRtt?: number;
-  throughput?: number;
-  unconnected?: number;
-};
-
 export type NodeData = {
   id: string;
   nodeSize: number;
   customLabel: string;
-  kind?: NodeKind;
-  status?: NodeStatus;
+  kind?: WorkloadKind;
+  status?: WorkloadStatus;
   inbound?: {
-    stats?: NodeStats;
+    stats?: StatsType;
   };
   outbound?: {
-    stats?: NodeStats;
+    stats?: StatsType;
   };
-  from?: { workloadId: string; status: EdgeStatus }[];
-  to?: { workloadId: string; status: EdgeStatus }[];
+  from?: { workloadId: string; status: WorkloadPortStatus }[];
+  to?: { workloadId: string; status: WorkloadPortStatus }[];
 };
 
 export type NetworkNodeData = {
@@ -86,7 +51,7 @@ export type EdgeData = {
   id?: string;
   from: string;
   to: string;
-  status: EdgeStatus;
+  status: WorkloadPortStatus;
 };
 
 export type CustomEdge = Partial<Edge> & {
@@ -137,6 +102,7 @@ export type CanvasImage = {
 
 export type DrawingOptions = {
   hoverNodeId?: string;
+  activeEdgeId?: string;
   activeNodeId?: string;
   connectedEdges?: IdType[];
   connectedNodes?: IdType[];
@@ -156,11 +122,4 @@ export interface EdgeStyle {
   textColor?: string;
   arrowKey: keyof CanvasImage;
   lineDash: number[];
-}
-
-export type FilterPorts = {
-  system: boolean;
-  error: boolean;
-  attempted: boolean;
-  idle: boolean;
 }

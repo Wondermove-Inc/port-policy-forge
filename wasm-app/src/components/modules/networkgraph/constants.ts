@@ -1,4 +1,5 @@
-import { EdgeStatus, EdgeStyle } from "./types";
+import { WorkloadPortStatus } from "@/models";
+import { EdgeStyle } from "./types";
 
 export const color = {
   white: "#fff",
@@ -33,7 +34,7 @@ export const LABEL_BORDER_RADIUS = 8;
 export const FONT = "12px Arial";
 
 export const EDGE_STYLES: Record<string, EdgeStyle> = {
-  [EdgeStatus.IDLE]: {
+  [WorkloadPortStatus.IDLE]: {
     strokeStyle: color.idle,
     label: "Idle",
     backgroundColor: color.idleBackground,
@@ -42,7 +43,7 @@ export const EDGE_STYLES: Record<string, EdgeStyle> = {
     arrowKey: "idleArrow",
     lineDash: [0, 0],
   },
-  [EdgeStatus.ERROR]: {
+  [WorkloadPortStatus.ERROR]: {
     strokeStyle: color.error,
     label: "Error",
     backgroundColor: color.errorBackground,
@@ -51,7 +52,7 @@ export const EDGE_STYLES: Record<string, EdgeStyle> = {
     arrowKey: "errorArrow",
     lineDash: [0, 0],
   },
-  [EdgeStatus.ATTEMPT]: {
+  [WorkloadPortStatus.ATTEMPT]: {
     strokeStyle: color.error,
     label: "Attempt",
     backgroundColor: color.errorBackground,
@@ -60,7 +61,7 @@ export const EDGE_STYLES: Record<string, EdgeStyle> = {
     arrowKey: "errorArrow",
     lineDash: [2, 2],
   },
-  [EdgeStatus.ACTIVE]: {
+  [WorkloadPortStatus.ACTIVE]: {
     strokeStyle: color.active,
     arrowKey: "activeArrow",
     lineDash: [0, 0],
