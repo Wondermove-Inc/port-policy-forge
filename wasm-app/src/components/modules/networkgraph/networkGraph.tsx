@@ -1,18 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import { IdType, Network } from "vis-network";
-import { loadAllImages } from "./imageLoader";
+import { ImageLoader } from "./imageLoader";
 import {
   CanvasImage,
   EdgeData,
   CustomNetwork,
   NodeData,
   NetworkNodeData,
-  FilterPorts,
+  DrawingOptions,
 } from "./types";
 import { NetworkEdge } from "./edge";
 import { NetworkNode } from "./node";
 import { calculatePositionAlongEdge } from "./utils";
 import { createNetworkOptions } from "./network";
+import { FilterPorts } from "@/models";
 
 let network: CustomNetwork | null = null;
 
@@ -189,7 +190,8 @@ const NetworkGraph = ({
   }, []);
 
   useEffect(() => {
-    loadAllImages().then((images) => {
+    const imageLoader = new ImageLoader();
+    imageLoader.load().then((images) => {
       setCanvasImages(images);
     });
   }, []);
@@ -200,12 +202,7 @@ const NetworkGraph = ({
 const handleAfterDrawing = (
   ctx: CanvasRenderingContext2D,
   canvasImages: CanvasImage,
-  options?: {
-    hoverNodeId?: string;
-    activeNodeId?: string;
-    activeEdgeId?: string;
-    filterPorts?: FilterPorts;
-  }
+  options?: DrawingOptions
 ) => {
   if (!canvasImages || !network) {
     return;

@@ -11,18 +11,14 @@ import {
   LABEL_RECT_WIDTH,
   LINE_WIDTH,
 } from "./constants";
-import { CanvasImage, CustomEdge, EdgeStatus, NodeSize } from "./types";
+import { CanvasImage, CustomEdge, DrawingOptions, NodeSize } from "./types";
+import { WorkloadPortStatus } from "@/models";
 
 export class NetworkEdge {
   ctx: CanvasRenderingContext2D;
   edge: CustomEdge;
   canvasImages: CanvasImage;
-  options: {
-    connectedEdges?: IdType[];
-    hoverNodeId?: string;
-    activeNodeId?: string;
-    activeEdgeId?: string;
-  };
+  options: DrawingOptions;
   coords: {
     fromX: number;
     fromY: number;
@@ -34,12 +30,7 @@ export class NetworkEdge {
     ctx: CanvasRenderingContext2D,
     edge: CustomEdge,
     canvasImages: CanvasImage,
-    options: {
-      connectedEdges?: IdType[];
-      hoverNodeId?: string;
-      activeNodeId?: string;
-      activeEdgeId?: string;
-    }
+    options: DrawingOptions,
   ) {
     this.canvasImages = canvasImages;
     this.ctx = ctx;
@@ -244,13 +235,15 @@ export class NetworkEdge {
     }
     if (isActiveEdge) {
       const edgeStatus = this.edge.data?.status;
-      const styleKey = edgeStatus ? String(edgeStatus) : EdgeStatus.ACTIVE;
+      const styleKey = edgeStatus
+        ? String(edgeStatus)
+        : WorkloadPortStatus.ACTIVE;
       const style = EDGE_STYLES[styleKey] || EDGE_STYLES.DEFAULT;
       arrowKey = style.arrowKey;
     }
 
     if (this.isEdgeConnected()) {
-      arrowKey = EDGE_STYLES[EdgeStatus.ACTIVE].arrowKey;
+      arrowKey = EDGE_STYLES[WorkloadPortStatus.ACTIVE].arrowKey;
     }
 
     const arrowImage = this.canvasImages[arrowKey];

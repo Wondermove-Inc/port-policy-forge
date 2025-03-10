@@ -14,71 +14,75 @@ import WorkloadProtectedIcon from "../../../assets/icons/workload-protected.svg?
 import WorkloadLineConnectedIcon from "../../../assets/icons/workload-line-connected.svg?inline";
 import { color } from "./constants";
 
-export const loadImage = (src: string): Promise<HTMLImageElement> => {
-  return new Promise<HTMLImageElement>((resolve) => {
-    const img = new Image();
-    img.src = src;
-    img.onload = () => {
-      resolve(img);
+export class ImageLoader {
+  constructor() {}
+
+  async load(): Promise<CanvasImage> {
+    const idleColor = color.idle;
+    const errorColor = color.error;
+    const activeColor = color.active;
+
+    const workloadArrowIdleIcon = WorkloadArrowIcon.replace(
+      /stroke=['"]%23[0-9a-fA-F]{3,6}['"]/g,
+      `stroke='%23${idleColor.slice(1)}'`
+    );
+
+    const workloadArrowErrorIcon = WorkloadArrowIcon.replace(
+      /stroke=['"]%23[0-9a-fA-F]{3,6}['"]/g,
+      `stroke='%23${errorColor.slice(1)}'`
+    );
+
+    const workloadArrowActiveIcon = WorkloadArrowIcon.replace(
+      /stroke=['"]%23[0-9a-fA-F]{3,6}['"]/g,
+      `stroke='%23${activeColor.slice(1)}'`
+    );
+
+    const images = await Promise.all([
+      this.loadImage(WorkloadArrowIcon),
+      this.loadImage(workloadArrowIdleIcon),
+      this.loadImage(workloadArrowErrorIcon),
+      this.loadImage(workloadArrowActiveIcon),
+      this.loadImage(WorkloadProtectedIcon),
+      this.loadImage(WorkloadExclamationIcon),
+      this.loadImage(WorkloadDeploymentIcon),
+      this.loadImage(WorkloadDemonsetIcon),
+      this.loadImage(WorkloadReplicasetIcon),
+      this.loadImage(WorkloadCronjobIcon),
+      this.loadImage(WorkloadJobIcon),
+      this.loadImage(WorkloadStatefulsetIcon),
+      this.loadImage(WorkloadEtcIcon),
+      this.loadImage(WorkloadExternalIcon),
+      this.loadImage(WorkloadLineConnectedIcon),
+    ]);
+
+    return {
+      arrow: images[0],
+      idleArrow: images[1],
+      errorArrow: images[2],
+      activeArrow: images[3],
+      protected: images[4],
+      exclamation: images[5],
+      kind: {
+        deployment: images[6],
+        demonset: images[7],
+        replicaset: images[8],
+        cronjob: images[9],
+        job: images[10],
+        statefulset: images[11],
+        etc: images[12],
+        external: images[13],
+      },
+      lineConnected: images[14],
     };
-  });
-};
+  }
 
-export const loadAllImages = async (): Promise<CanvasImage> => {
-  const idleColor = color.idle;
-  const errorColor = color.error;
-  const activeColor = color.active;
-
-  const workloadArrowIdleIcon = WorkloadArrowIcon.replace(
-    /stroke=['"]%23[0-9a-fA-F]{3,6}['"]/g,
-    `stroke='%23${idleColor.slice(1)}'`
-  );
-
-  const workloadArrowErrorIcon = WorkloadArrowIcon.replace(
-    /stroke=['"]%23[0-9a-fA-F]{3,6}['"]/g,
-    `stroke='%23${errorColor.slice(1)}'`
-  );
-
-  const workloadArrowActiveIcon = WorkloadArrowIcon.replace(
-    /stroke=['"]%23[0-9a-fA-F]{3,6}['"]/g,
-    `stroke='%23${activeColor.slice(1)}'`
-  );
-
-  const images = await Promise.all([
-    loadImage(WorkloadArrowIcon),
-    loadImage(workloadArrowIdleIcon),
-    loadImage(workloadArrowErrorIcon),
-    loadImage(workloadArrowActiveIcon),
-    loadImage(WorkloadProtectedIcon),
-    loadImage(WorkloadExclamationIcon),
-    loadImage(WorkloadDeploymentIcon),
-    loadImage(WorkloadDemonsetIcon),
-    loadImage(WorkloadReplicasetIcon),
-    loadImage(WorkloadCronjobIcon),
-    loadImage(WorkloadJobIcon),
-    loadImage(WorkloadStatefulsetIcon),
-    loadImage(WorkloadEtcIcon),
-    loadImage(WorkloadExternalIcon),
-    loadImage(WorkloadLineConnectedIcon),
-  ]);
-
-  return {
-    arrow: images[0],
-    idleArrow: images[1],
-    errorArrow: images[2],
-    activeArrow: images[3],
-    protected: images[4],
-    exclamation: images[5],
-    kind: {
-      deployment: images[6],
-      demonset: images[7],
-      replicaset: images[8],
-      cronjob: images[9],
-      job: images[10],
-      statefulset: images[11],
-      etc: images[12],
-      external: images[13],
-    },
-    lineConnected: images[14],
-  };
-};
+  private loadImage(src: string): Promise<HTMLImageElement> {
+    return new Promise<HTMLImageElement>((resolve) => {
+      const img = new Image();
+      img.src = src;
+      img.onload = () => {
+        resolve(img);
+      };
+    });
+  }
+}
