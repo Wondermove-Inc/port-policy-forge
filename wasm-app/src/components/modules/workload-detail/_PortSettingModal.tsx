@@ -17,6 +17,7 @@ import { DescriptionWithDetails } from "@/components/atoms/DescriptionWithDetail
 import { ModalFooter } from "@/components/atoms/ModalFooter";
 import { AddIcon } from "@/components/icons/AddIcon";
 import { DeleteIcon } from "@/components/icons/DeleteIcon";
+import { INITIAL_ACCESS_SOURCE, PROTOCOL_OPTIONS } from "@/constants";
 import { AccessPolicy, Port, PortAccessSettingForm } from "@/models";
 
 interface PortSettingModalProps {
@@ -48,17 +49,16 @@ export const PortSettingModal = ({
     name: "accessSources",
   });
 
-  const handleAddSource = () => append({ ip: "", protocol: "", comment: "" });
+  const handleAddSource = () => append(INITIAL_ACCESS_SOURCE);
 
   const allowFullAccess = watch("allowFullAccess");
 
   useEffect(() => {
-    // TODO : && not edit
     if (!allowFullAccess) {
       setValue("accessPolicy", AccessPolicy.ALLOW_ONLY);
-      setValue("accessSources", [{ ip: "", protocol: "", comment: "" }]);
+      setValue("accessSources", [INITIAL_ACCESS_SOURCE]);
     }
-  }, [allowFullAccess, remove]);
+  }, [allowFullAccess]);
 
   return (
     <Modal width={646} open={isOpen} onClose={handleClose}>
@@ -196,7 +196,7 @@ export const PortSettingModal = ({
                               <Select
                                 {...field}
                                 sx={{ flex: 1 }}
-                                options={[{ label: "TCP", value: "tcp" }]}
+                                options={PROTOCOL_OPTIONS}
                               />
                             )}
                           />

@@ -1,4 +1,4 @@
-import { Stats } from "@/models";
+import { Protocol, Stats } from "@/models";
 import { WorkloadDetailType } from "@/services/getworkloadDetail";
 
 export const PORT_STATUS_MAP: Record<
@@ -72,3 +72,24 @@ export const INITIAL_WORKLOAD_DETAIL: WorkloadDetailType = {
     },
   },
 };
+
+export const INITIAL_ACCESS_SOURCE = {
+  ip: "",
+  protocol: Protocol.TCP,
+  comment: "",
+};
+
+export const PROTOCOL_OPTIONS = [
+  {
+    label: "TCP",
+    value: "tcp",
+  },
+  {
+    label: "UDP",
+    value: "udp",
+  },
+  {
+    label: "ICMP",
+    value: "icmp",
+  },
+];

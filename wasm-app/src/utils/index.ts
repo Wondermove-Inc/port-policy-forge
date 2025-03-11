@@ -40,16 +40,21 @@ export const getPortNumberValue = ({
   return portNumber ? `${portNumber}` : "";
 };
 
-export const getAccessLabel = (access: string) => {
+export const getAccessLabel = (access: string, direction: PortDirection) => {
+  const isInbound = direction === PortDirection.INBOUND;
   switch (access) {
     case AccessPolicy.ALLOW_ALL:
-      return "Allow all sources";
-    case AccessPolicy.ALLOW_EXCLUDE:
-      return "Allow except some sources";
-    case AccessPolicy.ALLOW_ONLY:
-      return "Allow only some sources";
-    default:
       return "Allow all access";
+    case AccessPolicy.ALLOW_EXCLUDE:
+      return isInbound
+        ? "Exclude specific sources"
+        : "Allow except some sources";
+    case AccessPolicy.ALLOW_ONLY:
+      return isInbound
+        ? "Only specific destination"
+        : "Exclude specific destination ";
+    default:
+      return "";
   }
 };
 
