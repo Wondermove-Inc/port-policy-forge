@@ -119,7 +119,7 @@ export const Datagrid = (
     const isChecked = !checkedRows[column.field]?.allChecked;
     const updatedRows = Object.fromEntries(
       rows.map((row) => {
-        if (column.disabled?.({ row, field: column.field})) {
+        if (column.disabled?.({ row, field: column.field })) {
           return [];
         }
         return [row.id, isChecked];
@@ -221,7 +221,7 @@ export const Datagrid = (
         ? column.renderCell(params)
         : params.value;
       if (column.enableCheckBox && content !== undefined && content !== null) {
-        const isDisabled = column.disabled?.(params)
+        const isDisabled = column.disabled?.(params);
         return (
           <Box
             sx={{

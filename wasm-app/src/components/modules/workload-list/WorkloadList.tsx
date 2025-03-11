@@ -62,13 +62,10 @@ export const WorkloadList = () => {
     );
   };
 
-  const checkIfDisabled = (
-    row: WorkloadResource,
-    field: string,
-  ) => {
-    const value = row[selectedTabBound].stats[field as keyof StatsType]
-    return value !== undefined && value === 0
-  }
+  const checkIfDisabled = (row: WorkloadResource, field: string) => {
+    const value = row[selectedTabBound].stats[field as keyof StatsType];
+    return value !== undefined && value === 0;
+  };
 
   const columns: CustomGridColDef[] = [
     { field: "workloadName", headerName: "Name", flex: 1 },
@@ -135,7 +132,6 @@ export const WorkloadList = () => {
   }, [filteredWorkloadId, workloads]);
 
   const handleSelectionChange = (data: TableSelectionRow[]) => {
-    console.log(data);
     setClosedWorkloads(data);
   };
 

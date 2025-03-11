@@ -68,7 +68,7 @@ const NetworkGraph = ({
       network = new Network(
         containerRef.current,
         data,
-        options
+        options,
       ) as CustomNetwork;
     }
     if (activeNodeId) {
@@ -161,7 +161,7 @@ const NetworkGraph = ({
             const mousemoveRatio = calculatePositionAlongEdge(
               pointer,
               fromNodePos,
-              toNodePos
+              toNodePos,
             );
             if (mousemoveRatio >= 0.2 && mousemoveRatio <= 0.8) {
               setActiveEdgeId(edgeId as string);
@@ -210,7 +210,7 @@ const NetworkGraph = ({
             const clickRatio = calculatePositionAlongEdge(
               clickPosition,
               fromNodePos,
-              toNodePos
+              toNodePos,
             );
             if (clickRatio > 0.42 && clickRatio < 0.58) {
               onEdgeDisconnected?.(edge.id as string);
@@ -259,7 +259,7 @@ const NetworkGraph = ({
 const handleAfterDrawing = (
   ctx: CanvasRenderingContext2D,
   canvasImages: CanvasImage,
-  options?: DrawingOptions
+  options?: DrawingOptions,
 ) => {
   if (!canvasImages || !network) {
     return;
