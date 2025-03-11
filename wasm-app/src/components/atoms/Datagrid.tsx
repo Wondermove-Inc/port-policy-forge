@@ -31,7 +31,8 @@ const noRowsOverlay = () => {
 };
 export type CustomGridColDef = GridColDef & {
   enableCheckBox?: boolean;
-  disabled?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  disabled?: ({ row, field }: { row: any; field: string }) => boolean;
 };
 
 export type TableSelectionRow = {
@@ -114,15 +115,20 @@ export const Datagrid = (
     onCheckedRowsChange?.(formatCheckedRows(newCheckedRows));
   };
 
-  const handleToggleColumnCheck = (columnField: string) => {
-    const isChecked = !checkedRows[columnField]?.allChecked;
+  const handleCheckAll = (column: CustomGridColDef) => {
+    const isChecked = !checkedRows[column.field]?.allChecked;
     const updatedRows = Object.fromEntries(
-      rows.map((row) => [row.id, isChecked]),
+      rows.map((row) => {
+        if (column.disabled?.({ row, field: column.field})) {
+          return [];
+        }
+        return [row.id, isChecked];
+      }),
     );
 
     updateCheckedRows({
       ...checkedRows,
-      [columnField]: {
+      [column.field]: {
         ...updatedRows,
         allChecked: isChecked,
         isIndeterminate: !isChecked && Object.values(updatedRows).some(Boolean),
@@ -184,7 +190,7 @@ export const Datagrid = (
                 checkedRows[column.field]?.allChecked ||
                 false
               }
-              onChange={() => handleToggleColumnCheck(column.field)}
+              onChange={() => handleCheckAll(column)}
               indeterminateIcon={<IndeterminateIcon />}
               checkedIcon={<CheckBoxIcon />}
               sx={{
@@ -215,6 +221,7 @@ export const Datagrid = (
         ? column.renderCell(params)
         : params.value;
       if (column.enableCheckBox && content !== undefined && content !== null) {
+        const isDisabled = column.disabled?.(params)
         return (
           <Box
             sx={{
@@ -227,7 +234,7 @@ export const Datagrid = (
               checked={checkedRows[column.field]?.[rowId] || false}
               onChange={() => handleToggleRowCheck(column.field, rowId)}
               checkedIcon={<CheckBoxIcon />}
-              disabled={column.disabled}
+              disabled={isDisabled}
               onClick={(e) => e.stopPropagation()}
               sx={{
                 "&.Mui-checked": {

@@ -15,7 +15,7 @@ import { ModalConfirm } from "@/components/atoms/ModalConfirm";
 import { CheckBoxIcon } from "@/components/icons/CheckBoxIcon";
 import { SearchComplete } from "@/components/modules/common/SearchComplete";
 import { useDisclosure } from "@/hooks/useDisclosure";
-import { PortDirection, Stats } from "@/models";
+import { PortDirection, StatsType } from "@/models";
 import { wasmClosePortsByStatus } from "@/services/closePortsByStatus";
 import { wasmListWorkloads, WorkloadResource } from "@/services/listWorkloads";
 import { useCommonStore } from "@/store";
@@ -48,7 +48,7 @@ export const WorkloadList = () => {
     status: string,
     color: string,
   ) => {
-    const value = row[selectedTabBound].stats[status as keyof Stats];
+    const value = row[selectedTabBound].stats[status as keyof StatsType];
     return (
       <Typography
         sx={{
@@ -61,6 +61,14 @@ export const WorkloadList = () => {
       </Typography>
     );
   };
+
+  const checkIfDisabled = (
+    row: WorkloadResource,
+    field: string,
+  ) => {
+    const value = row[selectedTabBound].stats[field as keyof StatsType]
+    return value !== undefined && value === 0
+  }
 
   const columns: CustomGridColDef[] = [
     { field: "workloadName", headerName: "Name", flex: 1 },
@@ -75,6 +83,7 @@ export const WorkloadList = () => {
       headerName: "Unconnected Port",
       flex: 1,
       enableCheckBox: true,
+      disabled: ({ row, field }) => checkIfDisabled(row, field),
       renderCell: ({ row, field }) =>
         renderCellWithEmptyValue(row, field, "status.warning"),
     },
@@ -83,6 +92,7 @@ export const WorkloadList = () => {
       headerName: "Idle port",
       flex: 1,
       enableCheckBox: true,
+      disabled: ({ row, field }) => checkIfDisabled(row, field),
       renderCell: ({ row, field }) =>
         renderCellWithEmptyValue(row, field, "status.warning"),
     },
@@ -91,6 +101,7 @@ export const WorkloadList = () => {
       headerName: "Active port",
       flex: 1,
       enableCheckBox: true,
+      disabled: ({ row, field }) => checkIfDisabled(row, field),
       renderCell: ({ row, field }) =>
         renderCellWithEmptyValue(row, field, "interaction.primaryContrast"),
     },
@@ -98,6 +109,7 @@ export const WorkloadList = () => {
       field: "error",
       headerName: "Error port",
       flex: 1,
+      disabled: ({ row, field }) => checkIfDisabled(row, field),
       enableCheckBox: true,
       renderCell: ({ row, field }) =>
         renderCellWithEmptyValue(row, field, "status.danger"),
@@ -123,6 +135,7 @@ export const WorkloadList = () => {
   }, [filteredWorkloadId, workloads]);
 
   const handleSelectionChange = (data: TableSelectionRow[]) => {
+    console.log(data);
     setClosedWorkloads(data);
   };
 
