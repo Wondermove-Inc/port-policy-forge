@@ -181,23 +181,24 @@ const NetworkGraph = ({
       canvas.addEventListener("mousemove", onMouseMove);
     }
     network.on("click", function (properties) {
+      const edgeId = network?.getEdgeAt({
+        x: properties.event.srcEvent.offsetX,
+        y: properties.event.srcEvent.offsetY,
+      });
       const nodeId = network?.getNodeAt({
         x: properties.event.srcEvent.offsetX,
         y: properties.event.srcEvent.offsetY,
       });
-      if (nodeId && !activeNodeId) {
-        onNodeSelected?.(nodeId as string);
-      }
 
       const clickPosition: Position = {
         x: properties.pointer.canvas.x,
         y: properties.pointer.canvas.y,
       };
-
-      const edgeId = network?.getEdgeAt({
-        x: properties.event.srcEvent.offsetX,
-        y: properties.event.srcEvent.offsetY,
-      });
+      const activeConnectedEdges = network?.getConnectedEdges(activeNodeId);
+      if (nodeId && !activeConnectedEdges?.includes(edgeId as IdType)) {
+        onNodeSelected?.(nodeId as string);
+        return;
+      }
       if (edgeId) {
         const edge = network?.body.edges[edgeId as string];
         if (edge) {
