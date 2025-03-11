@@ -8,7 +8,7 @@ import { InfoIcon } from "@/components/icons/InfoIcon";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { PortDirection } from "@/models";
 import { wasmCloseNotActivePorts } from "@/services/closeNotActivePorts";
-import { getPortDirectionValue } from "@/utils";
+import { getPortFlag } from "@/utils";
 
 type PolicyApplicationProps = {
   fetchWorkloadDetail: () => void;
@@ -29,7 +29,7 @@ export const PolicyApplication = ({
     setLoading(true);
     wasmCloseNotActivePorts({
       workloadUuid,
-      flag: getPortDirectionValue(portDirection),
+      flag: getPortFlag(portDirection),
     })
       .then(() => {
         fetchWorkloadDetail();
