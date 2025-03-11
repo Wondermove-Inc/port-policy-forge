@@ -21,7 +21,7 @@ export const WorkloadMap = () => {
   const [edges, setEdges] = useState<EdgeData[]>([]);
   const [nodes, setNodes] = useState<NodeData[]>([]);
   const [networkGraphRenderKey, setNetworkGraphRenderKey] = useState<number>(
-    new Date().getTime(),
+    new Date().getTime()
   );
   const { workloads, portHover } = useCommonStore();
   const initFilterPorts: FilterPorts = {
@@ -91,13 +91,16 @@ export const WorkloadMap = () => {
   const handleOnNodeSelected = (nodeId: string) => {
     setActiveNodeId(nodeId);
     setSelectedWorkloadId(nodeId);
-    network?.focus(nodeId, {
-      scale: 1.0,
-      animation: {
-        duration: 1000,
-        easingFunction: "easeInOutQuad",
-      },
-    });
+    try {
+      network?.focus(nodeId, {
+        scale: 1.0,
+        animation: {
+          duration: 1000,
+          easingFunction: "easeInOutQuad",
+        },
+      });
+    } catch {}
+
     detailDrawer.open();
   };
 

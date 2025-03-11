@@ -194,8 +194,7 @@ const NetworkGraph = ({
         x: properties.pointer.canvas.x,
         y: properties.pointer.canvas.y,
       };
-      const activeConnectedEdges = network?.getConnectedEdges(activeNodeId);
-      if (nodeId && !activeConnectedEdges?.includes(edgeId as IdType)) {
+      if (nodeId) {
         onNodeSelected?.(nodeId as string);
         return;
       }
