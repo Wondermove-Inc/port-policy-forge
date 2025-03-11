@@ -108,7 +108,11 @@ export const WorkloadDetail = ({
           "",
           formatNumber,
         )(workloadDetail),
-        attempted: formatter(`${direction}.stats.attempted`)(workloadDetail),
+        attempted: formatter(
+          `${direction}.stats.attempted`,
+          "",
+          formatNumber,
+        )(workloadDetail),
         latencyRtt: formatter(
           `${direction}.stats.latencyRtt`,
           "",
@@ -140,6 +144,11 @@ export const WorkloadDetail = ({
         })),
         closed: workloadDetail[direction].ports.closed.map((el) => ({
           ...el,
+          portNumberLabel: getPortNumberLabel({
+            isRange: el.isRange,
+            portRange: el.portRange as PortRangeType,
+            portNumber: el.portNumber,
+          }),
           type: formatter("type", "", getPortKindLabel)(el),
           count: formatter("count", "", formatNumber)(el),
           lastConnectionDate: formatter(
