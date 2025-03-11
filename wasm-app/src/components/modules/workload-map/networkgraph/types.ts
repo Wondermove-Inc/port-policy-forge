@@ -109,7 +109,7 @@ export type DrawingOptions = {
   connectedEdges?: IdType[];
   connectedNodes?: IdType[];
   filterPorts?: FilterPorts;
-  portHover?: Port | null,
+  portHover?: Port | null;
 };
 
 export type WorkloadConnector = {

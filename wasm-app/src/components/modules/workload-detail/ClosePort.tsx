@@ -10,10 +10,11 @@ import { CloseIcon } from "@/components/icons/CloseIcon";
 import { WarningIcon } from "@/components/icons/WarningIcon";
 import { CollapsibleTable } from "@/components/modules/common/CollapsibleTable";
 import { useDisclosure } from "@/hooks/useDisclosure";
-import { Port, PortDirection, PortRisk } from "@/models";
+import { Port, PortRisk } from "@/models";
+import { wasmClearClosedPortHistory } from "@/services/clearClosedPortHistory";
+import { wasmOpenClosedPort } from "@/services/openClosedPort";
 import { getPortFlag, getPortNumberValue, getPortRiskLabel } from "@/utils";
 import { formatNumber, formatter } from "@/utils/format";
-import { wasmOpenClosedPort } from "@/services/openClosedPort";
 
 type ClosePortProps = {
   data: Port[];
@@ -37,6 +38,11 @@ export const ClosePort = ({
     allowPortModal.open();
   };
 
+  const openClearHistoryModal = (record: Port) => {
+    setSelectedPort(record);
+    clearHistoryModal.open();
+  };
+
   const handleAllowPort = () => {
     if (!selectedPort) {
       return;
@@ -51,7 +57,7 @@ export const ClosePort = ({
         portNumber: selectedPort.portNumber,
       }),
     };
-    console.log(params);
+    console.log("wasmOpenClosedPort", params);
     wasmOpenClosedPort(params)
       .then(() => {
         fetchWorkloadDetail();
@@ -67,9 +73,32 @@ export const ClosePort = ({
   };
 
   const handleClearHistory = () => {
-    // TODO
-    fetchWorkloadDetail();
-    clearHistoryModal.close();
+    if (!selectedPort) {
+      return;
+    }
+    setLoading(true);
+    const params = {
+      workloadUuid: workloadUuid,
+      flag: getPortFlag(selectedPort?.direction),
+      portSpec: getPortNumberValue({
+        isRange: selectedPort.isRange,
+        portRange: selectedPort.portRange,
+        portNumber: selectedPort.portNumber,
+      }),
+    };
+    console.log("wasmClearClosedPortHistory", params);
+    wasmClearClosedPortHistory(params)
+      .then(() => {
+        fetchWorkloadDetail();
+        allowPortModal.close();
+      })
+      .catch((error) => {
+        // TODO: handle error
+        alert(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const columns = useMemo(() => {
@@ -91,7 +120,7 @@ export const ClosePort = ({
         width: emptyData ? 90 : 85,
         render: (record: Port) => {
           const isHighRisk = [PortRisk.HIGH, PortRisk.VERY_HIGH].includes(
-            record.risk as PortRisk
+            record.risk as PortRisk,
           );
           return (
             <Typography
@@ -126,12 +155,12 @@ export const ClosePort = ({
               sx: {
                 paddingX: "4px !important",
               },
-              render: () => (
+              render: (record: Port) => (
                 <Typography
                   variant="label_m"
                   color="primary.dark"
                   sx={{ cursor: "pointer", textAlign: "center" }}
-                  onClick={allowPortModal.open}
+                  onClick={() => openAllowPortModal(record)}
                 >
                   Open the access
                 </Typography>
@@ -150,7 +179,7 @@ export const ClosePort = ({
                     justifyContent: "center",
                     cursor: "pointer",
                   }}
-                  onClick={() => openAllowPortModal(record)}
+                  onClick={() => openClearHistoryModal(record)}
                 >
                   <CloseIcon size={16} color="text.tertiary" />
                 </Box>

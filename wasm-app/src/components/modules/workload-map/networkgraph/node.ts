@@ -99,7 +99,7 @@ export class NetworkNode {
       }
       if (isActiveLastConnection && isPortClosed) {
         this.ctx.strokeStyle = color.stroke.error;
-      this.ctx.fillStyle = color.fill.error;
+        this.ctx.fillStyle = color.fill.error;
       } else {
         this.ctx.strokeStyle = color.stroke.active;
         this.ctx.fillStyle = color.fill.active;
