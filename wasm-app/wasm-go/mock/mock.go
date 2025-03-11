@@ -145,7 +145,7 @@ var MockWorkloads = map[string][]model.Workload{
 			Usage:                   0.5, // 50% CPU usage
 			From:                    []model.Relation{},
 			To: []model.Relation{
-				{WorkloadId: "7f2552b4-ab40-4120-a6d9-16507024922b", Status: 1},
+				{WorkloadId: "798df97d-11da-4409-bb4e-0621564a25e6", Status: 1},
 			},
 			Inbound: model.TrafficStats{
 				Stats: model.Stats{
