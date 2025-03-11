@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strconv"
 	"syscall/js"
+	"time"
 	"wasm-go/mock"
 	"wasm-go/model"
 	"wasm-go/utils"
@@ -256,11 +257,13 @@ func openPort(this js.Value, p []js.Value) interface{} {
 
 	var portSources []model.AccessSource
 	if req.AccessPolicy == model.ONLY_SPECIFIC || req.AccessPolicy == model.EXCLUDE_SPECIFIC {
+		currentTime := time.Now().Format(time.RFC3339)
 		for _, s := range req.Sources {
 			portSources = append(portSources, model.AccessSource{
-				IP:       s.IP,
-				Protocol: s.Protocol,
-				Comment:  s.Comment,
+				IP:            s.IP,
+				Protocol:      s.Protocol,
+				Comment:       s.Comment,
+				LastUpdatedAt: currentTime,
 			})
 		}
 	}
@@ -442,11 +445,14 @@ func editPort(this js.Value, p []js.Value) interface{} {
 
 	var newSources []model.AccessSource
 	if req.AccessPolicy == model.ONLY_SPECIFIC || req.AccessPolicy == model.EXCLUDE_SPECIFIC {
+		currentTime := time.Now().Format(time.RFC3339)
+
 		for _, s := range req.Sources {
 			newSources = append(newSources, model.AccessSource{
-				IP:       s.IP,
-				Protocol: s.Protocol,
-				Comment:  s.Comment,
+				IP:            s.IP,
+				Protocol:      s.Protocol,
+				Comment:       s.Comment,
+				LastUpdatedAt: currentTime,
 			})
 		}
 	}

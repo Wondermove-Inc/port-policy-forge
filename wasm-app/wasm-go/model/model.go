@@ -177,9 +177,10 @@ const (
 )
 
 type AccessSource struct {
-	IP       string `json:"ip"`
-	Protocol string `json:"protocol"`
-	Comment  string `json:"comment"`
+	IP            string `json:"ip"`
+	Protocol      string `json:"protocol"`
+	Comment       string `json:"comment"`
+	LastUpdatedAt string `json:"lastUpdatedAt"`
 }
 
 type PortControlBase struct {
