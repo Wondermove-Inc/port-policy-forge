@@ -21,7 +21,7 @@ export const WorkloadMap = () => {
   const [edges, setEdges] = useState<EdgeData[]>([]);
   const [nodes, setNodes] = useState<NodeData[]>([]);
   const [networkGraphRenderKey, setNetworkGraphRenderKey] = useState<number>(
-    new Date().getTime()
+    new Date().getTime(),
   );
   const { workloads, portHover } = useCommonStore();
   const initFilterPorts: FilterPorts = {

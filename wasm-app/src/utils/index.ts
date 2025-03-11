@@ -48,11 +48,9 @@ export const getAccessLabel = (access: string, direction: PortDirection) => {
     case AccessPolicy.ALLOW_EXCLUDE:
       return isInbound
         ? "Exclude specific sources"
-        : "Allow except some sources";
+        : "Exclude specific destination";
     case AccessPolicy.ALLOW_ONLY:
-      return isInbound
-        ? "Only specific destination"
-        : "Exclude specific destination ";
+      return isInbound ? "Only specific sources" : "Only specific destination";
     default:
       return "";
   }
@@ -72,11 +70,11 @@ export const getPortKindLabel = (kind: string) => {
 export const getPortRiskLabel = (risk: number) => {
   switch (risk) {
     case PortRisk.NORMAL:
-      return "normal";
+      return "Normal";
     case PortRisk.HIGH:
-      return "high";
+      return "High";
     case PortRisk.VERY_HIGH:
-      return "very high";
+      return "Very High";
     default:
       return "";
   }

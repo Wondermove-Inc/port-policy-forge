@@ -56,7 +56,7 @@ export const formatBinarySize = (size?: number): string => {
     return size;
   }
 
-  const units: string[] = ["MiB", "GiB"];
+  const units: string[] = ["B", "KiB", "MiB", "GiB"];
   const step: number = 1024;
 
   let unit: number = 0;

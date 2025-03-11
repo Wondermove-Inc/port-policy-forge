@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { ClosePort } from "./ClosePort";
 import { OpenPort } from "./OpenPort";
@@ -43,15 +43,15 @@ export const WorkloadDetail = ({
   id: string;
   handleClose: () => void;
 }) => {
+  const { setIsDetailFromMap, isViewList } = useCommonStore();
+
   const [portDirection, setPortDirection] = useState<PortDirection>(
     PortDirection.INBOUND,
   );
   const [workloadDetail, setWorkloadDetail] = useState<WorkloadDetailType>(
     INITIAL_WORKLOAD_DETAIL,
   );
-  const [isShowPolicyApplication, setIsShowPolicyApplication] = useState(false);
   const [loading, setLoading] = useState(true);
-  const { setIsDetailFromMap, isViewList } = useCommonStore();
 
   useEffect(() => {
     if (id) {
@@ -69,20 +69,18 @@ export const WorkloadDetail = ({
     }
   }, [id]);
 
-  useEffect(() => {
-    const hasInactivePorts = workloadDetail[portDirection].ports.open.some(
+  const isPolicyShown = useMemo(() => {
+    return workloadDetail[portDirection].ports.open.some(
       (port) => STATUS_MAP[port.status] !== Stats.ACTIVE,
     );
-
-    setIsShowPolicyApplication(hasInactivePorts);
   }, [portDirection, workloadDetail]);
 
   const fetchWorkloadDetail = () => {
     setLoading(true);
-
     wasmGetWorkloadDetail(id)
       .then((data) => {
         const newDetailData = data.result;
+        console.log(newDetailData);
         setWorkloadDetail({
           ...newDetailData,
           workloadName: formatter("workloadName")(newDetailData),
@@ -186,6 +184,10 @@ export const WorkloadDetail = ({
     setWorkloadDetail(INITIAL_WORKLOAD_DETAIL);
   };
 
+  const handleDirectionChange = (direction: string) => {
+    setPortDirection(direction as PortDirection);
+  };
+
   return (
     <Drawer
       open={open}
@@ -197,13 +199,9 @@ export const WorkloadDetail = ({
     >
       {id && (
         <>
-          <WorkloadTabs
-            onChangeTab={(direction) =>
-              setPortDirection(direction as PortDirection)
-            }
-          />
+          <WorkloadTabs onChangeTab={handleDirectionChange} />
           <WorkloadSummary stats={workloadDetail[portDirection].stats} />
-          {isShowPolicyApplication && (
+          {isPolicyShown && (
             <PolicyApplication
               fetchWorkloadDetail={fetchWorkloadDetail}
               portDirection={portDirection}

@@ -12,6 +12,7 @@ export type ClearClosedPortHistoryRequest = {
 
 export function wasmClearClosedPortHistory(
   request: ClearClosedPortHistoryRequest,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
   return new Promise((resolve, reject) => {
     try {

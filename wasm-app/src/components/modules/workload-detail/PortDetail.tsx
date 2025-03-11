@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { Typography } from "@skuber/components";
 
-import { Port, SourceType } from "@/models";
+import { AccessPolicy, Port, SourceType } from "@/models";
 import { formatDateTime } from "@/utils/format";
 
 const ShadedBox = ({ children }: { children: React.ReactNode }) => (
@@ -19,9 +19,18 @@ const ShadedBox = ({ children }: { children: React.ReactNode }) => (
   </Box>
 );
 
-export const PortDetail = ({ record }: { record: Port }) => {
-  const isOpen = !!record.accessSources?.length;
-
+export const PortDetail = ({
+  record,
+  open,
+}: {
+  record: Port;
+  open: boolean;
+}) => {
+  const accessSourcesShown =
+    record.accessSources?.length !== undefined &&
+    record.accessSources?.length > 0 &&
+    record.accessPolicy === AccessPolicy.ALLOW_ALL &&
+    !open;
   return (
     <Box
       sx={{
@@ -32,7 +41,7 @@ export const PortDetail = ({ record }: { record: Port }) => {
         },
       }}
     >
-      {isOpen && (
+      {accessSourcesShown && (
         <Box sx={{ py: 2, display: "flex", flexDirection: "column", gap: 2 }}>
           <Typography variant="caption" color="text.tertiary">
             {`Connected sources (${record.sourceNumber})`}
@@ -66,7 +75,7 @@ export const PortDetail = ({ record }: { record: Port }) => {
 
       <Box
         sx={{
-          borderTop: isOpen ? "1px solid" : "",
+          borderTop: accessSourcesShown ? "1px solid" : "",
           borderColor: "border.elevated",
           py: 2.5,
           display: "flex",
@@ -77,7 +86,7 @@ export const PortDetail = ({ record }: { record: Port }) => {
         <Box sx={{ display: "flex", gap: 2.5 }}>
           {[
             {
-              label: isOpen ? "Last connection" : "Last Connection attempts",
+              label: open ? "Last connection" : "Last Connection attempts",
               value: record.lastConnectionDate,
             },
             { label: "Last Src IP", value: record.lastConnectionEndpoint },
@@ -98,7 +107,7 @@ export const PortDetail = ({ record }: { record: Port }) => {
 
         <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
           <Typography variant="caption" color="text.tertiary">
-            {isOpen ? "Last Connection Log" : "Last Connection attempts Log"}
+            {open ? "Last Connection Log" : "Last Connection attempts Log"}
           </Typography>
           <ShadedBox>
             <Typography

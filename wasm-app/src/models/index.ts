@@ -37,7 +37,7 @@ export type PortRangeType = {
 
 export type SourceType = {
   ip: string;
-  port: number;
+  protocol: string;
   comment?: string;
   lastUpdatedAt?: string | "";
 };
@@ -139,3 +139,10 @@ export type FilterPorts = {
   attempted: boolean;
   idle: boolean;
 };
+
+export enum PortStatus {
+  UNCONNECTED = 0,
+  ACTIVE = 1,
+  IDLE = 2,
+  ERROR = 3,
+}

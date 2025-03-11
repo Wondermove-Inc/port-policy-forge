@@ -10,7 +10,7 @@ import { CloseIcon } from "@/components/icons/CloseIcon";
 import { WarningIcon } from "@/components/icons/WarningIcon";
 import { CollapsibleTable } from "@/components/modules/common/CollapsibleTable";
 import { useDisclosure } from "@/hooks/useDisclosure";
-import { Port, PortRisk } from "@/models";
+import { Port } from "@/models";
 import { wasmClearClosedPortHistory } from "@/services/clearClosedPortHistory";
 import { wasmOpenClosedPort } from "@/services/openClosedPort";
 import { getPortFlag, getPortNumberValue, getPortRiskLabel } from "@/utils";
@@ -119,14 +119,8 @@ export const ClosePort = ({
         sortable: false,
         width: emptyData ? 90 : 85,
         render: (record: Port) => {
-          const isHighRisk = [PortRisk.HIGH, PortRisk.VERY_HIGH].includes(
-            record.risk as PortRisk,
-          );
           return (
-            <Typography
-              variant="b2_r"
-              color={isHighRisk ? "status.danger" : ""}
-            >
+            <Typography variant="b2_r" color="status.danger">
               {formatter("risk", "", getPortRiskLabel)(record)}
             </Typography>
           );
@@ -217,7 +211,7 @@ export const ClosePort = ({
         sx={{
           maxWidth: "472px",
         }}
-        renderDetails={(record) => <PortDetail record={record} />}
+        renderDetails={(record) => <PortDetail record={record} open={false} />}
       />
       <ModalConfirm
         open={allowPortModal.visible}

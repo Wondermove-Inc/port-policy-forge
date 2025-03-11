@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box } from "@mui/material";
@@ -20,6 +20,7 @@ import {
   Port,
   PortAccessSettingForm,
   PortDirection,
+  PortStatus,
 } from "@/models";
 import { wasmCloseOpenedPort } from "@/services/closeOpenedPort";
 import { wasmEditPort } from "@/services/editPort";
@@ -91,7 +92,7 @@ export const OpenPort = ({
         width: isInbound ? 80 : 90,
       },
       {
-        id: "accessSources",
+        id: "accessPolicy",
         label: "Access",
         sortable: false,
         width: 142,
@@ -138,22 +139,26 @@ export const OpenPort = ({
     [portDirection],
   );
 
-  useEffect(() => {
-    if (selectedPort) {
-      form.reset({
-        workloadUuid,
-        flag: getPortFlag(selectedPort?.direction),
-        portSpec: getPortNumberValue({
-          isRange: selectedPort.isRange,
-          portRange: selectedPort.portRange,
-          portNumber: selectedPort.portNumber,
-        }),
-        accessSources: selectedPort.accessSources || [INITIAL_ACCESS_SOURCE],
-        accessPolicy: selectedPort.accessPolicy,
-        allowFullAccess: selectedPort.accessPolicy === AccessPolicy.ALLOW_ALL,
-      });
-    }
-  }, [selectedPort]);
+  const sortedPorts = useMemo(() => {
+    const statusOrder = {
+      [PortStatus.UNCONNECTED]: 1,
+      [PortStatus.IDLE]: 2,
+      [PortStatus.ACTIVE]: 3,
+      [PortStatus.ERROR]: 4,
+    };
+    return data.sort((item1, item2) => {
+      if (
+        statusOrder[item1.status as PortStatus] !==
+        statusOrder[item2.status as PortStatus]
+      ) {
+        return (
+          statusOrder[item1.status as PortStatus] -
+          statusOrder[item2.status as PortStatus]
+        );
+      }
+      return item1.portNumberLabel.localeCompare(item2.portNumberLabel);
+    });
+  }, [data]);
 
   const openClosePortModal = (record: Port) => {
     setSelectedPort(record);
@@ -162,16 +167,36 @@ export const OpenPort = ({
 
   const openEditPortModal = (record: Port) => {
     setSelectedPort(record);
+    form.reset({
+      workloadUuid,
+      flag: getPortFlag(record?.direction),
+      portSpec: getPortNumberValue({
+        isRange: record.isRange,
+        portRange: record.portRange,
+        portNumber: record.portNumber,
+      }),
+      accessSources: record.accessSources || [INITIAL_ACCESS_SOURCE],
+      accessPolicy: record.accessPolicy,
+      allowFullAccess: record.accessPolicy === AccessPolicy.ALLOW_ALL,
+    });
     openPortModal.open();
   };
 
-  const handleEditPortClose = () => {
+  const openOpenPortModal = () => {
     setSelectedPort(null);
     form.reset(defaultValues);
+    openPortModal.open();
+  };
+
+  const closeOpenPortModal = () => {
+    setSelectedPort(null);
+    form.reset(defaultValues);
+    form.clearErrors();
     openPortModal.close();
   };
 
   const handlePortEdit = (data: PortAccessSettingForm) => {
+    setLoading(true);
     const params = {
       workloadUuid,
       flag: getPortFlag(portDirection),
@@ -181,19 +206,18 @@ export const OpenPort = ({
         ? AccessPolicy.ALLOW_ALL
         : data.accessPolicy) as AccessPolicy,
     };
+    console.log("wasmEditPort and wasmOpenPort", params);
     const updatePort = selectedPort
       ? wasmEditPort(params)
       : wasmOpenPort(params);
-
-    setLoading(true);
     updatePort
       .then(() => {
         fetchWorkloadDetail();
-        handleEditPortClose();
+        closeOpenPortModal();
       })
       .catch((error) => {
+        console.log(error);
         // TODO: handle error
-        alert(error);
       })
       .finally(() => {
         setLoading(false);
@@ -214,14 +238,15 @@ export const OpenPort = ({
         portNumber: selectedPort.portNumber,
       }),
     };
+    console.log("wasmCloseOpenedPort", params);
     wasmCloseOpenedPort(params)
       .then(() => {
         fetchWorkloadDetail();
         closePortModal.close();
       })
       .catch((error) => {
+        console.log(error);
         // TODO: handle error
-        alert(error);
       })
       .finally(() => {
         setLoading(false);
@@ -257,7 +282,7 @@ export const OpenPort = ({
             width: "94px",
             height: "24px",
           }}
-          onClick={openPortModal.open}
+          onClick={openOpenPortModal}
         >
           <AddIcon size={16} />
           Open Port
@@ -265,19 +290,19 @@ export const OpenPort = ({
       </Box>
       <CollapsibleTable
         columns={columns}
-        data={data}
+        data={sortedPorts}
         sx={{
           maxWidth: "472px",
         }}
         renderDetails={(record) =>
-          !!record.accessSources?.length ? (
-            <PortDetail record={record} />
+          record.status !== PortStatus.UNCONNECTED ? (
+            <PortDetail record={record} open={true} />
           ) : undefined
         }
       />
       <PortSettingModal
         isOpen={openPortModal.visible}
-        handleClose={handleEditPortClose}
+        handleClose={closeOpenPortModal}
         handleSubmit={handlePortEdit}
         port={selectedPort}
         isInbound={isInbound}
