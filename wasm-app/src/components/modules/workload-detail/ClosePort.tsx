@@ -207,7 +207,7 @@ export const ClosePort = ({
             paddingY: "6.5px",
           }}
         >
-          {`Closed Port Attempted (${formatNumber(data.length)})`}
+          {`Closed Port Attempted (${formatNumber(data.length) || 0})`}
         </Typography>
         <WarningIcon size={20} />
       </Box>

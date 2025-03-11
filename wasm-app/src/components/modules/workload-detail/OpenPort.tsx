@@ -208,7 +208,7 @@ export const OpenPort = ({
         }}
       >
         <Typography variant="subtitle1" component={"p"}>
-          {`Open (${formatNumber(data.length)})`}
+          {`Open (${formatNumber(data.length) || 0})`}
         </Typography>
         <Button
           variant="outlined"
