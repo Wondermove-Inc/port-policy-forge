@@ -187,6 +187,7 @@ export const WorkloadDetail = ({
           <ClosePort
             data={workloadDetail[portDirection].ports.closed}
             fetchWorkloadDetail={fetchWorkloadDetail}
+            workloadUuid={workloadDetail.uuid}
           />
         </>
       )}

@@ -19,10 +19,9 @@ import {
   Port,
   PortAccessSettingForm,
   PortDirection,
-  PortRangeType,
 } from "@/models";
 import { wasmCloseOpenedPort } from "@/services/closeOpenedPort";
-import { getPortNumberValue } from "@/utils";
+import { getPortFlag, getPortNumberValue } from "@/utils";
 import { formatNumber } from "@/utils/format";
 import { openPortSchema } from "@/validations";
 
@@ -135,7 +134,7 @@ export const OpenPort = ({
         ),
       },
     ],
-    [portDirection],
+    [portDirection]
   );
 
   const openClosePortModal = (record: Port) => {
@@ -165,24 +164,17 @@ export const OpenPort = ({
       return;
     }
     setLoading(true);
-    console.log({
+    const params = {
       workloadUuid: workloadUuid,
-      flag: selectedPort?.direction === PortDirection.INBOUND ? 0 : 1,
+      flag: getPortFlag(selectedPort?.direction),
       portSpec: getPortNumberValue({
         isRange: selectedPort.isRange,
-        portRange: selectedPort.portRange as PortRangeType,
+        portRange: selectedPort.portRange,
         portNumber: selectedPort.portNumber,
       }),
-    });
-    wasmCloseOpenedPort({
-      workloadUuid: workloadUuid,
-      flag: selectedPort?.direction === PortDirection.INBOUND ? 0 : 1,
-      portSpec: getPortNumberValue({
-        isRange: selectedPort.isRange,
-        portRange: selectedPort.portRange as PortRangeType,
-        portNumber: selectedPort.portNumber,
-      }),
-    })
+    };
+    console.log(params);
+    wasmCloseOpenedPort(params)
       .then(() => {
         fetchWorkloadDetail();
         closePortModal.close();
