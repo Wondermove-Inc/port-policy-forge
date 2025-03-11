@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { IdType, Network } from "vis-network";
+import { IdType, Network, Position } from "vis-network";
 
 import { NetworkEdge } from "./edge";
 import { ImageLoader } from "./imageLoader";
@@ -41,7 +41,7 @@ const NetworkGraph = ({
   onEdgeDisconnected,
   setNetwork,
 }: NetworkGraphProps) => {
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [canvasImages, setCanvasImages] = useState<CanvasImage>();
   const [activeEdgeId, setActiveEdgeId] = useState("");
   const hoverNodeId = useRef<string>("");
@@ -68,7 +68,7 @@ const NetworkGraph = ({
       network = new Network(
         containerRef.current,
         data,
-        options,
+        options
       ) as CustomNetwork;
     }
     if (activeNodeId) {
@@ -130,26 +130,63 @@ const NetworkGraph = ({
       });
     });
 
-    network.on("hoverEdge", (params) => {
-      setActiveEdgeId(params.edge);
-      document.body.style.cursor = "pointer";
+    network.on("hoverEdge", () => {
+      // moved to canvas mousemove event
     });
 
     network.on("blurEdge", () => {
-      setActiveEdgeId("");
-      document.body.style.cursor = "auto";
+     // moved to canvas mousemove event
     });
 
+    const canvas = containerRef.current?.querySelector("canvas");
+    const onMouseMove = (event: MouseEvent) => {
+      const pointer = network?.DOMtoCanvas({
+        x: event.offsetX,
+        y: event.offsetY,
+      });
+
+      const edgeId = network?.getEdgeAt({
+        x: event.offsetX,
+        y: event.offsetY,
+      });
+      if (edgeId && pointer) {
+        const edge = network?.body.edges[edgeId as string];
+        if (edge) {
+          const fromNodePos = network?.getPositions([edge.from.id])[
+            edge.from.id
+          ];
+          const toNodePos = network?.getPositions([edge.to.id])[edge.to.id];
+          if (fromNodePos && toNodePos) {
+            const mousemoveRatio = calculatePositionAlongEdge(
+              pointer,
+              fromNodePos,
+              toNodePos
+            );
+            if (mousemoveRatio >= 0.2 && mousemoveRatio <= 0.8) {
+              setActiveEdgeId(edgeId as string);
+              document.body.style.cursor = "pointer";
+            }
+          }
+        }
+      } else {
+        setActiveEdgeId("");
+        document.body.style.cursor = "auto";
+      }
+    };
+
+    if (canvas) {
+      canvas.addEventListener("mousemove", onMouseMove);
+    }
     network.on("click", function (properties) {
       const nodeId = network?.getNodeAt({
         x: properties.event.srcEvent.offsetX,
         y: properties.event.srcEvent.offsetY,
       });
-      if (nodeId) {
+      if (nodeId && !activeNodeId) {
         onNodeSelected?.(nodeId as string);
       }
 
-      const clickPosition = {
+      const clickPosition: Position = {
         x: properties.pointer.canvas.x,
         y: properties.pointer.canvas.y,
       };
@@ -158,8 +195,8 @@ const NetworkGraph = ({
         x: properties.event.srcEvent.offsetX,
         y: properties.event.srcEvent.offsetY,
       });
-      if (edgeId && !nodeId) {
-        const edge = network?.body.edges[edgeId as any];
+      if (edgeId) {
+        const edge = network?.body.edges[edgeId as string];
         if (edge) {
           const fromNodePos = network?.getPositions([edge.from.id])[
             edge.from.id
@@ -169,7 +206,7 @@ const NetworkGraph = ({
             const clickRatio = calculatePositionAlongEdge(
               clickPosition,
               fromNodePos,
-              toNodePos,
+              toNodePos
             );
             if (clickRatio > 0.42 && clickRatio < 0.58) {
               onEdgeDisconnected?.(edge.id as string);
@@ -186,6 +223,7 @@ const NetworkGraph = ({
       network?.off("afterDrawing");
       network?.off("blurNode");
       network?.off("click");
+      canvas?.removeEventListener("mousemove", onMouseMove);
     };
   }, [
     canvasImages,
@@ -217,7 +255,7 @@ const NetworkGraph = ({
 const handleAfterDrawing = (
   ctx: CanvasRenderingContext2D,
   canvasImages: CanvasImage,
-  options?: DrawingOptions,
+  options?: DrawingOptions
 ) => {
   if (!canvasImages || !network) {
     return;

@@ -3,7 +3,7 @@ import { Position } from "vis-network";
 import { Coord } from "./types";
 
 export function calculatePositionAlongEdge(
-  clickPos: Coord,
+  clickPos: Position,
   fromPos: Position,
   toPos: Position,
 ) {
