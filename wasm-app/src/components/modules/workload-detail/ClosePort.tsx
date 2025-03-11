@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { Box } from "@mui/material";
 import { Typography } from "@skuber/components";
@@ -10,29 +10,66 @@ import { CloseIcon } from "@/components/icons/CloseIcon";
 import { WarningIcon } from "@/components/icons/WarningIcon";
 import { CollapsibleTable } from "@/components/modules/common/CollapsibleTable";
 import { useDisclosure } from "@/hooks/useDisclosure";
-import { Port, PortRisk } from "@/models";
-import { getPortRiskLabel } from "@/utils";
+import { Port, PortDirection, PortRisk } from "@/models";
+import { getPortFlag, getPortNumberValue, getPortRiskLabel } from "@/utils";
 import { formatNumber, formatter } from "@/utils/format";
+import { wasmOpenClosedPort } from "@/services/openClosedPort";
 
 type ClosePortProps = {
   data: Port[];
   fetchWorkloadDetail: () => void;
+  workloadUuid: string;
 };
 
-export const ClosePort = ({ data, fetchWorkloadDetail }: ClosePortProps) => {
-  const openAllowPortModal = useDisclosure();
-  const openClearHistoryModal = useDisclosure();
+export const ClosePort = ({
+  data,
+  fetchWorkloadDetail,
+  workloadUuid,
+}: ClosePortProps) => {
+  const allowPortModal = useDisclosure();
+  const clearHistoryModal = useDisclosure();
+
+  const [selectedPort, setSelectedPort] = useState<Port | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const openAllowPortModal = (record: Port) => {
+    setSelectedPort(record);
+    allowPortModal.open();
+  };
 
   const handleAllowPort = () => {
-    // TODO
-    fetchWorkloadDetail();
-    openAllowPortModal.close();
+    if (!selectedPort) {
+      return;
+    }
+    setLoading(true);
+    const params = {
+      workloadUuid: workloadUuid,
+      flag: getPortFlag(selectedPort?.direction),
+      portSpec: getPortNumberValue({
+        isRange: selectedPort.isRange,
+        portRange: selectedPort.portRange,
+        portNumber: selectedPort.portNumber,
+      }),
+    };
+    console.log(params);
+    wasmOpenClosedPort(params)
+      .then(() => {
+        fetchWorkloadDetail();
+        allowPortModal.close();
+      })
+      .catch((error) => {
+        // TODO: handle error
+        alert(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleClearHistory = () => {
     // TODO
     fetchWorkloadDetail();
-    openClearHistoryModal.close();
+    clearHistoryModal.close();
   };
 
   const columns = useMemo(() => {
@@ -54,7 +91,7 @@ export const ClosePort = ({ data, fetchWorkloadDetail }: ClosePortProps) => {
         width: emptyData ? 90 : 85,
         render: (record: Port) => {
           const isHighRisk = [PortRisk.HIGH, PortRisk.VERY_HIGH].includes(
-            record.risk as PortRisk,
+            record.risk as PortRisk
           );
           return (
             <Typography
@@ -94,7 +131,7 @@ export const ClosePort = ({ data, fetchWorkloadDetail }: ClosePortProps) => {
                   variant="label_m"
                   color="primary.dark"
                   sx={{ cursor: "pointer", textAlign: "center" }}
-                  onClick={openAllowPortModal.open}
+                  onClick={allowPortModal.open}
                 >
                   Open the access
                 </Typography>
@@ -105,7 +142,7 @@ export const ClosePort = ({ data, fetchWorkloadDetail }: ClosePortProps) => {
               label: "",
               sortable: false,
               width: 32,
-              render: () => (
+              render: (record: Port) => (
                 <Box
                   sx={{
                     display: "flex",
@@ -113,7 +150,7 @@ export const ClosePort = ({ data, fetchWorkloadDetail }: ClosePortProps) => {
                     justifyContent: "center",
                     cursor: "pointer",
                   }}
-                  onClick={openClearHistoryModal.open}
+                  onClick={() => openAllowPortModal(record)}
                 >
                   <CloseIcon size={16} color="text.tertiary" />
                 </Box>
@@ -154,8 +191,8 @@ export const ClosePort = ({ data, fetchWorkloadDetail }: ClosePortProps) => {
         renderDetails={(record) => <PortDetail record={record} />}
       />
       <ModalConfirm
-        open={openAllowPortModal.visible}
-        onClose={openAllowPortModal.close}
+        open={allowPortModal.visible}
+        onClose={allowPortModal.close}
         onConfirm={handleAllowPort}
         title="Allow Port Access"
         description="When you allow that source (IP or domain) access to a specific port, it changes to the following"
@@ -163,10 +200,11 @@ export const ClosePort = ({ data, fetchWorkloadDetail }: ClosePortProps) => {
           "The source will be able to access the server on the specified port.",
           "The access restriction settings for the port are updated. ",
         ]}
+        loading={loading}
       />
       <ModalConfirm
-        open={openClearHistoryModal.visible}
-        onClose={openClearHistoryModal.close}
+        open={clearHistoryModal.visible}
+        onClose={clearHistoryModal.close}
         onConfirm={handleClearHistory}
         title="Clear History"
         description="If you delete that connection attempt history, you can't recover it.It may be a dangerous connection attempt, so be sure to check before deleting."
@@ -174,6 +212,7 @@ export const ClosePort = ({ data, fetchWorkloadDetail }: ClosePortProps) => {
           "After deletion, no record is left and there is no way to recover it.",
           "If you suspect a security risk, check the relevant logs before proceeding with deletion.",
         ]}
+        loading={loading}
       />
     </Box>
   );

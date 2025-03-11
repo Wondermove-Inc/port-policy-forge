@@ -2,6 +2,7 @@ import {
   AccessPolicy,
   PortDirection,
   PortKind,
+  PortRangeType,
   PortRisk,
   WorkloadKind,
 } from "@/models";
@@ -30,10 +31,7 @@ export const getPortNumberValue = ({
   portNumber,
 }: {
   isRange: boolean;
-  portRange: {
-    start: string;
-    end: string;
-  };
+  portRange: PortRangeType | null;
   portNumber: number | null;
 }) => {
   if (isRange && portRange) {
@@ -98,6 +96,6 @@ export const getWorkloadKindLabel = (kind: string) => {
   }
 };
 
-export const getPortDirectionValue = (direction: PortDirection) => {
-  return direction === PortDirection.INBOUND ? 0 : 1;
+export const getPortFlag = (flag: string) => {
+  return flag === PortDirection.INBOUND ? 0 : 1;
 };
