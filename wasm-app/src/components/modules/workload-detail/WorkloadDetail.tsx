@@ -8,7 +8,13 @@ import { WorkloadTabs } from "./WorkloadTabs";
 
 import { Drawer } from "@/components/atoms/Drawer";
 import { INITIAL_WORKLOAD_DETAIL } from "@/constants";
-import { PortDirection, PortRangeType, Stats, STATUS_MAP } from "@/models";
+import {
+  AccessPolicy,
+  PortDirection,
+  PortRangeType,
+  Stats,
+  STATUS_MAP,
+} from "@/models";
 import {
   wasmGetWorkloadDetail,
   WorkloadDetailType,
@@ -142,7 +148,9 @@ export const WorkloadDetail = ({
             portNumber: el.portNumber,
           }),
           sourceNumber: formatter("accessSources", "", (el) => el.length)(el),
-          accessPolicy: formatter("accessPolicy", "", getAccessLabel)(el),
+          accessPolicy: formatter("accessPolicy", "", () =>
+            getAccessLabel(el.accessPolicy as AccessPolicy, direction),
+          )(el),
           lastConnectionDate: formatter(
             "lastConnectionDate",
             "",

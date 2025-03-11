@@ -79,6 +79,9 @@ export const formatMilliCores = (milliCores?: number): string => {
 };
 
 export const formatDateTime = (isoString: string) => {
+  if (!isoString) {
+    return "-";
+  }
   const dt = DateTime.fromISO(isoString, { setZone: true });
 
   return `${dt.toFormat("yyyy.MM.dd")}, ${dt.toFormat("HH:mm:ss")} (GMT ${dt.offset / 60 >= 0 ? "+" : ""}${dt.offset / 60})`;

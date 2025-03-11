@@ -24,6 +24,12 @@ export enum PortKind {
   EXTERNAL = "external",
 }
 
+export enum Protocol {
+  TCP = "tcp",
+  UDP = "udp",
+  ICMP = "icmp",
+}
+
 export type PortRangeType = {
   start: string;
   end: string;
@@ -33,7 +39,7 @@ export type SourceType = {
   ip: string;
   port: number;
   comment?: string;
-  createdAt?: string;
+  lastUpdatedAt?: string | "";
 };
 
 export type Port = {
@@ -58,15 +64,11 @@ export type Port = {
 
 export type PortAccessSettingForm = {
   workloadUuid: string;
-  flag: PortDirection;
+  flag: number;
   portSpec: string;
   accessPolicy?: AccessPolicy;
   allowFullAccess: boolean;
-  accessSources?: {
-    ip: string;
-    protocol: string;
-    comment: string;
-  }[];
+  accessSources?: SourceType[];
 };
 
 export enum AccessPolicy {

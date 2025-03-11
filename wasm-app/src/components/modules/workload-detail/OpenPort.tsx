@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box } from "@mui/material";
@@ -13,6 +13,7 @@ import { AddIcon } from "@/components/icons/AddIcon";
 import { EditIcon } from "@/components/icons/EditIcon";
 import { BadgePortStatus } from "@/components/modules/common/BadgePortStatus";
 import { CollapsibleTable } from "@/components/modules/common/CollapsibleTable";
+import { INITIAL_ACCESS_SOURCE } from "@/constants";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import {
   AccessPolicy,
@@ -21,6 +22,8 @@ import {
   PortDirection,
 } from "@/models";
 import { wasmCloseOpenedPort } from "@/services/closeOpenedPort";
+import { wasmEditPort } from "@/services/editPort";
+import { wasmOpenPort } from "@/services/openPort";
 import { getPortFlag, getPortNumberValue } from "@/utils";
 import { formatNumber } from "@/utils/format";
 import { openPortSchema } from "@/validations";
@@ -46,22 +49,20 @@ export const OpenPort = ({
 
   const isInbound = portDirection === PortDirection.INBOUND;
 
-  const form = useForm<PortAccessSettingForm>({
-    defaultValues: {
-      workloadUuid: "",
-      flag: portDirection,
+  const defaultValues = useMemo(() => {
+    return {
+      workloadUuid,
+      flag: getPortFlag(portDirection),
       portSpec: "",
-      accessSources: [
-        {
-          ip: "",
-          protocol: "",
-          comment: "",
-        },
-      ],
+      accessSources: [INITIAL_ACCESS_SOURCE],
       accessPolicy: AccessPolicy.ALLOW_ONLY,
       allowFullAccess: false,
-    },
-    mode: "onChange",
+    };
+  }, [portDirection, workloadUuid]);
+
+  const form = useForm<PortAccessSettingForm>({
+    defaultValues,
+    mode: "onSubmit",
     resolver: yupResolver(openPortSchema),
   });
 
@@ -137,6 +138,23 @@ export const OpenPort = ({
     [portDirection],
   );
 
+  useEffect(() => {
+    if (selectedPort) {
+      form.reset({
+        workloadUuid,
+        flag: getPortFlag(selectedPort?.direction),
+        portSpec: getPortNumberValue({
+          isRange: selectedPort.isRange,
+          portRange: selectedPort.portRange,
+          portNumber: selectedPort.portNumber,
+        }),
+        accessSources: selectedPort.accessSources || [INITIAL_ACCESS_SOURCE],
+        accessPolicy: selectedPort.accessPolicy,
+        allowFullAccess: selectedPort.accessPolicy === AccessPolicy.ALLOW_ALL,
+      });
+    }
+  }, [selectedPort]);
+
   const openClosePortModal = (record: Port) => {
     setSelectedPort(record);
     closePortModal.open();
@@ -149,14 +167,37 @@ export const OpenPort = ({
 
   const handleEditPortClose = () => {
     setSelectedPort(null);
-    form.reset();
+    form.reset(defaultValues);
     openPortModal.close();
   };
 
-  const handlePortEdit = () => {
-    // TODO
-    fetchWorkloadDetail();
-    handleEditPortClose();
+  const handlePortEdit = (data: PortAccessSettingForm) => {
+    const params = {
+      workloadUuid,
+      flag: getPortFlag(portDirection),
+      portSpec: data.portSpec.trim(),
+      sources: data.accessSources || [],
+      accessPolicy: (data.allowFullAccess
+        ? AccessPolicy.ALLOW_ALL
+        : data.accessPolicy) as AccessPolicy,
+    };
+    const updatePort = selectedPort
+      ? wasmEditPort(params)
+      : wasmOpenPort(params);
+
+    setLoading(true);
+    updatePort
+      .then(() => {
+        fetchWorkloadDetail();
+        handleEditPortClose();
+      })
+      .catch((error) => {
+        // TODO: handle error
+        alert(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handlePortClose = () => {
@@ -173,7 +214,6 @@ export const OpenPort = ({
         portNumber: selectedPort.portNumber,
       }),
     };
-    console.log(params);
     wasmCloseOpenedPort(params)
       .then(() => {
         fetchWorkloadDetail();

@@ -1,13 +1,10 @@
 import yup from "./base";
 
-import { AccessPolicy, PortDirection } from "@/models";
+import { AccessPolicy, Protocol } from "@/models";
 
 export const openPortSchema = yup.object().shape({
   workloadUuid: yup.string().required(),
-  flag: yup
-    .string()
-    .oneOf([PortDirection.INBOUND, PortDirection.OUTBOUND])
-    .required(),
+  flag: yup.number().required(),
   portSpec: yup.string().isValidPort(1, 65535).required().label("Port numbers"),
   accessSources: yup.array().when("allowFullAccess", {
     is: false,
@@ -16,8 +13,12 @@ export const openPortSchema = yup.object().shape({
         .of(
           yup.object().shape({
             ip: yup.string().required(),
-            protocol: yup.string().required(),
-            comment: yup.string().required(),
+            protocol: yup
+              .string()
+              .oneOf([Protocol.TCP, Protocol.UDP, Protocol.ICMP])
+              .required(),
+            comment: yup.string().nullable(),
+            lastUpdatedAt: yup.string().nullable(),
           }),
         )
         .min(1),
