@@ -77,6 +77,7 @@ export const INITIAL_ACCESS_SOURCE = {
   ip: "",
   protocol: Protocol.TCP,
   comment: "",
+  lastUpdatedAt: "",
 };
 
 export const PROTOCOL_OPTIONS = [

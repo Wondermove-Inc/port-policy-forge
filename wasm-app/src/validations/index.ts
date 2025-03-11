@@ -1,6 +1,6 @@
 import yup from "./base";
 
-import { AccessPolicy } from "@/models";
+import { AccessPolicy, Protocol } from "@/models";
 
 export const openPortSchema = yup.object().shape({
   workloadUuid: yup.string().required(),
@@ -13,8 +13,12 @@ export const openPortSchema = yup.object().shape({
         .of(
           yup.object().shape({
             ip: yup.string().required(),
-            protocol: yup.string().required(),
+            protocol: yup
+              .string()
+              .oneOf([Protocol.TCP, Protocol.UDP, Protocol.ICMP])
+              .required(),
             comment: yup.string().nullable(),
+            lastUpdatedAt: yup.string().nullable(),
           }),
         )
         .min(1),

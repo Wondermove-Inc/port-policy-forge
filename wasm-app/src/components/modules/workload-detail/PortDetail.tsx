@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import { Typography } from "@skuber/components";
 
 import { Port, SourceType } from "@/models";
+import { formatDateTime } from "@/utils/format";
 
 const ShadedBox = ({ children }: { children: React.ReactNode }) => (
   <Box
@@ -37,21 +38,28 @@ export const PortDetail = ({ record }: { record: Port }) => {
             {`Connected sources (${record.sourceNumber})`}
           </Typography>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-            {(record.accessSources || []).map(({ ip, comment }: SourceType) => (
-              <Box
-                key={ip}
-                sx={{ display: "flex", flexDirection: "column", gap: 1 }}
-              >
-                <Typography variant="body1" color="text.primary">
-                  {ip}
-                </Typography>
-                <ShadedBox>
-                  <Typography variant="body2" color="text.primary">
-                    {comment}
+            {(record.accessSources || []).map(
+              ({ ip, comment, lastUpdatedAt }: SourceType) => (
+                <Box
+                  key={ip}
+                  sx={{ display: "flex", flexDirection: "column", gap: 1 }}
+                >
+                  <Typography variant="body1" color="text.primary">
+                    {ip}
                   </Typography>
-                </ShadedBox>
-              </Box>
-            ))}
+                  {comment && (
+                    <ShadedBox>
+                      <Typography variant="body2" color="text.primary">
+                        {comment}
+                      </Typography>
+                      <Typography variant="caption" color="text.tertiary">
+                        {formatDateTime(lastUpdatedAt || "")}
+                      </Typography>
+                    </ShadedBox>
+                  )}
+                </Box>
+              ),
+            )}
           </Box>
         </Box>
       )}

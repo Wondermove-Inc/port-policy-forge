@@ -39,6 +39,7 @@ export type SourceType = {
   ip: string;
   port: number;
   comment?: string;
+  lastUpdatedAt?: string | "";
 };
 
 export type Port = {

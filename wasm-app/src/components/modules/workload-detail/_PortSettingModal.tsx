@@ -41,7 +41,7 @@ export const PortSettingModal = ({
     control,
     watch,
     setValue,
-    formState: { errors, isValid },
+    formState: { errors, isDirty },
   } = form;
 
   const { fields, append, remove } = useFieldArray({
@@ -260,7 +260,7 @@ export const PortSettingModal = ({
         confirmButtonTitle="Apply"
         onClickCancelButton={handleClose}
         onClickConfirmButton={form.handleSubmit(handleSubmit)}
-        disabled={!isValid}
+        disabled={!isDirty}
       />
     </Modal>
   );

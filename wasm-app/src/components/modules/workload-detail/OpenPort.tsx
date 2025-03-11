@@ -51,18 +51,18 @@ export const OpenPort = ({
 
   const defaultValues = useMemo(() => {
     return {
-      workloadUuid: "",
+      workloadUuid,
       flag: getPortFlag(portDirection),
       portSpec: "",
       accessSources: [INITIAL_ACCESS_SOURCE],
       accessPolicy: AccessPolicy.ALLOW_ONLY,
       allowFullAccess: false,
     };
-  }, [portDirection]);
+  }, [portDirection, workloadUuid]);
 
   const form = useForm<PortAccessSettingForm>({
     defaultValues,
-    mode: "onChange",
+    mode: "onSubmit",
     resolver: yupResolver(openPortSchema),
   });
 
@@ -141,7 +141,7 @@ export const OpenPort = ({
   useEffect(() => {
     if (selectedPort) {
       form.reset({
-        workloadUuid: workloadUuid,
+        workloadUuid,
         flag: getPortFlag(selectedPort?.direction),
         portSpec: getPortNumberValue({
           isRange: selectedPort.isRange,
@@ -173,7 +173,7 @@ export const OpenPort = ({
 
   const handlePortEdit = (data: PortAccessSettingForm) => {
     const params = {
-      workloadUuid: data.workloadUuid,
+      workloadUuid,
       flag: getPortFlag(portDirection),
       portSpec: data.portSpec.trim(),
       sources: data.accessSources || [],
@@ -181,7 +181,7 @@ export const OpenPort = ({
         ? AccessPolicy.ALLOW_ALL
         : data.accessPolicy) as AccessPolicy,
     };
-    const updatePort = data.workloadUuid
+    const updatePort = selectedPort
       ? wasmEditPort(params)
       : wasmOpenPort(params);
 
