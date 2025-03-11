@@ -20,6 +20,8 @@ interface CommonStore {
   } | null;
   portHover: Port | null;
   setPortHover: (portHover: Port | null) => void;
+  toast: string;
+  setToast: (message: string) => void;
 }
 
 export const useCommonStore = create<CommonStore>((set) => ({
@@ -35,4 +37,6 @@ export const useCommonStore = create<CommonStore>((set) => ({
   setIsDetailFromMap: (isDetailFromMap) => set({ isDetailFromMap }),
   portHover: null,
   setPortHover: (portHover) => set({ portHover }),
+  toast: "",
+  setToast: (toast) => set({ toast }),
 }));

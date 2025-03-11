@@ -40,9 +40,12 @@ export const getPortNumberValue = ({
   return portNumber ? `${portNumber}` : "";
 };
 
-export const getAccessLabel = (access: string, direction: PortDirection) => {
+export const getAccessPolicyLabel = (
+  accessPolicy: string,
+  direction: PortDirection,
+) => {
   const isInbound = direction === PortDirection.INBOUND;
-  switch (access) {
+  switch (accessPolicy) {
     case AccessPolicy.ALLOW_ALL:
       return "Allow all access";
     case AccessPolicy.ALLOW_EXCLUDE:

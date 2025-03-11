@@ -93,3 +93,7 @@ html, body {
 .MuiFormLabel-root.MuiFormLabel-filled, .MuiInputLabel-root.Mui-focused {
   background-color: #1E2533 !important;
 }
+
+.MuiTextField-root label.Mui-error {
+  color: #FFFFFFE5;
+}

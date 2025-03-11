@@ -5,7 +5,7 @@ import { Box } from "@mui/material";
 import { Button, Typography } from "@skuber/components";
 import { useForm } from "react-hook-form";
 
-import { PortSettingModal } from "./_PortSettingModal";
+import { ModalPortSetting } from "./ModalPortSetting";
 import { PortDetail } from "./PortDetail";
 
 import { ModalConfirm } from "@/components/atoms/ModalConfirm";
@@ -25,7 +25,8 @@ import {
 import { wasmCloseOpenedPort } from "@/services/closeOpenedPort";
 import { wasmEditPort } from "@/services/editPort";
 import { wasmOpenPort } from "@/services/openPort";
-import { getPortFlag, getPortNumberValue } from "@/utils";
+import { useCommonStore } from "@/store";
+import { getAccessPolicyLabel, getPortFlag, getPortNumberValue } from "@/utils";
 import { formatNumber } from "@/utils/format";
 import { openPortSchema } from "@/validations";
 
@@ -48,6 +49,8 @@ export const OpenPort = ({
   const [selectedPort, setSelectedPort] = useState<Port | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const { setToast } = useCommonStore();
+
   const isInbound = portDirection === PortDirection.INBOUND;
 
   const defaultValues = useMemo(() => {
@@ -63,8 +66,8 @@ export const OpenPort = ({
 
   const form = useForm<PortAccessSettingForm>({
     defaultValues,
-    mode: "onSubmit",
-    resolver: yupResolver(openPortSchema),
+    mode: "onChange",
+    resolver: yupResolver(openPortSchema(portDirection)),
   });
 
   const columns = useMemo(
@@ -106,7 +109,10 @@ export const OpenPort = ({
             }}
           >
             <Typography variant="b2_r" color="text.primary">
-              {record.accessPolicy}
+              {getAccessPolicyLabel(
+                record.accessPolicy || "",
+                record.direction,
+              )}
             </Typography>
             <EditIcon
               size={16}
@@ -216,8 +222,7 @@ export const OpenPort = ({
         closeOpenPortModal();
       })
       .catch((error) => {
-        console.log(error);
-        // TODO: handle error
+        setToast(error);
       })
       .finally(() => {
         setLoading(false);
@@ -245,8 +250,7 @@ export const OpenPort = ({
         closePortModal.close();
       })
       .catch((error) => {
-        console.log(error);
-        // TODO: handle error
+        setToast(error);
       })
       .finally(() => {
         setLoading(false);
@@ -300,7 +304,7 @@ export const OpenPort = ({
           ) : undefined
         }
       />
-      <PortSettingModal
+      <ModalPortSetting
         isOpen={openPortModal.visible}
         handleClose={closeOpenPortModal}
         handleSubmit={handlePortEdit}

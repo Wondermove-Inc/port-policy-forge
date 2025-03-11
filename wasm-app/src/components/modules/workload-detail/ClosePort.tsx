@@ -13,6 +13,7 @@ import { useDisclosure } from "@/hooks/useDisclosure";
 import { Port } from "@/models";
 import { wasmClearClosedPortHistory } from "@/services/clearClosedPortHistory";
 import { wasmOpenClosedPort } from "@/services/openClosedPort";
+import { useCommonStore } from "@/store";
 import { getPortFlag, getPortNumberValue, getPortRiskLabel } from "@/utils";
 import { formatNumber, formatter } from "@/utils/format";
 
@@ -32,6 +33,8 @@ export const ClosePort = ({
 
   const [selectedPort, setSelectedPort] = useState<Port | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const { setToast } = useCommonStore();
 
   const openAllowPortModal = (record: Port) => {
     setSelectedPort(record);
@@ -64,8 +67,7 @@ export const ClosePort = ({
         allowPortModal.close();
       })
       .catch((error) => {
-        // TODO: handle error
-        alert(error);
+        setToast(error);
       })
       .finally(() => {
         setLoading(false);
@@ -93,8 +95,7 @@ export const ClosePort = ({
         allowPortModal.close();
       })
       .catch((error) => {
-        // TODO: handle error
-        alert(error);
+        setToast(error);
       })
       .finally(() => {
         setLoading(false);
@@ -218,9 +219,9 @@ export const ClosePort = ({
         onClose={allowPortModal.close}
         onConfirm={handleAllowPort}
         title="Allow Port Access"
-        description="When you allow that source (IP or domain) access to a specific port, it changes to the following"
+        description="When you allow that source or destination access to a specific port, it changes to the following "
         descriptionDetails={[
-          "The source will be able to access the server on the specified port.",
+          "The source or destination will be able to access the server on the specified port.",
           "The access restriction settings for the port are updated. ",
         ]}
         loading={loading}
@@ -230,7 +231,7 @@ export const ClosePort = ({
         onClose={clearHistoryModal.close}
         onConfirm={handleClearHistory}
         title="Clear History"
-        description="If you delete that connection attempt history, you can't recover it.It may be a dangerous connection attempt, so be sure to check before deleting."
+        description="If you delete that connection attempt history, you can't recover it.It may be a dangerous connection attempt, so be sure to check before deleting. "
         descriptionDetails={[
           "After deletion, no record is left and there is no way to recover it.",
           "If you suspect a security risk, check the relevant logs before proceeding with deletion.",

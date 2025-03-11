@@ -8,6 +8,7 @@ import { InfoIcon } from "@/components/icons/InfoIcon";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { PortDirection } from "@/models";
 import { wasmCloseNotActivePorts } from "@/services/closeNotActivePorts";
+import { useCommonStore } from "@/store";
 import { getPortFlag } from "@/utils";
 
 type PolicyApplicationProps = {
@@ -25,6 +26,8 @@ export const PolicyApplication = ({
 
   const [loading, setLoading] = useState(false);
 
+  const { setToast } = useCommonStore();
+
   const handleApplyPolicy = () => {
     setLoading(true);
     wasmCloseNotActivePorts({
@@ -36,8 +39,7 @@ export const PolicyApplication = ({
         policyApplicationModal.close();
       })
       .catch((error) => {
-        // TODO: handle error
-        alert(error);
+        setToast(error);
       })
       .finally(() => {
         setLoading(false);

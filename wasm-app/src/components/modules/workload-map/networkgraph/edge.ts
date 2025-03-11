@@ -1,5 +1,3 @@
-import { IdType } from "vis-network";
-
 import {
   ARROW_SIZE,
   color,

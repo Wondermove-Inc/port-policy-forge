@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { Typography } from "@skuber/components";
 
-import { AccessPolicy, Port, SourceType } from "@/models";
+import { AccessPolicy, Port, PortDirection, SourceType } from "@/models";
 import { formatDateTime } from "@/utils/format";
 
 const ShadedBox = ({ children }: { children: React.ReactNode }) => (
@@ -29,8 +29,10 @@ export const PortDetail = ({
   const accessSourcesShown =
     record.accessSources?.length !== undefined &&
     record.accessSources?.length > 0 &&
-    record.accessPolicy === AccessPolicy.ALLOW_ALL &&
-    !open;
+    record.accessPolicy !== AccessPolicy.ALLOW_ALL &&
+    open;
+
+  const isInbound = record.direction === PortDirection.INBOUND;
   return (
     <Box
       sx={{
@@ -44,7 +46,7 @@ export const PortDetail = ({
       {accessSourcesShown && (
         <Box sx={{ py: 2, display: "flex", flexDirection: "column", gap: 2 }}>
           <Typography variant="caption" color="text.tertiary">
-            {`Connected sources (${record.sourceNumber})`}
+            {`Connected ${isInbound ? "Sources" : "Destination"} (${record.sourceNumber})`}
           </Typography>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
             {(record.accessSources || []).map(

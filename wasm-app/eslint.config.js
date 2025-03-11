@@ -106,6 +106,7 @@ export default [
               "replicaset",
               "demonset",
               "statefulset",
+              "FSDN",
             ],
           },
         },

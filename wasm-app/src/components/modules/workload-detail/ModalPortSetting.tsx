@@ -20,7 +20,7 @@ import { DeleteIcon } from "@/components/icons/DeleteIcon";
 import { INITIAL_ACCESS_SOURCE, PROTOCOL_OPTIONS } from "@/constants";
 import { AccessPolicy, Port, PortAccessSettingForm } from "@/models";
 
-interface PortSettingModalProps {
+interface ModalPortSettingProps {
   isOpen: boolean;
   port?: Port | null;
   isInbound?: boolean;
@@ -29,19 +29,19 @@ interface PortSettingModalProps {
   form: UseFormReturn<PortAccessSettingForm>;
 }
 
-export const PortSettingModal = ({
+export const ModalPortSetting = ({
   isOpen,
   port,
   isInbound,
   handleSubmit,
   handleClose,
   form,
-}: PortSettingModalProps) => {
+}: ModalPortSettingProps) => {
   const {
     control,
     watch,
     setValue,
-    formState: { errors, isDirty },
+    formState: { errors, isValid },
   } = form;
 
   const { fields, append, remove } = useFieldArray({
@@ -51,7 +51,7 @@ export const PortSettingModal = ({
 
   const handleAddSource = () => append(INITIAL_ACCESS_SOURCE);
 
-  const allowFullAccess = watch("allowFullAccess");
+  const [allowFullAccess] = watch(["allowFullAccess"]);
 
   useEffect(() => {
     if (!allowFullAccess) {
@@ -91,8 +91,7 @@ export const PortSettingModal = ({
                   <TextField
                     {...field}
                     sx={{ width: "100% !important" }}
-                    placeholder="Port number"
-                    label="Port"
+                    label="Port number"
                     error={!!errors.portSpec}
                     helperText={errors.portSpec?.message}
                   />
@@ -174,7 +173,11 @@ export const PortSettingModal = ({
                         }}
                       >
                         <Box
-                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                          sx={{
+                            display: "flex",
+                            alignItems: "flex-start",
+                            gap: 1,
+                          }}
                         >
                           <Controller
                             name={`accessSources.${index}.ip`}
@@ -186,6 +189,10 @@ export const PortSettingModal = ({
                                 sx={{
                                   flex: 1,
                                 }}
+                                error={!!errors.accessSources?.[index]?.ip}
+                                helperText={
+                                  errors.accessSources?.[index]?.ip?.message
+                                }
                               />
                             )}
                           />
@@ -260,7 +267,7 @@ export const PortSettingModal = ({
         confirmButtonTitle="Apply"
         onClickCancelButton={handleClose}
         onClickConfirmButton={form.handleSubmit(handleSubmit)}
-        disabled={!isDirty}
+        disabled={!isValid}
       />
     </Modal>
   );

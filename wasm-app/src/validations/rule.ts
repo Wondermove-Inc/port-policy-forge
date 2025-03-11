@@ -55,3 +55,21 @@ export function isValidPort(this: Yup.StringSchema, min: number, max: number) {
     return true;
   });
 }
+
+export function isValidIP(this: Yup.StringSchema) {
+  return this.test("portSpec", "", function (value) {
+    if (!value) return true;
+
+    const { createError, path } = this;
+
+    if (!(REGEX.MULTIPLE_IPS.test(value) || REGEX.FSDN.test(value))) {
+      return createError({
+        path,
+        message:
+          "The source or direction is incorrect. Please enter it in the correct format.",
+      });
+    }
+
+    return true;
+  });
+}

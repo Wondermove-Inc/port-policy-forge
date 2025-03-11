@@ -16,6 +16,7 @@ export const Home = () => {
     selectedNamespace,
     setWorkloadsLoading,
     setWorkloads,
+    setToast,
   } = useCommonStore();
 
   useEffect(() => {
@@ -38,9 +39,10 @@ export const Home = () => {
         );
         setWorkloadsLoading(false);
       })
-      .catch(() => {
-        // TODO: show error
-        // setError(String(err));
+      .catch((error) => {
+        setToast(error);
+      })
+      .finally(() => {
         setWorkloadsLoading(false);
       });
   };

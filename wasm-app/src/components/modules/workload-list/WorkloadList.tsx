@@ -29,6 +29,7 @@ export const WorkloadList = () => {
     workloadsLoading,
     setWorkloadsLoading,
     selectedNamespace,
+    setToast,
   } = useCommonStore();
 
   const closePortModal = useDisclosure();
@@ -163,8 +164,7 @@ export const WorkloadList = () => {
         });
       })
       .catch((error) => {
-        console.log(error);
-        // TODO: handle error
+        setToast(error);
       })
       .finally(() => {
         setClosePortLoading(false);

@@ -27,7 +27,8 @@ export const SelectClusterAndNameSpace = () => {
   const [namespaceOptions, setNamespaceOptions] = useState<Option[]>([]);
   const [openSelect, setOpenSelect] = useState<string | null>(null);
 
-  const { selectedNamespace, setSelectedNamespace } = useCommonStore();
+  const { selectedNamespace, setSelectedNamespace, setToast } =
+    useCommonStore();
 
   useEffect(() => {
     getClusters();
@@ -68,10 +69,10 @@ export const SelectClusterAndNameSpace = () => {
         setNamespaceOptions(newNamespaces);
         setSelectedNamespace(newNamespaces[0]?.value || "");
       })
-      .catch(() => {
-        // TODO: add loading and show error
-        // setError(String(err));
+      .catch((error) => {
+        // TODO: add loading
         // setLoading(false);
+        setToast(error);
       });
   };
 

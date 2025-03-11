@@ -1,7 +1,5 @@
 import { Position } from "vis-network";
 
-import { Coord } from "./types";
-
 export function calculatePositionAlongEdge(
   clickPos: Position,
   fromPos: Position,

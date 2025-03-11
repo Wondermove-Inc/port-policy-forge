@@ -8,20 +8,13 @@ import { WorkloadTabs } from "./WorkloadTabs";
 
 import { Drawer } from "@/components/atoms/Drawer";
 import { INITIAL_WORKLOAD_DETAIL } from "@/constants";
-import {
-  AccessPolicy,
-  PortDirection,
-  PortRangeType,
-  Stats,
-  STATUS_MAP,
-} from "@/models";
+import { PortDirection, PortRangeType, Stats, STATUS_MAP } from "@/models";
 import {
   wasmGetWorkloadDetail,
   WorkloadDetailType,
 } from "@/services/getworkloadDetail";
 import { useCommonStore } from "@/store";
 import {
-  getAccessLabel,
   getPortKindLabel,
   getPortNumberLabel,
   getWorkloadKindLabel,
@@ -43,7 +36,7 @@ export const WorkloadDetail = ({
   id: string;
   handleClose: () => void;
 }) => {
-  const { setIsDetailFromMap, isViewList } = useCommonStore();
+  const { setIsDetailFromMap, isViewList, setToast } = useCommonStore();
 
   const [portDirection, setPortDirection] = useState<PortDirection>(
     PortDirection.INBOUND,
@@ -80,7 +73,6 @@ export const WorkloadDetail = ({
     wasmGetWorkloadDetail(id)
       .then((data) => {
         const newDetailData = data.result;
-        console.log(newDetailData);
         setWorkloadDetail({
           ...newDetailData,
           workloadName: formatter("workloadName")(newDetailData),
@@ -89,8 +81,8 @@ export const WorkloadDetail = ({
           outbound: formatDirection(newDetailData, PortDirection.OUTBOUND),
         });
       })
-      .catch(() => {
-        // TODO: handle error
+      .catch((error) => {
+        setToast(error);
       })
       .finally(() => setLoading(false));
   };
@@ -146,9 +138,6 @@ export const WorkloadDetail = ({
             portNumber: el.portNumber,
           }),
           sourceNumber: formatter("accessSources", "", (el) => el.length)(el),
-          accessPolicy: formatter("accessPolicy", "", () =>
-            getAccessLabel(el.accessPolicy as AccessPolicy, direction),
-          )(el),
           lastConnectionDate: formatter(
             "lastConnectionDate",
             "",
