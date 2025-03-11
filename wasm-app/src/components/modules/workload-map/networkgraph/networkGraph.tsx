@@ -97,12 +97,12 @@ const NetworkGraph = ({
       }
     });
     network.on("hoverNode", function (params) {
+      document.body.style.cursor = "pointer";
       setActiveEdgeId("");
       if (activeNodeId) {
         return;
       }
       hoverNodeId.current = params.node;
-      document.body.style.cursor = "pointer";
       network?.off("afterDrawing");
       network?.on("afterDrawing", (ctx: CanvasRenderingContext2D) => {
         handleAfterDrawing(ctx, canvasImages, {
@@ -115,11 +115,11 @@ const NetworkGraph = ({
     });
 
     network.on("blurNode", function () {
+      document.body.style.cursor = "auto";
       if (activeNodeId) {
         return;
       }
       hoverNodeId.current = "";
-      document.body.style.cursor = "auto";
       network?.off("afterDrawing");
       network?.on("afterDrawing", (ctx: CanvasRenderingContext2D) => {
         handleAfterDrawing(ctx, canvasImages, {
@@ -135,7 +135,8 @@ const NetworkGraph = ({
     });
 
     network.on("blurEdge", () => {
-     // moved to canvas mousemove event
+      document.body.style.cursor = "auto";
+      // moved to canvas mousemove event
     });
 
     const canvas = containerRef.current?.querySelector("canvas");
@@ -170,7 +171,9 @@ const NetworkGraph = ({
         }
       } else {
         setActiveEdgeId("");
-        document.body.style.cursor = "auto";
+        if (!hoverNodeId.current && !activeNodeId) {
+          document.body.style.cursor = "auto";
+        }
       }
     };
 
