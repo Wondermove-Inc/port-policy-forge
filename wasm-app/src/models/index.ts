@@ -48,7 +48,7 @@ export type Port = {
   portNumberLabel: string;
   portRange: PortRangeType | null;
   status: number;
-  direction: string;
+  direction: PortDirection;
   accessPolicy?: AccessPolicy;
   accessSources: SourceType[] | null;
   isOpen: boolean;

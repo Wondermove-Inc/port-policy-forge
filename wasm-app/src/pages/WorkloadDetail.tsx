@@ -20,6 +20,7 @@ type AccessSource = {
   ip: string;
   protocol: string;
   comment: string;
+  lastUpdatedAt?: string; 
 };
 
 type PortRange = {
@@ -198,7 +199,6 @@ function wasmClearClosedPortHistory(request: PortCloseRequest): Promise<any> {
   });
 }
 
-// 새로 추가한 closePortsByStatus 호출 함수
 function wasmClosePortsByStatus(requests: ClosePortsByStatusRequest[]): Promise<any> {
   return new Promise((resolve, reject) => {
     try {
@@ -216,7 +216,6 @@ function wasmClosePortsByStatus(requests: ClosePortsByStatusRequest[]): Promise<
   });
 }
 
-// 새로 추가한 closeNotActivePorts 호출 함수
 function wasmCloseNotActivePorts(request: CloseNotActivePortsRequest): Promise<any> {
   return new Promise((resolve, reject) => {
     try {
@@ -521,7 +520,7 @@ const WorkloadDetailComponent: React.FC = () => {
   const handleAddInboundSource = () => {
     setInboundSources((prev) => [
       ...prev,
-      { ip: "", protocol: "tcp", comment: "" },
+      { ip: "", protocol: "tcp", comment: "", lastUpdatedAt: "" },
     ]);
   };
   const handleRemoveInboundSource = (index: number) => {
@@ -539,7 +538,7 @@ const WorkloadDetailComponent: React.FC = () => {
   const handleAddOutboundSource = () => {
     setOutboundSources((prev) => [
       ...prev,
-      { ip: "", protocol: "tcp", comment: "" },
+      { ip: "", protocol: "tcp", comment: "", lastUpdatedAt: "" },
     ]);
   };
   const handleRemoveOutboundSource = (index: number) => {
@@ -557,7 +556,7 @@ const WorkloadDetailComponent: React.FC = () => {
   const handleAddEditSource = () => {
     setEditSources((prev) => [
       ...prev,
-      { ip: "", protocol: "tcp", comment: "" },
+      { ip: "", protocol: "tcp", comment: "", lastUpdatedAt: "" },
     ]);
   };
   const handleRemoveEditSource = (index: number) => {
@@ -640,7 +639,7 @@ const WorkloadDetailComponent: React.FC = () => {
               <ul>
                 {port.accessSources.map((src, idx) => (
                   <li key={idx}>
-                    {src.ip} / {src.protocol} / {src.comment}
+                    {src.ip} / {src.protocol} / {src.comment} / {src.lastUpdatedAt}
                   </li>
                 ))}
               </ul>

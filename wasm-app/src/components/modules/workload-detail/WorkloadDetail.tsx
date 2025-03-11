@@ -8,7 +8,13 @@ import { WorkloadTabs } from "./WorkloadTabs";
 
 import { Drawer } from "@/components/atoms/Drawer";
 import { INITIAL_WORKLOAD_DETAIL } from "@/constants";
-import { AccessPolicy, PortDirection, PortRangeType } from "@/models";
+import {
+  AccessPolicy,
+  PortDirection,
+  PortRangeType,
+  Stats,
+  STATUS_MAP,
+} from "@/models";
 import {
   wasmGetWorkloadDetail,
   WorkloadDetailType,
@@ -43,6 +49,7 @@ export const WorkloadDetail = ({
   const [workloadDetail, setWorkloadDetail] = useState<WorkloadDetailType>(
     INITIAL_WORKLOAD_DETAIL,
   );
+  const [isShowPolicyApplication, setIsShowPolicyApplication] = useState(false);
   const [loading, setLoading] = useState(true);
   const { setIsDetailFromMap, isViewList } = useCommonStore();
 
@@ -55,6 +62,20 @@ export const WorkloadDetail = ({
   useEffect(() => {
     setIsDetailFromMap(!!id && !isViewList);
   }, [id, isViewList]);
+
+  useEffect(() => {
+    if (id) {
+      fetchWorkloadDetail();
+    }
+  }, [id]);
+
+  useEffect(() => {
+    const hasInactivePorts = workloadDetail[portDirection].ports.open.some(
+      (port) => STATUS_MAP[port.status] !== Stats.ACTIVE,
+    );
+
+    setIsShowPolicyApplication(hasInactivePorts);
+  }, [portDirection, workloadDetail]);
 
   const fetchWorkloadDetail = () => {
     setLoading(true);
@@ -75,12 +96,6 @@ export const WorkloadDetail = ({
       })
       .finally(() => setLoading(false));
   };
-
-  useEffect(() => {
-    if (id) {
-      fetchWorkloadDetail();
-    }
-  }, [id]);
 
   const formatDirection = (
     workloadDetail: WorkloadDetailType,
@@ -108,7 +123,11 @@ export const WorkloadDetail = ({
           "",
           formatNumber,
         )(workloadDetail),
-        attempted: formatter(`${direction}.stats.attempted`)(workloadDetail),
+        attempted: formatter(
+          `${direction}.stats.attempted`,
+          "",
+          formatNumber,
+        )(workloadDetail),
         latencyRtt: formatter(
           `${direction}.stats.latencyRtt`,
           "",
@@ -184,7 +203,13 @@ export const WorkloadDetail = ({
             }
           />
           <WorkloadSummary stats={workloadDetail[portDirection].stats} />
-          <PolicyApplication fetchWorkloadDetail={fetchWorkloadDetail} />
+          {isShowPolicyApplication && (
+            <PolicyApplication
+              fetchWorkloadDetail={fetchWorkloadDetail}
+              portDirection={portDirection}
+              workloadUuid={workloadDetail.uuid}
+            />
+          )}
           <OpenPort
             data={workloadDetail[portDirection].ports.open}
             portDirection={portDirection}
