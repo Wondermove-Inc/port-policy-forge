@@ -4,6 +4,7 @@ import { IdType, Network } from "vis-network";
 
 import { NetworkEdge } from "./edge";
 import { ImageLoader } from "./imageLoader";
+import { createNetworkOptions } from "./network";
 import { NetworkNode } from "./node";
 import {
   CanvasImage,
@@ -14,7 +15,7 @@ import {
   DrawingOptions,
 } from "./types";
 import { calculatePositionAlongEdge } from "./utils";
-import { createNetworkOptions } from "./network";
+
 import { FilterPorts, Port } from "@/models";
 
 let network: CustomNetwork | null = null;
@@ -186,7 +187,15 @@ const NetworkGraph = ({
       network?.off("blurNode");
       network?.off("click");
     };
-  }, [canvasImages, edges, nodes, activeNodeId, activeEdgeId, filterPorts, portHover]);
+  }, [
+    canvasImages,
+    edges,
+    nodes,
+    activeNodeId,
+    activeEdgeId,
+    filterPorts,
+    portHover,
+  ]);
 
   useEffect(() => {
     return () => {

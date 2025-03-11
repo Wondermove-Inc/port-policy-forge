@@ -134,7 +134,7 @@ export const OpenPort = ({
         ),
       },
     ],
-    [portDirection]
+    [portDirection],
   );
 
   const openClosePortModal = (record: Port) => {

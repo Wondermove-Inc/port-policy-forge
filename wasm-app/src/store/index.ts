@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
-import { WorkloadResource } from "@/services/listWorkloads";
 import { Port } from "@/models";
+import { WorkloadResource } from "@/services/listWorkloads";
 
 interface CommonStore {
   isViewList: boolean;

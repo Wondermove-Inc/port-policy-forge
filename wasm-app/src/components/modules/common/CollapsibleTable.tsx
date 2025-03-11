@@ -20,8 +20,8 @@ import {
 
 import { ArrowDownIcon } from "@/components/icons/ArrowDownIcon";
 import { ArrowRightIcon } from "@/components/icons/ArrowRightIcon";
-import { useCommonStore } from "@/store";
 import { Port } from "@/models";
+import { useCommonStore } from "@/store";
 
 export type TableColumnProps<T> = TableCellProps & {
   id: string;
