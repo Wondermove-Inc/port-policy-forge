@@ -53,21 +53,21 @@ export const OpenPort = ({
 
   const isInbound = portDirection === PortDirection.INBOUND;
 
-  const defaultValues = useMemo(() => {
-    return {
-      workloadUuid,
-      flag: getPortFlag(portDirection),
-      portSpec: "",
-      accessSources: [INITIAL_ACCESS_SOURCE],
-      accessPolicy: AccessPolicy.ALLOW_ONLY,
-      allowFullAccess: false,
-    };
-  }, [portDirection, workloadUuid]);
+  const defaultValues = {
+    workloadUuid,
+    flag: getPortFlag(portDirection),
+    portSpec: "",
+    accessSources: [INITIAL_ACCESS_SOURCE],
+    accessPolicy: AccessPolicy.ALLOW_ONLY,
+    allowFullAccess: false,
+  };
 
   const form = useForm<PortAccessSettingForm>({
     defaultValues,
     mode: "onSubmit",
-    resolver: yupResolver(openPortSchema(portDirection, data)),
+    resolver: yupResolver(
+      openPortSchema(portDirection, !selectedPort ? data : []),
+    ),
   });
 
   const columns = useMemo(

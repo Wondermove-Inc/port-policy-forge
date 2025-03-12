@@ -16,8 +16,11 @@ export const openPortSchema = (direction: string, ports: Port[]) =>
         "duplicate",
         "The port is already open. Please change it through the port settings.",
         (value) => {
-          return !ports.some((item) =>
-            doesPortExist(value, getPortNumberValue(item)),
+          return (
+            !ports.length ||
+            !ports.some((item) =>
+              doesPortExist(value, getPortNumberValue(item)),
+            )
           );
         },
       )

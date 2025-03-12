@@ -194,19 +194,19 @@ export const WorkloadDetail = ({
             <PolicyApplication
               fetchWorkloadDetail={fetchWorkloadDetail}
               portDirection={portDirection}
-              workloadUuid={workloadDetail.uuid}
+              workloadUuid={id}
             />
           )}
           <OpenPort
             data={workloadDetail[portDirection].ports.open}
             portDirection={portDirection}
             fetchWorkloadDetail={fetchWorkloadDetail}
-            workloadUuid={workloadDetail.uuid}
+            workloadUuid={id}
           />
           <ClosePort
             data={workloadDetail[portDirection].ports.closed}
             fetchWorkloadDetail={fetchWorkloadDetail}
-            workloadUuid={workloadDetail.uuid}
+            workloadUuid={id}
           />
         </>
       )}
