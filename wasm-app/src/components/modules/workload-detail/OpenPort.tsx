@@ -67,7 +67,7 @@ export const OpenPort = ({
   const form = useForm<PortAccessSettingForm>({
     defaultValues,
     mode: "onSubmit",
-    resolver: yupResolver(openPortSchema(portDirection)),
+    resolver: yupResolver(openPortSchema(portDirection, data)),
   });
 
   const columns = useMemo(

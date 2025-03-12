@@ -1,8 +1,10 @@
 import yup from "./base";
+import { doesPortExist } from "./rule";
 
-import { AccessPolicy, PortDirection, Protocol } from "@/models";
+import { AccessPolicy, Port, PortDirection, Protocol } from "@/models";
+import { getPortNumberValue } from "@/utils";
 
-export const openPortSchema = (direction: string) =>
+export const openPortSchema = (direction: string, ports: Port[]) =>
   yup.object().shape({
     workloadUuid: yup.string().required(),
     flag: yup.number().required(),
@@ -10,6 +12,15 @@ export const openPortSchema = (direction: string) =>
       .string()
       .isValidPort(1, 65535)
       .required()
+      .test(
+        "duplicate",
+        "The port is already open. Please change it through the port settings.",
+        (value) => {
+          return !ports.some((item) =>
+            doesPortExist(value, getPortNumberValue(item)),
+          );
+        },
+      )
       .label("Port number"),
     accessSources: yup.array().when("allowFullAccess", {
       is: false,
