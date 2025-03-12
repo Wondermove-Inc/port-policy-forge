@@ -35,19 +35,19 @@ export function isValidPort(this: Yup.StringSchema, min: number, max: number) {
 
       const range = part.split("-").map(Number);
 
+      if (range.length === 2 && range[0] >= range[1]) {
+        return createError({
+          path,
+          message: VALIDATION_MESSAGES.invalid_port_format,
+        });
+      }
+
       if (range.some((num) => isNaN(num) || num < min || num > max)) {
         return createError({
           path,
           message: VALIDATION_MESSAGES.range
             .replace("${min}", String(min))
             .replace("${max}", String(max)),
-        });
-      }
-
-      if (range.length === 2 && range[0] >= range[1]) {
-        return createError({
-          path,
-          message: VALIDATION_MESSAGES.invalid_port_format,
         });
       }
     }
