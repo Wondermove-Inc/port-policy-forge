@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
 
 import "../public/wasm_exec.js";
-import { Box, Snackbar } from "@mui/material";
+import { Box } from "@mui/material";
 import { ThemeProvider } from "@skuber/theme";
 import { Routes, Route } from "react-router-dom";
 
+import { Toast } from "./components/layout/Toast.tsx";
+import { WasmProvider } from "./wasm.provider.tsx";
+import { loadWasm } from "./wasmLoader.tsx";
+
+import { Header } from "@/components/layout/Header";
+import { PageLoading } from "@/components/layout/PageLoading.tsx";
 import { Home } from "@/pages/Home.tsx";
 import Namespace from "@/pages/Namespace";
 import Workloads from "@/pages/Workload.tsx";
 import WorkloadDetail from "@/pages/WorkloadDetail.tsx";
 import { customTheme } from "@/theme";
-import { loadWasm } from "./wasmLoader.tsx";
-
-import { Header } from "@/components/layout/Header";
-import { PageLoading } from "@/components/layout/PageLoading.tsx";
-import { CloseIcon } from "@/components/icons/CloseIcon.tsx";
 
 import "@skuber/theme/styles/global.css";
 import "./index.css";
-import { WasmProvider } from "./wasm.provider.tsx";
 
 const App = () => {
   const [isWasmLoaded, setIsWasmLoaded] = useState(false);
@@ -35,21 +35,7 @@ const App = () => {
   return (
     <ThemeProvider theme={customTheme}>
       <WasmProvider>
-        <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          open={true}
-          onClose={() => {
-            console.log("hihi");
-          }}
-          message="I love snacks"
-          action={
-            <CloseIcon
-              onClick={() => {
-                console.log("hihi");
-              }}
-            />
-          }
-        />
+        <Toast />
         <Header />
         <Box
           sx={{
