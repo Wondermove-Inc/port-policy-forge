@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 
 import { Box, FormControlLabel, RadioGroup, TextField } from "@mui/material";
 import {
@@ -73,7 +73,11 @@ export const ModalPortSetting = ({
         onClose={handleClose}
       />
       <Box
-        sx={{ overflowY: "scroll", maxHeight: "586px", p: "16px 11px 0 20px" }}
+        sx={{
+          overflowY: "scroll",
+          maxHeight: "calc(100vh - 188px)",
+          p: "16px 11px 0 20px",
+        }}
       >
         {!port && (
           <Box
