@@ -103,6 +103,10 @@ export const WorkloadMap = () => {
     try {
       network?.focus(nodeId, {
         scale: 1.0,
+        offset: {
+          x: -512 / 2,
+          y: 0,
+        },
         animation: {
           duration: 1000,
           easingFunction: "easeInOutQuad",
