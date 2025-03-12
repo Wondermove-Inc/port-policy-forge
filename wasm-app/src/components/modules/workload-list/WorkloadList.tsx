@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Box, Typography } from "@mui/material";
 import { Button } from "@skuber/components";
@@ -135,6 +135,10 @@ export const WorkloadList = () => {
         .includes((keyword as string)?.toLowerCase()),
     );
   }, [keyword, workloads]);
+
+  useEffect(() => {
+    setClosedWorkloads([]);
+  }, [keyword]);
 
   const handleSelectionChange = (data: TableSelectionRow[]) => {
     setClosedWorkloads(data);

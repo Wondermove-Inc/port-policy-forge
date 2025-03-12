@@ -97,3 +97,8 @@ html, body {
 .MuiTextField-root label.Mui-error {
   color: #FFFFFFE5;
 }
+
+.MuiInputBase-input.MuiOutlinedInput-input.MuiInputBase-inputMultiline {
+  height: 60px !important;
+  min-height: 60px !important;
+}

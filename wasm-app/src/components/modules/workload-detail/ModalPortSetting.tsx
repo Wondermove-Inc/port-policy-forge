@@ -227,18 +227,7 @@ export const ModalPortSetting = ({
                           name={`accessSources.${index}.comment`}
                           control={control}
                           render={({ field }) => (
-                            <Textarea
-                              {...field}
-                              sx={{
-                                "&>div": {
-                                  maxHeight: "80px !important",
-                                  "&.MuiInputBase-multiline textarea": {
-                                    minHeight: "50px !important",
-                                  },
-                                },
-                              }}
-                              label="Comment"
-                            />
+                            <Textarea {...field} label="Comment" />
                           )}
                         />
                       </Box>
