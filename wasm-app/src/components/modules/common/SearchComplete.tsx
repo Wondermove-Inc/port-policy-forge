@@ -18,16 +18,16 @@ export type SearchCompleteProps = {
   options: Option[];
   sx?: SxProps<Theme>;
   placeholder?: string;
-  onChange: (option: Option) => void;
+  onInputChange: (value: string) => void;
 };
 
 export const SearchComplete = (props: SearchCompleteProps) => {
   return (
     <MuiAutocomplete
       disableClearable={false}
-      clearOnBlur={true}
       clearIcon={<CloseIcon size={14} />}
       {...props}
+      freeSolo
       noOptionsText="no results"
       sx={{
         "& .MuiButtonBase-root": {
@@ -92,8 +92,8 @@ export const SearchComplete = (props: SearchCompleteProps) => {
           }}
         />
       )}
-      onChange={(e: any, option: any) => {
-        props.onChange(option);
+      onInputChange={(e: any, option: any) => {
+        props.onInputChange(option);
       }}
     />
   );

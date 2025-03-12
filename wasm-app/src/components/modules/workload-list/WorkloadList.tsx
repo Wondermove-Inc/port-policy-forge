@@ -37,7 +37,7 @@ export const WorkloadList = () => {
   const [selectedTabBound, setSelectedTabBound] = useState<PortDirection>(
     PortDirection.INBOUND,
   );
-  const [filteredWorkloadId, setFilterWorkloadId] = useState("");
+  const [keyword, setKeyword] = useState("");
   const [selectedWorkloadId, setSelectedWorkloadId] = useState("");
   const [closedWorkloads, setClosedWorkloads] = useState<TableSelectionRow[]>(
     [],
@@ -126,11 +126,15 @@ export const WorkloadList = () => {
   }, [closedWorkloads]);
 
   const filteredWorkloads = useMemo(() => {
-    if (!filteredWorkloadId) {
+    if (!keyword) {
       return workloads;
     }
-    return workloads.filter((item) => item.uuid === filteredWorkloadId);
-  }, [filteredWorkloadId, workloads]);
+    return workloads.filter((item) =>
+      item.workloadName
+        ?.toLowerCase()
+        .includes((keyword as string)?.toLowerCase()),
+    );
+  }, [keyword, workloads]);
 
   const handleSelectionChange = (data: TableSelectionRow[]) => {
     setClosedWorkloads(data);
@@ -181,6 +185,10 @@ export const WorkloadList = () => {
     setSelectedWorkloadId("");
   };
 
+  const handleKeywordChange = (value: string) => {
+    setKeyword(value);
+  };
+
   return (
     <Box
       sx={{
@@ -221,9 +229,7 @@ export const WorkloadList = () => {
               id: item.uuid,
               label: item.workloadName,
             }))}
-            onChange={(option) => {
-              setFilterWorkloadId(option?.id || "");
-            }}
+            onInputChange={handleKeywordChange}
             placeholder="Search for workloads"
           />
           <Button

@@ -37,6 +37,10 @@ export const ViewFilter = ({
     });
   };
 
+  const handleKeywordChange = (value: string) => {
+    console.log(value);
+  };
+
   return (
     <Box
       sx={{
@@ -117,9 +121,7 @@ export const ViewFilter = ({
                   label: item.workloadName,
                 }))}
                 placeholder="Search for workloads"
-                onChange={(option) => {
-                  console.log(option);
-                }}
+                onInputChange={handleKeywordChange}
               />
             </Box>
             <Box
