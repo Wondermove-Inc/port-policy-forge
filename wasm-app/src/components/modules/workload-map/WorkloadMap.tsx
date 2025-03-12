@@ -15,6 +15,7 @@ import {
 import { ViewFilter } from "@/components/modules/workload-map/ViewFilter";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { FilterPorts } from "@/models";
+import { wasmListWorkloads } from "@/services/listWorkloads";
 import { useCommonStore } from "@/store";
 
 export const WorkloadMap = () => {
@@ -23,7 +24,13 @@ export const WorkloadMap = () => {
   const [networkGraphRenderKey, setNetworkGraphRenderKey] = useState<number>(
     new Date().getTime(),
   );
-  const { workloads, portHover } = useCommonStore();
+  const {
+    workloads: storeWorkloads,
+    portHover,
+    selectedNamespace,
+  } = useCommonStore();
+
+  const [workloads, setWorkloads] = useState(storeWorkloads);
   const initFilterPorts: FilterPorts = {
     attempted: true,
     error: true,
@@ -37,6 +44,10 @@ export const WorkloadMap = () => {
   const selectedEdgeId = useRef("");
   const detailDrawer = useDisclosure();
   const modalClosePort = useDisclosure();
+
+  useEffect(() => {
+    setWorkloads(storeWorkloads);
+  }, [storeWorkloads]);
   useEffect(() => {
     const edges = workloads.reduce((pre, current) => {
       const fromEdges: EdgeData[] =
@@ -152,6 +163,16 @@ export const WorkloadMap = () => {
     setFilterPorts(filterPorts);
   };
 
+  const handleKeywordChange = (keyword: string) => {
+    // implement debounce function here ...
+    wasmListWorkloads(selectedNamespace).then((val) => {
+      const filteredWorkloads = val.result.filter((workload) =>
+        workload.workloadName.includes(keyword),
+      );
+      setWorkloads(filteredWorkloads);
+    });
+  };
+
   return (
     <Box
       sx={{
@@ -177,6 +198,7 @@ export const WorkloadMap = () => {
       <ViewFilter
         filterPorts={initFilterPorts}
         onChangeFilter={handleChangeFilter}
+        onKeywordChange={handleKeywordChange}
       />
       <ModalConfirm
         title="Close Port Access"

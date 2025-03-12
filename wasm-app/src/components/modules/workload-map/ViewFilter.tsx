@@ -6,16 +6,18 @@ import { Toggle, Typography } from "@skuber/components";
 import { CloseIcon } from "@/components/icons/CloseIcon";
 import { EyeIcon } from "@/components/icons/EyeIcon";
 import { SearchComplete } from "@/components/modules/common/SearchComplete";
-import { FilterPorts } from "@/components/modules/workload-map/networkgraph/types";
+import { FilterPorts } from "@/models";
 import { useCommonStore } from "@/store";
 
 type ViewFilterProps = {
   filterPorts: FilterPorts;
   onChangeFilter: (filterPorts: FilterPorts) => void;
+  onKeywordChange?: (keyword: string) => void;
 };
 export const ViewFilter = ({
   filterPorts,
   onChangeFilter,
+  onKeywordChange,
 }: ViewFilterProps) => {
   const { workloads } = useCommonStore();
   const filterPortRef = useRef<FilterPorts>(filterPorts);
@@ -38,7 +40,7 @@ export const ViewFilter = ({
   };
 
   const handleKeywordChange = (value: string) => {
-    console.log(value);
+    onKeywordChange?.(value);
   };
 
   return (
