@@ -53,14 +53,18 @@ export const SelectClusterAndNameSpace = () => {
   };
 
   const getNamespaces = () => {
-    if (selectedCluster === null || selectedCluster === undefined) {
+    if (
+      selectedCluster === null ||
+      selectedCluster === undefined ||
+      selectedCluster === ""
+    ) {
       setNamespaceOptions([]);
       setSelectedNamespace("");
+      return;
     }
-
-    wasmListNamespace("0")
+    wasmListNamespace(`${selectedCluster}`)
       .then((data) => {
-        const newNamespaces = data.result
+        const newNamespaces = (data.result || [])
           .map((namespace) => ({
             value: namespace.namespaceName,
             label: namespace.namespaceName,

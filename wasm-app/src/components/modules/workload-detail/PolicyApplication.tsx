@@ -30,10 +30,12 @@ export const PolicyApplication = ({
 
   const handleApplyPolicy = () => {
     setLoading(true);
-    wasmCloseNotActivePorts({
+    const params = {
       workloadUuid,
       flag: getPortFlag(portDirection),
-    })
+    };
+    console.log("wasmCloseNotActivePorts", params);
+    wasmCloseNotActivePorts(params)
       .then(() => {
         fetchWorkloadDetail();
         policyApplicationModal.close();

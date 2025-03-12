@@ -146,13 +146,13 @@ export const WorkloadList = () => {
   };
   const handleConfirmClosePort = () => {
     setClosePortLoading(true);
-    wasmClosePortsByStatus(
-      closedWorkloads.map((item) => ({
-        workloadUuid: item.id,
-        flag: selectedTabBound === PortDirection.INBOUND ? "0" : "1",
-        status: item.columns,
-      })),
-    )
+    const params = closedWorkloads.map((item) => ({
+      workloadUuid: item.id,
+      flag: selectedTabBound === PortDirection.INBOUND ? "0" : "1",
+      status: item.columns,
+    }));
+    console.log("wasmClosePortsByStatus", params);
+    wasmClosePortsByStatus(params)
       .then(() => {
         setWorkloadsLoading(true);
         closePortModal.close();
