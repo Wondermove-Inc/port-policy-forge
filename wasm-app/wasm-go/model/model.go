@@ -63,8 +63,16 @@ type Workload struct {
 }
 
 type Relation struct {
-	WorkloadId string `json:"workloadId"`
-	Status     int    `json:"status"`
+	WorkloadId string          `json:"workloadId"`
+	Status     int             `json:"status"`
+	Workload   *InlineWorkload `json:"workload,omitempty"`
+}
+
+type InlineWorkload struct {
+	UUID         string       `json:"uuid"`
+	WorkloadName string       `json:"workloadName"`
+	Namespace    string       `json:"namespace"`
+	Kind         WorkloadKind `json:"kind"`
 }
 
 type TrafficStats struct {

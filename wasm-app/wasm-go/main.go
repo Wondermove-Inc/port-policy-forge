@@ -53,7 +53,100 @@ func listNamespace(this js.Value, p []js.Value) interface{} {
 func listWorkloads(this js.Value, p []js.Value) interface{} {
 	nsName := p[0].String()
 
-	resources := mock.MockWorkloads[nsName]
+	resources := utils.DeepCopyWorkloads(mock.MockWorkloads[nsName])
+
+	workloadInfoMap := make(map[string]struct {
+		Info      model.InlineWorkload
+		Namespace string
+	})
+
+	for namespace, workloads := range mock.MockWorkloads {
+		for _, workload := range workloads {
+			workloadInfoMap[workload.UUID] = struct {
+				Info      model.InlineWorkload
+				Namespace string
+			}{
+				Info: model.InlineWorkload{
+					UUID:         workload.UUID,
+					WorkloadName: workload.WorkloadName,
+					Namespace:    namespace,
+					Kind:         workload.Kind,
+				},
+				Namespace: namespace,
+			}
+		}
+	}
+
+	// additional workload info for demo
+	missingWorkloads := map[string]struct {
+		Info      model.InlineWorkload
+		Namespace string
+	}{
+		"1b8892b1-58bc-464f-9401-b31eb2a9db99": {
+			Info: model.InlineWorkload{
+				UUID:         "1b8892b1-58bc-464f-9401-b31eb2a9db99",
+				WorkloadName: "coredns",
+				Namespace:    "kube-system",
+				Kind:         "deployment",
+			},
+			Namespace: "kube-system",
+		},
+		"afbcb3d5-67e8-4f4b-9d8f-f0f124abc2f2": {
+			Info: model.InlineWorkload{
+				UUID:         "afbcb3d5-67e8-4f4b-9d8f-f0f124abc2f2",
+				WorkloadName: "kube-proxy",
+				Namespace:    "kube-system",
+				Kind:         "daemonset",
+			},
+			Namespace: "kube-system",
+		},
+		"b726573d-4914-42ab-be5e-fb1daecec08b": {
+			Info: model.InlineWorkload{
+				UUID:         "b726573d-4914-42ab-be5e-fb1daecec08b",
+				WorkloadName: "cilium-operator",
+				Namespace:    "cilium",
+				Kind:         "deployment",
+			},
+			Namespace: "cilium",
+		},
+	}
+
+	for id, info := range missingWorkloads {
+		if _, exists := workloadInfoMap[id]; !exists {
+			workloadInfoMap[id] = info
+		}
+	}
+
+	for i := range resources {
+		for j := range resources[i].From {
+			wID := resources[i].From[j].WorkloadId
+			if info, exists := workloadInfoMap[wID]; exists {
+				if info.Namespace != nsName {
+					resources[i].From[j].Workload = &model.InlineWorkload{
+						UUID:         info.Info.UUID,
+						WorkloadName: info.Info.WorkloadName,
+						Namespace:    info.Namespace,
+						Kind:         info.Info.Kind,
+					}
+				}
+			}
+		}
+
+		for j := range resources[i].To {
+			wID := resources[i].To[j].WorkloadId
+			if info, exists := workloadInfoMap[wID]; exists {
+				if info.Namespace != nsName {
+					resources[i].To[j].Workload = &model.InlineWorkload{
+						UUID:         info.Info.UUID,
+						WorkloadName: info.Info.WorkloadName,
+						Namespace:    info.Namespace,
+						Kind:         info.Info.Kind,
+					}
+				}
+			}
+		}
+	}
+
 	response := map[string]interface{}{
 		"result": resources,
 	}

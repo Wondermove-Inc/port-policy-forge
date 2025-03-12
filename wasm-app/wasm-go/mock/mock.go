@@ -41,12 +41,12 @@ var MockWorkloads = map[string][]model.Workload{
 			Kind:                    model.WORKLOAD_KIND_DEPLOYMENT,
 			Usage:                   0.7, // 70% CPU usage
 			From: []model.Relation{
-				{WorkloadId: "7f2552b4-ab40-4120-a6d9-16507024922b", Status: 4},
-				{WorkloadId: "1b8892b1-58bc-464f-9401-b31eb2a9db99", Status: 4},
+				{WorkloadId: "7f2552b4-ab40-4120-a6d9-16507024922b", Status: 0}, // Active
+				{WorkloadId: "1b8892b1-58bc-464f-9401-b31eb2a9db99", Status: 0}, // Active
 			},
 			To: []model.Relation{
-				{WorkloadId: "afbcb3d5-67e8-4f4b-9d8f-f0f124abc2f2", Status: 2},
-				{WorkloadId: "b726573d-4914-42ab-be5e-fb1daecec08b", Status: 2},
+				{WorkloadId: "afbcb3d5-67e8-4f4b-9d8f-f0f124abc2f2", Status: 0}, // Active
+				{WorkloadId: "b726573d-4914-42ab-be5e-fb1daecec08b", Status: 0}, // Active
 			},
 			Inbound: model.TrafficStats{
 				Stats: model.Stats{
@@ -80,7 +80,7 @@ var MockWorkloads = map[string][]model.Workload{
 			Usage:                   0.5, // 50% CPU usage
 			From:                    []model.Relation{},
 			To: []model.Relation{
-				{WorkloadId: "7431bb4f-cae8-4dbe-a542-d6f52c893271", Status: 4},
+				{WorkloadId: "7431bb4f-cae8-4dbe-a542-d6f52c893271", Status: 0}, // Active
 			},
 			Inbound: model.TrafficStats{
 				Stats: model.Stats{
@@ -111,10 +111,10 @@ var MockWorkloads = map[string][]model.Workload{
 			ConnectedWorkloadStatus: model.BEFORE_INIT_SETUP,
 			PolicySettingBadge:      true,
 			Kind:                    model.WORKLOAD_KIND_DEMONSET,
-			Usage:                   0.2, // 50% CPU usage
+			Usage:                   0.2, // 20% CPU usage
 			From:                    []model.Relation{},
 			To: []model.Relation{
-				{WorkloadId: "7f2552b4-ab40-4120-a6d9-16507024922b", Status: 0},
+				{WorkloadId: "7f2552b4-ab40-4120-a6d9-16507024922b", Status: 0}, // Active
 			},
 			Inbound: model.TrafficStats{
 				Stats: model.Stats{
@@ -148,7 +148,7 @@ var MockWorkloads = map[string][]model.Workload{
 			Usage:                   0.5, // 50% CPU usage
 			From:                    []model.Relation{},
 			To: []model.Relation{
-				{WorkloadId: "7f2552b4-ab40-4120-a6d9-16507024922b", Status: 1},
+				{WorkloadId: "7f2552b4-ab40-4120-a6d9-16507024922b", Status: 1}, // Idle
 			},
 			Inbound: model.TrafficStats{
 				Stats: model.Stats{
@@ -182,7 +182,7 @@ var MockWorkloads = map[string][]model.Workload{
 			Usage:                   0.7, // 70% CPU usage
 			From:                    []model.Relation{},
 			To: []model.Relation{
-				{WorkloadId: "e7b5421a-e185-44e7-bd82-cdde1b60ff2a", Status: 3},
+				{WorkloadId: "e7b5421a-e185-44e7-bd82-cdde1b60ff2a", Status: 2}, // Error
 			},
 			Inbound: model.TrafficStats{
 				Stats: model.Stats{
@@ -215,7 +215,7 @@ var MockWorkloads = map[string][]model.Workload{
 			Kind:                    model.WORKLOAD_KIND_REPLICASET,
 			Usage:                   0.9, // 90% CPU usage
 			From: []model.Relation{
-				{WorkloadId: "7161198e-eeb6-48c6-a15f-6c131393402d", Status: 2},
+				{WorkloadId: "7161198e-eeb6-48c6-a15f-6c131393402d", Status: 0}, // Active
 			},
 			To: []model.Relation{},
 			Inbound: model.TrafficStats{
@@ -249,8 +249,8 @@ var MockWorkloads = map[string][]model.Workload{
 			Kind:                    model.WORKLOAD_KIND_ETC,
 			Usage:                   0.2, // 20% CPU usage
 			From: []model.Relation{
-				{WorkloadId: "7161198e-eeb6-48c6-a15f-6c131393402d", Status: 2},
-				{WorkloadId: "ebc762a3-54d7-4837-add6-8f42392a6bc7", Status: 0},
+				{WorkloadId: "7161198e-eeb6-48c6-a15f-6c131393402d", Status: 1}, // Idle
+				{WorkloadId: "ebc762a3-54d7-4837-add6-8f42392a6bc7", Status: 0}, // Active
 			},
 			To: []model.Relation{},
 			Inbound: model.TrafficStats{
@@ -285,7 +285,7 @@ var MockWorkloads = map[string][]model.Workload{
 			Usage:                   0.2, // 20% CPU usage
 			From:                    []model.Relation{},
 			To: []model.Relation{
-				{WorkloadId: "8258ce53-0681-44db-b2ef-6793473c694e", Status: 2},
+				{WorkloadId: "8258ce53-0681-44db-b2ef-6793473c694e", Status: 1}, // Idle
 			},
 			Inbound: model.TrafficStats{
 				Stats: model.Stats{
@@ -318,10 +318,10 @@ var MockWorkloads = map[string][]model.Workload{
 			Kind:                    model.WORKLOAD_KIND_STATEFULSET,
 			Usage:                   0.2, // 20% CPU usage
 			From: []model.Relation{
-				{WorkloadId: "798df97d-11da-4409-bb4e-0621564a25e6", Status: 5},
+				{WorkloadId: "798df97d-11da-4409-bb4e-0621564a25e6", Status: 0}, // Active
 			},
 			To: []model.Relation{
-				{WorkloadId: "8258ce53-0681-44db-b2ef-6793473c694e", Status: 2},
+				{WorkloadId: "8258ce53-0681-44db-b2ef-6793473c694e", Status: 0}, // Active
 			},
 			Inbound: model.TrafficStats{
 				Stats: model.Stats{
@@ -354,7 +354,7 @@ var MockWorkloads = map[string][]model.Workload{
 			Kind:                    model.WORKLOAD_KIND_STATEFULSET,
 			Usage:                   0, // 0% CPU usage
 			To: []model.Relation{
-				{WorkloadId: "5f2f34c3-93ba-41e6-a40d-f1e975b5922e", Status: 2},
+				{WorkloadId: "5f2f34c3-93ba-41e6-a40d-f1e975b5922e", Status: 1}, // Idle
 			},
 			Inbound: model.TrafficStats{
 				Stats: model.Stats{
@@ -387,7 +387,7 @@ var MockWorkloads = map[string][]model.Workload{
 			Kind:                    model.WORKLOAD_KIND_STATEFULSET,
 			Usage:                   100, // 100% CPU usage
 			To: []model.Relation{
-				{WorkloadId: "5f2f34c3-93ba-41e6-a40d-f1e975b5922e", Status: 3},
+				{WorkloadId: "5f2f34c3-93ba-41e6-a40d-f1e975b5922e", Status: 2}, // Error
 			},
 			Inbound: model.TrafficStats{
 				Stats: model.Stats{
@@ -422,12 +422,12 @@ var MockWorkloads = map[string][]model.Workload{
 			Kind:                    "deployment",
 			Usage:                   0.7,
 			From: []model.Relation{
-				{WorkloadId: "7f2552b4-ab40-4120-a6d9-16507024922b", Status: 4},
-				{WorkloadId: "1b8892b1-58bc-464f-9401-b31eb2a9db99", Status: 4},
+				{WorkloadId: "7f2552b4-ab40-4120-a6d9-16507024922b", Status: 0}, // Active
+				{WorkloadId: "1b8892b1-58bc-464f-9401-b31eb2a9db99", Status: 0}, // Active
 			},
 			To: []model.Relation{
-				{WorkloadId: "afbcb3d5-67e8-4f4b-9d8f-f0f124abc2f2", Status: 2},
-				{WorkloadId: "b726573d-4914-42ab-be5e-fb1daecec08b", Status: 2},
+				{WorkloadId: "afbcb3d5-67e8-4f4b-9d8f-f0f124abc2f2", Status: 0}, // Active
+				{WorkloadId: "b726573d-4914-42ab-be5e-fb1daecec08b", Status: 1}, // Idle
 			},
 			Inbound: model.TrafficStats{
 				Stats: model.Stats{
@@ -461,7 +461,7 @@ var MockWorkloads = map[string][]model.Workload{
 			Usage:                   0.5,
 			From:                    []model.Relation{},
 			To: []model.Relation{
-				{WorkloadId: "7431bb4f-cae8-4dbe-a542-d6f52c893271", Status: 4},
+				{WorkloadId: "7431bb4f-cae8-4dbe-a542-d6f52c893271", Status: 2}, // Error
 			},
 			Inbound: model.TrafficStats{
 				Stats: model.Stats{
@@ -496,12 +496,12 @@ var MockWorkloads = map[string][]model.Workload{
 			Kind:                    "deployment",
 			Usage:                   0.6,
 			From: []model.Relation{
-				{WorkloadId: "7f2552b4-ab40-4120-a6d9-16507024922b", Status: 4},
-				{WorkloadId: "1b8892b1-58bc-464f-9401-b31eb2a9db99", Status: 4},
+				{WorkloadId: "7f2552b4-ab40-4120-a6d9-16507024922b", Status: 2}, // Error
+				{WorkloadId: "1b8892b1-58bc-464f-9401-b31eb2a9db99", Status: 2}, // Error
 			},
 			To: []model.Relation{
-				{WorkloadId: "afbcb3d5-67e8-4f4b-9d8f-f0f124abc2f2", Status: 2},
-				{WorkloadId: "b726573d-4914-42ab-be5e-fb1daecec08b", Status: 2},
+				{WorkloadId: "afbcb3d5-67e8-4f4b-9d8f-f0f124abc2f2", Status: 1}, // Idle
+				{WorkloadId: "b726573d-4914-42ab-be5e-fb1daecec08b", Status: 1}, // Idle
 			},
 			Inbound: model.TrafficStats{
 				Stats: model.Stats{
@@ -535,7 +535,7 @@ var MockWorkloads = map[string][]model.Workload{
 			Usage:                   0.5,
 			From:                    []model.Relation{},
 			To: []model.Relation{
-				{WorkloadId: "7431bb4f-cae8-4dbe-a542-d6f52c893271", Status: 4},
+				{WorkloadId: "7431bb4f-cae8-4dbe-a542-d6f52c893271", Status: 1}, // Idle
 			},
 			Inbound: model.TrafficStats{
 				Stats: model.Stats{

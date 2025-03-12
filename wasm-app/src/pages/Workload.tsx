@@ -7,9 +7,18 @@ declare global {
   }
 }
 
+type InlineWorkload = {
+  uuid: string;
+  workloadName: string;
+  namespace: string;
+  kind: string;
+  usage: number;
+};
+
 type Relation = {
   workloadId: string;
   status: number;
+  workload?: InlineWorkload; // 네임스페이스 관계 정보
 };
 
 type Stats = {
@@ -20,6 +29,10 @@ type Stats = {
   attempted: number;
   latencyRtt: number | null;
   throughput: number;
+};
+
+type TrafficStats = {
+  stats: Stats;
 };
 
 type Port = {
@@ -42,14 +55,14 @@ type Port = {
 type WorkloadResource = {
   uuid: string;
   workloadName: string;
+  connected_workload_status: string;
+  policy_setting_badge: boolean;
   kind: string;
+  usage: number;
   from: Relation[];
   to: Relation[];
-  // stats: Stats;
-  // ports: {
-  //   open: Port[];
-  //   closed: Port[];
-  // };
+  inbound: TrafficStats;
+  outbound: TrafficStats;
 };
 
 type WorkloadsData = {
@@ -72,6 +85,16 @@ function wasmListWorkloads(namespace: string): Promise<WorkloadsData> {
       reject(error);
     }
   });
+}
+
+function getRelationStatus(status: number): string {
+  switch(status) {
+    case 0: return "Active";
+    case 1: return "Idle";
+    case 2: return "Error";
+    case 3: return "Attempted";
+    default: return `Unknown (${status})`;
+  }
 }
 
 const Workloads = () => {
@@ -99,27 +122,114 @@ const Workloads = () => {
   if (loading) return <p>Loading workloads for {namespaceName}...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  const prettyRawData = rawData ? JSON.stringify(JSON.parse(rawData), null, 2) : "";
-
   return (
     <div>
       <h2>Workloads for Namespace: {namespaceName}</h2>
       {workloads.map((w) => (
         <div key={w.uuid} style={{ border: '1px solid #ccc', marginBottom: '1rem', padding: '1rem' }}>
-          <p><strong>UUID:</strong> {w.uuid}</p>
-          <p><strong>Name:</strong> {w.workloadName}</p>
-          <p><strong>Kind:</strong> {w.kind}</p>
-          <p><strong>From:</strong> {JSON.stringify(w.from)}</p>
-          <p><strong>To:</strong> {JSON.stringify(w.to)}</p>
-          <p><strong>Stats:</strong> {JSON.stringify(w.stats)}</p>
-          <Link to={`/namespace/${namespaceName}/workload/${w.uuid}/ports`}>
-            View Port Details
-          </Link>
+          <h3>{w.workloadName}</h3>
+          <div>
+            <p><strong>UUID:</strong> {w.uuid}</p>
+            <p><strong>Kind:</strong> {w.kind}</p>
+            <p><strong>Status:</strong> {w.connected_workload_status}</p>
+            <p><strong>CPU Usage:</strong> {(w.usage * 100).toFixed(1)}%</p>
+            
+            <h4>Inbound Connections:</h4>
+            {w.from.length > 0 ? (
+              <ul>
+                {w.from.map((relation, idx) => (
+                  <li key={`from-${idx}`}>
+                    {relation.workload ? (
+                      <>
+                        <strong>From External: </strong>
+                        <span style={{ color: '#0066cc' }}>
+                          {relation.workload.workloadName}
+                        </span> 
+                        <span style={{ color: '#666', fontSize: '0.9em' }}>
+                          ({relation.workload.namespace})
+                        </span>
+                        <span> - {getRelationStatus(relation.status)}</span>
+                      </>
+                    ) : (
+                      <>
+                        <strong>From: </strong>
+                        <span>{relation.workloadId}</span>
+                        <span> - {getRelationStatus(relation.status)}</span>
+                      </>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No inbound connections</p>
+            )}
+            
+            <h4>Outbound Connections:</h4>
+            {w.to.length > 0 ? (
+              <ul>
+                {w.to.map((relation, idx) => (
+                  <li key={`to-${idx}`}>
+                    {relation.workload ? (
+                      <>
+                        <strong>To External: </strong>
+                        <span style={{ color: '#0066cc' }}>
+                          {relation.workload.workloadName}
+                        </span>
+                        <span style={{ color: '#666', fontSize: '0.9em' }}>
+                          ({relation.workload.namespace})
+                        </span>
+                        <span> - {getRelationStatus(relation.status)}</span>
+                      </>
+                    ) : (
+                      <>
+                        <strong>To: </strong>
+                        <span>{relation.workloadId}</span>
+                        <span> - {getRelationStatus(relation.status)}</span>
+                      </>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No outbound connections</p>
+            )}
+
+            <h4>Traffic Statistics:</h4>
+            <div style={{ display: 'flex', gap: '20px' }}>
+              <div>
+                <h5>Inbound</h5>
+                <p>Active: {w.inbound.stats.active}</p>
+                <p>Unconnected: {w.inbound.stats.unconnected}</p>
+                <p>Idle: {w.inbound.stats.idle}</p>
+                <p>Error: {w.inbound.stats.error}</p>
+                <p>Latency: {w.inbound.stats.latencyRtt !== null ? `${w.inbound.stats.latencyRtt}ms` : 'N/A'}</p>
+                <p>Throughput: {w.inbound.stats.throughput.toFixed(2)} KB/s</p>
+              </div>
+              <div>
+                <h5>Outbound</h5>
+                <p>Active: {w.outbound.stats.active}</p>
+                <p>Unconnected: {w.outbound.stats.unconnected}</p>
+                <p>Idle: {w.outbound.stats.idle}</p>
+                <p>Error: {w.outbound.stats.error}</p>
+                <p>Latency: {w.outbound.stats.latencyRtt !== null ? `${w.outbound.stats.latencyRtt}ms` : 'N/A'}</p>
+                <p>Throughput: {w.outbound.stats.throughput.toFixed(2)} KB/s</p>
+              </div>
+            </div>
+
+            <Link to={`/namespace/${namespaceName}/workload/${w.uuid}/ports`}>
+              View Port Details
+            </Link>
+          </div>
         </div>
       ))}
       <Link to="/namespace">Back to Namespace List</Link>
-      <h3>Raw Output:</h3>
-      <pre>{prettyRawData}</pre>
+      
+      <details>
+        <summary>Raw Data</summary>
+        <pre style={{ maxHeight: '400px', overflow: 'auto' }}>
+          {JSON.stringify(JSON.parse(rawData), null, 2)}
+        </pre>
+      </details>
     </div>
   );
 };
