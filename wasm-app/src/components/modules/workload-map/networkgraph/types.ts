@@ -31,7 +31,8 @@ export type NodeData = {
   nodeSize: number;
   customLabel: string;
   kind?: WorkloadKind;
-  status?: WorkloadStatus;
+  connected_workload_status?: WorkloadStatus;
+  policy_setting_badge?: boolean;
   inbound?: {
     stats?: StatsType;
   };
@@ -69,6 +70,7 @@ export type CustomNode = Partial<Node> & {
   y: number;
   data?: NodeData;
   size: NodeSize;
+  edges?: CustomEdge[];
 };
 
 export type CustomNetwork = Network & {
@@ -110,6 +112,7 @@ export type DrawingOptions = {
   connectedNodes?: IdType[];
   filterPorts?: FilterPorts;
   portHover?: Port | null;
+  network?: CustomNetwork;
 };
 
 export type WorkloadConnector = {

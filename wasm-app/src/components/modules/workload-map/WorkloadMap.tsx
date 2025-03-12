@@ -57,11 +57,20 @@ export const WorkloadMap = () => {
     }, [] as EdgeData[]);
 
     const nodes = workloads.map<NodeData>((workload) => {
+      const cpuUsage = workload.usage;
+      let nodeSize = NodeSize.MEDIUM;
+      if (cpuUsage >= 0.7) {
+        nodeSize = NodeSize.BIG;
+      } else if (cpuUsage <= 0.3) {
+        nodeSize = NodeSize.SMALL;
+      } else {
+        nodeSize = NodeSize.MEDIUM;
+      }
       return {
-        // ...workload,
+        ...workload,
         id: workload.uuid,
         customLabel: workload.workloadName,
-        nodeSize: NodeSize.MEDIUM,
+        nodeSize: nodeSize,
         kind: workload.kind,
         inbound: {
           stats: workload.inbound.stats,

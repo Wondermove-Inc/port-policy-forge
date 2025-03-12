@@ -309,6 +309,7 @@ const handleAfterDrawing = (
     const networkNode = new NetworkNode(ctx, node, canvasImages, {
       connectedEdges: connectedEdges,
       connectedNodes: connectedNodes,
+      network,
       ...options,
     });
     networkNode.draw();

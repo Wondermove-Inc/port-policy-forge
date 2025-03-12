@@ -36,7 +36,10 @@ export class NetworkNode {
       this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
     }
     this.drawNodeBackground();
-    if (this.node.data?.status === WorkloadStatus.BEFORE_INITIAL_SETUP) {
+    if (
+      this.node.data?.connected_workload_status ===
+      WorkloadStatus.BEFORE_INITIAL_SETUP
+    ) {
       this.drawExclamationIcon();
     } else {
       this.drawNodePort();
@@ -61,6 +64,26 @@ export class NetworkNode {
       !!this.options.portHover && !this.options.portHover.isOpen;
     this.ctx.lineWidth = 2;
     const nodeSize = this.node?.data?.nodeSize || 0;
+
+    const nodes = this.options.network?.body.nodes;
+    let isNodeError = false;
+    const currentNodeId = this.options.hoverNodeId || this.options.activeNodeId;
+    if (currentNodeId && nodes) {
+      const activeNode = nodes[currentNodeId];
+      const activeEdges = activeNode?.edges;
+      if (activeEdges) {
+        for (const edge of activeEdges) {
+          if (
+            edge.from.id === activeNode.id &&
+            edge.data?.status === WorkloadPortStatus.ATTEMPT
+          ) {
+            if (edge.to.id === this.node.id) {
+              isNodeError = true;
+            }
+          }
+        }
+      }
+    }
 
     if (isHover || isActive || isActiveLastConnection) {
       if (isHover || isActiveLastConnection) {
@@ -97,7 +120,7 @@ export class NetworkNode {
         this.ctx.closePath();
         this.ctx.fill();
       }
-      if (isActiveLastConnection && isPortClosed) {
+      if ((isActiveLastConnection && isPortClosed) || isNodeError) {
         this.ctx.strokeStyle = color.stroke.error;
         this.ctx.fillStyle = color.fill.error;
       } else {
@@ -109,6 +132,11 @@ export class NetworkNode {
       this.ctx.strokeStyle = color.stroke.default;
     }
 
+    if (isNodeError) {
+      this.ctx.strokeStyle = color.stroke.error;
+      this.ctx.fillStyle = color.fill.error;
+    }
+
     this.ctx.beginPath();
     this.ctx.arc(this.node.x, this.node.y, nodeSize / 2, 0, 2 * Math.PI, false);
     this.ctx.closePath();
@@ -118,9 +146,13 @@ export class NetworkNode {
 
   private drawExclamationIcon() {
     this.ctx.beginPath();
+    let x = this.node.x + 14;
+    if (this.node.data?.nodeSize === NodeSize.SMALL) {
+      x -= 8;
+    }
     this.ctx.drawImage(
       this.canvasImages.exclamation,
-      this.node.x + 14,
+      x,
       this.node.y - (this.node?.data?.nodeSize || 0) / 2 - 1,
       EXCLAMATION_SIZE,
       EXCLAMATION_SIZE,
@@ -164,8 +196,10 @@ export class NetworkNode {
     const imageToTextSpacing = 2;
 
     let labelX = this.node.x - textWidth / 2 - imageToTextSpacing;
-
-    if (this.node.data?.status === WorkloadStatus.COMPLETE_INITIAL_SETUP) {
+    if (
+      this.node.data?.connected_workload_status ===
+      WorkloadStatus.COMPLETE_INITIAL_SETUP
+    ) {
       labelX += protectedAddImageWidth / 2;
     }
     this.ctx.beginPath();
@@ -175,8 +209,7 @@ export class NetworkNode {
       this.node.y + nodeSize / 2 + 15,
       textWidth,
     );
-
-    if (this.node.data?.status === WorkloadStatus.COMPLETE_INITIAL_SETUP) {
+    if (this.node.data?.policy_setting_badge) {
       this.ctx.drawImage(
         this.canvasImages.protected,
         this.node.x - textWidth / 2 - protectedAddImageWidth,
@@ -217,6 +250,9 @@ export class NetworkNode {
       let x = this.node.x + ARC_RADIUS + 14;
       if (ports.length !== 1) {
         x = this.node.x + (ARC_RADIUS * 2 - 5) * i + 14;
+      }
+      if (this.node.data?.nodeSize === NodeSize.SMALL) {
+        x -= 8;
       }
       const y = this.node.y - (this.node?.data?.nodeSize || 0) / 2 + 10 - 1;
       this.ctx.fillStyle =

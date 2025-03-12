@@ -11,6 +11,8 @@ export type WorkloadResource = {
   kind: WorkloadKind;
   from: Relation[];
   to: Relation[];
+  usage: number;
+  policy_setting_badge: boolean;
   inbound: {
     stats: StatsType;
   };
