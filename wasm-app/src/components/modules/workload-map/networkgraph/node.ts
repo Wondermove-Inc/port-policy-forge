@@ -212,8 +212,8 @@ export class NetworkNode {
     if (this.node.data?.policy_setting_badge) {
       this.ctx.drawImage(
         this.canvasImages.protected,
-        this.node.x - textWidth / 2 - protectedAddImageWidth,
-        this.node.y + nodeSize / 2 + 6,
+        labelX - 13,
+        this.node.y + nodeSize / 2 + 6 - 1,
       );
     }
 
