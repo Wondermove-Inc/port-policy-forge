@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 import { Box, FormControlLabel, RadioGroup, TextField } from "@mui/material";
 import {
@@ -41,7 +41,7 @@ export const ModalPortSetting = ({
     control,
     watch,
     setValue,
-    formState: { errors, isValid },
+    formState: { errors, dirtyFields },
   } = form;
 
   const { fields, append, remove } = useFieldArray({
@@ -51,7 +51,11 @@ export const ModalPortSetting = ({
 
   const handleAddSource = () => append(INITIAL_ACCESS_SOURCE);
 
-  const [allowFullAccess] = watch(["allowFullAccess"]);
+  const [allowFullAccess, portSpec, accessSources] = watch([
+    "allowFullAccess",
+    "portSpec",
+    "accessSources",
+  ]);
 
   useEffect(() => {
     if (!allowFullAccess) {
@@ -59,6 +63,10 @@ export const ModalPortSetting = ({
       setValue("accessSources", [INITIAL_ACCESS_SOURCE]);
     }
   }, [allowFullAccess]);
+
+  const isCompleted = useMemo(() => {
+    return !!portSpec && accessSources?.every((item) => !!item.ip);
+  }, [dirtyFields.accessSources, dirtyFields.accessSources]);
 
   return (
     <Modal width={646} open={isOpen} onClose={handleClose}>
@@ -92,8 +100,10 @@ export const ModalPortSetting = ({
                     {...field}
                     sx={{ width: "100% !important" }}
                     label="Port number"
-                    error={!!errors.portSpec}
-                    helperText={errors.portSpec?.message}
+                    error={!!errors.portSpec && dirtyFields.portSpec}
+                    helperText={
+                      dirtyFields.portSpec ? errors.portSpec?.message : ""
+                    }
                   />
                 )}
               />
@@ -189,9 +199,14 @@ export const ModalPortSetting = ({
                                 sx={{
                                   flex: 1,
                                 }}
-                                error={!!errors.accessSources?.[index]?.ip}
+                                error={
+                                  !!errors.accessSources?.[index]?.ip &&
+                                  dirtyFields.accessSources?.[index]?.ip
+                                }
                                 helperText={
-                                  errors.accessSources?.[index]?.ip?.message
+                                  dirtyFields.accessSources?.[index]?.ip
+                                    ? errors.accessSources?.[index]?.ip?.message
+                                    : ""
                                 }
                               />
                             )}
@@ -267,7 +282,7 @@ export const ModalPortSetting = ({
         confirmButtonTitle="Apply"
         onClickCancelButton={handleClose}
         onClickConfirmButton={form.handleSubmit(handleSubmit)}
-        disabled={!isValid}
+        disabled={!isCompleted}
       />
     </Modal>
   );

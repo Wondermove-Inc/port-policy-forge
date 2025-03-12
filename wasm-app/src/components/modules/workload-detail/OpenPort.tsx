@@ -66,7 +66,7 @@ export const OpenPort = ({
 
   const form = useForm<PortAccessSettingForm>({
     defaultValues,
-    mode: "onChange",
+    mode: "onSubmit",
     resolver: yupResolver(openPortSchema(portDirection)),
   });
 
