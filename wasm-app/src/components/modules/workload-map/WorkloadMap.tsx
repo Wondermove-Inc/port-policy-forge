@@ -105,6 +105,12 @@ export const WorkloadMap = () => {
   useEffect(() => {
     if (!detailDrawer.visible) {
       setActiveNodeId("");
+      network?.fit({
+        animation: {
+          duration: 1000,
+          easingFunction: "easeInOutQuad",
+        },
+      });
     }
   }, [detailDrawer.visible]);
 
