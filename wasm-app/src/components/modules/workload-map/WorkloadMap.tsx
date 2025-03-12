@@ -14,7 +14,7 @@ import {
 } from "@/components/modules/workload-map/networkgraph/types";
 import { ViewFilter } from "@/components/modules/workload-map/ViewFilter";
 import { useDisclosure } from "@/hooks/useDisclosure";
-import { FilterPorts } from "@/models";
+import { FilterPorts, WorkloadKind } from "@/models";
 import { wasmListWorkloads } from "@/services/listWorkloads";
 import { useCommonStore } from "@/store";
 
@@ -67,7 +67,7 @@ export const WorkloadMap = () => {
       return [...pre, ...fromEdges, ...toEdges] as EdgeData[];
     }, [] as EdgeData[]);
 
-    const nodes = workloads.map<NodeData>((workload) => {
+    const nodes = workloads.reduce((preWorkloads, workload) => {
       const cpuUsage = workload.usage;
       let nodeSize = NodeSize.MEDIUM;
       if (cpuUsage >= 0.7) {
@@ -77,7 +77,7 @@ export const WorkloadMap = () => {
       } else {
         nodeSize = NodeSize.MEDIUM;
       }
-      return {
+      preWorkloads.push({
         ...workload,
         id: workload.uuid,
         customLabel: workload.workloadName,
@@ -89,12 +89,19 @@ export const WorkloadMap = () => {
         outbound: {
           stats: workload.outbound.stats,
         },
-        stats: {
-          active: 10,
-          unconnected: 10,
-        },
-      };
-    });
+      })
+      for (const w of [...workload.from || [], ...workload.to || []]) {
+        if (!workloads.map(workload => workload.uuid).includes(w.workloadId)) {
+          preWorkloads.push({
+            id: w.workloadId,
+            customLabel: "external namespace",
+            nodeSize: NodeSize.MEDIUM,
+            kind: WorkloadKind.EXTERNAL,
+          })
+        }
+      }
+      return preWorkloads;
+    }, [] as NodeData[]);
     setEdges(edges);
     setNodes(nodes);
     setNetworkGraphRenderKey(new Date().getTime());
