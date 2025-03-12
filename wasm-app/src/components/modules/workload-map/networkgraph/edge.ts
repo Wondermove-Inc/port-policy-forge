@@ -95,9 +95,13 @@ export class NetworkEdge {
       const style = EDGE_STYLES[styleKey] || EDGE_STYLES.DEFAULT;
 
       this.ctx.strokeStyle = style.strokeStyle;
-      this.ctx.setLineDash(style.lineDash);
     } else {
       this.ctx.strokeStyle = color.stroke.default;
+    }
+
+    if (this.edge.data?.status === WorkloadPortStatus.ATTEMPT) {
+      this.ctx.setLineDash([2, 2]);
+    } else {
       this.ctx.setLineDash([0, 0]);
     }
 

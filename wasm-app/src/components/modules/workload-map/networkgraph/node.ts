@@ -74,10 +74,10 @@ export class NetworkNode {
       if (activeEdges) {
         for (const edge of activeEdges) {
           if (
-            edge.from.id === activeNode.id &&
+            edge.to.id === activeNode.id &&
             edge.data?.status === WorkloadPortStatus.ATTEMPT
           ) {
-            if (edge.to.id === this.node.id) {
+            if (edge.from.id === this.node.id) {
               isNodeError = true;
             }
           }
