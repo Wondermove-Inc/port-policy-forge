@@ -58,8 +58,6 @@ const NetworkGraph = ({
     nodes.forEach((node) => {
       (node as NodeData & NetworkNodeData).size = node.nodeSize / 2;
       (node as NodeData & NetworkNodeData).color = "transparent";
-      (node as NodeData & NetworkNodeData).x = 100;
-      (node as NodeData & NetworkNodeData).y = 100;
     });
 
     const data = { nodes: nodes, edges };

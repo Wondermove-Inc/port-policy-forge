@@ -35,6 +35,9 @@ export const createNetworkOptions = () => {
         avoidOverlap: 1,
       },
     },
+    layout: {
+      randomSeed: 42,
+    },
   };
 };
 
