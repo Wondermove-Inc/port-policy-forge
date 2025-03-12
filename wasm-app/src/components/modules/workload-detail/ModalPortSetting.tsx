@@ -66,7 +66,7 @@ export const ModalPortSetting = ({
 
   const isCompleted = useMemo(() => {
     return !!portSpec && accessSources?.every((item) => !!item.ip);
-  }, [dirtyFields.accessSources, dirtyFields.accessSources]);
+  }, [dirtyFields.portSpec, dirtyFields.accessSources]);
 
   return (
     <Modal width={646} open={isOpen} onClose={handleClose}>
