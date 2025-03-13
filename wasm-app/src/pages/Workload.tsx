@@ -1,5 +1,8 @@
-import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+/* eslint-disable  @typescript-eslint/no-unused-vars */
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from "react";
+
+import { useParams, Link } from "react-router-dom";
 
 declare global {
   interface Window {
@@ -121,6 +124,10 @@ const Workloads = () => {
 
   if (loading) return <p>Loading workloads for {namespaceName}...</p>;
   if (error) return <p>Error: {error}</p>;
+
+  const prettyRawData = rawData
+    ? JSON.stringify(JSON.parse(rawData), null, 2)
+    : "";
 
   return (
     <div>

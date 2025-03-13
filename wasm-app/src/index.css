@@ -66,3 +66,39 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 } */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#root > .MuiBox-root {
+  display: flex;
+  flex-direction: column;
+}
+
+.vis-network {
+  background-color: #191F2B;
+}
+
+.MuiFormLabel-root.MuiFormLabel-filled, .MuiInputLabel-root.Mui-focused {
+  background-color: #1E2533 !important;
+}
+
+.MuiTextField-root label.Mui-error {
+  color: #FFFFFFE5;
+}
+
+.MuiInputBase-input.MuiOutlinedInput-input.MuiInputBase-inputMultiline {
+  height: 60px !important;
+  min-height: 60px !important;
+}

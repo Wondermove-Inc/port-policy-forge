@@ -357,7 +357,7 @@ const WorkloadDetailComponent: React.FC = () => {
       accessPolicy: outboundAccessPolicy,
       sources: outboundSources,
     };
-
+    
     wasmOpenPort(request)
       .then(() => {
         loadWorkloadDetail(workloadId);

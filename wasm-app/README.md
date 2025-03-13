@@ -10,5 +10,6 @@ Currently, two official plugins are available:
 ## Getting Started
 
 ```bash
-$ npm install && npm run dev
+$ pmpm install && pnpm run dev
 ```
+**Note:** Please use pnpm for the package manager
