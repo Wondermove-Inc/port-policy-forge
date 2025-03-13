@@ -3,11 +3,13 @@ import { StatsType, WorkloadKind } from "@/models";
 type Relation = {
   workloadId: string;
   status: number;
+  workload?: WorkloadResource;
 };
 
 export type WorkloadResource = {
   uuid: string;
   workloadName: string;
+  namespace?: string;
   kind: WorkloadKind;
   from: Relation[];
   to: Relation[];

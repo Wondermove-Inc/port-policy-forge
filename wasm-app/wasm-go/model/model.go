@@ -40,7 +40,7 @@ type WorkloadKind string
 
 const (
 	WORKLOAD_KIND_DEPLOYMENT  WorkloadKind = "deployment"
-	WORKLOAD_KIND_DEMONSET    WorkloadKind = "demonset"
+	WORKLOAD_KIND_DAEMONSET   WorkloadKind = "daemonset"
 	WORKLOAD_KIND_REPLICASET  WorkloadKind = "replicaset"
 	WORKLOAD_KIND_CRONJOB     WorkloadKind = "cronjob"
 	WORKLOAD_KIND_JOB         WorkloadKind = "job"
@@ -63,8 +63,16 @@ type Workload struct {
 }
 
 type Relation struct {
-	WorkloadId string `json:"workloadId"`
-	Status     int    `json:"status"`
+	WorkloadId string          `json:"workloadId"`
+	Status     int             `json:"status"`
+	Workload   *InlineWorkload `json:"workload,omitempty"`
+}
+
+type InlineWorkload struct {
+	UUID         string       `json:"uuid"`
+	WorkloadName string       `json:"workloadName"`
+	Namespace    string       `json:"namespace"`
+	Kind         WorkloadKind `json:"kind"`
 }
 
 type TrafficStats struct {

@@ -87,8 +87,8 @@ export const getWorkloadKindLabel = (kind: string) => {
   switch (kind) {
     case WorkloadKind.DEPLOYMENT:
       return "Deployment";
-    case WorkloadKind.DEMONSET:
-      return "Demonset";
+    case WorkloadKind.DAEMONSET:
+      return "Daemonset";
     case WorkloadKind.REPLICASET:
       return "Replicaset";
     case WorkloadKind.CRONJOB:

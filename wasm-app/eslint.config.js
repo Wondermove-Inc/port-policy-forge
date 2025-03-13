@@ -100,7 +100,7 @@ export default [
               "networkgraph",
               "milli",
               "replicaset",
-              "demonset",
+              "daemonset",
               "statefulset",
               "FSDN",
             ],

@@ -30,6 +30,7 @@ export const color = {
 export const EXCLAMATION_SIZE = 20;
 export const GLOBAL_ALPHA = 1.0;
 export const DISABLED_GLOBAL_ALPHA = 0.2;
+export const EXTERNAL_GLOBAL_ALPHA = 0.5;
 
 export const ARROW_SIZE = 16;
 export const LINE_WIDTH = 1;

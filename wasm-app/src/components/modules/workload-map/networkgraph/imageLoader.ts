@@ -64,7 +64,7 @@ export class ImageLoader {
       exclamation: images[5],
       kind: {
         deployment: images[6],
-        demonset: images[7],
+        daemonset: images[7],
         replicaset: images[8],
         cronjob: images[9],
         job: images[10],

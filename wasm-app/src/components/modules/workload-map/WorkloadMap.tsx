@@ -22,7 +22,7 @@ export const WorkloadMap = () => {
   const [edges, setEdges] = useState<EdgeData[]>([]);
   const [nodes, setNodes] = useState<NodeData[]>([]);
   const [networkGraphRenderKey, setNetworkGraphRenderKey] = useState<number>(
-    new Date().getTime(),
+    new Date().getTime()
   );
   const {
     workloads: storeWorkloads,
@@ -66,7 +66,6 @@ export const WorkloadMap = () => {
 
       return [...pre, ...fromEdges, ...toEdges] as EdgeData[];
     }, [] as EdgeData[]);
-
     const nodes = workloads.reduce((preWorkloads, workload) => {
       const cpuUsage = workload.usage;
       let nodeSize = NodeSize.MEDIUM;
@@ -89,19 +88,25 @@ export const WorkloadMap = () => {
         outbound: {
           stats: workload.outbound.stats,
         },
-      })
-      for (const w of [...workload.from || [], ...workload.to || []]) {
-        if (!workloads.map(workload => workload.uuid).includes(w.workloadId)) {
+      });
+      for (const w of [...(workload.from || []), ...(workload.to || [])]) {
+        if (
+          w.workload &&
+          !workloads.map((workload) => workload.uuid).includes(w.workload.uuid)
+        ) {
           preWorkloads.push({
-            id: w.workloadId,
-            customLabel: "external namespace",
+            id: w.workload.uuid,
+            customLabel: w.workload?.workloadName as string,
             nodeSize: NodeSize.MEDIUM,
-            kind: WorkloadKind.EXTERNAL,
-          })
+            kind: w.workload?.kind || WorkloadKind.EXTERNAL,
+            externalNamespace: w.workload?.namespace || "",
+            isExternalNamespace: true,
+          });
         }
       }
       return preWorkloads;
     }, [] as NodeData[]);
+
     setEdges(edges);
     setNodes(nodes);
     setNetworkGraphRenderKey(new Date().getTime());
@@ -180,7 +185,7 @@ export const WorkloadMap = () => {
     // implement debounce function here ...
     wasmListWorkloads(selectedNamespace).then((val) => {
       const filteredWorkloads = val.result.filter((workload) =>
-        workload.workloadName.includes(keyword),
+        workload.workloadName.includes(keyword)
       );
       setWorkloads(filteredWorkloads);
     });

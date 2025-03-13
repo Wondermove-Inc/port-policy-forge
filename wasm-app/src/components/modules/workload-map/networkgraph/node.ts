@@ -2,6 +2,7 @@ import {
   color,
   DISABLED_GLOBAL_ALPHA,
   EXCLAMATION_SIZE,
+  EXTERNAL_GLOBAL_ALPHA,
   GLOBAL_ALPHA,
 } from "./constants";
 import {
@@ -23,7 +24,7 @@ export class NetworkNode {
     ctx: CanvasRenderingContext2D,
     node: CustomNode,
     canvasImages: CanvasImage,
-    options: DrawingOptions,
+    options: DrawingOptions
   ) {
     this.ctx = ctx;
     this.node = node;
@@ -34,6 +35,10 @@ export class NetworkNode {
   public draw() {
     if (this.isDisabled()) {
       this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
+    } else {
+      if (this.isExternalNamespace()) {
+        this.ctx.globalAlpha = EXTERNAL_GLOBAL_ALPHA;
+      }
     }
     this.drawNode();
     if (
@@ -44,12 +49,15 @@ export class NetworkNode {
     } else {
       this.drawNodeStatsBadge();
     }
+    if (!this.isDisabled() && this.isExternalNamespace()) {
+      this.ctx.globalAlpha = EXTERNAL_GLOBAL_ALPHA;
+    }
     this.drawNodeKind();
-    this.drawNodeLabel();
-
-    if (this.isDisabled()) {
+    if (!this.isDisabled()) {
       this.ctx.globalAlpha = GLOBAL_ALPHA;
     }
+    this.drawNodeLabel();
+    this.ctx.globalAlpha = GLOBAL_ALPHA;
   }
 
   private drawNode() {
@@ -99,7 +107,7 @@ export class NetworkNode {
           nodeSize / 2 + 24,
           0,
           2 * Math.PI,
-          false,
+          false
         );
         this.ctx.closePath();
         this.ctx.fill();
@@ -115,7 +123,7 @@ export class NetworkNode {
           nodeSize / 2 + 12,
           0,
           2 * Math.PI,
-          false,
+          false
         );
         this.ctx.closePath();
         this.ctx.fill();
@@ -155,7 +163,7 @@ export class NetworkNode {
       x,
       this.node.y - (this.node?.data?.nodeSize || 0) / 2 - 1,
       EXCLAMATION_SIZE,
-      EXCLAMATION_SIZE,
+      EXCLAMATION_SIZE
     );
     this.ctx.closePath();
   }
@@ -175,7 +183,7 @@ export class NetworkNode {
         this.node.x - deploymentIconSize / 2,
         this.node.y - deploymentIconSize / 2,
         deploymentIconSize,
-        deploymentIconSize,
+        deploymentIconSize
       );
     }
 
@@ -188,9 +196,11 @@ export class NetworkNode {
     this.ctx.fillStyle = color.white;
     this.ctx.textAlign = "left";
     this.ctx.textBaseline = "alphabetic";
-    const label = this.node?.data?.customLabel;
+    const label = this.node?.data?.customLabel as string;
+    const namespaceLabel = this.node.data?.externalNamespace as string;
 
-    const textMetrics = this.ctx.measureText(label as string);
+    const textMetrics = this.ctx.measureText(label);
+    const namespaceMetrics = this.ctx.measureText(namespaceLabel);
     const textWidth = textMetrics.width;
     const protectedAddImageWidth = this.canvasImages.protected.width;
     const imageToTextSpacing = 2;
@@ -207,13 +217,25 @@ export class NetworkNode {
       label as string,
       labelX,
       this.node.y + nodeSize / 2 + 15,
-      textWidth,
+      textWidth
     );
     if (this.node.data?.policy_setting_badge) {
       this.ctx.drawImage(
         this.canvasImages.protected,
         labelX - 13,
-        this.node.y + nodeSize / 2 + 6 - 1,
+        this.node.y + nodeSize / 2 + 6 - 1
+      );
+    }
+
+    if (this.node.data?.externalNamespace) {
+      if (!this.isDisabled()) {
+        this.ctx.globalAlpha = 0.78;
+      }
+      this.ctx.fillText(
+        namespaceLabel,
+        this.node.x - namespaceMetrics.width / 2,
+        this.node.y + nodeSize / 2 + 15 + 15,
+        namespaceMetrics.width
       );
     }
 
@@ -300,5 +322,9 @@ export class NetworkNode {
       !this.options?.connectedNodes?.includes(this.node.id) &&
       nodeId !== this.node.id
     );
+  }
+
+  private isExternalNamespace() {
+    return this.node.data?.isExternalNamespace;
   }
 }

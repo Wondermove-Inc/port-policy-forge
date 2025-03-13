@@ -30,6 +30,8 @@ export type NodeData = {
   id: string;
   nodeSize: number;
   customLabel: string;
+  externalNamespace?: string;
+  isExternalNamespace?: boolean;
   kind?: WorkloadKind;
   connected_workload_status?: WorkloadStatus;
   policy_setting_badge?: boolean;
@@ -93,7 +95,7 @@ export type CanvasImage = {
   exclamation: HTMLImageElement;
   kind: {
     deployment: HTMLImageElement;
-    demonset: HTMLImageElement;
+    daemonset: HTMLImageElement;
     replicaset: HTMLImageElement;
     cronjob: HTMLImageElement;
     job: HTMLImageElement;

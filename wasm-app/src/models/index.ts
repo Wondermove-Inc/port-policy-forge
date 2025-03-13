@@ -93,7 +93,7 @@ export const STATUS_MAP: Record<number, Stats> = {
 
 export enum WorkloadKind {
   DEPLOYMENT = "deployment",
-  DEMONSET = "demonset",
+  DAEMONSET = "daemonset",
   REPLICASET = "replicaset",
   CRONJOB = "cronjob",
   JOB = "job",

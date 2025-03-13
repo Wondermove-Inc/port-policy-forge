@@ -72,3 +72,23 @@ func FindPort(group model.PortDetailGroup, singlePort int) (port *model.Port, id
 	}
 	return nil, -1
 }
+
+func DeepCopyWorkloads(src []model.Workload) []model.Workload {
+	dst := make([]model.Workload, len(src))
+	for i, w := range src {
+		dst[i] = w
+
+		// From 관계 복사
+		dst[i].From = make([]model.Relation, len(w.From))
+		for j, rel := range w.From {
+			dst[i].From[j] = rel
+		}
+
+		// To 관계 복사
+		dst[i].To = make([]model.Relation, len(w.To))
+		for j, rel := range w.To {
+			dst[i].To[j] = rel
+		}
+	}
+	return dst
+}
