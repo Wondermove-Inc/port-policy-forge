@@ -90,6 +90,10 @@ html, body {
   background-color: #191F2B;
 }
 
+.vis-network-animation .vis-network {
+  background-color: transparent;
+}
+
 .MuiFormLabel-root.MuiFormLabel-filled, .MuiInputLabel-root.Mui-focused {
   background-color: #1E2533 !important;
 }

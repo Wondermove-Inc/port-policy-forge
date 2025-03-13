@@ -232,6 +232,27 @@ export class NetworkEdge {
     this.ctx.fill();
   }
 
+  public drawEdgeAnimation(speed: number) {
+    const toSize = this.edge.to?.data?.nodeSize;
+    const fromSize = this.edge.from?.data?.nodeSize;
+    const arrowOffset = this.getArrowOffset(toSize) + speed;
+    const fromOffset = 175 - this.getArrowOffset(fromSize);
+    const maxOffset = Math.min(arrowOffset, fromOffset);
+    const arrowX = this.edge.to.x - maxOffset * Math.cos(this.coords.angle);
+    const arrowY = this.edge.to.y - maxOffset * Math.sin(this.coords.angle);
+    this.ctx.save();
+    this.ctx.translate(arrowX, arrowY);
+    this.ctx.rotate(this.coords.angle + Math.PI / 2);
+    this.ctx.beginPath()
+    const rectWidth = 10;
+    this.ctx.rect(-rectWidth / 2, -rectWidth / 2, rectWidth, rectWidth);
+    this.ctx.fillStyle = "red";
+    this.ctx.fill()
+    this.ctx.closePath()
+    this.ctx.restore();
+    this.ctx.globalAlpha = GLOBAL_ALPHA;
+  }
+
   private drawEdgeArrow(isActiveEdge?: boolean, disabled?: boolean) {
     let arrowKey: keyof CanvasImage = "arrow";
     if (disabled) {

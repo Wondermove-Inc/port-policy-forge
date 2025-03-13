@@ -1,16 +1,14 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
-import { IdType, Network, Position } from "vis-network";
+import { Network, Position } from "vis-network";
 
 import { NetworkEdge } from "./edge";
-import { ImageLoader } from "./imageLoader";
-import { NetworkNode } from "./node";
 import {
-  CanvasImage,
   EdgeData,
   CustomNetwork,
   NodeData,
   NetworkNodeData,
+  CanvasImage,
 } from "./types";
 import { calculatePositionAlongEdge } from "./utils";
 
@@ -26,30 +24,25 @@ export type NetworkGraphProps = {
   onEdgeDisconnected?: (edgeId: string) => void;
   onNodeSelected?: (nodeId: string) => void;
   setNetwork: (n: CustomNetwork) => void;
+  onMove: (options: { scale?: number; position?: Position }) => void;
 };
 
-const NetworkGraph = ({
+const AnimationNetworkGraph = ({
   edges,
   nodes,
-  activeNodeId,
   filterPorts,
   portHover,
   onNodeSelected,
   onEdgeDisconnected,
   setNetwork,
+  onMove,
 }: NetworkGraphProps) => {
+  const speed = useRef(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [canvasImages, setCanvasImages] = useState<CanvasImage>();
-  const [activeEdgeId, setActiveEdgeId] = useState("");
   const hoverNodeId = useRef<string>("");
   const networkRef = useRef<CustomNetwork>(null);
   useEffect(() => {
-    if (
-      !canvasImages ||
-      !containerRef.current ||
-      edges.length === 0 ||
-      nodes.length === 0
-    ) {
+    if (!containerRef.current || edges.length === 0 || nodes.length === 0) {
       return;
     }
 
@@ -57,7 +50,6 @@ const NetworkGraph = ({
       (node as NodeData & NetworkNodeData).size = node.nodeSize / 2;
       (node as NodeData & NetworkNodeData).color = "transparent";
     });
-
     const data = { nodes: nodes, edges };
     if (!networkRef.current) {
       networkRef.current = new Network(
@@ -65,42 +57,37 @@ const NetworkGraph = ({
         data,
         networkOptions
       ) as CustomNetwork;
-      setNetwork(networkRef.current);
-    }
-    if (activeNodeId) {
-      networkRef.current.off("hoverNode");
-      networkRef.current.off("afterDrawing");
-      networkRef.current.off("blurNode");
-      networkRef.current.off("click");
-      hoverNodeId.current = "";
     }
 
-    draw();
     networkRef.current.on("hoverNode", function (params) {
       document.body.style.cursor = "pointer";
-      setActiveEdgeId("");
-      if (activeNodeId) {
-        return;
-      }
       hoverNodeId.current = params.node;
     });
 
     networkRef.current.on("blurNode", function () {
       document.body.style.cursor = "auto";
-      if (activeNodeId) {
-        return;
-      }
-      hoverNodeId.current = "";
     });
 
     networkRef.current.on("hoverEdge", (params) => {
-      setActiveEdgeId(params.edge as string);
       document.body.style.cursor = "pointer";
     });
 
     networkRef.current.on("blurEdge", () => {
-      setActiveEdgeId("");
       document.body.style.cursor = "auto";
+    });
+
+    networkRef.current.on("zoom", () => {
+      onMove({
+        scale: networkRef.current?.getScale(),
+        position: networkRef.current?.getViewPosition(),
+      });
+    });
+
+    networkRef.current.on("dragging", () => {
+      onMove({
+        scale: networkRef.current?.getScale(),
+        position: networkRef.current?.getViewPosition(),
+      });
     });
 
     networkRef.current.on("click", function (properties) {
@@ -144,38 +131,21 @@ const NetworkGraph = ({
       }
     });
 
+    setNetwork(networkRef.current);
+    const animationId = requestAnimationFrame(animation);
+
     return () => {
       networkRef.current?.off("hoverNode");
       networkRef.current?.off("afterDrawing");
       networkRef.current?.off("blurNode");
       networkRef.current?.off("click");
+      cancelAnimationFrame(animationId);
     };
-  }, [
-    canvasImages,
-    edges,
-    nodes,
-    activeNodeId,
-    activeEdgeId,
-    filterPorts,
-    portHover,
-    setNetwork,
-  ]);
+  }, [edges, nodes, setNetwork]);
 
-  const draw = useCallback(() => {
-    if (!canvasImages) {
-      return;
-    }
+  const draw = () => {
     networkRef.current?.off("afterDrawing");
     networkRef.current?.on("afterDrawing", (ctx: CanvasRenderingContext2D) => {
-      const selectedNodeId = (hoverNodeId.current || activeNodeId) as string;
-      const connectedEdges = selectedNodeId
-        ? networkRef.current?.getConnectedEdges(selectedNodeId)
-        : [];
-      const connectedNodes = (
-        selectedNodeId
-          ? networkRef.current?.getConnectedNodes(selectedNodeId)
-          : []
-      ) as IdType[];
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
       const networkEdges = networkRef.current?.body.edges;
       const networkNodes = networkRef.current?.body.nodes;
@@ -193,53 +163,41 @@ const NetworkGraph = ({
       }
       for (const edgeId in networkEdges) {
         const edge = networkEdges[edgeId];
-        const networkEdge = new NetworkEdge(ctx, edge, canvasImages, {
-          connectedEdges: connectedEdges,
-          activeEdgeId,
-          activeNodeId,
-          connectedNodes,
+        const networkEdge = new NetworkEdge(ctx, edge, {} as CanvasImage, {
           filterPorts,
           hoverNodeId: hoverNodeId.current,
           network: networkRef.current as CustomNetwork,
           portHover,
         });
-        networkEdge.draw();
-      }
-
-      for (const nodeId in networkNodes) {
-        const node = networkNodes[nodeId];
-        const networkNode = new NetworkNode(ctx, node, canvasImages, {
-          connectedEdges: connectedEdges,
-          activeEdgeId,
-          activeNodeId,
-          connectedNodes,
-          filterPorts,
-          hoverNodeId: hoverNodeId.current,
-          network: networkRef.current as CustomNetwork,
-          portHover,
-        });
-        networkNode.draw();
+        networkEdge.drawEdgeAnimation(speed.current);
       }
     });
     networkRef.current?.redraw();
-  }, [
-    canvasImages,
-    edges,
-    nodes,
-    activeNodeId,
-    activeEdgeId,
-    filterPorts,
-    portHover,
-  ]);
+  };
 
-  useEffect(() => {
-    const imageLoader = new ImageLoader();
-    imageLoader.load().then((images) => {
-      setCanvasImages(images);
-    });
-  }, []);
+  const animation = () => {
+    speed.current += 1;
+    if (speed.current >= 110) {
+      speed.current = 0;
+    }
+    draw();
+    requestAnimationFrame(animation);
+    // setTimeout(() => requestAnimationFrame(animation), 10);
+  };
 
-  return <div ref={containerRef} style={{ width: "100%", height: "100%" }} />;
+  return (
+    <div
+      className="vis-network-animation"
+      ref={containerRef}
+      style={{
+        width: "100%",
+        height: "100%",
+        position: "absolute",
+        top: 0,
+        left: 0,
+      }}
+    />
+  );
 };
 
-export default NetworkGraph;
+export default AnimationNetworkGraph;
