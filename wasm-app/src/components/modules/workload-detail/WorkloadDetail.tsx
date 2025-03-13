@@ -130,7 +130,7 @@ export const WorkloadDetail = ({
         )(workloadDetail),
       },
       ports: {
-        open: workloadDetail[direction].ports.open.map((el) => ({
+        open: (workloadDetail[direction].ports.open || []).map((el) => ({
           ...el,
           portNumberLabel: getPortNumberLabel({
             isRange: el.isRange,
@@ -146,7 +146,7 @@ export const WorkloadDetail = ({
           lastConnectionLog: formatter("lastConnectionLog")(el),
           lastConnectionEndpoint: formatter("lastConnectionEndpoint")(el),
         })),
-        closed: workloadDetail[direction].ports.closed.map((el) => ({
+        closed: (workloadDetail[direction].ports.closed || []).map((el) => ({
           ...el,
           portNumberLabel: getPortNumberLabel({
             isRange: el.isRange,
