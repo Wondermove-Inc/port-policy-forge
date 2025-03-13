@@ -35,14 +35,14 @@ export class NetworkNode {
     if (this.isDisabled()) {
       this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
     }
-    this.drawNodeBackground();
+    this.drawNode();
     if (
       this.node.data?.connected_workload_status ===
       WorkloadStatus.BEFORE_INITIAL_SETUP
     ) {
-      this.drawExclamationIcon();
+      this.drawNodePolicySettingBadge();
     } else {
-      this.drawNodePort();
+      this.drawNodeStatsBadge();
     }
     this.drawNodeKind();
     this.drawNodeLabel();
@@ -52,7 +52,7 @@ export class NetworkNode {
     }
   }
 
-  private drawNodeBackground() {
+  private drawNode() {
     const isHover =
       !!this.options?.hoverNodeId && this.options.hoverNodeId === this.node.id;
     const isActive =
@@ -144,7 +144,7 @@ export class NetworkNode {
     this.ctx.stroke();
   }
 
-  private drawExclamationIcon() {
+  private drawNodePolicySettingBadge() {
     this.ctx.beginPath();
     let x = this.node.x + 14;
     if (this.node.data?.nodeSize === NodeSize.SMALL) {
@@ -220,7 +220,7 @@ export class NetworkNode {
     this.ctx.closePath();
   }
 
-  private drawNodePort() {
+  private drawNodeStatsBadge() {
     const filterPorts = this.options.filterPorts;
     const { idle, attempted, error } = this.getStats();
     let ports = [];

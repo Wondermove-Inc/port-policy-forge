@@ -77,3 +77,38 @@ export const EDGE_STYLES: Record<string, EdgeStyle> = {
     lineDash: [0, 0],
   },
 };
+
+export const networkOptions = {
+  interaction: {
+    dragNodes: false,
+    hover: true,
+    selectable: false,
+  },
+  nodes: {
+    shape: "dot",
+    color: { background: "#007bff", border: "#0056b3" },
+    font: { color: "#ffffff", size: 12 },
+  },
+  edges: {
+    color: "transparent",
+    smooth: false,
+  },
+  physics: {
+    enabled: true,
+    stabilization: {
+      enabled: true,
+      iterations: 400,
+    },
+    barnesHut: {
+      gravitationalConstant: -2000,
+      centralGravity: 0.3,
+      springLength: 120,
+      springConstant: 0.04,
+      damping: 0.09,
+      avoidOverlap: 1,
+    },
+  },
+  layout: {
+    randomSeed: 42,
+  },
+};

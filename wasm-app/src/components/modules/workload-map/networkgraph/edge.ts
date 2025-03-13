@@ -30,7 +30,7 @@ export class NetworkEdge {
     ctx: CanvasRenderingContext2D,
     edge: CustomEdge,
     canvasImages: CanvasImage,
-    options: DrawingOptions,
+    options: DrawingOptions
   ) {
     this.canvasImages = canvasImages;
     this.ctx = ctx;
@@ -64,16 +64,16 @@ export class NetworkEdge {
     this.ctx.save();
     this.drawEdgeLine(isActiveEdge, disabled);
     this.drawEdgeArrow(isActiveEdge, disabled);
+    this.drawEdgeLabel(isActiveEdge);
   }
 
-  public drawLabel() {
-    const isActiveEdge = this.options?.connectedEdges?.includes(this.edge.id);
+  public drawEdgeLabel(isActiveEdge?: boolean) {
     this.ctx.save();
     if (this.isEdgeConnected()) {
-      this.drawEdgeConnectLabel();
+      this.drawEdgeLinkLabel();
     } else {
       if (isActiveEdge && !this.options.activeNodeId) {
-        this.drawEdgeLabel();
+        this.drawEdgeStatusLabel();
       }
     }
   }
@@ -118,7 +118,7 @@ export class NetworkEdge {
     this.ctx.globalAlpha = GLOBAL_ALPHA;
   }
 
-  private drawEdgeConnectLabel() {
+  private drawEdgeLinkLabel() {
     const centerX = (this.coords.fromX + this.coords.toX) / 2;
     const centerY = (this.coords.fromY + this.coords.toY) / 2;
     this.ctx.save();
@@ -147,13 +147,13 @@ export class NetworkEdge {
       -SIZE / 2,
       -SIZE / 2,
       SIZE,
-      SIZE,
+      SIZE
     );
     this.ctx.fillStyle = color.white;
     this.ctx.restore();
   }
 
-  private drawEdgeLabel() {
+  private drawEdgeStatusLabel() {
     const edgeStatus = this.edge.data?.status;
     if (!edgeStatus) return;
 
@@ -192,7 +192,7 @@ export class NetworkEdge {
       -LABEL_RECT_HEIGHT / 2,
       LABEL_RECT_WIDTH,
       LABEL_RECT_HEIGHT,
-      LABEL_BORDER_RADIUS,
+      LABEL_BORDER_RADIUS
     );
 
     this.ctx.strokeStyle = style.borderColor;
@@ -210,7 +210,7 @@ export class NetworkEdge {
     y: number,
     width: number,
     height: number,
-    radius: number,
+    radius: number
   ) {
     this.ctx.beginPath();
     this.ctx.moveTo(x + radius, y);
@@ -222,7 +222,7 @@ export class NetworkEdge {
       y + height,
       x + width - radius,
       y + height,
-      radius,
+      radius
     );
     this.ctx.lineTo(x + radius, y + height);
     this.ctx.arcTo(x, y + height, x, y + height - radius, radius);
@@ -267,7 +267,7 @@ export class NetworkEdge {
       -ARROW_SIZE / 2,
       -ARROW_SIZE / 2,
       ARROW_SIZE,
-      ARROW_SIZE,
+      ARROW_SIZE
     );
     this.ctx.restore();
     this.ctx.globalAlpha = GLOBAL_ALPHA;
