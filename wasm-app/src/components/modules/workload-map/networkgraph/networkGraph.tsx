@@ -39,14 +39,18 @@ const NetworkGraph = ({
   setNetwork,
 }: NetworkGraphProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const animationContainerRef = useRef<HTMLDivElement>(null);
   const [canvasImages, setCanvasImages] = useState<CanvasImage>();
   const [activeEdgeId, setActiveEdgeId] = useState("");
   const hoverNodeId = useRef<string>("");
   const networkRef = useRef<CustomNetwork>(null);
+  const animationNetworkRef = useRef<CustomNetwork>(null);
+  const speed = useRef(0);
   useEffect(() => {
     if (
       !canvasImages ||
       !containerRef.current ||
+      !animationContainerRef.current ||
       edges.length === 0 ||
       nodes.length === 0
     ) {
@@ -67,6 +71,14 @@ const NetworkGraph = ({
       ) as CustomNetwork;
       setNetwork(networkRef.current);
     }
+
+    if (!animationNetworkRef.current) {
+      animationNetworkRef.current = new Network(
+        animationContainerRef.current,
+        data,
+        networkOptions
+      ) as CustomNetwork;
+    }
     if (activeNodeId) {
       networkRef.current.off("hoverNode");
       networkRef.current.off("afterDrawing");
@@ -74,6 +86,20 @@ const NetworkGraph = ({
       networkRef.current.off("click");
       hoverNodeId.current = "";
     }
+
+    animationNetworkRef?.current.on("zoom", () => {
+      networkRef.current?.moveTo({
+        scale: animationNetworkRef.current?.getScale(),
+        position: animationNetworkRef.current?.getViewPosition(),
+      });
+    });
+
+    animationNetworkRef?.current.on("dragging", () => {
+      networkRef.current?.moveTo({
+        scale: animationNetworkRef.current?.getScale(),
+        position: animationNetworkRef.current?.getViewPosition(),
+      });
+    });
 
     draw();
     networkRef.current.on("hoverNode", function (params) {
@@ -144,11 +170,14 @@ const NetworkGraph = ({
       }
     });
 
+    const animationId = requestAnimationFrame(animation);
+
     return () => {
       networkRef.current?.off("hoverNode");
       networkRef.current?.off("afterDrawing");
       networkRef.current?.off("blurNode");
       networkRef.current?.off("click");
+      cancelAnimationFrame(animationId);
     };
   }, [
     canvasImages,
@@ -232,6 +261,54 @@ const NetworkGraph = ({
     portHover,
   ]);
 
+  const drawAnimation = () => {
+    animationNetworkRef.current?.off("afterDrawing");
+    animationNetworkRef.current?.on(
+      "afterDrawing",
+      (ctx: CanvasRenderingContext2D) => {
+        const selectedNodeId = (hoverNodeId.current || activeNodeId) as string;
+        const connectedEdges = selectedNodeId
+          ? animationNetworkRef.current?.getConnectedEdges(selectedNodeId)
+          : [];
+        const connectedNodes = (
+          selectedNodeId
+            ? animationNetworkRef.current?.getConnectedNodes(selectedNodeId)
+            : []
+        ) as IdType[];
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        const networkEdges = animationNetworkRef.current?.body.edges;
+        const networkNodes = animationNetworkRef.current?.body.nodes;
+        for (const nodeId in networkNodes) {
+          const node = animationNetworkRef.current?.body.data.nodes.get(nodeId);
+          if (node) {
+            networkNodes[nodeId].data = node;
+          }
+        }
+        for (const edgeId in networkEdges) {
+          const edge = animationNetworkRef.current?.body.data.edges.get(edgeId);
+          if (edge) {
+            networkEdges[edgeId].data = edge;
+          }
+        }
+        for (const edgeId in networkEdges) {
+          const edge = networkEdges[edgeId];
+          const networkEdge = new NetworkEdge(ctx, edge, {} as CanvasImage, {
+            connectedEdges: connectedEdges,
+            activeEdgeId,
+            activeNodeId,
+            connectedNodes,
+            filterPorts,
+            hoverNodeId: hoverNodeId.current,
+            network: animationNetworkRef.current as CustomNetwork,
+            portHover,
+          });
+          networkEdge.drawEdgeAnimation(speed.current);
+        }
+      }
+    );
+    animationNetworkRef.current?.redraw();
+  };
+
   useEffect(() => {
     const imageLoader = new ImageLoader();
     imageLoader.load().then((images) => {
@@ -239,7 +316,35 @@ const NetworkGraph = ({
     });
   }, []);
 
-  return <div ref={containerRef} style={{ width: "100%", height: "100%" }} />;
+  const animation = () => {
+    networkRef.current?.moveTo({
+      scale: animationNetworkRef.current?.getScale(),
+      position: animationNetworkRef.current?.getViewPosition(),
+    });
+    speed.current += 1;
+    if (speed.current >= 110) {
+      speed.current = 0;
+    }
+    drawAnimation();
+    requestAnimationFrame(animation);
+  };
+
+  return (
+    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+      <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
+      <div
+        className="vis-network-animation"
+        ref={animationContainerRef}
+        style={{
+          width: "100%",
+          height: "100%",
+          position: "absolute",
+          top: 0,
+          left: 0,
+        }}
+      />
+    </div>
+  );
 };
 
 export default NetworkGraph;

@@ -243,12 +243,13 @@ export class NetworkEdge {
     this.ctx.save();
     this.ctx.translate(arrowX, arrowY);
     this.ctx.rotate(this.coords.angle + Math.PI / 2);
-    this.ctx.beginPath()
-    const rectWidth = 10;
-    this.ctx.rect(-rectWidth / 2, -rectWidth / 2, rectWidth, rectWidth);
-    this.ctx.fillStyle = "red";
-    this.ctx.fill()
-    this.ctx.closePath()
+    this.ctx.beginPath();
+    const radius = 4;
+    this.ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+    // this.ctx.rect(-rectWidth / 2, -rectWidth / 2, rectWidth, rectWidth);
+    this.ctx.fillStyle = color.active;
+    this.ctx.fill();
+    this.ctx.closePath();
     this.ctx.restore();
     this.ctx.globalAlpha = GLOBAL_ALPHA;
   }

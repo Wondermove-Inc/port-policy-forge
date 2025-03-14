@@ -17,8 +17,6 @@ import { useDisclosure } from "@/hooks/useDisclosure";
 import { FilterPorts, WorkloadKind } from "@/models";
 import { wasmListWorkloads } from "@/services/listWorkloads";
 import { useCommonStore } from "@/store";
-import AnimationNetworkGraph from "./networkgraph/animationNetworkGraph";
-import { Position } from "vis-network";
 
 export const WorkloadMap = () => {
   const [edges, setEdges] = useState<EdgeData[]>([]);
@@ -43,11 +41,6 @@ export const WorkloadMap = () => {
   const [activeNodeId, setActiveNodeId] = useState("");
   const [selectedWorkloadId, setSelectedWorkloadId] = useState("");
   const [network, setNetwork] = useState<CustomNetwork>();
-  const [animationNetwork, setAnimationNetwork] = useState<CustomNetwork>();
-  const [networkMoveData, setNetworkMoveData] = useState<{
-    scale: number;
-    position: Position;
-  } | null>(null);
   const selectedEdgeId = useRef("");
   const detailDrawer = useDisclosure();
   const modalClosePort = useDisclosure();
@@ -130,13 +123,6 @@ export const WorkloadMap = () => {
           easingFunction: "easeInOutQuad",
         },
       });
-
-      animationNetwork?.fit({
-        animation: {
-          duration: 0,
-          easingFunction: "easeInOutQuad",
-        },
-      });
     }
   }, [detailDrawer.visible]);
 
@@ -205,19 +191,6 @@ export const WorkloadMap = () => {
     });
   };
 
-  const handleOnMove = (val: { scale?: number; position: Position }) => {
-    setNetworkMoveData({
-      position: val.position as Position,
-      scale: val.scale as number,
-    });
-  };
-
-  useEffect(() => {
-    if (networkMoveData && network) {
-      network.moveTo(networkMoveData);
-    }
-  }, [networkMoveData, network]);
-
   return (
     <Box
       sx={{
@@ -229,30 +202,17 @@ export const WorkloadMap = () => {
         zIndex: 1,
       }}
     >
-      <div style={{ position: "relative", width: "100%", height: "100%" }}>
-        <NetworkGraph
-          key={networkGraphRenderKey}
-          edges={edges}
-          nodes={nodes}
-          filterPorts={filterPorts}
-          activeNodeId={activeNodeId}
-          portHover={portHover}
-          setNetwork={setNetwork}
-          onEdgeDisconnected={handleEdgeDisconnected}
-          onNodeSelected={handleOnNodeSelected}
-        />
-        <AnimationNetworkGraph
-          edges={edges}
-          nodes={nodes}
-          filterPorts={filterPorts}
-          activeNodeId={activeNodeId}
-          portHover={portHover}
-          setNetwork={setAnimationNetwork}
-          onEdgeDisconnected={handleEdgeDisconnected}
-          onNodeSelected={handleOnNodeSelected}
-          onMove={handleOnMove}
-        />
-      </div>
+      <NetworkGraph
+        key={networkGraphRenderKey}
+        edges={edges}
+        nodes={nodes}
+        filterPorts={filterPorts}
+        activeNodeId={activeNodeId}
+        portHover={portHover}
+        setNetwork={setNetwork}
+        onEdgeDisconnected={handleEdgeDisconnected}
+        onNodeSelected={handleOnNodeSelected}
+      />
       <ViewFilter
         filterPorts={initFilterPorts}
         onChangeFilter={handleChangeFilter}
