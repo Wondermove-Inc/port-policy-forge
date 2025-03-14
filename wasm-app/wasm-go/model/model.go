@@ -65,6 +65,7 @@ type Workload struct {
 type Relation struct {
 	WorkloadId string          `json:"workloadId"`
 	Status     int             `json:"status"`
+	Direction  TrfficDirection `json:"direction"`
 	Workload   *InlineWorkload `json:"workload,omitempty"`
 }
 
@@ -152,6 +153,11 @@ type Port struct {
 
 	// Workload UUID of the last connection (string or null).
 	LasstConnectionWorkloadUUID interface{} `json:"lastConnectionWorkloadUUID"`
+
+	// Indicates whether the closed connection attempt was from internal or external network
+	// "internal": Attempt from within the cluster
+	// "external": Attempt from outside the cluster
+	AttemptType AttempType `json:"attemptType,omitempty"`
 }
 
 type Stats struct {
@@ -178,10 +184,14 @@ type TrafficInfo struct {
 }
 
 type TrfficDirection string
+type AttempType string
 
 const (
 	InBound  TrfficDirection = "in"
 	OutBound TrfficDirection = "out"
+
+	Internal AttempType = "internal"
+	External AttempType = "external"
 )
 
 type AccessSource struct {

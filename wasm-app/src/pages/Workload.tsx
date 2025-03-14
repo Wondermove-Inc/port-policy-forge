@@ -18,7 +18,13 @@ type InlineWorkload = {
 type Relation = {
   workloadId: string;
   status: number;
-  workload?: InlineWorkload; // 네임스페이스 관계 정보
+  direction: string; 
+  workload?: {
+    uuid: string;
+    workloadName: string;
+    namespace: string;
+    kind: string;
+  };
 };
 
 type Stats = {
@@ -97,6 +103,20 @@ function getRelationStatus(status: number): string {
   }
 }
 
+// 방향에 따른 스타일 지정 함수
+function getDirectionStyle(direction: string): React.CSSProperties {
+  return {
+    display: 'inline-block',
+    padding: '2px 6px',
+    borderRadius: '3px',
+    fontSize: '0.8em',
+    marginLeft: '5px',
+    backgroundColor: direction === 'inbound' ? '#e1f5fe' : '#fff9c4',
+    color: direction === 'inbound' ? '#0277bd' : '#f57f17',
+    border: `1px solid ${direction === 'inbound' ? '#81d4fa' : '#ffee58'}`
+  };
+}
+
 const Workloads = () => {
   const { namespaceName } = useParams<{ namespaceName: string }>();
   const [workloads, setWorkloads] = useState<WorkloadResource[]>([]);
@@ -149,12 +169,18 @@ const Workloads = () => {
                           ({relation.workload.namespace})
                         </span>
                         <span> - {getRelationStatus(relation.status)}</span>
+                        <span style={getDirectionStyle(relation.direction)}>
+                          {relation.direction}
+                        </span>
                       </>
                     ) : (
                       <>
                         <strong>From: </strong>
                         <span>{relation.workloadId}</span>
                         <span> - {getRelationStatus(relation.status)}</span>
+                        <span style={getDirectionStyle(relation.direction)}>
+                          {relation.direction}
+                        </span>
                       </>
                     )}
                   </li>
@@ -179,12 +205,18 @@ const Workloads = () => {
                           ({relation.workload.namespace})
                         </span>
                         <span> - {getRelationStatus(relation.status)}</span>
+                        <span style={getDirectionStyle(relation.direction)}>
+                          {relation.direction}
+                        </span>
                       </>
                     ) : (
                       <>
                         <strong>To: </strong>
                         <span>{relation.workloadId}</span>
                         <span> - {getRelationStatus(relation.status)}</span>
+                        <span style={getDirectionStyle(relation.direction)}>
+                          {relation.direction}
+                        </span>
                       </>
                     )}
                   </li>

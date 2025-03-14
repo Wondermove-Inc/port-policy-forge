@@ -650,6 +650,7 @@ var MockWorkloadDetails = map[string]model.WorkloadDetail{
 						LastConnectionDate:     "2023-03-21T10:20:00+09:00",
 						LastConnectionEndpoint: "192.168.1.102",
 						LastConnectionLog:      "remote-node -> 172.16.0.236:8082 (health)",
+						AttemptType:            model.External,
 					},
 				},
 			},

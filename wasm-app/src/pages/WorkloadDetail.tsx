@@ -43,6 +43,7 @@ export type Port = {
   lastConnectionDate?: string | null;
   lastConnectionEndpoint?: string | null;
   lastConnectionLog?: string | null;
+  attemptType?: string | null;
 };
 
 type PortDetailGroup = {
@@ -609,6 +610,7 @@ const WorkloadDetailComponent: React.FC = () => {
         <th>accessSources</th>
         <th>isOpen</th>
         <th>risk</th>
+        <th>AttemptType</th>
         <th>count</th>
         <th>LastConnectionDate</th>
         <th>LastConnectionEndpoint</th>
@@ -618,68 +620,69 @@ const WorkloadDetailComponent: React.FC = () => {
     </thead>
   );
 
-  const renderPortRows = (ports: Port[], flag: number) => (
-    <tbody>
-      {ports.map((port) => (
-        <tr key={port.id}>
-          <td>{port.id}</td>
-          <td>{port.isRange ? "true" : "false"}</td>
-          <td>{port.portNumber ?? "N/A"}</td>
-          <td>
-            {port.portRange ? `${port.portRange.start}-${port.portRange.end}` : "N/A"}
-          </td>
-          <td>
-            {port.status !== undefined && port.status !== null
-              ? statusMapping[port.status]
-              : "N/A"}
-          </td>
-          <td>{port.accessPolicy}</td>
-          <td>
-            {port.accessSources && port.accessSources.length > 0 ? (
-              <ul>
-                {port.accessSources.map((src, idx) => (
-                  <li key={idx}>
-                    {src.ip} / {src.protocol} / {src.comment} / {src.lastUpdatedAt}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              "N/A"
-            )}
-          </td>
-          <td>{port.isOpen ? "true" : "false"}</td>
-          <td>
-            {port.risk !== undefined && port.risk !== null
-              ? riskMapping[port.risk]
-              : "N/A"}
-          </td>
-          <td>{port.count ?? "N/A"}</td>
-          <td>{port.lastConnectionDate ?? "N/A"}</td>
-          <td>{port.lastConnectionEndpoint ?? "N/A"}</td>
-          <td>{port.lastConnectionLog ?? "N/A"}</td>
-          <td>
-            {port.isOpen ? (
-              <>
-                <button onClick={() => openEditModal(flag, port)}>Edit</button>
-                <button onClick={() => handleCloseOpenedPort(flag, port)} style={{ marginLeft: '0.5rem' }}>
-                  Close
+const renderPortRows = (ports: Port[], flag: number) => (
+  <tbody>
+    {ports.map((port) => (
+      <tr key={port.id}>
+        <td>{port.id}</td>
+        <td>{port.isRange ? "true" : "false"}</td>
+        <td>{port.portNumber ?? "N/A"}</td>
+        <td>
+          {port.portRange ? `${port.portRange.start}-${port.portRange.end}` : "N/A"}
+        </td>
+        <td>
+          {port.status !== undefined && port.status !== null
+            ? statusMapping[port.status]
+            : "N/A"}
+        </td>
+        <td>{port.accessPolicy}</td>
+        <td>
+          {port.accessSources && port.accessSources.length > 0 ? (
+            <ul>
+              {port.accessSources.map((src, idx) => (
+                <li key={idx}>
+                  {src.ip} / {src.protocol} / {src.comment} / {src.lastUpdatedAt}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            "N/A"
+          )}
+        </td>
+        <td>{port.isOpen ? "true" : "false"}</td>
+        <td>
+          {port.risk !== undefined && port.risk !== null
+            ? riskMapping[port.risk]
+            : "N/A"}
+        </td>
+        <td>{port.attemptType ?? "N/A"}</td>
+        <td>{port.count ?? "N/A"}</td>
+        <td>{port.lastConnectionDate ?? "N/A"}</td>
+        <td>{port.lastConnectionEndpoint ?? "N/A"}</td>
+        <td>{port.lastConnectionLog ?? "N/A"}</td>
+        <td>
+          {port.isOpen ? (
+            <>
+              <button onClick={() => openEditModal(flag, port)}>Edit</button>
+              <button onClick={() => handleCloseOpenedPort(flag, port)} style={{ marginLeft: '0.5rem' }}>
+                Close
+              </button>
+            </>
+          ) : (
+            <>
+              <button onClick={() => handleOpenClosedPort(flag, port)}>Allow</button>
+              {port.count && port.count > 0 && (
+                <button onClick={() => handleClearClosedPortHistory(flag, port)} style={{ marginLeft: '0.5rem' }}>
+                  Clear
                 </button>
-              </>
-            ) : (
-              <>
-                <button onClick={() => handleOpenClosedPort(flag, port)}>Allow</button>
-                {port.count && port.count > 0 && (
-                  <button onClick={() => handleClearClosedPortHistory(flag, port)} style={{ marginLeft: '0.5rem' }}>
-                    Clear
-                  </button>
-                )}
-              </>
-            )}
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  );
+              )}
+            </>
+          )}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+);
 
   const renderPortTable = (ports: Port[], flag: number) => {
     if (ports.length === 0) {

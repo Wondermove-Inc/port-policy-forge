@@ -120,6 +120,8 @@ func listWorkloads(this js.Value, p []js.Value) interface{} {
 	for i := range resources {
 		for j := range resources[i].From {
 			wID := resources[i].From[j].WorkloadId
+			resources[i].From[j].Direction = "inbound"
+
 			if info, exists := workloadInfoMap[wID]; exists {
 				if info.Namespace != nsName {
 					resources[i].From[j].Workload = &model.InlineWorkload{
@@ -134,6 +136,8 @@ func listWorkloads(this js.Value, p []js.Value) interface{} {
 
 		for j := range resources[i].To {
 			wID := resources[i].To[j].WorkloadId
+			resources[i].To[j].Direction = "outbound"
+
 			if info, exists := workloadInfoMap[wID]; exists {
 				if info.Namespace != nsName {
 					resources[i].To[j].Workload = &model.InlineWorkload{
