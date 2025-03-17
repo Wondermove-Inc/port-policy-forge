@@ -6,7 +6,7 @@ export const color = {
   white: "#fff",
   black: "#19191B",
   stroke: {
-    default: "#4d4d4f",
+    default: "#4f535b",
     active: "#125AED",
     error: "#EB4136",
   },

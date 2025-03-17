@@ -98,6 +98,11 @@ export class NetworkEdge {
       this.ctx.strokeStyle = color.stroke.default;
       this.ctx.setLineDash([2, 2]);
     } else {
+      if (this.edge.data?.status === WorkloadPortStatus.ATTEMPT) {
+        this.ctx.setLineDash([2, 2]);
+      } else {
+        this.ctx.setLineDash([0, 0]);
+      }
       if (isActiveEdge && !disabled) {
         const edgeStatus = this.edge.data?.status;
         const styleKey = edgeStatus
@@ -109,12 +114,6 @@ export class NetworkEdge {
         this.ctx.strokeStyle = color.stroke.default;
       }
 
-      if (this.edge.data?.status === WorkloadPortStatus.ATTEMPT) {
-        this.ctx.setLineDash([2, 2]);
-      } else {
-        this.ctx.setLineDash([0, 0]);
-      }
-
       if (this.isEdgeConnected() && !disabled) {
         const edgeStatus = this.edge.data?.status;
         const styleKey = edgeStatus
@@ -122,7 +121,6 @@ export class NetworkEdge {
           : String(WorkloadPortStatus.ACTIVE);
         const style = EDGE_STYLES[styleKey] || EDGE_STYLES.ACTIVE;
         this.ctx.strokeStyle = style.strokeStyle;
-        this.ctx.setLineDash([0, 0]);
       }
     }
 

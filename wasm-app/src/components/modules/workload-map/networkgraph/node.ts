@@ -40,7 +40,9 @@ export class NetworkNode {
         this.ctx.globalAlpha = EXTERNAL_GLOBAL_ALPHA;
       }
     }
+    
     this.drawNode();
+    this.drawNodeKind();
     if (
       this.node.data?.connected_workload_status ===
       WorkloadStatus.BEFORE_INITIAL_SETUP
@@ -52,7 +54,6 @@ export class NetworkNode {
     if (!this.isDisabled() && this.isExternalNamespace()) {
       this.ctx.globalAlpha = EXTERNAL_GLOBAL_ALPHA;
     }
-    this.drawNodeKind();
     if (!this.isDisabled()) {
       this.ctx.globalAlpha = GLOBAL_ALPHA;
     }
@@ -70,9 +71,9 @@ export class NetworkNode {
       this.options.portHover.lastConnectionWorkloadUUID === this.node.id;
     const isPortClosed =
       !!this.options.portHover && !this.options.portHover.isOpen;
-    this.ctx.lineWidth = 2;
+    this.ctx.lineWidth = 1.85;
     const nodeSize = this.node?.data?.nodeSize || 0;
-
+    this.ctx.strokeStyle = color.stroke.default;
     const nodes = this.options.network?.body.nodes;
     let isNodeError = false;
     const currentNodeId = this.options.hoverNodeId || this.options.activeNodeId;
@@ -92,7 +93,6 @@ export class NetworkNode {
         }
       }
     }
-
     if (isHover || isActive || isActiveLastConnection) {
       if (isHover || isActiveLastConnection) {
         if (isActiveLastConnection && isPortClosed) {
@@ -101,6 +101,7 @@ export class NetworkNode {
           this.ctx.fillStyle = color.fill.activeInteraction100;
         }
         this.ctx.beginPath();
+
         this.ctx.arc(
           this.node.x,
           this.node.y,
@@ -149,6 +150,17 @@ export class NetworkNode {
     this.ctx.arc(this.node.x, this.node.y, nodeSize / 2, 0, 2 * Math.PI, false);
     this.ctx.closePath();
     this.ctx.fill();
+    this.ctx.stroke();
+
+    const gradient = this.ctx.createLinearGradient(
+      this.node.x - nodeSize / 2,
+      this.node.y - nodeSize / 2,
+      this.node.x + nodeSize / 2,
+      this.node.y + nodeSize / 2
+    );
+    gradient.addColorStop(0, "rgba(255, 255, 255, 0.2)");
+    gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+    this.ctx.strokeStyle = gradient;
     this.ctx.stroke();
   }
 
@@ -279,13 +291,15 @@ export class NetworkNode {
       const y = this.node.y - (this.node?.data?.nodeSize || 0) / 2 + 10 - 1;
       const badgeColor =
         ports[i].status === WorkloadPortStatus.ERROR ? color.error : color.idle;
-      const gradient1 = this.ctx.createLinearGradient(x, 0, y, 0);
-      gradient1.addColorStop(0, badgeColor);
-      gradient1.addColorStop(1, badgeColor);
-      const gradient2 = this.ctx.createLinearGradient(x, 0, y, 0);
-      gradient2.addColorStop(0, "rgba(0, 0, 0, 0)");
-      gradient2.addColorStop(1, "rgba(0, 0, 0, 0.2)");
-      this.ctx.fillStyle = gradient1;
+      const gradient = this.ctx.createLinearGradient(
+        x - ARC_RADIUS,
+        y - ARC_RADIUS,
+        x + ARC_RADIUS,
+        y + ARC_RADIUS
+      );
+      gradient.addColorStop(0, "rgba(0, 0, 0, 0)");
+      gradient.addColorStop(1, "rgba(0, 0, 0, 0.2)");
+      this.ctx.fillStyle = badgeColor;
       this.ctx.textAlign = "center";
       this.ctx.textBaseline = "middle";
       this.ctx.beginPath();
@@ -297,7 +311,7 @@ export class NetworkNode {
       }
       this.ctx.fill();
 
-      this.ctx.fillStyle = gradient2;
+      this.ctx.fillStyle = gradient;
       this.ctx.fill();
 
       this.ctx.closePath();
