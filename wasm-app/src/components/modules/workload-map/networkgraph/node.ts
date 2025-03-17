@@ -166,8 +166,13 @@ export class NetworkNode {
 
   private drawNodePolicySettingBadge() {
     let x = this.node.x + 14;
+    let y = this.node.y - (this.node?.data?.nodeSize || 0) / 2 - 1;
     if (this.node.data?.nodeSize === NodeSize.SMALL) {
       x -= 8;
+      y -= 15;
+    } else {
+      x += 2;
+      y -= 10;
     }
 
     this.ctx.globalAlpha = 1;
@@ -175,10 +180,7 @@ export class NetworkNode {
     this.ctx.beginPath();
     this.ctx.arc(
       x + EXCLAMATION_SIZE / 2,
-      this.node.y -
-        (this.node?.data?.nodeSize || 0) / 2 -
-        1 +
-        EXCLAMATION_SIZE / 2,
+      y + EXCLAMATION_SIZE,
       EXCLAMATION_SIZE / 2,
       0,
       2 * Math.PI,
@@ -194,7 +196,7 @@ export class NetworkNode {
     this.ctx.drawImage(
       this.canvasImages.exclamation,
       x,
-      this.node.y - (this.node?.data?.nodeSize || 0) / 2 - 1,
+      y + EXCLAMATION_SIZE / 2,
       EXCLAMATION_SIZE,
       EXCLAMATION_SIZE
     );
@@ -303,13 +305,15 @@ export class NetworkNode {
     const ARC_RADIUS = 10;
     for (let i = 0; i < ports.length; i++) {
       let x = this.node.x + ARC_RADIUS + 14;
+      let y = this.node.y - (this.node?.data?.nodeSize || 0) / 2 + 10 - 1;
       if (ports.length !== 1) {
         x = this.node.x + (ARC_RADIUS * 2 - 5) * i + 14;
       }
+
       if (this.node.data?.nodeSize === NodeSize.SMALL) {
-        x -= 8;
+        x -= 4;
+        y -= 5;
       }
-      const y = this.node.y - (this.node?.data?.nodeSize || 0) / 2 + 10 - 1;
 
       // draw background of nodeStats
       this.ctx.globalAlpha = GLOBAL_ALPHA;
