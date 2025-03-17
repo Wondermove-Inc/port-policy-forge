@@ -6,7 +6,7 @@ export const color = {
   white: "#fff",
   black: "#19191B",
   stroke: {
-    default: "#4f535b",
+    default: "#444952",
     active: "#125AED",
     error: "#EB4136",
   },
@@ -33,7 +33,7 @@ export const DISABLED_GLOBAL_ALPHA = 0.2;
 export const EXTERNAL_GLOBAL_ALPHA = 0.5;
 
 export const ARROW_SIZE = 16;
-export const LINE_WIDTH = 1;
+export const LINE_WIDTH = 1.4;
 export const LABEL_RECT_WIDTH = 48;
 export const LABEL_RECT_HEIGHT = 24;
 export const LABEL_BORDER_RADIUS = 8;

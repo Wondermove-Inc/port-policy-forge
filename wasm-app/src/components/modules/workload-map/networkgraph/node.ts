@@ -40,7 +40,7 @@ export class NetworkNode {
         this.ctx.globalAlpha = EXTERNAL_GLOBAL_ALPHA;
       }
     }
-    
+
     this.drawNode();
     this.drawNodeKind();
     if (
@@ -165,11 +165,32 @@ export class NetworkNode {
   }
 
   private drawNodePolicySettingBadge() {
-    this.ctx.beginPath();
     let x = this.node.x + 14;
     if (this.node.data?.nodeSize === NodeSize.SMALL) {
       x -= 8;
     }
+
+    this.ctx.globalAlpha = 1;
+    this.ctx.fillStyle = "#191f2b";
+    this.ctx.beginPath();
+    this.ctx.arc(
+      x + EXCLAMATION_SIZE / 2,
+      this.node.y -
+        (this.node?.data?.nodeSize || 0) / 2 -
+        1 +
+        EXCLAMATION_SIZE / 2,
+      EXCLAMATION_SIZE / 2,
+      0,
+      2 * Math.PI,
+      false
+    );
+    this.ctx.closePath();
+    this.ctx.fill();
+    if (this.isDisabled()) {
+      this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
+    }
+    this.ctx.beginPath();
+
     this.ctx.drawImage(
       this.canvasImages.exclamation,
       x,
@@ -289,6 +310,18 @@ export class NetworkNode {
         x -= 8;
       }
       const y = this.node.y - (this.node?.data?.nodeSize || 0) / 2 + 10 - 1;
+
+      // draw background of nodeStats
+      this.ctx.globalAlpha = GLOBAL_ALPHA;
+      this.ctx.fillStyle = "#191f2b";
+      this.ctx.beginPath();
+      this.ctx.arc(x, y, ARC_RADIUS, 0, 2 * Math.PI, false);
+      this.ctx.closePath();
+      this.ctx.fill();
+
+      if (this.isDisabled()) {
+        this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
+      }
       const badgeColor =
         ports[i].status === WorkloadPortStatus.ERROR ? color.error : color.idle;
       const gradient = this.ctx.createLinearGradient(
@@ -302,6 +335,7 @@ export class NetworkNode {
       this.ctx.fillStyle = badgeColor;
       this.ctx.textAlign = "center";
       this.ctx.textBaseline = "middle";
+
       this.ctx.beginPath();
       if (ports[i].total <= 99) {
         this.ctx.arc(x, y, ARC_RADIUS, 0, Math.PI * 2);

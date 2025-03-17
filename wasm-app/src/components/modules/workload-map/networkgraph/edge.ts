@@ -247,29 +247,30 @@ export class NetworkEdge {
   }
 
   private drawEdgeArrow(isActiveEdge?: boolean, disabled?: boolean) {
-    let arrowKey: keyof CanvasImage = "arrow";
+    let arrowKey: keyof CanvasImage = "defaultArrow";
     if (this.options.removingEdgeId) {
       arrowKey = EDGE_STYLES.DEFAULT.arrowKey;
     } else {
       if (disabled) {
         this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
-      }
-      if (isActiveEdge) {
-        const edgeStatus = this.edge.data?.status;
-        const styleKey = edgeStatus
-          ? String(edgeStatus)
-          : WorkloadPortStatus.ACTIVE;
-        const style = EDGE_STYLES[styleKey] || EDGE_STYLES.DEFAULT;
-        arrowKey = style.arrowKey;
-      }
+      } else {
+        if (isActiveEdge) {
+          const edgeStatus = this.edge.data?.status;
+          const styleKey = edgeStatus
+            ? String(edgeStatus)
+            : WorkloadPortStatus.ACTIVE;
+          const style = EDGE_STYLES[styleKey] || EDGE_STYLES.DEFAULT;
+          arrowKey = style.arrowKey;
+        }
 
-      if (this.isEdgeConnected()) {
-        const edgeStatus = this.edge.data?.status;
-        const styleKey = edgeStatus
-          ? String(edgeStatus)
-          : WorkloadPortStatus.ACTIVE;
-        const style = EDGE_STYLES[styleKey] || EDGE_STYLES.DEFAULT;
-        arrowKey = style.arrowKey;
+        if (this.isEdgeConnected()) {
+          const edgeStatus = this.edge.data?.status;
+          const styleKey = edgeStatus
+            ? String(edgeStatus)
+            : WorkloadPortStatus.ACTIVE;
+          const style = EDGE_STYLES[styleKey] || EDGE_STYLES.DEFAULT;
+          arrowKey = style.arrowKey;
+        }
       }
     }
     const arrowImage = this.canvasImages[arrowKey];
