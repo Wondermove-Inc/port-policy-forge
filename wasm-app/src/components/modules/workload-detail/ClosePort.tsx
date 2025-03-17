@@ -103,13 +103,12 @@ export const ClosePort = ({
   };
 
   const columns = useMemo(() => {
-    const emptyData = data.length === 0;
     return [
       {
         id: "portNumberLabel",
         label: "Number",
         sortable: false,
-        width: emptyData ? 112 : 85,
+        width: 80,
         render: (record: Port) => (
           <Typography variant="b2_m">{record.portNumberLabel}</Typography>
         ),
@@ -118,7 +117,7 @@ export const ClosePort = ({
         id: "risk",
         label: "Risk",
         sortable: false,
-        width: emptyData ? 90 : 85,
+        width: 88,
         render: (record: Port) => {
           return (
             <Typography variant="b2_r" color="status.danger">
@@ -131,56 +130,52 @@ export const ClosePort = ({
         id: "type",
         label: "Type",
         sortable: false,
-        width: emptyData ? 90 : 85,
+        width: 88,
       },
       {
         id: "count",
         label: "Count ",
         sortable: false,
-        width: emptyData ? 180 : 85,
+        width: 82,
       },
-      ...(emptyData
-        ? []
-        : [
-            {
-              id: "open",
-              label: "",
-              sortable: false,
-              width: 100,
-              sx: {
-                paddingX: "4px !important",
-              },
-              render: (record: Port) => (
-                <Typography
-                  variant="label_m"
-                  color="primary.dark"
-                  sx={{ cursor: "pointer", textAlign: "center" }}
-                  onClick={() => openAllowPortModal(record)}
-                >
-                  Open the access
-                </Typography>
-              ),
-            },
-            {
-              id: "close",
-              label: "",
-              sortable: false,
-              width: 32,
-              render: (record: Port) => (
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => openClearHistoryModal(record)}
-                >
-                  <CloseIcon size={16} color="text.tertiary" />
-                </Box>
-              ),
-            },
-          ]),
+      {
+        id: "open",
+        label: "",
+        sortable: false,
+        width: 100,
+        sx: {
+          paddingX: "4px !important",
+        },
+        render: (record: Port) => (
+          <Typography
+            variant="label_m"
+            color="primary.dark"
+            sx={{ cursor: "pointer", textAlign: "center" }}
+            onClick={() => openAllowPortModal(record)}
+          >
+            Open the access
+          </Typography>
+        ),
+      },
+      {
+        id: "close",
+        label: "",
+        sortable: false,
+        width: 34,
+        render: (record: Port) => (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+            }}
+            onClick={() => openClearHistoryModal(record)}
+          >
+            <CloseIcon size={16} color="text.tertiary" />
+          </Box>
+        ),
+      },
     ];
   }, [data]);
 

@@ -76,7 +76,7 @@ export const OpenPort = ({
         id: "portNumberLabel",
         label: "Number",
         sortable: false,
-        width: isInbound ? 80 : 70,
+        width: 80,
         render: (record: Port) => (
           <Typography variant="b2_m">{record.portNumberLabel}</Typography>
         ),
@@ -85,14 +85,14 @@ export const OpenPort = ({
         id: "status",
         label: "Status",
         sortable: false,
-        width: 107,
+        width: 108,
         render: (record: Port) => <BadgePortStatus status={record.status} />,
       },
       {
         id: "sourceNumber",
         label: isInbound ? "Source" : "Destination",
         sortable: false,
-        width: isInbound ? 80 : 90,
+        width: 88,
       },
       {
         id: "accessPolicy",
@@ -126,7 +126,7 @@ export const OpenPort = ({
         id: "close",
         label: "",
         sortable: false,
-        width: 63,
+        width: 54,
         sx: {
           textAlign: "center",
         },
