@@ -31,18 +31,20 @@ export const WorkloadDetail = ({
   open,
   id,
   handleClose,
+  onDirectionChange,
 }: {
   open: boolean;
   id: string;
   handleClose: () => void;
+  onDirectionChange: (direction: string) => void;
 }) => {
   const { setIsDetailFromMap, isViewList, setToast } = useCommonStore();
 
   const [portDirection, setPortDirection] = useState<PortDirection>(
-    PortDirection.INBOUND,
+    PortDirection.INBOUND
   );
   const [workloadDetail, setWorkloadDetail] = useState<WorkloadDetailType>(
-    INITIAL_WORKLOAD_DETAIL,
+    INITIAL_WORKLOAD_DETAIL
   );
   const [loading, setLoading] = useState(true);
 
@@ -64,7 +66,7 @@ export const WorkloadDetail = ({
 
   const isPolicyShown = useMemo(() => {
     return workloadDetail[portDirection].ports.open.some(
-      (port) => STATUS_MAP[port.status] !== Stats.ACTIVE,
+      (port) => STATUS_MAP[port.status] !== Stats.ACTIVE
     );
   }, [portDirection, workloadDetail]);
 
@@ -89,44 +91,44 @@ export const WorkloadDetail = ({
 
   const formatDirection = (
     workloadDetail: WorkloadDetailType,
-    direction: PortDirection,
+    direction: PortDirection
   ) => {
     return {
       stats: {
         active: formatter(
           `${direction}.stats.active`,
           "",
-          formatNumber,
+          formatNumber
         )(workloadDetail),
         unconnected: formatter(
           `${direction}.stats.unconnected`,
           "",
-          formatNumber,
+          formatNumber
         )(workloadDetail),
         idle: formatter(
           `${direction}.stats.idle`,
           "",
-          formatNumber,
+          formatNumber
         )(workloadDetail),
         error: formatter(
           `${direction}.stats.error`,
           "",
-          formatNumber,
+          formatNumber
         )(workloadDetail),
         attempted: formatter(
           `${direction}.stats.attempted`,
           "",
-          formatNumber,
+          formatNumber
         )(workloadDetail),
         latencyRtt: formatter(
           `${direction}.stats.latencyRtt`,
           "",
-          formatMilliCores,
+          formatMilliCores
         )(workloadDetail),
         throughput: formatter(
           `${direction}.stats.throughput`,
           "/s",
-          formatBinarySize,
+          formatBinarySize
         )(workloadDetail),
       },
       ports: {
@@ -141,7 +143,7 @@ export const WorkloadDetail = ({
           lastConnectionDate: formatter(
             "lastConnectionDate",
             "",
-            formatDateTime,
+            formatDateTime
           )(el),
           lastConnectionLog: formatter("lastConnectionLog")(el),
           lastConnectionEndpoint: formatter("lastConnectionEndpoint")(el),
@@ -158,7 +160,7 @@ export const WorkloadDetail = ({
           lastConnectionDate: formatter(
             "lastConnectionDate",
             "",
-            formatDateTime,
+            formatDateTime
           )(el),
           lastConnectionLog: formatter("lastConnectionLog")(el),
           lastConnectionEndpoint: formatter("lastConnectionEndpoint")(el),
@@ -175,6 +177,7 @@ export const WorkloadDetail = ({
 
   const handleDirectionChange = (direction: string) => {
     setPortDirection(direction as PortDirection);
+    onDirectionChange?.(direction);
   };
 
   return (

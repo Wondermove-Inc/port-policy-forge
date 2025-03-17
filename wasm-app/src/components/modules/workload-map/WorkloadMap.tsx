@@ -14,7 +14,7 @@ import {
 } from "@/components/modules/workload-map/networkgraph/types";
 import { ViewFilter } from "@/components/modules/workload-map/ViewFilter";
 import { useDisclosure } from "@/hooks/useDisclosure";
-import { FilterPorts, WorkloadKind } from "@/models";
+import { FilterPorts, PortDirection, WorkloadKind } from "@/models";
 import { wasmListWorkloads } from "@/services/listWorkloads";
 import { useCommonStore } from "@/store";
 
@@ -45,6 +45,7 @@ export const WorkloadMap = () => {
   const selectedEdgeId = useRef("");
   const detailDrawer = useDisclosure();
   const modalClosePort = useDisclosure();
+  const [portDirection, setPortDirection] = useState(PortDirection.INBOUND);
 
   useEffect(() => {
     setWorkloads(storeWorkloads);
@@ -67,6 +68,7 @@ export const WorkloadMap = () => {
 
       return [...pre, ...fromEdges, ...toEdges] as EdgeData[];
     }, [] as EdgeData[]);
+
     const nodes = workloads.reduce((preWorkloads, workload) => {
       const cpuUsage = workload.usage;
       let nodeSize = NodeSize.MEDIUM;
@@ -96,6 +98,7 @@ export const WorkloadMap = () => {
           !workloads.map((workload) => workload.uuid).includes(w.workload.uuid)
         ) {
           preWorkloads.push({
+            ...w.workload,
             id: w.workload.uuid,
             customLabel: w.workload?.workloadName as string,
             nodeSize: NodeSize.MEDIUM,
@@ -196,6 +199,10 @@ export const WorkloadMap = () => {
     });
   };
 
+  const handleDirectionChange = (direction: string) => {
+    setPortDirection(direction as PortDirection);
+  };
+
   return (
     <Box
       sx={{
@@ -215,6 +222,7 @@ export const WorkloadMap = () => {
         activeNodeId={activeNodeId}
         portHover={portHover}
         removingEdgeId={removingEdgeId}
+        portDirection={portDirection}
         setNetwork={setNetwork}
         onEdgeDisconnected={handleEdgeDisconnected}
         onNodeSelected={handleOnNodeSelected}
@@ -239,6 +247,7 @@ export const WorkloadMap = () => {
         id={selectedWorkloadId}
         open={detailDrawer.visible}
         handleClose={handleCloseDetail}
+        onDirectionChange={handleDirectionChange}
       />
     </Box>
   );

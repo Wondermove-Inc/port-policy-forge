@@ -14,7 +14,7 @@ import {
 } from "./types";
 import { calculatePositionAlongEdge } from "./utils";
 
-import { FilterPorts, Port } from "@/models";
+import { FilterPorts, Port, PortDirection } from "@/models";
 import { networkOptions } from "./constants";
 
 export type NetworkGraphProps = {
@@ -24,6 +24,7 @@ export type NetworkGraphProps = {
   filterPorts?: FilterPorts;
   portHover: Port | null;
   removingEdgeId: string;
+  portDirection: PortDirection;
   onEdgeDisconnected?: (edgeId: string) => void;
   onNodeSelected?: (nodeId: string) => void;
   setNetwork: (n: CustomNetwork) => void;
@@ -36,6 +37,7 @@ const NetworkGraph = ({
   filterPorts,
   portHover,
   removingEdgeId,
+  portDirection,
   onNodeSelected,
   onEdgeDisconnected,
   setNetwork,
@@ -114,7 +116,9 @@ const NetworkGraph = ({
         y: properties.event.srcEvent.offsetY,
       });
 
-      const connectedEdges = activeNodeId ? networkRef.current?.getConnectedEdges(activeNodeId) : [];
+      const connectedEdges = activeNodeId
+        ? networkRef.current?.getConnectedEdges(activeNodeId)
+        : [];
       const clickPosition: Position = {
         x: properties.pointer.canvas.x,
         y: properties.pointer.canvas.y,
@@ -162,6 +166,7 @@ const NetworkGraph = ({
     filterPorts,
     portHover,
     removingEdgeId,
+    portDirection,
   ]);
 
   const draw = useCallback(() => {
@@ -171,14 +176,41 @@ const NetworkGraph = ({
     networkRef.current?.off("afterDrawing");
     networkRef.current?.on("afterDrawing", (ctx: CanvasRenderingContext2D) => {
       const selectedNodeId = (hoverNodeId.current || activeNodeId) as string;
-      const connectedEdges = selectedNodeId
+      let connectedEdges = selectedNodeId
         ? networkRef.current?.getConnectedEdges(selectedNodeId)
         : [];
-      const connectedNodes = (
+      let connectedNodes = (
         selectedNodeId
           ? networkRef.current?.getConnectedNodes(selectedNodeId)
           : []
       ) as IdType[];
+
+      if (activeNodeId) {
+        const inboundEdges = edges.filter((edge) => edge.to === activeNodeId);
+        const outboundEdges = edges.filter(
+          (edge) => edge.from === activeNodeId
+        );
+        if (portDirection === PortDirection.OUTBOUND) {
+          const outboundNodeIds = outboundEdges.map((edge) => edge.to);
+          const outboundEdgeIds = outboundEdges.map((edge) => edge.id);
+          connectedEdges = connectedEdges?.filter((connectedEdge) =>
+            outboundEdgeIds.includes(connectedEdge as string)
+          );
+          connectedNodes = connectedNodes.filter((connectedNode) =>
+            outboundNodeIds.includes(connectedNode as string)
+          );
+        } else {
+          const inboundNodeIds = inboundEdges.map((edge) => edge.from);
+          const inboundEdgeIds = inboundEdges.map((edge) => edge.id);
+          connectedEdges = connectedEdges?.filter((connectedEdge) =>
+            inboundEdgeIds.includes(connectedEdge as string)
+          );
+          connectedNodes = connectedNodes.filter((connectedNode) =>
+            inboundNodeIds.includes(connectedNode as string)
+          );
+        }
+      }
+
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
       const networkEdges = networkRef.current?.body.edges;
       const networkNodes = networkRef.current?.body.nodes;
@@ -235,6 +267,7 @@ const NetworkGraph = ({
     filterPorts,
     portHover,
     removingEdgeId,
+    portDirection,
   ]);
 
   useEffect(() => {

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
 
 declare global {
   interface Window {
@@ -20,7 +20,7 @@ type AccessSource = {
   ip: string;
   protocol: string;
   comment: string;
-  lastUpdatedAt?: string; 
+  lastUpdatedAt?: string;
 };
 
 type PortRange = {
@@ -33,7 +33,7 @@ export type Port = {
   isRange: boolean;
   portNumber?: number | null;
   portRange?: PortRange | null;
-  status?: number | null;  
+  status?: number | null;
   direction: string;
   accessPolicy: AccessPolicy;
   accessSources: AccessSource[];
@@ -199,7 +199,9 @@ function wasmClearClosedPortHistory(request: PortCloseRequest): Promise<any> {
   });
 }
 
-function wasmClosePortsByStatus(requests: ClosePortsByStatusRequest[]): Promise<any> {
+function wasmClosePortsByStatus(
+  requests: ClosePortsByStatusRequest[]
+): Promise<any> {
   return new Promise((resolve, reject) => {
     try {
       const requestJSON = JSON.stringify(requests);
@@ -216,7 +218,9 @@ function wasmClosePortsByStatus(requests: ClosePortsByStatusRequest[]): Promise<
   });
 }
 
-function wasmCloseNotActivePorts(request: CloseNotActivePortsRequest): Promise<any> {
+function wasmCloseNotActivePorts(
+  request: CloseNotActivePortsRequest
+): Promise<any> {
   return new Promise((resolve, reject) => {
     try {
       const requestJSON = JSON.stringify(request);
@@ -262,18 +266,21 @@ const WorkloadDetailComponent: React.FC = () => {
 
   // [A] 인바운드 모달 입력값
   const [inboundPortSpec, setInboundPortSpec] = useState("");
-  const [inboundAccessPolicy, setInboundAccessPolicy] = useState<AccessPolicy>("allow-all");
+  const [inboundAccessPolicy, setInboundAccessPolicy] =
+    useState<AccessPolicy>("allow-all");
   const [inboundSources, setInboundSources] = useState<AccessSource[]>([]);
 
   // [B] 아웃바운드 모달 입력값
   const [outboundPortSpec, setOutboundPortSpec] = useState("");
-  const [outboundAccessPolicy, setOutboundAccessPolicy] = useState<AccessPolicy>("allow-all");
+  const [outboundAccessPolicy, setOutboundAccessPolicy] =
+    useState<AccessPolicy>("allow-all");
   const [outboundSources, setOutboundSources] = useState<AccessSource[]>([]);
 
   // [C] 에딧 모달 입력값 (단일 포트 및 포트 범위 모두 허용)
   const [editFlag, setEditFlag] = useState<number>(0); // 0: inbound, 1: outbound
   const [editPortSpec, setEditPortSpec] = useState<string>(""); // 수정할 포트 스펙 문자열
-  const [editAccessPolicy, setEditAccessPolicy] = useState<AccessPolicy>("allow-all");
+  const [editAccessPolicy, setEditAccessPolicy] =
+    useState<AccessPolicy>("allow-all");
   const [editSources, setEditSources] = useState<AccessSource[]>([]);
 
   // [D] 상태 필터 모달 입력값
@@ -286,7 +293,7 @@ const WorkloadDetailComponent: React.FC = () => {
     1: "active",
     2: "idle",
     3: "error",
-    4: "attempt"
+    4: "attempt",
   };
   const riskMapping: { [key: number]: string } = {
     0: "normal",
@@ -300,7 +307,7 @@ const WorkloadDetailComponent: React.FC = () => {
     { value: "idle", label: "Idle" },
     { value: "error", label: "Error" },
     { value: "attempt", label: "Attempted" },
-    { value: "unconnected", label: "Unconnected" }
+    { value: "unconnected", label: "Unconnected" },
   ];
 
   useEffect(() => {
@@ -357,7 +364,7 @@ const WorkloadDetailComponent: React.FC = () => {
       accessPolicy: outboundAccessPolicy,
       sources: outboundSources,
     };
-    
+
     wasmOpenPort(request)
       .then(() => {
         loadWorkloadDetail(workloadId);
@@ -418,7 +425,12 @@ const WorkloadDetailComponent: React.FC = () => {
   const handleOpenClosedPort = (flag: number, port: Port) => {
     if (!workloadId) return;
     const spec = getPortSpec(port);
-    if (!window.confirm(`Are you sure you want to allow (re-open) closed port ${spec}?`)) return;
+    if (
+      !window.confirm(
+        `Are you sure you want to allow (re-open) closed port ${spec}?`
+      )
+    )
+      return;
 
     const request: PortCloseRequest = {
       workloadUuid: workloadId,
@@ -439,7 +451,8 @@ const WorkloadDetailComponent: React.FC = () => {
   const handleClearClosedPortHistory = (flag: number, port: Port) => {
     if (!workloadId) return;
     const spec = getPortSpec(port);
-    if (!window.confirm(`Clear connection history for closed port ${spec}?`)) return;
+    if (!window.confirm(`Clear connection history for closed port ${spec}?`))
+      return;
     const request: PortCloseRequest = {
       workloadUuid: workloadId,
       flag: flag,
@@ -461,7 +474,11 @@ const WorkloadDetailComponent: React.FC = () => {
       return;
     }
 
-    if (!window.confirm(`Close all ports with statuses: ${selectedStatuses.join(", ")}?`)) {
+    if (
+      !window.confirm(
+        `Close all ports with statuses: ${selectedStatuses.join(", ")}?`
+      )
+    ) {
       return;
     }
 
@@ -469,8 +486,8 @@ const WorkloadDetailComponent: React.FC = () => {
       {
         workloadUuid: workloadId,
         flag: filterDirection,
-        status: selectedStatuses
-      }
+        status: selectedStatuses,
+      },
     ];
 
     wasmClosePortsByStatus(request)
@@ -487,16 +504,20 @@ const WorkloadDetailComponent: React.FC = () => {
   // CloseNotActivePorts: 활성 상태가 아닌 모든 포트 닫기
   const handleCloseNotActivePorts = (flag: number) => {
     if (!workloadId) return;
-    
-    if (!window.confirm(`Close all non-active ports for ${flag === 0 ? 'inbound' : 'outbound'}?`)) {
+
+    if (
+      !window.confirm(
+        `Close all non-active ports for ${flag === 0 ? "inbound" : "outbound"}?`
+      )
+    ) {
       return;
     }
-    
+
     const request: CloseNotActivePortsRequest = {
       workloadUuid: workloadId,
-      flag: flag
+      flag: flag,
     };
-    
+
     wasmCloseNotActivePorts(request)
       .then((result) => {
         loadWorkloadDetail(workloadId);
@@ -509,7 +530,7 @@ const WorkloadDetailComponent: React.FC = () => {
   // 상태 체크박스 토글
   const handleStatusChange = (status: string) => {
     if (selectedStatuses.includes(status)) {
-      setSelectedStatuses(selectedStatuses.filter(s => s !== status));
+      setSelectedStatuses(selectedStatuses.filter((s) => s !== status));
     } else {
       setSelectedStatuses([...selectedStatuses, status]);
     }
@@ -526,11 +547,13 @@ const WorkloadDetailComponent: React.FC = () => {
   const handleRemoveInboundSource = (index: number) => {
     setInboundSources((prev) => prev.filter((_, i) => i !== index));
   };
-  const handleChangeInboundSource = (index: number, field: keyof AccessSource, value: string) => {
+  const handleChangeInboundSource = (
+    index: number,
+    field: keyof AccessSource,
+    value: string
+  ) => {
     setInboundSources((prev) =>
-      prev.map((src, i) =>
-        i === index ? { ...src, [field]: value } : src
-      )
+      prev.map((src, i) => (i === index ? { ...src, [field]: value } : src))
     );
   };
 
@@ -544,11 +567,13 @@ const WorkloadDetailComponent: React.FC = () => {
   const handleRemoveOutboundSource = (index: number) => {
     setOutboundSources((prev) => prev.filter((_, i) => i !== index));
   };
-  const handleChangeOutboundSource = (index: number, field: keyof AccessSource, value: string) => {
+  const handleChangeOutboundSource = (
+    index: number,
+    field: keyof AccessSource,
+    value: string
+  ) => {
     setOutboundSources((prev) =>
-      prev.map((src, i) =>
-        i === index ? { ...src, [field]: value } : src
-      )
+      prev.map((src, i) => (i === index ? { ...src, [field]: value } : src))
     );
   };
 
@@ -562,11 +587,13 @@ const WorkloadDetailComponent: React.FC = () => {
   const handleRemoveEditSource = (index: number) => {
     setEditSources((prev) => prev.filter((_, i) => i !== index));
   };
-  const handleChangeEditSource = (index: number, field: keyof AccessSource, value: string) => {
+  const handleChangeEditSource = (
+    index: number,
+    field: keyof AccessSource,
+    value: string
+  ) => {
     setEditSources((prev) =>
-      prev.map((src, i) =>
-        i === index ? { ...src, [field]: value } : src
-      )
+      prev.map((src, i) => (i === index ? { ...src, [field]: value } : src))
     );
   };
 
@@ -626,7 +653,9 @@ const WorkloadDetailComponent: React.FC = () => {
           <td>{port.isRange ? "true" : "false"}</td>
           <td>{port.portNumber ?? "N/A"}</td>
           <td>
-            {port.portRange ? `${port.portRange.start}-${port.portRange.end}` : "N/A"}
+            {port.portRange
+              ? `${port.portRange.start}-${port.portRange.end}`
+              : "N/A"}
           </td>
           <td>
             {port.status !== undefined && port.status !== null
@@ -639,7 +668,8 @@ const WorkloadDetailComponent: React.FC = () => {
               <ul>
                 {port.accessSources.map((src, idx) => (
                   <li key={idx}>
-                    {src.ip} / {src.protocol} / {src.comment} / {src.lastUpdatedAt}
+                    {src.ip} / {src.protocol} / {src.comment} /{" "}
+                    {src.lastUpdatedAt}
                   </li>
                 ))}
               </ul>
@@ -661,15 +691,23 @@ const WorkloadDetailComponent: React.FC = () => {
             {port.isOpen ? (
               <>
                 <button onClick={() => openEditModal(flag, port)}>Edit</button>
-                <button onClick={() => handleCloseOpenedPort(flag, port)} style={{ marginLeft: '0.5rem' }}>
+                <button
+                  onClick={() => handleCloseOpenedPort(flag, port)}
+                  style={{ marginLeft: "0.5rem" }}
+                >
                   Close
                 </button>
               </>
             ) : (
               <>
-                <button onClick={() => handleOpenClosedPort(flag, port)}>Allow</button>
+                <button onClick={() => handleOpenClosedPort(flag, port)}>
+                  Allow
+                </button>
                 {port.count && port.count > 0 && (
-                  <button onClick={() => handleClearClosedPortHistory(flag, port)} style={{ marginLeft: '0.5rem' }}>
+                  <button
+                    onClick={() => handleClearClosedPortHistory(flag, port)}
+                    style={{ marginLeft: "0.5rem" }}
+                  >
                     Clear
                   </button>
                 )}
@@ -686,7 +724,7 @@ const WorkloadDetailComponent: React.FC = () => {
       return <p>No ports found.</p>;
     }
     return (
-      <table border={1} cellPadding={4} style={{ marginBottom: '1rem' }}>
+      <table border={1} cellPadding={4} style={{ marginBottom: "1rem" }}>
         {renderTableHeader()}
         {renderPortRows(ports, flag)}
       </table>
@@ -696,9 +734,7 @@ const WorkloadDetailComponent: React.FC = () => {
   // === Modal Rendering ===
   const renderModalOverlay = (children: React.ReactNode) => (
     <div style={styles.modalOverlay}>
-      <div style={styles.modalContent}>
-        {children}
-      </div>
+      <div style={styles.modalContent}>{children}</div>
     </div>
   );
 
@@ -714,50 +750,61 @@ const WorkloadDetailComponent: React.FC = () => {
           value={inboundPortSpec}
           onChange={(e) => setInboundPortSpec(e.target.value)}
           placeholder="Ex) 8080, 8081, 8080-8091"
-          style={{ width: '100%', marginBottom: '0.5rem' }}
+          style={{ width: "100%", marginBottom: "0.5rem" }}
         />
         <label>Access Policy: </label>
         <select
           value={inboundAccessPolicy}
-          onChange={(e) => setInboundAccessPolicy(e.target.value as AccessPolicy)}
-          style={{ marginBottom: '0.5rem' }}
+          onChange={(e) =>
+            setInboundAccessPolicy(e.target.value as AccessPolicy)
+          }
+          style={{ marginBottom: "0.5rem" }}
         >
           <option value="allow-all">allow-all</option>
           <option value="only-specific">only-specific</option>
           <option value="exclude-specific">exclude-specific</option>
         </select>
-        <div style={{ margin: '0.5rem 0' }}>
-          <label style={{ display: 'block' }}>Access Sources:</label>
+        <div style={{ margin: "0.5rem 0" }}>
+          <label style={{ display: "block" }}>Access Sources:</label>
           {inboundSources.map((src, idx) => (
-            <div key={idx} style={{ marginBottom: '0.3rem' }}>
+            <div key={idx} style={{ marginBottom: "0.3rem" }}>
               <input
                 type="text"
                 placeholder="IP"
                 value={src.ip}
-                onChange={(e) => handleChangeInboundSource(idx, "ip", e.target.value)}
-                style={{ width: '90px', marginRight: '0.5rem' }}
+                onChange={(e) =>
+                  handleChangeInboundSource(idx, "ip", e.target.value)
+                }
+                style={{ width: "90px", marginRight: "0.5rem" }}
               />
               <input
                 type="text"
                 placeholder="Protocol"
                 value={src.protocol}
-                onChange={(e) => handleChangeInboundSource(idx, "protocol", e.target.value)}
-                style={{ width: '80px', marginRight: '0.5rem' }}
+                onChange={(e) =>
+                  handleChangeInboundSource(idx, "protocol", e.target.value)
+                }
+                style={{ width: "80px", marginRight: "0.5rem" }}
               />
               <input
                 type="text"
                 placeholder="Comment"
                 value={src.comment}
-                onChange={(e) => handleChangeInboundSource(idx, "comment", e.target.value)}
-                style={{ width: '120px', marginRight: '0.5rem' }}
+                onChange={(e) =>
+                  handleChangeInboundSource(idx, "comment", e.target.value)
+                }
+                style={{ width: "120px", marginRight: "0.5rem" }}
               />
               <button onClick={() => handleRemoveInboundSource(idx)}>X</button>
             </div>
           ))}
           <button onClick={handleAddInboundSource}>+ Add Source</button>
         </div>
-        <div style={{ marginTop: '1rem' }}>
-          <button onClick={handleOpenInboundPort} style={{ marginRight: '0.5rem' }}>
+        <div style={{ marginTop: "1rem" }}>
+          <button
+            onClick={handleOpenInboundPort}
+            style={{ marginRight: "0.5rem" }}
+          >
             Open Port
           </button>
           <button onClick={() => setShowInboundModal(false)}>Cancel</button>
@@ -778,54 +825,65 @@ const WorkloadDetailComponent: React.FC = () => {
           value={outboundPortSpec}
           onChange={(e) => setOutboundPortSpec(e.target.value)}
           placeholder="Ex) 9000, 9001, 9001-9010"
-          style={{ width: '100%', marginBottom: '0.5rem' }}
+          style={{ width: "100%", marginBottom: "0.5rem" }}
         />
         <label>Access Policy: </label>
         <select
           value={outboundAccessPolicy}
-          onChange={(e) => setOutboundAccessPolicy(e.target.value as AccessPolicy)}
-          style={{ marginBottom: '0.5rem' }}
+          onChange={(e) =>
+            setOutboundAccessPolicy(e.target.value as AccessPolicy)
+          }
+          style={{ marginBottom: "0.5rem" }}
         >
           <option value="allow-all">allow-all</option>
           <option value="only-specific">only-specific</option>
           <option value="exclude-specific">exclude-specific</option>
         </select>
-        <div style={{ margin: '0.5rem 0' }}>
-          <label style={{ display: 'block' }}>Access Sources:</label>
+        <div style={{ margin: "0.5rem 0" }}>
+          <label style={{ display: "block" }}>Access Sources:</label>
           {outboundSources.map((src, idx) => (
-            <div key={idx} style={{ marginBottom: '0.3rem' }}>
+            <div key={idx} style={{ marginBottom: "0.3rem" }}>
               <input
                 type="text"
                 placeholder="IP"
                 value={src.ip}
-                onChange={(e) => handleChangeOutboundSource(idx, "ip", e.target.value)}
-                style={{ width: '90px', marginRight: '0.5rem' }}
+                onChange={(e) =>
+                  handleChangeOutboundSource(idx, "ip", e.target.value)
+                }
+                style={{ width: "90px", marginRight: "0.5rem" }}
               />
               <input
                 type="text"
                 placeholder="Protocol"
                 value={src.protocol}
-                onChange={(e) => handleChangeOutboundSource(idx, "protocol", e.target.value)}
-                style={{ width: '80px', marginRight: '0.5rem' }}
+                onChange={(e) =>
+                  handleChangeOutboundSource(idx, "protocol", e.target.value)
+                }
+                style={{ width: "80px", marginRight: "0.5rem" }}
               />
               <input
                 type="text"
                 placeholder="Comment"
                 value={src.comment}
-                onChange={(e) => handleChangeOutboundSource(idx, "comment", e.target.value)}
-                style={{ width: '120px', marginRight: '0.5rem' }}
+                onChange={(e) =>
+                  handleChangeOutboundSource(idx, "comment", e.target.value)
+                }
+                style={{ width: "120px", marginRight: "0.5rem" }}
               />
               <button onClick={() => handleRemoveOutboundSource(idx)}>X</button>
             </div>
           ))}
           <button onClick={handleAddOutboundSource}>+ Add Source</button>
         </div>
-        <div style={{ marginTop: '1rem' }}>
-          <button onClick={handleOpenOutboundPort} style={{ marginRight: '0.5rem' }}>
+        <div style={{ marginTop: "1rem" }}>
+          <button
+            onClick={handleOpenOutboundPort}
+            style={{ marginRight: "0.5rem" }}
+          >
             Open Port
           </button>
           <button onClick={() => setShowOutboundModal(false)}>Cancel</button>
-          </div>
+        </div>
       </>
     );
   };
@@ -841,52 +899,67 @@ const WorkloadDetailComponent: React.FC = () => {
           type="text"
           value={editPortSpec}
           onChange={(e) => setEditPortSpec(e.target.value)}
-          style={{ width: '100%', marginBottom: '0.5rem' }}
+          style={{ width: "100%", marginBottom: "0.5rem" }}
         />
         <p>(예: 단일 포트 "8080" 또는 포트 범위 "8083-8085")</p>
         <label>Access Policy: </label>
         <select
           value={editAccessPolicy}
           onChange={(e) => setEditAccessPolicy(e.target.value as AccessPolicy)}
-          style={{ marginBottom: '0.5rem' }}
+          style={{ marginBottom: "0.5rem" }}
         >
           <option value="allow-all">allow-all</option>
           <option value="only-specific">only-specific</option>
           <option value="exclude-specific">exclude-specific</option>
         </select>
-        <div style={{ margin: '0.5rem 0' }}>
-          <label style={{ display: 'block' }}>Access Sources:</label>
+        <div style={{ margin: "0.5rem 0" }}>
+          <label style={{ display: "block" }}>Access Sources:</label>
           {editSources.map((src, idx) => (
-            <div key={idx} style={{ marginBottom: '0.3rem' }}>
+            <div key={idx} style={{ marginBottom: "0.3rem" }}>
               <input
                 type="text"
                 placeholder="IP"
                 value={src.ip}
-                onChange={(e) => handleChangeEditSource(idx, "ip", e.target.value)}
-                style={{ width: '90px', marginRight: '0.5rem' }}
+                onChange={(e) =>
+                  handleChangeEditSource(idx, "ip", e.target.value)
+                }
+                style={{ width: "90px", marginRight: "0.5rem" }}
               />
               <input
                 type="text"
                 placeholder="Protocol"
                 value={src.protocol}
-                onChange={(e) => handleChangeEditSource(idx, "protocol", e.target.value)}
-                style={{ width: '80px', marginRight: '0.5rem' }}
+                onChange={(e) =>
+                  handleChangeEditSource(idx, "protocol", e.target.value)
+                }
+                style={{ width: "80px", marginRight: "0.5rem" }}
               />
               <input
                 type="text"
                 placeholder="Comment"
                 value={src.comment}
-                onChange={(e) => handleChangeEditSource(idx, "comment", e.target.value)}
-                style={{ width: '120px', marginRight: '0.5rem' }}
+                onChange={(e) =>
+                  handleChangeEditSource(idx, "comment", e.target.value)
+                }
+                style={{ width: "120px", marginRight: "0.5rem" }}
               />
               <button onClick={() => handleRemoveEditSource(idx)}>X</button>
             </div>
           ))}
           <button onClick={handleAddEditSource}>+ Add Source</button>
         </div>
-        <div style={{ marginTop: '1rem' }}>
-          <button onClick={handleEditPort} style={{ marginRight: '0.5rem' }}>Save</button>
-          <button onClick={() => { setShowEditModal(false); resetEditStates(); }}>Cancel</button>
+        <div style={{ marginTop: "1rem" }}>
+          <button onClick={handleEditPort} style={{ marginRight: "0.5rem" }}>
+            Save
+          </button>
+          <button
+            onClick={() => {
+              setShowEditModal(false);
+              resetEditStates();
+            }}
+          >
+            Cancel
+          </button>
         </div>
       </>
     );
@@ -895,51 +968,55 @@ const WorkloadDetailComponent: React.FC = () => {
   // 상태 필터 모달
   const renderStatusFilterModal = () => {
     if (!showStatusFilterModal) return null;
-    
+
     return renderModalOverlay(
       <>
         <h3>Close Ports by Status</h3>
-        <div style={{ marginBottom: '1rem' }}>
+        <div style={{ marginBottom: "1rem" }}>
           <label>Direction: </label>
-          <select 
-            value={filterDirection} 
+          <select
+            value={filterDirection}
             onChange={(e) => setFilterDirection(e.target.value)}
-            style={{ marginBottom: '0.5rem' }}
+            style={{ marginBottom: "0.5rem" }}
           >
             <option value="0">Inbound</option>
             <option value="1">Outbound</option>
           </select>
         </div>
-        
-        <div style={{ marginBottom: '1rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem' }}>Select Statuses to Close:</label>
-          {statusOptions.map(option => (
-            <div key={option.value} style={{ marginBottom: '0.3rem' }}>
+
+        <div style={{ marginBottom: "1rem" }}>
+          <label style={{ display: "block", marginBottom: "0.5rem" }}>
+            Select Statuses to Close:
+          </label>
+          {statusOptions.map((option) => (
+            <div key={option.value} style={{ marginBottom: "0.3rem" }}>
               <label>
                 <input
                   type="checkbox"
                   checked={selectedStatuses.includes(option.value)}
                   onChange={() => handleStatusChange(option.value)}
-                  style={{ marginRight: '0.5rem' }}
+                  style={{ marginRight: "0.5rem" }}
                 />
                 {option.label}
               </label>
             </div>
           ))}
         </div>
-        
-        <div style={{ marginTop: '1rem' }}>
-          <button 
-            onClick={handleClosePortsByStatus} 
+
+        <div style={{ marginTop: "1rem" }}>
+          <button
+            onClick={handleClosePortsByStatus}
             disabled={selectedStatuses.length === 0}
-            style={{ marginRight: '0.5rem' }}
+            style={{ marginRight: "0.5rem" }}
           >
             Close Matching Ports
           </button>
-          <button onClick={() => {
-            setShowStatusFilterModal(false);
-            setSelectedStatuses([]);
-          }}>
+          <button
+            onClick={() => {
+              setShowStatusFilterModal(false);
+              setSelectedStatuses([]);
+            }}
+          >
             Cancel
           </button>
         </div>
@@ -950,29 +1027,37 @@ const WorkloadDetailComponent: React.FC = () => {
   return (
     <div>
       <h2>Workload Detail: {detail.workloadName}</h2>
-      <p><strong>Kind:</strong> {detail.kind}</p>
+      <p>
+        <strong>Kind:</strong> {detail.kind}
+      </p>
 
       {/* ==== Inbound Stats ==== */}
       <h3>Inbound Stats</h3>
       <p>
-        Active: {detail.inbound.stats.active}, Unconnected: {detail.inbound.stats.unconnected}, Idle: {detail.inbound.stats.idle},
-        Error: {detail.inbound.stats.error}, Attempted: {detail.inbound.stats.attempted},
-        Latency RTT: {detail.inbound.stats.latencyRtt}, Throughput: {detail.inbound.stats.throughput}
+        Active: {detail.inbound.stats.active}, Unconnected:{" "}
+        {detail.inbound.stats.unconnected}, Idle: {detail.inbound.stats.idle},
+        Error: {detail.inbound.stats.error}, Attempted:{" "}
+        {detail.inbound.stats.attempted}, Latency RTT:{" "}
+        {detail.inbound.stats.latencyRtt}, Throughput:{" "}
+        {detail.inbound.stats.throughput}
       </p>
 
       {/* ==== Inbound Ports ==== */}
       <h3>Inbound Ports</h3>
-      <div style={{ marginBottom: '1rem' }}>
-        <h4 style={{ display: 'inline-block', marginRight: '1rem' }}>Open</h4>
-        <button onClick={() => setShowInboundModal(true)} style={{ marginRight: '0.5rem' }}>
+      <div style={{ marginBottom: "1rem" }}>
+        <h4 style={{ display: "inline-block", marginRight: "1rem" }}>Open</h4>
+        <button
+          onClick={() => setShowInboundModal(true)}
+          style={{ marginRight: "0.5rem" }}
+        >
           + Open Inbound Port
         </button>
-        <button 
+        <button
           onClick={() => {
             setFilterDirection("0");
             setShowStatusFilterModal(true);
           }}
-          style={{ marginRight: '0.5rem' }}
+          style={{ marginRight: "0.5rem" }}
         >
           Close by Status
         </button>
@@ -989,24 +1074,30 @@ const WorkloadDetailComponent: React.FC = () => {
       {/* ==== Outbound Stats ==== */}
       <h3>Outbound Stats</h3>
       <p>
-        Active: {detail.outbound.stats.active}, Unconnected: {detail.outbound.stats.unconnected}, Idle: {detail.outbound.stats.idle},
-        Error: {detail.outbound.stats.error}, Attempted: {detail.outbound.stats.attempted},
-        Latency RTT: {detail.outbound.stats.latencyRtt}, Throughput: {detail.outbound.stats.throughput}
+        Active: {detail.outbound.stats.active}, Unconnected:{" "}
+        {detail.outbound.stats.unconnected}, Idle: {detail.outbound.stats.idle},
+        Error: {detail.outbound.stats.error}, Attempted:{" "}
+        {detail.outbound.stats.attempted}, Latency RTT:{" "}
+        {detail.outbound.stats.latencyRtt}, Throughput:{" "}
+        {detail.outbound.stats.throughput}
       </p>
 
       {/* ==== Outbound Ports ==== */}
       <h3>Outbound Ports</h3>
-      <div style={{ marginBottom: '1rem' }}>
-        <h4 style={{ display: 'inline-block', marginRight: '1rem' }}>Open</h4>
-        <button onClick={() => setShowOutboundModal(true)} style={{ marginRight: '0.5rem' }}>
+      <div style={{ marginBottom: "1rem" }}>
+        <h4 style={{ display: "inline-block", marginRight: "1rem" }}>Open</h4>
+        <button
+          onClick={() => setShowOutboundModal(true)}
+          style={{ marginRight: "0.5rem" }}
+        >
           + Open Outbound Port
         </button>
-        <button 
+        <button
           onClick={() => {
             setFilterDirection("1");
             setShowStatusFilterModal(true);
           }}
-          style={{ marginRight: '0.5rem' }}
+          style={{ marginRight: "0.5rem" }}
         >
           Close by Status
         </button>
@@ -1022,11 +1113,14 @@ const WorkloadDetailComponent: React.FC = () => {
 
       {/* ==== Edit Modal ==== */}
       {renderEditModal()}
-      
+
       {/* ==== Status Filter Modal ==== */}
       {renderStatusFilterModal()}
 
-      <Link to={`/namespace/${namespaceName}`} style={{ display: 'block', marginTop: '2rem' }}>
+      <Link
+        to={`/namespace/${namespaceName}`}
+        style={{ display: "block", marginTop: "2rem" }}
+      >
         Back to Workloads List
       </Link>
 
@@ -1038,21 +1132,24 @@ const WorkloadDetailComponent: React.FC = () => {
 
 const styles: { [key: string]: React.CSSProperties } = {
   modalOverlay: {
-    position: 'fixed',
-    top: 0, left: 0, right: 0, bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 9999
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.4)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 9999,
   },
   modalContent: {
-    backgroundColor: '#fff',
-    padding: '1rem',
-    borderRadius: '4px',
-    minWidth: '350px',
-    maxWidth: '600px'
-  }
+    backgroundColor: "#fff",
+    padding: "1rem",
+    borderRadius: "4px",
+    minWidth: "350px",
+    maxWidth: "600px",
+  },
 };
 
 export default WorkloadDetailComponent;
