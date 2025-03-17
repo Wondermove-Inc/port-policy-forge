@@ -43,6 +43,7 @@ const App = () => {
             width: "100%",
             minHeight: "calc(100vh - 56px)",
             position: "relative",
+            minWidth: 1280
           }}
         >
           {isWasmLoaded ? (
