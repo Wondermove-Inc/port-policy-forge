@@ -93,7 +93,7 @@ export const ModalPortSetting = ({
                 "Port range: enter the range with a hyphen (e.g. 30080-30090)",
               ]}
             />
-            <Box sx={{ textAlign: "center", mt: 1 }}>
+            <Box sx={{ textAlign: "center", mt: "16px" }}>
               <Controller
                 name="portSpec"
                 control={control}
