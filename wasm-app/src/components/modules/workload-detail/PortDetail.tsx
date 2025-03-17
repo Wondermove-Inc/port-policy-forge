@@ -27,10 +27,7 @@ export const PortDetail = ({
   open: boolean;
 }) => {
   const accessSourcesShown =
-    record.accessSources?.length !== undefined &&
-    record.accessSources?.length > 0 &&
-    record.accessPolicy !== AccessPolicy.ALLOW_ALL &&
-    open;
+    record.accessPolicy === AccessPolicy.ALLOW_ALL && open;
 
   const isInbound = record.direction === PortDirection.INBOUND;
   return (
@@ -39,7 +36,9 @@ export const PortDetail = ({
         border: "none !important",
         "&>div": {
           p: "20px",
-          borderColor: "action.disabledBackground",
+          borderColor: "border.elevated",
+          backgroundColor: "background.shaded"
+
         },
       }}
     >
@@ -69,7 +68,7 @@ export const PortDetail = ({
                     </ShadedBox>
                   )}
                 </Box>
-              ),
+              )
             )}
           </Box>
         </Box>

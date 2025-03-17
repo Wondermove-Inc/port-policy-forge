@@ -137,7 +137,7 @@ export const WorkloadDetail = ({
             portRange: el.portRange as PortRangeType,
             portNumber: el.portNumber,
           }),
-          sourceNumber: formatter("accessSources", "", (el) => el.length)(el),
+          sourceNumber: el.accessSources?.length || 0,
           lastConnectionDate: formatter(
             "lastConnectionDate",
             "",
