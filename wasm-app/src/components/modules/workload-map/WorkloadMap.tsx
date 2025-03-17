@@ -21,6 +21,7 @@ import { useCommonStore } from "@/store";
 export const WorkloadMap = () => {
   const [edges, setEdges] = useState<EdgeData[]>([]);
   const [nodes, setNodes] = useState<NodeData[]>([]);
+  const [removingEdgeId, setRemovingEdgeId] = useState("");
   const [networkGraphRenderKey, setNetworkGraphRenderKey] = useState<number>(
     new Date().getTime()
   );
@@ -153,17 +154,21 @@ export const WorkloadMap = () => {
 
   const handleClosePort = () => {
     modalClosePort.close();
-    network?.body.data.edges.remove(selectedEdgeId.current);
     const edge = edges.find((edge) => edge.id === selectedEdgeId.current);
     if (edge) {
-      const fromConnectNodes = network?.getConnectedNodes(edge.from);
-      const toConnectEdges = network?.getConnectedNodes(edge.to);
-      if (fromConnectNodes?.length === 0) {
-        network?.body.data.nodes.remove(edge.from);
-      }
-      if (toConnectEdges?.length === 0) {
-        network?.body.data.nodes.remove(edge.to);
-      }
+      setRemovingEdgeId(edge.id as string);
+      setTimeout(() => {
+        setRemovingEdgeId("");
+        network?.body.data.edges.remove(selectedEdgeId.current);
+        const fromConnectNodes = network?.getConnectedNodes(edge.from);
+        const toConnectEdges = network?.getConnectedNodes(edge.to);
+        if (fromConnectNodes?.length === 0) {
+          network?.body.data.nodes.remove(edge.from);
+        }
+        if (toConnectEdges?.length === 0) {
+          network?.body.data.nodes.remove(edge.to);
+        }
+      }, 3000);
     }
   };
 
@@ -209,6 +214,7 @@ export const WorkloadMap = () => {
         filterPorts={filterPorts}
         activeNodeId={activeNodeId}
         portHover={portHover}
+        removingEdgeId={removingEdgeId}
         setNetwork={setNetwork}
         onEdgeDisconnected={handleEdgeDisconnected}
         onNodeSelected={handleOnNodeSelected}

@@ -277,16 +277,31 @@ export class NetworkNode {
         x -= 8;
       }
       const y = this.node.y - (this.node?.data?.nodeSize || 0) / 2 + 10 - 1;
-      this.ctx.fillStyle =
+      const badgeColor =
         ports[i].status === WorkloadPortStatus.ERROR ? color.error : color.idle;
+      const gradient1 = this.ctx.createLinearGradient(x, 0, y, 0);
+      gradient1.addColorStop(0, badgeColor);
+      gradient1.addColorStop(1, badgeColor);
+      const gradient2 = this.ctx.createLinearGradient(x, 0, y, 0);
+      gradient2.addColorStop(0, "rgba(0, 0, 0, 0)");
+      gradient2.addColorStop(1, "rgba(0, 0, 0, 0.2)");
+      this.ctx.fillStyle = gradient1;
       this.ctx.textAlign = "center";
       this.ctx.textBaseline = "middle";
       this.ctx.beginPath();
-      this.ctx.arc(x, y, ARC_RADIUS, 0, Math.PI * 2);
-      this.ctx.lineWidth = 1;
+      if (ports[i].total <= 99) {
+        this.ctx.arc(x, y, ARC_RADIUS, 0, Math.PI * 2);
+        this.ctx.lineWidth = 1;
+      } else {
+        this.ctx.roundRect(x - 13, y - 10, 26, 20, 10);
+      }
       this.ctx.fill();
+
+      this.ctx.fillStyle = gradient2;
+      this.ctx.fill();
+
       this.ctx.closePath();
-      this.ctx.font = "bold 10px Arial";
+      this.ctx.font = "10px Arial";
       const portStr = ports[i].total <= 99 ? ports[i].total.toString() : "99+";
       this.ctx.fillStyle =
         ports[i].status === WorkloadPortStatus.ERROR

@@ -23,6 +23,7 @@ export type NetworkGraphProps = {
   activeNodeId: string;
   filterPorts?: FilterPorts;
   portHover: Port | null;
+  removingEdgeId: string;
   onEdgeDisconnected?: (edgeId: string) => void;
   onNodeSelected?: (nodeId: string) => void;
   setNetwork: (n: CustomNetwork) => void;
@@ -34,6 +35,7 @@ const NetworkGraph = ({
   activeNodeId,
   filterPorts,
   portHover,
+  removingEdgeId,
   onNodeSelected,
   onEdgeDisconnected,
   setNetwork,
@@ -112,6 +114,7 @@ const NetworkGraph = ({
         y: properties.event.srcEvent.offsetY,
       });
 
+      const connectedEdges = activeNodeId ? networkRef.current?.getConnectedEdges(activeNodeId) : [];
       const clickPosition: Position = {
         x: properties.pointer.canvas.x,
         y: properties.pointer.canvas.y,
@@ -120,7 +123,7 @@ const NetworkGraph = ({
         onNodeSelected?.(nodeId as string);
         return;
       }
-      if (edgeId) {
+      if (edgeId && activeNodeId && connectedEdges?.includes(edgeId)) {
         const edge = networkRef.current?.body.edges[edgeId as string];
         if (edge) {
           const fromNodePos = networkRef.current?.getPositions([edge.from.id])[
@@ -158,6 +161,7 @@ const NetworkGraph = ({
     activeEdgeId,
     filterPorts,
     portHover,
+    removingEdgeId,
   ]);
 
   const draw = useCallback(() => {
@@ -201,6 +205,7 @@ const NetworkGraph = ({
           hoverNodeId: hoverNodeId.current,
           network: networkRef.current as CustomNetwork,
           portHover,
+          removingEdgeId,
         });
         networkEdge.draw();
       }
@@ -229,6 +234,7 @@ const NetworkGraph = ({
     activeEdgeId,
     filterPorts,
     portHover,
+    removingEdgeId,
   ]);
 
   useEffect(() => {

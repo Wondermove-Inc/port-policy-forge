@@ -73,8 +73,8 @@ export const EDGE_STYLES: Record<string, EdgeStyle> = {
     lineDash: [0, 0],
   },
   DEFAULT: {
-    strokeStyle: color.active,
-    arrowKey: "activeArrow",
+    strokeStyle: color.stroke.default,
+    arrowKey: "defaultArrow",
     lineDash: [0, 0],
   },
 };

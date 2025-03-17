@@ -79,9 +79,7 @@ var MockWorkloads = map[string][]model.Workload{
 			Kind:                    model.WORKLOAD_KIND_DEPLOYMENT,
 			Usage:                   0.5, // 50% CPU usage
 			From:                    []model.Relation{},
-			To: []model.Relation{
-				{WorkloadId: "7431bb4f-cae8-4dbe-a542-d6f52c893271", Status: 0}, // Active
-			},
+			To:                      []model.Relation{},
 			Inbound: model.TrafficStats{
 				Stats: model.Stats{
 					Active:      3,
@@ -496,7 +494,6 @@ var MockWorkloads = map[string][]model.Workload{
 			Kind:                    "deployment",
 			Usage:                   0.6,
 			From: []model.Relation{
-				{WorkloadId: "7f2552b4-ab40-4120-a6d9-16507024922b", Status: 2}, // Error
 				{WorkloadId: "1b8892b1-58bc-464f-9401-b31eb2a9db99", Status: 2}, // Error
 			},
 			To: []model.Relation{

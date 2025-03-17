@@ -88,6 +88,7 @@ export type CustomNetwork = Network & {
 
 export type CanvasImage = {
   arrow: HTMLImageElement;
+  defaultArrow: HTMLImageElement;
   activeArrow: HTMLImageElement;
   idleArrow: HTMLImageElement;
   errorArrow: HTMLImageElement;
@@ -115,6 +116,7 @@ export type DrawingOptions = {
   filterPorts?: FilterPorts;
   portHover?: Port | null;
   network?: CustomNetwork;
+  removingEdgeId?: string;
 };
 
 export type WorkloadConnector = {

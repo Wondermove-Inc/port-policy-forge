@@ -64,12 +64,17 @@ export class NetworkEdge {
     this.ctx.save();
     this.drawEdgeLine(isActiveEdge, disabled);
     this.drawEdgeArrow(isActiveEdge, disabled);
-    this.drawEdgeLabel(isActiveEdge);
+    this.drawEdgeLabel(isActiveEdge, disabled);
   }
 
-  public drawEdgeLabel(isActiveEdge?: boolean) {
+  public drawEdgeLabel(isActiveEdge?: boolean, disabled?: boolean) {
     this.ctx.save();
-    if (this.isEdgeConnected()) {
+    if (
+      this.isEdgeConnected() &&
+      this.options.activeNodeId &&
+      !disabled &&
+      !this.options.removingEdgeId
+    ) {
       this.drawEdgeLinkLabel();
     } else {
       if (isActiveEdge && !this.options.activeNodeId) {
@@ -89,25 +94,36 @@ export class NetworkEdge {
     if (disabled) {
       this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
     }
-    if (isActiveEdge) {
-      const edgeStatus = this.edge.data?.status;
-      const styleKey = edgeStatus ? String(edgeStatus) : "DEFAULT";
-      const style = EDGE_STYLES[styleKey] || EDGE_STYLES.DEFAULT;
-
-      this.ctx.strokeStyle = style.strokeStyle;
-    } else {
+    if (this.options.removingEdgeId === this.edge.id) {
       this.ctx.strokeStyle = color.stroke.default;
-    }
-
-    if (this.edge.data?.status === WorkloadPortStatus.ATTEMPT) {
       this.ctx.setLineDash([2, 2]);
     } else {
-      this.ctx.setLineDash([0, 0]);
-    }
+      if (isActiveEdge && !disabled) {
+        const edgeStatus = this.edge.data?.status;
+        const styleKey = edgeStatus
+          ? String(edgeStatus)
+          : String(WorkloadPortStatus.ACTIVE);
+        const style = EDGE_STYLES[styleKey] || EDGE_STYLES.ACTIVE;
+        this.ctx.strokeStyle = style.strokeStyle;
+      } else {
+        this.ctx.strokeStyle = color.stroke.default;
+      }
 
-    if (this.isEdgeConnected()) {
-      this.ctx.setLineDash([0, 0]);
-      this.ctx.strokeStyle = color.active;
+      if (this.edge.data?.status === WorkloadPortStatus.ATTEMPT) {
+        this.ctx.setLineDash([2, 2]);
+      } else {
+        this.ctx.setLineDash([0, 0]);
+      }
+
+      if (this.isEdgeConnected() && !disabled) {
+        const edgeStatus = this.edge.data?.status;
+        const styleKey = edgeStatus
+          ? String(edgeStatus)
+          : String(WorkloadPortStatus.ACTIVE);
+        const style = EDGE_STYLES[styleKey] || EDGE_STYLES.ACTIVE;
+        this.ctx.strokeStyle = style.strokeStyle;
+        this.ctx.setLineDash([0, 0]);
+      }
     }
 
     this.ctx.moveTo(this.coords.fromX, this.coords.fromY);
@@ -234,22 +250,30 @@ export class NetworkEdge {
 
   private drawEdgeArrow(isActiveEdge?: boolean, disabled?: boolean) {
     let arrowKey: keyof CanvasImage = "arrow";
-    if (disabled) {
-      this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
-    }
-    if (isActiveEdge) {
-      const edgeStatus = this.edge.data?.status;
-      const styleKey = edgeStatus
-        ? String(edgeStatus)
-        : WorkloadPortStatus.ACTIVE;
-      const style = EDGE_STYLES[styleKey] || EDGE_STYLES.DEFAULT;
-      arrowKey = style.arrowKey;
-    }
+    if (this.options.removingEdgeId) {
+      arrowKey = EDGE_STYLES.DEFAULT.arrowKey;
+    } else {
+      if (disabled) {
+        this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
+      }
+      if (isActiveEdge) {
+        const edgeStatus = this.edge.data?.status;
+        const styleKey = edgeStatus
+          ? String(edgeStatus)
+          : WorkloadPortStatus.ACTIVE;
+        const style = EDGE_STYLES[styleKey] || EDGE_STYLES.DEFAULT;
+        arrowKey = style.arrowKey;
+      }
 
-    if (this.isEdgeConnected()) {
-      arrowKey = EDGE_STYLES[WorkloadPortStatus.ACTIVE].arrowKey;
+      if (this.isEdgeConnected()) {
+        const edgeStatus = this.edge.data?.status;
+        const styleKey = edgeStatus
+          ? String(edgeStatus)
+          : WorkloadPortStatus.ACTIVE;
+        const style = EDGE_STYLES[styleKey] || EDGE_STYLES.DEFAULT;
+        arrowKey = style.arrowKey;
+      }
     }
-
     const arrowImage = this.canvasImages[arrowKey];
     if (!arrowImage) return;
 
