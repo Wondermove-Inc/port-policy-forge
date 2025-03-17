@@ -102,3 +102,7 @@ html, body {
   height: 60px !important;
   min-height: 60px !important;
 }
+
+.MuiDataGrid-row.selected {
+  background: #538BFF33;
+}

@@ -264,6 +264,9 @@ export const WorkloadList = () => {
           onCheckedRowsChange={handleSelectionChange}
           onRowClick={(row) => handleShowDetail(String(row.id))}
           selectionRows={closedWorkloads}
+          getRowClassName={(row) => {
+            return row.id === selectedWorkloadId ? "selected" : "";
+          }}
         ></Datagrid>
       </Box>
       <ModalConfirm
