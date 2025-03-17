@@ -27,7 +27,7 @@ export const PortDetail = ({
   open: boolean;
 }) => {
   const accessSourcesShown =
-    record.accessPolicy === AccessPolicy.ALLOW_ALL && open;
+    record.accessPolicy !== AccessPolicy.ALLOW_ALL && open;
 
   const isInbound = record.direction === PortDirection.INBOUND;
   return (
