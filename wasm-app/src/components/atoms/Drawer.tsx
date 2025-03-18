@@ -40,7 +40,16 @@ export const Drawer = ({
           display: "flex",
           flexDirection: "column",
           maxWidth: "513px",
+
           right: 0,
+          transition: "width 225ms cubic-bezier(0, 0, 0.2, 1)",
+          ...(props.open
+            ? {
+                width: 513,
+              }
+            : {
+                width: 0,
+              }),
           ...(props.variant === "temporary"
             ? {
                 marginTop: "56px",
@@ -49,7 +58,8 @@ export const Drawer = ({
               }
             : {
                 position: "absolute",
-                transform: "none !important"
+                transform: "none !important",
+                height: "calc(100% + 8px)",
               }),
         },
         "& .MuiBackdrop-root": {

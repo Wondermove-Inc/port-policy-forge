@@ -79,6 +79,7 @@ html, body {
   display: flex;
   flex-direction: column;
   height: 100%;
+  background-color: #191f2b;
 }
 
 #root > .MuiBox-root {
