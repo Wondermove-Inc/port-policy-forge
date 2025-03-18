@@ -163,6 +163,7 @@ export const CollapsibleTable = <T,>({
                           },
                           ":hover": {
                             cursor: "pointer",
+                            backgroundColor: "action.hover"
                           },
                         }}
                       >
