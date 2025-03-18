@@ -10,7 +10,7 @@ export const Header = () => {
         padding: "14px 20px",
         borderBottom: "1px solid",
         borderColor: "border.default",
-        minWidth: 1280
+        minWidth: 1280,
       }}
     >
       <Typography
