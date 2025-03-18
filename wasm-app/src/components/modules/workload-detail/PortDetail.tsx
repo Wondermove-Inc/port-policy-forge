@@ -30,6 +30,7 @@ export const PortDetail = ({
     record.accessPolicy !== AccessPolicy.ALLOW_ALL && open;
 
   const isInbound = record.direction === PortDirection.INBOUND;
+  const isAllowOnly = record.accessPolicy === AccessPolicy.ALLOW_ONLY
   return (
     <Box
       sx={{
@@ -45,7 +46,7 @@ export const PortDetail = ({
       {accessSourcesShown && (
         <Box sx={{ py: 2, display: "flex", flexDirection: "column", gap: 2 }}>
           <Typography variant="caption" color="text.tertiary">
-            {`Connected ${isInbound ? "Sources" : "Destination"} (${record.sourceNumber})`}
+            {`${isAllowOnly ? "Allowed" : "Excluded"} ${isInbound ? "Sources" : "Destination"} (${record.sourceNumber})`}
           </Typography>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
             {(record.accessSources || []).map(
