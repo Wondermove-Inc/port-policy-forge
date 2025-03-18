@@ -37,13 +37,20 @@ export const Drawer = ({
           borderLeft: "1px solid",
           borderRight: 0,
           borderColor: "border.default",
-          marginTop: "56px",
-          height: "calc(100% - 56px)",
+
           display: "flex",
           flexDirection: "column",
           maxWidth: "513px",
-          position: "fixed",
           right: 0,
+          ...(props.variant === "temporary"
+            ? {
+                marginTop: "56px",
+                height: "calc(100% - 56px)",
+                position: "fixed",
+              }
+            : {
+                position: "absolute",
+              }),
         },
         "& .MuiBackdrop-root": {
           marginTop: "56px",
