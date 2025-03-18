@@ -16,12 +16,14 @@ import {
 import { WorkloadPortStatus, WorkloadStatus } from "@/models";
 
 const BORDER_LINE_WIDTH = 1.5;
+const ARC_RADIUS = 10;
 
 export class NetworkNode {
-  ctx: CanvasRenderingContext2D;
-  node: CustomNode;
-  canvasImages: CanvasImage;
-  options: DrawingOptions;
+  private ctx: CanvasRenderingContext2D;
+  private node: CustomNode;
+  private canvasImages: CanvasImage;
+  private options: DrawingOptions;
+
   constructor(
     ctx: CanvasRenderingContext2D,
     node: CustomNode,
@@ -34,157 +36,236 @@ export class NetworkNode {
     this.options = options;
   }
 
-  public draw() {
-    if (this.isDisabled()) {
-      this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
-    } else {
-      if (this.isExternalNamespace()) {
-        this.ctx.globalAlpha = EXTERNAL_GLOBAL_ALPHA;
-      }
-    }
-
+  public draw(): void {
+    this.setInitialOpacity();
+    
     this.drawNode();
     this.drawNodeKind();
-    if (
-      this.node.data?.connected_workload_status ===
-      WorkloadStatus.BEFORE_INITIAL_SETUP
-    ) {
+    
+    if (this.isBeforeInitialSetup()) {
       this.drawNodePolicySettingBadge();
     } else {
       this.drawNodeStatsBadge();
     }
+    
+    this.setLabelOpacity();
+    this.drawNodeLabel();
+    
+    // Reset opacity
+    this.ctx.globalAlpha = GLOBAL_ALPHA;
+  }
+
+  private setInitialOpacity(): void {
+    if (this.isDisabled()) {
+      this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
+    } else if (this.isExternalNamespace()) {
+      this.ctx.globalAlpha = EXTERNAL_GLOBAL_ALPHA;
+    }
+  }
+
+  private setLabelOpacity(): void {
     if (!this.isDisabled() && this.isExternalNamespace()) {
       this.ctx.globalAlpha = EXTERNAL_GLOBAL_ALPHA;
     }
     if (!this.isDisabled()) {
       this.ctx.globalAlpha = GLOBAL_ALPHA;
     }
-    this.drawNodeLabel();
-    this.ctx.globalAlpha = GLOBAL_ALPHA;
   }
 
-  private drawNode() {
-    const isHover =
-      !!this.options?.hoverNodeId && this.options.hoverNodeId === this.node.id;
-    const isActive =
-      !!this.options.activeNodeId && this.options.activeNodeId === this.node.id;
-    const isActiveLastConnection =
+  private isBeforeInitialSetup(): boolean {
+    return this.node.data?.connected_workload_status === WorkloadStatus.BEFORE_INITIAL_SETUP;
+  }
+
+  private drawNode(): void {
+    const nodeSize = this.getNodeSize();
+    
+    const {
+      isHover,
+      isActive,
+      isActiveLastConnection,
+      isPortClosed,
+      isNodeError
+    } = this.getNodeStates();
+
+    this.ctx.lineWidth = BORDER_LINE_WIDTH;
+    
+    // Draw interaction circles if needed
+    if (isHover || isActive || isActiveLastConnection) {
+      this.drawInteractionCircles(isHover, isActive, isActiveLastConnection, isPortClosed);
+    }
+    
+    // Set the appropriate fill and stroke styles
+    this.setNodeStyles(isHover, isActive, isActiveLastConnection, isPortClosed, isNodeError);
+    
+    // Draw the main node circle
+    this.drawNodeCircle(nodeSize);
+    
+    // Add gradient if not active or hover
+    if (!isActive && !isHover) {
+      this.addNodeGradient(nodeSize);
+    } else {
+      this.ctx.stroke();
+    }
+  }
+
+  private getNodeStates() {
+    const isHover = 
+      !!this.options?.hoverNodeId && 
+      this.options.hoverNodeId === this.node.id;
+    
+    const isActive = 
+      !!this.options.activeNodeId && 
+      this.options.activeNodeId === this.node.id;
+    
+    const isActiveLastConnection = 
       !!this.options.portHover &&
       this.options.portHover.lastConnectionWorkloadUUID === this.node.id;
-    const isPortClosed =
-      !!this.options.portHover && !this.options.portHover.isOpen;
-    this.ctx.lineWidth = BORDER_LINE_WIDTH;
-    const nodeSize = this.node?.data?.nodeSize || 0;
-    this.ctx.strokeStyle = color.stroke.default;
-    const nodes = this.options.network?.body.nodes;
-    let isNodeError = false;
+    
+    const isPortClosed = 
+      !!this.options.portHover && 
+      !this.options.portHover.isOpen;
+    
+    const isNodeError = this.checkForNodeError();
+    
+    return { isHover, isActive, isActiveLastConnection, isPortClosed, isNodeError };
+  }
+
+  private checkForNodeError(): boolean {
     const currentNodeId = this.options.hoverNodeId || this.options.activeNodeId;
-    if (currentNodeId && nodes) {
-      const activeNode = nodes[currentNodeId];
-      const activeEdges = activeNode?.edges;
-      if (activeEdges) {
-        for (const edge of activeEdges) {
-          if (
-            edge.to.id === activeNode.id &&
-            edge.data?.status === WorkloadPortStatus.ATTEMPT
-          ) {
-            if (edge.from.id === this.node.id) {
-              isNodeError = true;
-            }
-          }
-        }
+    if (!currentNodeId || !this.options.network?.body.nodes) {
+      return false;
+    }
+    
+    const activeNode = this.options.network.body.nodes[currentNodeId];
+    const activeEdges = activeNode?.edges;
+    
+    if (!activeEdges) {
+      return false;
+    }
+    
+    for (const edge of activeEdges) {
+      if (
+        edge.to.id === activeNode.id &&
+        edge.data?.status === WorkloadPortStatus.ATTEMPT &&
+        edge.from.id === this.node.id
+      ) {
+        return true;
       }
     }
-    if (isHover || isActive || isActiveLastConnection) {
-      if (isHover || isActiveLastConnection) {
-        if (isActiveLastConnection && isPortClosed) {
-          this.ctx.fillStyle = color.fill.errorInteraction100;
-        } else {
-          this.ctx.fillStyle = color.fill.activeInteraction100;
-        }
-        this.ctx.beginPath();
+    
+    return false;
+  }
 
-        this.ctx.arc(
-          this.node.x,
-          this.node.y,
-          nodeSize / 2 + 24,
-          0,
-          2 * Math.PI,
-          false
-        );
-        this.ctx.closePath();
-        this.ctx.fill();
-        if (isActiveLastConnection && isPortClosed) {
-          this.ctx.fillStyle = color.fill.errorInteraction200;
-        } else {
-          this.ctx.fillStyle = color.fill.activeInteraction200;
-        }
-        this.ctx.beginPath();
-        this.ctx.arc(
-          this.node.x,
-          this.node.y,
-          nodeSize / 2 + 12,
-          0,
-          2 * Math.PI,
-          false
-        );
-        this.ctx.closePath();
-        this.ctx.fill();
-      }
-      if ((isActiveLastConnection && isPortClosed) || isNodeError) {
-        this.ctx.strokeStyle = color.stroke.error;
-        this.ctx.fillStyle = color.fill.error;
-      } else {
-        this.ctx.strokeStyle = color.stroke.active;
-        this.ctx.fillStyle = color.fill.active;
-      }
-    } else {
-      this.ctx.fillStyle = color.fill.default;
-      this.ctx.strokeStyle = color.stroke.default;
-    }
-
-    if (isNodeError) {
-      this.ctx.strokeStyle = color.stroke.error;
-      this.ctx.fillStyle = color.fill.error;
-    }
-
-    this.ctx.beginPath();
-    this.ctx.arc(this.node.x, this.node.y, nodeSize / 2, 0, 2 * Math.PI, false);
-    this.ctx.closePath();
-    this.ctx.fill();
-    this.ctx.stroke();
-
-    if (!isActive && !isHover) {
-      const gradient = this.ctx.createLinearGradient(
-        this.node.x - nodeSize / 2,
-        this.node.y - nodeSize / 2,
-        this.node.x + nodeSize / 2,
-        this.node.y + nodeSize / 2
-      );
-      gradient.addColorStop(0, "rgba(255, 255, 255, 0.2)");
-      gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
-      this.ctx.strokeStyle = gradient;
+  private drawInteractionCircles(
+    isHover: boolean,
+    isActive: boolean,
+    isActiveLastConnection: boolean,
+    isPortClosed: boolean
+  ): void {
+    const nodeSize = this.getNodeSize();
+    
+    if (isHover || isActiveLastConnection) {
+      // Draw outer interaction circle
+      this.ctx.fillStyle = isActiveLastConnection && isPortClosed
+        ? color.fill.errorInteraction100
+        : color.fill.activeInteraction100;
+        
       this.ctx.beginPath();
-      this.ctx.shadowColor = "rgba(25, 31, 43, 0.2)";
       this.ctx.arc(
         this.node.x,
         this.node.y,
-        nodeSize / 2,
+        nodeSize / 2 + 24,
         0,
         2 * Math.PI,
         false
       );
       this.ctx.closePath();
-      this.ctx.stroke();
-    } else {
-      this.ctx.stroke();
+      this.ctx.fill();
+      
+      // Draw inner interaction circle
+      this.ctx.fillStyle = isActiveLastConnection && isPortClosed
+        ? color.fill.errorInteraction200
+        : color.fill.activeInteraction200;
+        
+      this.ctx.beginPath();
+      this.ctx.arc(
+        this.node.x,
+        this.node.y,
+        nodeSize / 2 + 12,
+        0,
+        2 * Math.PI,
+        false
+      );
+      this.ctx.closePath();
+      this.ctx.fill();
     }
   }
 
-  private drawNodePolicySettingBadge() {
+  private setNodeStyles(
+    isHover: boolean,
+    isActive: boolean,
+    isActiveLastConnection: boolean,
+    isPortClosed: boolean,
+    isNodeError: boolean
+  ): void {
+    if (isNodeError || (isActiveLastConnection && isPortClosed)) {
+      this.ctx.strokeStyle = color.stroke.error;
+      this.ctx.fillStyle = color.fill.error;
+    } else if (isHover || isActive || isActiveLastConnection) {
+      this.ctx.strokeStyle = color.stroke.active;
+      this.ctx.fillStyle = color.fill.active;
+    } else {
+      this.ctx.fillStyle = color.fill.default;
+      this.ctx.strokeStyle = color.stroke.default;
+    }
+  }
+
+  private drawNodeCircle(nodeSize: number): void {
+    this.ctx.beginPath();
+    this.ctx.arc(
+      this.node.x,
+      this.node.y,
+      nodeSize / 2,
+      0,
+      2 * Math.PI,
+      false
+    );
+    this.ctx.closePath();
+    this.ctx.fill();
+    this.ctx.stroke();
+  }
+
+  private addNodeGradient(nodeSize: number): void {
+    const gradient = this.ctx.createLinearGradient(
+      this.node.x - nodeSize / 2,
+      this.node.y - nodeSize / 2,
+      this.node.x + nodeSize / 2,
+      this.node.y + nodeSize / 2
+    );
+    gradient.addColorStop(0, "rgba(255, 255, 255, 0.2)");
+    gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+    
+    this.ctx.strokeStyle = gradient;
+    this.ctx.beginPath();
+    this.ctx.shadowColor = "rgba(25, 31, 43, 0.2)";
+    this.ctx.arc(
+      this.node.x,
+      this.node.y,
+      nodeSize / 2,
+      0,
+      2 * Math.PI,
+      false
+    );
+    this.ctx.closePath();
+    this.ctx.stroke();
+  }
+
+  private drawNodePolicySettingBadge(): void {
+    const nodeSize = this.getNodeSize();
     let x = this.node.x + 14;
-    let y = this.node.y - (this.node?.data?.nodeSize || 0) / 2 - 1;
-    if (this.node.data?.nodeSize === NodeSize.SMALL) {
+    let y = this.node.y - nodeSize / 2 - 1;
+    
+    if (nodeSize === NodeSize.SMALL) {
       x -= 8;
       y -= 15;
     } else {
@@ -192,6 +273,7 @@ export class NetworkNode {
       y -= 10;
     }
 
+    // Draw white background circle
     this.ctx.globalAlpha = 1;
     this.ctx.fillStyle = color.background;
     this.ctx.beginPath();
@@ -205,11 +287,14 @@ export class NetworkNode {
     );
     this.ctx.closePath();
     this.ctx.fill();
+    
+    // Adjust opacity for disabled state
     if (this.isDisabled()) {
       this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
     }
+    
+    // Draw exclamation image
     this.ctx.beginPath();
-
     this.ctx.drawImage(
       this.canvasImages.exclamation,
       x,
@@ -220,57 +305,65 @@ export class NetworkNode {
     this.ctx.closePath();
   }
 
-  private drawNodeKind() {
-    const nodeSize = this.node?.data?.nodeSize;
-    let deploymentIconSize = NodeKindSize.MEDIUM;
-    if (nodeSize === NodeSize.BIG) {
-      deploymentIconSize = NodeKindSize.BIG;
-    } else if (nodeSize === NodeSize.SMALL) {
-      deploymentIconSize = NodeKindSize.SMALL;
+  private drawNodeKind(): void {
+    const nodeSize = this.getNodeSize();
+    let deploymentIconSize = this.getDeploymentIconSize(nodeSize);
+    
+    if (!this.node.data?.kind) {
+      return;
     }
+    
     this.ctx.beginPath();
-    if (this.node.data?.kind) {
-      this.ctx.drawImage(
-        this.canvasImages.kind[this.node.data?.kind],
-        this.node.x - deploymentIconSize / 2,
-        this.node.y - deploymentIconSize / 2,
-        deploymentIconSize,
-        deploymentIconSize
-      );
-    }
-
+    this.ctx.drawImage(
+      this.canvasImages.kind[this.node.data.kind],
+      this.node.x - deploymentIconSize / 2,
+      this.node.y - deploymentIconSize / 2,
+      deploymentIconSize,
+      deploymentIconSize
+    );
     this.ctx.closePath();
   }
 
-  private drawNodeLabel() {
-    const nodeSize = this.node?.data?.nodeSize || 0;
+  private getDeploymentIconSize(nodeSize: number): number {
+    if (nodeSize === NodeSize.BIG) {
+      return NodeKindSize.BIG;
+    } else if (nodeSize === NodeSize.SMALL) {
+      return NodeKindSize.SMALL;
+    }
+    return NodeKindSize.MEDIUM;
+  }
+
+  private drawNodeLabel(): void {
+    const nodeSize = this.getNodeSize();
+    const label = this.node?.data?.customLabel as string;
+    const namespaceLabel = this.node.data?.externalNamespace as string;
+    
     this.ctx.font = "normal 12px Arial";
     this.ctx.fillStyle = color.white;
     this.ctx.textAlign = "left";
     this.ctx.textBaseline = "alphabetic";
-    const label = this.node?.data?.customLabel as string;
-    const namespaceLabel = this.node.data?.externalNamespace as string;
-
+    
     const textMetrics = this.ctx.measureText(label);
-    const namespaceMetrics = this.ctx.measureText(namespaceLabel);
     const textWidth = textMetrics.width;
     const protectedAddImageWidth = this.canvasImages.protected.width;
     const imageToTextSpacing = 2;
 
+    // Calculate label position
     let labelX = this.node.x - textWidth / 2 - imageToTextSpacing;
-    if (
-      this.node.data?.connected_workload_status ===
-      WorkloadStatus.COMPLETE_INITIAL_SETUP
-    ) {
+    if (this.node.data?.connected_workload_status === WorkloadStatus.COMPLETE_INITIAL_SETUP) {
       labelX += protectedAddImageWidth / 2;
     }
+    
+    // Draw label text
     this.ctx.beginPath();
     this.ctx.fillText(
-      label as string,
+      label,
       labelX,
       this.node.y + nodeSize / 2 + 15,
       textWidth
     );
+    
+    // Draw protected badge if needed
     if (this.node.data?.policy_setting_badge) {
       this.ctx.drawImage(
         this.canvasImages.protected,
@@ -279,14 +372,17 @@ export class NetworkNode {
       );
     }
 
+    // Draw namespace label if needed
     if (this.node.data?.externalNamespace) {
       if (!this.isDisabled()) {
         this.ctx.globalAlpha = 0.78;
       }
+      
+      const namespaceMetrics = this.ctx.measureText(namespaceLabel);
       this.ctx.fillText(
         namespaceLabel,
         this.node.x - namespaceMetrics.width / 2,
-        this.node.y + nodeSize / 2 + 15 + 15,
+        this.node.y + nodeSize / 2 + 30,
         namespaceMetrics.width
       );
     }
@@ -294,94 +390,148 @@ export class NetworkNode {
     this.ctx.closePath();
   }
 
-  private drawNodeStatsBadge() {
+  private drawNodeStatsBadge(): void {
+    const stats = this.getStats();
     const filterPorts = this.options.filterPorts;
-    const { idle, attempted, error } = this.getStats();
-    let ports = [];
-    if (filterPorts?.idle) {
-      ports.push({
-        status: WorkloadPortStatus.IDLE,
-        total: idle,
-      });
+    const ports = this.getFilteredPorts(stats, filterPorts);
+    
+    if (!ports.length) {
+      return;
     }
-    if (filterPorts?.error || filterPorts?.attempted) {
-      let total = 0;
-      if (filterPorts?.error && filterPorts?.attempted) {
-        total = attempted + error;
-      } else if (filterPorts.error) {
-        total = error;
-      } else {
-        total = attempted;
-      }
-      ports.push({
-        status: WorkloadPortStatus.ERROR,
-        total: total,
-      });
-    }
-    ports = ports.filter((p) => p.total);
-    const ARC_RADIUS = 10;
+    
+    const nodeSize = this.getNodeSize();
+    
     for (let i = 0; i < ports.length; i++) {
+      // Calculate badge position
       let x = this.node.x + ARC_RADIUS + 14;
-      let y = this.node.y - (this.node?.data?.nodeSize || 0) / 2 + 10 - 1;
+      let y = this.node.y - nodeSize / 2 + 10 - 1;
+      
       if (ports.length !== 1) {
         x = this.node.x + (ARC_RADIUS * 2 - 5) * i + 14;
       }
 
-      if (this.node.data?.nodeSize === NodeSize.SMALL) {
+      if (nodeSize === NodeSize.SMALL) {
         x -= 4;
         y -= 5;
       }
 
-      // draw background of nodeStats
-      this.ctx.globalAlpha = GLOBAL_ALPHA;
-      this.ctx.fillStyle = color.background;
-      this.ctx.beginPath();
-      if (ports[i].total <= 99) {
-        this.ctx.arc(x, y, ARC_RADIUS, 0, 2 * Math.PI, false);
-        this.ctx.closePath();
-      } else {
-        this.ctx.roundRect(x - 13, y - 10, 26, 20, 10);
-      }
-      this.ctx.fill();
-
-      if (this.isDisabled()) {
-        this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
-      }
-      const badgeColor =
-        ports[i].status === WorkloadPortStatus.ERROR ? color.error : color.idle;
-      const gradient = this.ctx.createLinearGradient(
-        x - ARC_RADIUS,
-        y - ARC_RADIUS,
-        x + ARC_RADIUS,
-        y + ARC_RADIUS
-      );
-      gradient.addColorStop(0, "rgba(0, 0, 0, 0)");
-      gradient.addColorStop(1, "rgba(0, 0, 0, 0.2)");
-      this.ctx.fillStyle = badgeColor;
-      this.ctx.textAlign = "center";
-      this.ctx.textBaseline = "middle";
-
-      this.ctx.beginPath();
-      if (ports[i].total <= 99) {
-        this.ctx.arc(x, y, ARC_RADIUS, 0, Math.PI * 2);
-        this.ctx.lineWidth = 1;
-      } else {
-        this.ctx.roundRect(x - 13, y - 10, 26, 20, 10);
-      }
-      this.ctx.fill();
-
-      this.ctx.fillStyle = gradient;
-      this.ctx.fill();
-
-      this.ctx.closePath();
-      this.ctx.font = "10px Arial";
-      const portStr = ports[i].total <= 99 ? ports[i].total.toString() : "99+";
-      this.ctx.fillStyle =
-        ports[i].status === WorkloadPortStatus.ERROR
-          ? color.white
-          : color.black;
-      this.ctx.fillText(portStr, x, y);
+      // Draw background
+      this.drawStatBadgeBackground(x, y, ports[i].total);
+      
+      // Draw badge circle with appropriate colors
+      this.drawStatBadgeCircle(x, y, ports[i].status, ports[i].total);
+      
+      // Draw port count text
+      this.drawStatBadgeText(x, y, ports[i].status, ports[i].total);
     }
+  }
+
+  private getFilteredPorts(
+    stats: { idle: number; attempted: number; error: number },
+    filterPorts: any
+  ) {
+    const ports = [];
+    
+    if (filterPorts?.idle && stats.idle > 0) {
+      ports.push({
+        status: WorkloadPortStatus.IDLE,
+        total: stats.idle,
+      });
+    }
+    
+    if (filterPorts?.error || filterPorts?.attempted) {
+      let total = 0;
+      if (filterPorts?.error && filterPorts?.attempted) {
+        total = stats.attempted + stats.error;
+      } else if (filterPorts.error) {
+        total = stats.error;
+      } else {
+        total = stats.attempted;
+      }
+      
+      if (total > 0) {
+        ports.push({
+          status: WorkloadPortStatus.ERROR,
+          total,
+        });
+      }
+    }
+    
+    return ports;
+  }
+
+  private drawStatBadgeBackground(x: number, y: number, total: number): void {
+    this.ctx.globalAlpha = GLOBAL_ALPHA;
+    this.ctx.fillStyle = color.background;
+    this.ctx.beginPath();
+    
+    if (total <= 99) {
+      this.ctx.arc(x, y, ARC_RADIUS, 0, 2 * Math.PI, false);
+      this.ctx.closePath();
+    } else {
+      this.ctx.roundRect(x - 13, y - 10, 26, 20, 10);
+    }
+    
+    this.ctx.fill();
+  }
+
+  private drawStatBadgeCircle(
+    x: number, 
+    y: number, 
+    status: WorkloadPortStatus, 
+    total: number
+  ): void {
+    if (this.isDisabled()) {
+      this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
+    }
+    
+    const badgeColor = status === WorkloadPortStatus.ERROR ? color.error : color.idle;
+    
+    // Create gradient
+    const gradient = this.ctx.createLinearGradient(
+      x - ARC_RADIUS,
+      y - ARC_RADIUS,
+      x + ARC_RADIUS,
+      y + ARC_RADIUS
+    );
+    gradient.addColorStop(0, "rgba(0, 0, 0, 0)");
+    gradient.addColorStop(1, "rgba(0, 0, 0, 0.2)");
+    
+    // Draw badge circle
+    this.ctx.fillStyle = badgeColor;
+    this.ctx.textAlign = "center";
+    this.ctx.textBaseline = "middle";
+    this.ctx.beginPath();
+    
+    if (total <= 99) {
+      this.ctx.arc(x, y, ARC_RADIUS, 0, Math.PI * 2);
+      this.ctx.lineWidth = 1;
+    } else {
+      this.ctx.roundRect(x - 13, y - 10, 26, 20, 10);
+    }
+    
+    this.ctx.fill();
+    
+    // Apply gradient
+    this.ctx.fillStyle = gradient;
+    this.ctx.fill();
+    this.ctx.closePath();
+  }
+
+  private drawStatBadgeText(
+    x: number, 
+    y: number, 
+    status: WorkloadPortStatus, 
+    total: number
+  ): void {
+    this.ctx.font = "10px Arial";
+    const portStr = total <= 99 ? total.toString() : "99+";
+    
+    this.ctx.fillStyle = status === WorkloadPortStatus.ERROR
+      ? color.white
+      : color.black;
+      
+    this.ctx.fillText(portStr, x, y);
   }
 
   private getStats() {
@@ -403,16 +553,20 @@ export class NetworkNode {
     };
   }
 
-  private isDisabled() {
+  private isDisabled(): boolean {
     const nodeId = this.options.hoverNodeId || this.options.activeNodeId;
     return (
-      nodeId &&
+      !!nodeId &&
       !this.options?.connectedNodes?.includes(this.node.id) &&
       nodeId !== this.node.id
     );
   }
 
-  private isExternalNamespace() {
-    return this.node.data?.isExternalNamespace;
+  private isExternalNamespace(): boolean {
+    return !!this.node.data?.isExternalNamespace;
+  }
+  
+  private getNodeSize(): number {
+    return this.node?.data?.nodeSize || 0;
   }
 }
