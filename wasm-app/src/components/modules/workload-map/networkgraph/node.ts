@@ -152,16 +152,18 @@ export class NetworkNode {
     this.ctx.fill();
     this.ctx.stroke();
 
-    const gradient = this.ctx.createLinearGradient(
-      this.node.x - nodeSize / 2,
-      this.node.y - nodeSize / 2,
-      this.node.x + nodeSize / 2,
-      this.node.y + nodeSize / 2
-    );
-    gradient.addColorStop(0, "rgba(255, 255, 255, 0.2)");
-    gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
-    this.ctx.strokeStyle = gradient;
-    this.ctx.stroke();
+    if (!isActive && !isHover) {
+      const gradient = this.ctx.createLinearGradient(
+        this.node.x - nodeSize / 2,
+        this.node.y - nodeSize / 2,
+        this.node.x + nodeSize / 2,
+        this.node.y + nodeSize / 2
+      );
+      gradient.addColorStop(0, "rgba(255, 255, 255, 0.2)");
+      gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+      this.ctx.strokeStyle = gradient;
+      this.ctx.stroke();
+    }
   }
 
   private drawNodePolicySettingBadge() {
