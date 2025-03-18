@@ -301,11 +301,11 @@ export class NetworkEdge {
 
     switch (nodeSize) {
       case NodeSize.BIG:
-        return 38;
+        return 37.5;
       case NodeSize.SMALL:
         return 21;
       default:
-        return 31;
+        return 30.5;
     }
   }
 

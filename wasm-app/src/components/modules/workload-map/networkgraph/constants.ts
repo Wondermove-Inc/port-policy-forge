@@ -3,6 +3,7 @@ import { EdgeStyle } from "./types";
 import { WorkloadPortStatus } from "@/models";
 
 export const color = {
+  background: "#191f2b",
   white: "#fff",
   black: "#19191B",
   stroke: {

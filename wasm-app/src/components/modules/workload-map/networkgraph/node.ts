@@ -15,6 +15,8 @@ import {
 
 import { WorkloadPortStatus, WorkloadStatus } from "@/models";
 
+const BORDER_LINE_WIDTH = 1.5;
+
 export class NetworkNode {
   ctx: CanvasRenderingContext2D;
   node: CustomNode;
@@ -71,7 +73,7 @@ export class NetworkNode {
       this.options.portHover.lastConnectionWorkloadUUID === this.node.id;
     const isPortClosed =
       !!this.options.portHover && !this.options.portHover.isOpen;
-    this.ctx.lineWidth = 1.85;
+    this.ctx.lineWidth = BORDER_LINE_WIDTH;
     const nodeSize = this.node?.data?.nodeSize || 0;
     this.ctx.strokeStyle = color.stroke.default;
     const nodes = this.options.network?.body.nodes;
@@ -162,6 +164,19 @@ export class NetworkNode {
       gradient.addColorStop(0, "rgba(255, 255, 255, 0.2)");
       gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
       this.ctx.strokeStyle = gradient;
+      this.ctx.beginPath();
+      this.ctx.shadowColor = "rgba(25, 31, 43, 0.2)";
+      this.ctx.arc(
+        this.node.x,
+        this.node.y,
+        nodeSize / 2,
+        0,
+        2 * Math.PI,
+        false
+      );
+      this.ctx.closePath();
+      this.ctx.stroke();
+    } else {
       this.ctx.stroke();
     }
   }
@@ -178,7 +193,7 @@ export class NetworkNode {
     }
 
     this.ctx.globalAlpha = 1;
-    this.ctx.fillStyle = "#191f2b";
+    this.ctx.fillStyle = color.background;
     this.ctx.beginPath();
     this.ctx.arc(
       x + EXCLAMATION_SIZE / 2,
@@ -319,10 +334,14 @@ export class NetworkNode {
 
       // draw background of nodeStats
       this.ctx.globalAlpha = GLOBAL_ALPHA;
-      this.ctx.fillStyle = "#191f2b";
+      this.ctx.fillStyle = color.background;
       this.ctx.beginPath();
-      this.ctx.arc(x, y, ARC_RADIUS, 0, 2 * Math.PI, false);
-      this.ctx.closePath();
+      if (ports[i].total <= 99) {
+        this.ctx.arc(x, y, ARC_RADIUS, 0, 2 * Math.PI, false);
+        this.ctx.closePath();
+      } else {
+        this.ctx.roundRect(x - 13, y - 10, 26, 20, 10);
+      }
       this.ctx.fill();
 
       if (this.isDisabled()) {
