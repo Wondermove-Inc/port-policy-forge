@@ -110,7 +110,7 @@ var MockWorkloads = map[string][]model.Workload{
 			WorkloadName:            "default-workload-3",
 			ConnectedWorkloadStatus: model.BEFORE_INIT_SETUP,
 			PolicySettingBadge:      true,
-			Kind:                    model.WORKLOAD_KIND_DEAMONSET,
+			Kind:                    model.WORKLOAD_KIND_DAEMONSET,
 			Usage:                   0.2, // 20% CPU usage
 			From:                    []model.Relation{},
 			To: []model.Relation{

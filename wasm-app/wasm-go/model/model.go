@@ -40,7 +40,7 @@ type WorkloadKind string
 
 const (
 	WORKLOAD_KIND_DEPLOYMENT  WorkloadKind = "deployment"
-	WORKLOAD_KIND_DEAMONSET   WorkloadKind = "deamonset"
+	WORKLOAD_KIND_DAEMONSET   WorkloadKind = "daemonset"
 	WORKLOAD_KIND_REPLICASET  WorkloadKind = "replicaset"
 	WORKLOAD_KIND_CRONJOB     WorkloadKind = "cronjob"
 	WORKLOAD_KIND_JOB         WorkloadKind = "job"
