@@ -91,7 +91,7 @@ export const PortDetail = ({
               label: open ? "Last connection" : "Last Connection attempts",
               value: record.lastConnectionDate,
             },
-            { label: "Last Src IP", value: record.lastConnectionEndpoint },
+            { label: isInbound ? "Last Src IP" : "Last Dest Ip", value: record.lastConnectionEndpoint },
           ].map(({ label, value }) => (
             <Box
               key={label}
