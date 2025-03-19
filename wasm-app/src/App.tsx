@@ -41,7 +41,7 @@ const App = () => {
           sx={{
             backgroundColor: "background.modal",
             width: "100%",
-            minHeight: "calc(100vh - 65px)",
+            minHeight: "calc(100vh - 56px)",
             position: "relative",
             minWidth: 1280,
           }}
