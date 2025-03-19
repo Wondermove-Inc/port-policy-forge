@@ -110,7 +110,7 @@ var MockWorkloads = map[string][]model.Workload{
 			WorkloadName:            "default-workload-3",
 			ConnectedWorkloadStatus: model.BEFORE_INIT_SETUP,
 			PolicySettingBadge:      true,
-			Kind:                    model.WORKLOAD_KIND_DEMONSET,
+			Kind:                    model.WORKLOAD_KIND_DEAMONSET,
 			Usage:                   0.2, // 20% CPU usage
 			From:                    []model.Relation{},
 			To: []model.Relation{
@@ -684,20 +684,6 @@ var MockWorkloadDetails = map[string]model.WorkloadDetail{
 			Ports: model.PortDetailGroup{
 				Open: []model.Port{
 					{
-<<<<<<< Updated upstream
-						ID:                          0,
-						IsRange:                     false,
-						PortNumber:                  utils.IntPtr(8080),
-						Status:                      utils.IntPtr(1), // active
-						Direction:                   "inbound",
-						IsOpen:                      true,
-						Count:                       3,
-						AccessPolicy:                model.AllOW_All_ACCESS,
-						LastConnectionDate:          "2023-03-21T10:15:00+09:00",
-						LastConnectionEndpoint:      "192.168.1.101",
-						LastConnectionLog:           "192.168.10.101:34562 -> 172.16.0.236:8080 (TCP Flags: ACK)",
-						LasstConnectionWorkloadUUID: "7f2552b4-ab40-4120-a6d9-16507024922b",
-=======
 						ID:                         0,
 						IsRange:                    false,
 						PortNumber:                 utils.IntPtr(8080),
@@ -710,7 +696,6 @@ var MockWorkloadDetails = map[string]model.WorkloadDetail{
 						LastConnectionEndpoint:     "192.168.1.101",
 						LastConnectionLog:          "192.168.10.101:34562 -> 172.16.0.236:8080 (TCP Flags: ACK)",
 						LastConnectionWorkloadUUID: "1b8892b1-58bc-464f-9401-b31eb2a9db99",
->>>>>>> Stashed changes
 					},
 					{
 						ID:           1,
