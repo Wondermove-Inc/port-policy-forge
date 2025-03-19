@@ -48,7 +48,7 @@ export const PortDetail = ({
           <Typography variant="caption" color="text.tertiary">
             {`${isAllowOnly ? "Allowed" : "Excluded"} ${isInbound ? "Sources" : "Destination"} (${record.sourceNumber})`}
           </Typography>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {(record.accessSources || []).map(
               ({ ip, comment, lastUpdatedAt }: SourceType) => (
                 <Box
