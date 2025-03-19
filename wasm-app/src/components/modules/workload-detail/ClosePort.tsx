@@ -127,7 +127,7 @@ export const ClosePort = ({
         },
       },
       {
-        id: "type",
+        id: "attemptType",
         label: "Type",
         sortable: false,
         width: 88,

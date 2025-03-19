@@ -155,7 +155,7 @@ export const WorkloadDetail = ({
             portRange: el.portRange as PortRangeType,
             portNumber: el.portNumber,
           }),
-          type: formatter("type", "", getPortKindLabel)(el),
+          attemptType: formatter("attemptType", "", getPortKindLabel)(el),
           count: formatter("count", "", formatNumber)(el),
           lastConnectionDate: formatter(
             "lastConnectionDate",
