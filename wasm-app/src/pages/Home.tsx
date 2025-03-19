@@ -61,7 +61,7 @@ export const Home = () => {
       }}
     >
       <Box
-        sx={{
+        sx={theme => ({
           display: "flex",
           justifyContent: "space-between",
           position: "absolute",
@@ -69,9 +69,12 @@ export const Home = () => {
           top: 0,
           zIndex: 2,
           width: !isDetailFromMap ? "calc(100%)" : "calc(100% - 512px)",
+          [theme.breakpoints.down(1280)]: {
+            width: "100%"
+          },
           padding: "20px",
           alignItems: "center",
-        }}
+        })}
       >
         <SelectClusterAndNameSpace />
         <TabsViewMode />
