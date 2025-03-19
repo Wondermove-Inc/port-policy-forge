@@ -30,7 +30,7 @@ export const Drawer = ({
     <MuiDrawer
       anchor="right"
       keepMounted
-      sx={{
+      sx={(theme) => ({
         "& .MuiDrawer-paper": {
           boxShadow: "none",
           backgroundColor: "background.secondary",
@@ -41,7 +41,6 @@ export const Drawer = ({
           flexDirection: "column",
           maxWidth: "513px",
           right: 0,
-          transition: "width 225ms cubic-bezier(0, 0, 0.2, 1)",
           ...(props.open
             ? {
                 width: 513,
@@ -51,19 +50,25 @@ export const Drawer = ({
               }),
           ...(props.variant === "temporary"
             ? {
-                marginTop: "56px",
                 height: "calc(100% - 56px)",
                 position: "fixed",
+                top: "56px",
               }
             : {
                 position: "absolute",
                 transform: "none !important",
+                [theme.breakpoints.down(1280)]: {
+                  height: "calc(100% - 56px)",
+                  position: "fixed",
+                  top: "56px",
+                  zIndex: 3,
+                },
               }),
         },
         "& .MuiBackdrop-root": {
           marginTop: "56px",
         },
-      }}
+      })}
       {...props}
     >
       <Box

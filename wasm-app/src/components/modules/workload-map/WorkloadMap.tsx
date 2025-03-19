@@ -204,51 +204,53 @@ export const WorkloadMap = () => {
   };
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        height: "100%",
-        position: "absolute",
-        top: 0,
-        left: 0,
-        zIndex: 1,
-      }}
-    >
-      <NetworkGraph
-        key={networkGraphRenderKey}
-        edges={edges}
-        nodes={nodes}
-        filterPorts={filterPorts}
-        activeNodeId={activeNodeId}
-        portHover={portHover}
-        removingEdgeId={removingEdgeId}
-        portDirection={portDirection}
-        setNetwork={setNetwork}
-        onEdgeDisconnected={handleEdgeDisconnected}
-        onNodeSelected={handleOnNodeSelected}
-      />
-      <ViewFilter
-        filterPorts={initFilterPorts}
-        onChangeFilter={handleChangeFilter}
-        onKeywordChange={handleKeywordChange}
-      />
-      <ModalConfirm
-        title="Close Port Access"
-        description="When you block that source or destination access to a specific port, it changes to the following"
-        descriptionDetails={[
-          "The source or destination will no longer be able to access the server on the specified port.",
-          "The access restriction settings for the port are updated.",
-        ]}
-        open={modalClosePort.visible}
-        onClose={handleCancelClosePort}
-        onConfirm={handleClosePort}
-      />
+    <>
+      <Box
+        sx={{
+          width: "100%",
+          height: "100%",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          zIndex: 1,
+        }}
+      >
+        <NetworkGraph
+          key={networkGraphRenderKey}
+          edges={edges}
+          nodes={nodes}
+          filterPorts={filterPorts}
+          activeNodeId={activeNodeId}
+          portHover={portHover}
+          removingEdgeId={removingEdgeId}
+          portDirection={portDirection}
+          setNetwork={setNetwork}
+          onEdgeDisconnected={handleEdgeDisconnected}
+          onNodeSelected={handleOnNodeSelected}
+        />
+        <ViewFilter
+          filterPorts={initFilterPorts}
+          onChangeFilter={handleChangeFilter}
+          onKeywordChange={handleKeywordChange}
+        />
+        <ModalConfirm
+          title="Close Port Access"
+          description="When you block that source or destination access to a specific port, it changes to the following"
+          descriptionDetails={[
+            "The source or destination will no longer be able to access the server on the specified port.",
+            "The access restriction settings for the port are updated.",
+          ]}
+          open={modalClosePort.visible}
+          onClose={handleCancelClosePort}
+          onConfirm={handleClosePort}
+        />
+      </Box>
       <WorkloadDetail
         id={selectedWorkloadId}
         open={detailDrawer.visible}
         handleClose={handleCloseDetail}
         onDirectionChange={handleDirectionChange}
       />
-    </Box>
+    </>
   );
 };

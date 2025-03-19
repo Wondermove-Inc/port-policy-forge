@@ -25,6 +25,13 @@ export const Home = () => {
     }
   }, [selectedNamespace]);
 
+  useEffect(() => {
+    const root = document.getElementById("root");
+    if (root) {
+      root.style.overflowY = "hidden";
+    }
+  });
+
   const getWorkloads = () => {
     setWorkloadsLoading(true);
     wasmListWorkloads(selectedNamespace)
@@ -35,7 +42,7 @@ export const Home = () => {
               ...item,
               id: item.uuid,
             }))
-            .sort((a, b) => a.workloadName.localeCompare(b.workloadName)),
+            .sort((a, b) => a.workloadName.localeCompare(b.workloadName))
         );
         setWorkloadsLoading(false);
       })
@@ -60,7 +67,7 @@ export const Home = () => {
           position: "absolute",
           left: 0,
           top: 0,
-          zIndex: 88,
+          zIndex: 2,
           width: !isDetailFromMap ? "calc(100%)" : "calc(100% - 512px)",
           padding: "20px",
           alignItems: "center",
