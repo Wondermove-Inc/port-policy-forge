@@ -60,6 +60,7 @@ func listWorkloads(this js.Value, p []js.Value) interface{} {
 		Namespace string
 	})
 
+	// Collect all workload information from all namespaces
 	for namespace, workloads := range mock.MockWorkloads {
 		for _, workload := range workloads {
 			workloadInfoMap[workload.UUID] = struct {
@@ -77,47 +78,9 @@ func listWorkloads(this js.Value, p []js.Value) interface{} {
 		}
 	}
 
-	// additional workload info for demo
-	missingWorkloads := map[string]struct {
-		Info      model.InlineWorkload
-		Namespace string
-	}{
-		"1b8892b1-58bc-464f-9401-b31eb2a9db99": {
-			Info: model.InlineWorkload{
-				UUID:         "1b8892b1-58bc-464f-9401-b31eb2a9db99",
-				WorkloadName: "coredns",
-				Namespace:    "kube-system",
-				Kind:         "deployment",
-			},
-			Namespace: "kube-system",
-		},
-		"afbcb3d5-67e8-4f4b-9d8f-f0f124abc2f2": {
-			Info: model.InlineWorkload{
-				UUID:         "afbcb3d5-67e8-4f4b-9d8f-f0f124abc2f2",
-				WorkloadName: "kube-proxy",
-				Namespace:    "kube-system",
-				Kind:         "daemonset",
-			},
-			Namespace: "kube-system",
-		},
-		"b726573d-4914-42ab-be5e-fb1daecec08b": {
-			Info: model.InlineWorkload{
-				UUID:         "b726573d-4914-42ab-be5e-fb1daecec08b",
-				WorkloadName: "cilium-operator",
-				Namespace:    "cilium",
-				Kind:         "deployment",
-			},
-			Namespace: "cilium",
-		},
-	}
-
-	for id, info := range missingWorkloads {
-		if _, exists := workloadInfoMap[id]; !exists {
-			workloadInfoMap[id] = info
-		}
-	}
-
+	// Update the relationships in workloads
 	for i := range resources {
+		// Update "From" relationships
 		for j := range resources[i].From {
 			wID := resources[i].From[j].WorkloadId
 			resources[i].From[j].Direction = "inbound"
@@ -134,6 +97,7 @@ func listWorkloads(this js.Value, p []js.Value) interface{} {
 			}
 		}
 
+		// Update "To" relationships
 		for j := range resources[i].To {
 			wID := resources[i].To[j].WorkloadId
 			resources[i].To[j].Direction = "outbound"
@@ -739,47 +703,3 @@ func clearClosedPortHistory(this js.Value, p []js.Value) interface{} {
 	b, _ := json.Marshal(response)
 	return string(b)
 }
-
-// func MyGoFunc() js.Func {
-// 	return js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-// 		requestUrl := args[0].String()
-
-// 		handler := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-// 			resolve := args[0]
-// 			reject := args[1]
-
-// 			go func() {
-// 				res, err := http.DefaultClient.Get(requestUrl)
-// 				if err != nil {
-// 					errorConstructor := js.Global().Get("Error")
-// 					errorObject := errorConstructor.New(err.Error())
-// 					reject.Invoke(errorObject)
-// 					return
-// 				}
-// 				defer res.Body.Close()
-
-// 				data, err := ioutil.ReadAll(res.Body)
-// 				if err != nil {
-// 					errorConstructor := js.Global().Get("Error")
-// 					errorObject := errorConstructor.New(err.Error())
-// 					reject.Invoke(errorObject)
-// 					return
-// 				}
-
-// 				arrayConstructor := js.Global().Get("Uint8Array")
-// 				dataJS := arrayConstructor.New(len(data))
-// 				js.CopyBytesToJS(dataJS, data)
-
-// 				responseConstructor := js.Global().Get("Response")
-// 				response := responseConstructor.New(dataJS)
-
-// 				resolve.Invoke(response)
-// 			}()
-
-// 			return nil
-// 		})
-
-// 		promiseConstructor := js.Global().Get("Promise")
-// 		return promiseConstructor.New(handler)
-// 	})
-// }
