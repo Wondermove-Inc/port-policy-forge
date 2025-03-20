@@ -38,19 +38,19 @@ export class NetworkNode {
 
   public draw(): void {
     this.setInitialOpacity();
-    
+
     this.drawNode();
     this.drawNodeKind();
-    
+
     if (this.isBeforeInitialSetup()) {
       this.drawNodePolicySettingBadge();
     } else {
       this.drawNodeStatsBadge();
     }
-    
+
     this.setLabelOpacity();
     this.drawNodeLabel();
-    
+
     // Reset opacity
     this.ctx.globalAlpha = GLOBAL_ALPHA;
   }
@@ -73,61 +73,81 @@ export class NetworkNode {
   }
 
   private isBeforeInitialSetup(): boolean {
-    return this.node.data?.connected_workload_status === WorkloadStatus.BEFORE_INITIAL_SETUP;
+    return (
+      this.node.data?.connected_workload_status ===
+      WorkloadStatus.BEFORE_INITIAL_SETUP
+    );
   }
 
   private drawNode(): void {
     const nodeSize = this.getNodeSize();
-    
+
     const {
       isHover,
       isActive,
       isActiveLastConnection,
       isPortClosed,
-      isNodeError
+      isNodeError,
     } = this.getNodeStates();
 
     this.ctx.lineWidth = BORDER_LINE_WIDTH;
-    
+    this.ctx.globalAlpha = GLOBAL_ALPHA;
+
     // Draw interaction circles if needed
     if (isHover || isActive || isActiveLastConnection) {
-      this.drawInteractionCircles(isHover, isActive, isActiveLastConnection, isPortClosed);
+      this.drawInteractionCircles(
+        isHover,
+        isActive,
+        isActiveLastConnection,
+        isPortClosed
+      );
     }
-    
+
     // Set the appropriate fill and stroke styles
-    this.setNodeStyles(isHover, isActive, isActiveLastConnection, isPortClosed, isNodeError);
-    
+    this.setNodeStyles(
+      isHover,
+      isActive,
+      isActiveLastConnection,
+      isPortClosed,
+      isNodeError
+    );
+
     // Draw the main node circle
-    this.drawNodeCircle(nodeSize);
-    
+
     // Add gradient if not active or hover
     if (!isActive && !isHover) {
       this.addNodeGradient(nodeSize);
     } else {
-      this.ctx.stroke();
+      this.addNodeActive(nodeSize);
+      // this.ctx.stroke();
     }
+
+    this.drawNodeCircle(nodeSize);
   }
 
   private getNodeStates() {
-    const isHover = 
-      !!this.options?.hoverNodeId && 
-      this.options.hoverNodeId === this.node.id;
-    
-    const isActive = 
-      !!this.options.activeNodeId && 
-      this.options.activeNodeId === this.node.id;
-    
-    const isActiveLastConnection = 
+    const isHover =
+      !!this.options?.hoverNodeId && this.options.hoverNodeId === this.node.id;
+
+    const isActive =
+      !!this.options.activeNodeId && this.options.activeNodeId === this.node.id;
+
+    const isActiveLastConnection =
       !!this.options.portHover &&
       this.options.portHover.lastConnectionWorkloadUUID === this.node.id;
-    
-    const isPortClosed = 
-      !!this.options.portHover && 
-      !this.options.portHover.isOpen;
-    
+
+    const isPortClosed =
+      !!this.options.portHover && !this.options.portHover.isOpen;
+
     const isNodeError = this.checkForNodeError();
-    
-    return { isHover, isActive, isActiveLastConnection, isPortClosed, isNodeError };
+
+    return {
+      isHover,
+      isActive,
+      isActiveLastConnection,
+      isPortClosed,
+      isNodeError,
+    };
   }
 
   private checkForNodeError(): boolean {
@@ -135,14 +155,14 @@ export class NetworkNode {
     if (!currentNodeId || !this.options.network?.body.nodes) {
       return false;
     }
-    
+
     const activeNode = this.options.network.body.nodes[currentNodeId];
     const activeEdges = activeNode?.edges;
-    
+
     if (!activeEdges) {
       return false;
     }
-    
+
     for (const edge of activeEdges) {
       if (
         edge.to.id === activeNode.id &&
@@ -152,7 +172,7 @@ export class NetworkNode {
         return true;
       }
     }
-    
+
     return false;
   }
 
@@ -163,13 +183,14 @@ export class NetworkNode {
     isPortClosed: boolean
   ): void {
     const nodeSize = this.getNodeSize();
-    
+
     if (isHover || isActiveLastConnection) {
       // Draw outer interaction circle
-      this.ctx.fillStyle = isActiveLastConnection && isPortClosed
-        ? color.fill.errorInteraction100
-        : color.fill.activeInteraction100;
-        
+      this.ctx.fillStyle =
+        isActiveLastConnection && isPortClosed
+          ? color.fill.errorInteraction100
+          : color.fill.activeInteraction100;
+
       this.ctx.beginPath();
       this.ctx.arc(
         this.node.x,
@@ -181,12 +202,13 @@ export class NetworkNode {
       );
       this.ctx.closePath();
       this.ctx.fill();
-      
+
       // Draw inner interaction circle
-      this.ctx.fillStyle = isActiveLastConnection && isPortClosed
-        ? color.fill.errorInteraction200
-        : color.fill.activeInteraction200;
-        
+      this.ctx.fillStyle =
+        isActiveLastConnection && isPortClosed
+          ? color.fill.errorInteraction200
+          : color.fill.activeInteraction200;
+
       this.ctx.beginPath();
       this.ctx.arc(
         this.node.x,
@@ -225,14 +247,13 @@ export class NetworkNode {
     this.ctx.arc(
       this.node.x,
       this.node.y,
-      nodeSize / 2,
+      nodeSize / 2 - 0.75,
       0,
       2 * Math.PI,
       false
     );
     this.ctx.closePath();
     this.ctx.fill();
-    this.ctx.stroke();
   }
 
   private addNodeGradient(nodeSize: number): void {
@@ -244,18 +265,22 @@ export class NetworkNode {
     );
     gradient.addColorStop(0, "rgba(255, 255, 255, 0.2)");
     gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
-    
+    this.ctx.strokeStyle = color.background;
+    this.ctx.beginPath();
+    this.ctx.arc(this.node.x, this.node.y, nodeSize / 2, 0, 2 * Math.PI, false);
+    this.ctx.closePath();
+    this.ctx.stroke();
     this.ctx.strokeStyle = gradient;
     this.ctx.beginPath();
-    this.ctx.shadowColor = "rgba(25, 31, 43, 0.2)";
-    this.ctx.arc(
-      this.node.x,
-      this.node.y,
-      nodeSize / 2,
-      0,
-      2 * Math.PI,
-      false
-    );
+    this.ctx.arc(this.node.x, this.node.y, nodeSize / 2, 0, 2 * Math.PI, false);
+    this.ctx.closePath();
+    this.ctx.stroke();
+  }
+
+  private addNodeActive(nodeSize: number): void {
+    this.ctx.strokeStyle = color.active;
+    this.ctx.beginPath();
+    this.ctx.arc(this.node.x, this.node.y, nodeSize / 2, 0, 2 * Math.PI, false);
     this.ctx.closePath();
     this.ctx.stroke();
   }
@@ -264,7 +289,7 @@ export class NetworkNode {
     const nodeSize = this.getNodeSize();
     let x = this.node.x + 14;
     let y = this.node.y - nodeSize / 2 - 1;
-    
+
     if (nodeSize === NodeSize.SMALL) {
       x -= 8;
       y -= 15;
@@ -287,12 +312,12 @@ export class NetworkNode {
     );
     this.ctx.closePath();
     this.ctx.fill();
-    
+
     // Adjust opacity for disabled state
     if (this.isDisabled()) {
       this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
     }
-    
+
     // Draw exclamation image
     this.ctx.beginPath();
     this.ctx.drawImage(
@@ -308,11 +333,11 @@ export class NetworkNode {
   private drawNodeKind(): void {
     const nodeSize = this.getNodeSize();
     let deploymentIconSize = this.getDeploymentIconSize(nodeSize);
-    
+
     if (!this.node.data?.kind) {
       return;
     }
-    
+
     this.ctx.beginPath();
     this.ctx.drawImage(
       this.canvasImages.kind[this.node.data.kind],
@@ -337,12 +362,12 @@ export class NetworkNode {
     const nodeSize = this.getNodeSize();
     const label = this.node?.data?.customLabel as string;
     const namespaceLabel = this.node.data?.externalNamespace as string;
-    
+
     this.ctx.font = "normal 12px Arial";
     this.ctx.fillStyle = color.white;
     this.ctx.textAlign = "left";
     this.ctx.textBaseline = "alphabetic";
-    
+
     const textMetrics = this.ctx.measureText(label);
     const textWidth = textMetrics.width;
     const protectedAddImageWidth = this.canvasImages.protected.width;
@@ -350,10 +375,13 @@ export class NetworkNode {
 
     // Calculate label position
     let labelX = this.node.x - textWidth / 2 - imageToTextSpacing;
-    if (this.node.data?.connected_workload_status === WorkloadStatus.COMPLETE_INITIAL_SETUP) {
+    if (
+      this.node.data?.connected_workload_status ===
+      WorkloadStatus.COMPLETE_INITIAL_SETUP
+    ) {
       labelX += protectedAddImageWidth / 2;
     }
-    
+
     // Draw label text
     this.ctx.beginPath();
     this.ctx.fillText(
@@ -362,7 +390,7 @@ export class NetworkNode {
       this.node.y + nodeSize / 2 + 15,
       textWidth
     );
-    
+
     // Draw protected badge if needed
     if (this.node.data?.policy_setting_badge) {
       this.ctx.drawImage(
@@ -377,7 +405,7 @@ export class NetworkNode {
       if (!this.isDisabled()) {
         this.ctx.globalAlpha = 0.78;
       }
-      
+
       const namespaceMetrics = this.ctx.measureText(namespaceLabel);
       this.ctx.fillText(
         namespaceLabel,
@@ -394,18 +422,18 @@ export class NetworkNode {
     const stats = this.getStats();
     const filterPorts = this.options.filterPorts;
     const ports = this.getFilteredPorts(stats, filterPorts);
-    
+
     if (!ports.length) {
       return;
     }
-    
+
     const nodeSize = this.getNodeSize();
-    
+
     for (let i = 0; i < ports.length; i++) {
       // Calculate badge position
       let x = this.node.x + ARC_RADIUS + 14;
       let y = this.node.y - nodeSize / 2 + 10 - 1;
-      
+
       if (ports.length !== 1) {
         x = this.node.x + (ARC_RADIUS * 2 - 5) * i + 14;
       }
@@ -417,10 +445,10 @@ export class NetworkNode {
 
       // Draw background
       this.drawStatBadgeBackground(x, y, ports[i].total);
-      
+
       // Draw badge circle with appropriate colors
       this.drawStatBadgeCircle(x, y, ports[i].status, ports[i].total);
-      
+
       // Draw port count text
       this.drawStatBadgeText(x, y, ports[i].status, ports[i].total);
     }
@@ -431,14 +459,14 @@ export class NetworkNode {
     filterPorts: any
   ) {
     const ports = [];
-    
+
     if (filterPorts?.idle && stats.idle > 0) {
       ports.push({
         status: WorkloadPortStatus.IDLE,
         total: stats.idle,
       });
     }
-    
+
     if (filterPorts?.error || filterPorts?.attempted) {
       let total = 0;
       if (filterPorts?.error && filterPorts?.attempted) {
@@ -448,7 +476,7 @@ export class NetworkNode {
       } else {
         total = stats.attempted;
       }
-      
+
       if (total > 0) {
         ports.push({
           status: WorkloadPortStatus.ERROR,
@@ -456,7 +484,7 @@ export class NetworkNode {
         });
       }
     }
-    
+
     return ports;
   }
 
@@ -464,29 +492,30 @@ export class NetworkNode {
     this.ctx.globalAlpha = GLOBAL_ALPHA;
     this.ctx.fillStyle = color.background;
     this.ctx.beginPath();
-    
+
     if (total <= 99) {
       this.ctx.arc(x, y, ARC_RADIUS, 0, 2 * Math.PI, false);
       this.ctx.closePath();
     } else {
       this.ctx.roundRect(x - 13, y - 10, 26, 20, 10);
     }
-    
+
     this.ctx.fill();
   }
 
   private drawStatBadgeCircle(
-    x: number, 
-    y: number, 
-    status: WorkloadPortStatus, 
+    x: number,
+    y: number,
+    status: WorkloadPortStatus,
     total: number
   ): void {
     if (this.isDisabled()) {
       this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
     }
-    
-    const badgeColor = status === WorkloadPortStatus.ERROR ? color.error : color.idle;
-    
+
+    const badgeColor =
+      status === WorkloadPortStatus.ERROR ? color.error : color.idle;
+
     // Create gradient
     const gradient = this.ctx.createLinearGradient(
       x - ARC_RADIUS,
@@ -496,22 +525,22 @@ export class NetworkNode {
     );
     gradient.addColorStop(0, "rgba(0, 0, 0, 0)");
     gradient.addColorStop(1, "rgba(0, 0, 0, 0.2)");
-    
+
     // Draw badge circle
     this.ctx.fillStyle = badgeColor;
     this.ctx.textAlign = "center";
     this.ctx.textBaseline = "middle";
     this.ctx.beginPath();
-    
+
     if (total <= 99) {
       this.ctx.arc(x, y, ARC_RADIUS, 0, Math.PI * 2);
       this.ctx.lineWidth = 1;
     } else {
       this.ctx.roundRect(x - 13, y - 10, 26, 20, 10);
     }
-    
+
     this.ctx.fill();
-    
+
     // Apply gradient
     this.ctx.fillStyle = gradient;
     this.ctx.fill();
@@ -519,18 +548,17 @@ export class NetworkNode {
   }
 
   private drawStatBadgeText(
-    x: number, 
-    y: number, 
-    status: WorkloadPortStatus, 
+    x: number,
+    y: number,
+    status: WorkloadPortStatus,
     total: number
   ): void {
     this.ctx.font = "10px Arial";
     const portStr = total <= 99 ? total.toString() : "99+";
-    
-    this.ctx.fillStyle = status === WorkloadPortStatus.ERROR
-      ? color.white
-      : color.black;
-      
+
+    this.ctx.fillStyle =
+      status === WorkloadPortStatus.ERROR ? color.white : color.black;
+
     this.ctx.fillText(portStr, x, y);
   }
 
@@ -565,7 +593,7 @@ export class NetworkNode {
   private isExternalNamespace(): boolean {
     return !!this.node.data?.isExternalNamespace;
   }
-  
+
   private getNodeSize(): number {
     return this.node?.data?.nodeSize || 0;
   }

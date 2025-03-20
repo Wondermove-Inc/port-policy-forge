@@ -92,6 +92,7 @@ export type CanvasImage = {
   activeArrow: HTMLImageElement;
   idleArrow: HTMLImageElement;
   errorArrow: HTMLImageElement;
+  backgroundArrow: HTMLImageElement;
   protected: HTMLImageElement;
   exclamation: HTMLImageElement;
   kind: {

@@ -105,8 +105,17 @@ export class NetworkEdge {
 
     ctx.moveTo(fromX, fromY);
     ctx.lineTo(toX, toY);
-    ctx.stroke();
     ctx.closePath();
+    ctx.stroke();
+
+    if (disabled) {
+      ctx.beginPath();
+      ctx.strokeStyle = color.background;
+      ctx.moveTo(fromX, fromY);
+      ctx.lineTo(toX, toY);
+      ctx.closePath();
+      ctx.stroke();
+    }
 
     // Reset styles
     ctx.setLineDash([0, 0]);
@@ -276,6 +285,17 @@ export class NetworkEdge {
 
     this.ctx.translate(arrowX, arrowY);
     this.ctx.rotate(this.coords.angle + Math.PI / 2);
+    if (disabled) {
+      this.ctx.globalAlpha = GLOBAL_ALPHA;
+      this.ctx.drawImage(
+        this.canvasImages.backgroundArrow,
+        -ARROW_SIZE / 2,
+        -ARROW_SIZE / 2,
+        ARROW_SIZE,
+        ARROW_SIZE
+      );
+      this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
+    }
     this.ctx.drawImage(
       arrowImage as HTMLImageElement,
       -ARROW_SIZE / 2,

@@ -22,25 +22,30 @@ export class ImageLoader {
     const errorColor = color.error;
     const activeColor = color.active;
     const defaultColor = color.stroke.default;
-
+    const backgroundColor = color.background;
     const workloadArrowIdleIcon = WorkloadArrowIcon.replace(
       /stroke=['"]%23[0-9a-fA-F]{3,6}['"]/g,
-      `stroke='%23${idleColor.slice(1)}'`,
+      `stroke='%23${idleColor.slice(1)}'`
     );
 
     const workloadArrowErrorIcon = WorkloadArrowIcon.replace(
       /stroke=['"]%23[0-9a-fA-F]{3,6}['"]/g,
-      `stroke='%23${errorColor.slice(1)}'`,
+      `stroke='%23${errorColor.slice(1)}'`
     );
 
     const workloadArrowActiveIcon = WorkloadArrowIcon.replace(
       /stroke=['"]%23[0-9a-fA-F]{3,6}['"]/g,
-      `stroke='%23${activeColor.slice(1)}'`,
+      `stroke='%23${activeColor.slice(1)}'`
     );
 
     const workloadArrowDefaultIcon = WorkloadArrowIcon.replace(
       /stroke=['"]%23[0-9a-fA-F]{3,6}['"]/g,
-      `stroke='%23${defaultColor.slice(1)}'`,
+      `stroke='%23${defaultColor.slice(1)}'`
+    );
+
+    const workloadArrowBackgroundIcon = WorkloadArrowIcon.replace(
+      /stroke=['"]%23[0-9a-fA-F]{3,6}['"]/g,
+      `stroke='%23${backgroundColor.slice(1)}'`
     );
 
     const images = await Promise.all([
@@ -60,6 +65,7 @@ export class ImageLoader {
       this.loadImage(WorkloadExternalIcon),
       this.loadImage(WorkloadLineConnectedIcon),
       this.loadImage(workloadArrowDefaultIcon),
+      this.loadImage(workloadArrowBackgroundIcon),
     ]);
 
     return {
@@ -68,6 +74,7 @@ export class ImageLoader {
       errorArrow: images[2],
       activeArrow: images[3],
       defaultArrow: images[15],
+      backgroundArrow: images[16],
       protected: images[4],
       exclamation: images[5],
       kind: {
