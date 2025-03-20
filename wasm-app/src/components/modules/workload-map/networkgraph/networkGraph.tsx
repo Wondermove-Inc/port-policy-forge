@@ -197,9 +197,20 @@ const NetworkGraph = ({
         y: properties.event.srcEvent.offsetY,
       });
 
-      const connectedEdges = activeNodeId
+      let connectedEdges = activeNodeId
         ? networkRef.current?.getConnectedEdges(activeNodeId)
         : [];
+      if (portDirection === PortDirection.OUTBOUND) {
+        const outboundEdgeIds = outboundEdges.map((edge) => edge.id);
+        connectedEdges = connectedEdges?.filter((connectedEdge) =>
+          outboundEdgeIds.includes(connectedEdge as string)
+        );
+      } else {
+        const inboundEdgeIds = inboundEdges.map((edge) => edge.id);
+        connectedEdges = connectedEdges?.filter((connectedEdge) =>
+          inboundEdgeIds.includes(connectedEdge as string)
+        );
+      }
       const clickPosition: Position = {
         x: properties.pointer.canvas.x,
         y: properties.pointer.canvas.y,
