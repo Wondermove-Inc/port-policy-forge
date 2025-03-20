@@ -23,7 +23,7 @@ export const WorkloadMap = () => {
   const [nodes, setNodes] = useState<NodeData[]>([]);
   const [removingEdgeId, setRemovingEdgeId] = useState("");
   const [networkGraphRenderKey, setNetworkGraphRenderKey] = useState<number>(
-    new Date().getTime()
+    new Date().getTime(),
   );
   const {
     workloads: storeWorkloads,
@@ -193,7 +193,7 @@ export const WorkloadMap = () => {
     // implement debounce function here ...
     wasmListWorkloads(selectedNamespace).then((val) => {
       const filteredWorkloads = val.result.filter((workload) =>
-        workload.workloadName.includes(keyword)
+        workload.workloadName.includes(keyword),
       );
       setWorkloads(filteredWorkloads);
     });

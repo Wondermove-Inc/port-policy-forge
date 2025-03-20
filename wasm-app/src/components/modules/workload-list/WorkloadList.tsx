@@ -34,7 +34,7 @@ export const WorkloadList = () => {
 
   const closePortModal = useDisclosure();
   const detailDrawer = useDisclosure();
-  const [selectedTabBound, setSelectedTabBound] = useState<PortDirection>(
+  const [portDirection, setPortDirection] = useState<PortDirection>(
     PortDirection.INBOUND,
   );
   const [keyword, setKeyword] = useState("");
@@ -49,7 +49,7 @@ export const WorkloadList = () => {
     status: string,
     color: string,
   ) => {
-    const value = row[selectedTabBound].stats[status as keyof StatsType];
+    const value = row[portDirection].stats[status as keyof StatsType];
     return (
       <Typography
         sx={{
@@ -64,7 +64,7 @@ export const WorkloadList = () => {
   };
 
   const checkIfDisabled = (row: WorkloadResource, field: string) => {
-    const value = row[selectedTabBound].stats[field as keyof StatsType];
+    const value = row[portDirection].stats[field as keyof StatsType];
     return value !== undefined && value === 0;
   };
 
@@ -145,14 +145,14 @@ export const WorkloadList = () => {
   };
 
   const handleChangeTabBound = (newValue: string) => {
-    setSelectedTabBound(newValue as PortDirection);
+    setPortDirection(newValue as PortDirection);
     setClosedWorkloads([]);
   };
   const handleConfirmClosePort = () => {
     setClosePortLoading(true);
     const params = closedWorkloads.map((item) => ({
       workloadUuid: item.id,
-      flag: selectedTabBound === PortDirection.INBOUND ? "0" : "1",
+      flag: portDirection === PortDirection.INBOUND ? "0" : "1",
       status: item.columns,
     }));
     console.log("wasmClosePortsByStatus", params);
@@ -219,6 +219,7 @@ export const WorkloadList = () => {
               marginBottom: "0px",
             },
           }}
+          value={portDirection}
           onChangeTab={handleChangeTabBound}
         ></WorkloadTabs>
         <Box
@@ -281,11 +282,12 @@ export const WorkloadList = () => {
         onConfirm={handleConfirmClosePort}
         loading={closePortLoading}
       />
-      <WorkloadDetail
+      {selectedWorkloadId && <WorkloadDetail
         open={detailDrawer.visible}
         handleClose={handleCloseDetail}
         id={selectedWorkloadId}
-      />
+        selectedPortDirection={portDirection}
+      />}
     </Box>
   );
 };

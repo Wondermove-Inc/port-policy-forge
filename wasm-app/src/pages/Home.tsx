@@ -42,7 +42,7 @@ export const Home = () => {
               ...item,
               id: item.uuid,
             }))
-            .sort((a, b) => a.workloadName.localeCompare(b.workloadName))
+            .sort((a, b) => a.workloadName.localeCompare(b.workloadName)),
         );
         setWorkloadsLoading(false);
       })
@@ -61,7 +61,7 @@ export const Home = () => {
       }}
     >
       <Box
-        sx={theme => ({
+        sx={(theme) => ({
           display: "flex",
           justifyContent: "space-between",
           position: "absolute",
@@ -70,7 +70,7 @@ export const Home = () => {
           zIndex: 2,
           width: !isDetailFromMap ? "calc(100%)" : "calc(100% - 512px)",
           [theme.breakpoints.down(1280)]: {
-            width: "100%"
+            width: "100%",
           },
           padding: "20px",
           alignItems: "center",

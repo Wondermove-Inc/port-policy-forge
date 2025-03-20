@@ -30,7 +30,7 @@ export const PortDetail = ({
     record.accessPolicy !== AccessPolicy.ALLOW_ALL && open;
 
   const isInbound = record.direction === PortDirection.INBOUND;
-  const isAllowOnly = record.accessPolicy === AccessPolicy.ALLOW_ONLY
+  const isAllowOnly = record.accessPolicy === AccessPolicy.ALLOW_ONLY;
   return (
     <Box
       sx={{
@@ -38,8 +38,7 @@ export const PortDetail = ({
         "&>div": {
           p: "20px",
           borderColor: "border.elevated",
-          backgroundColor: "background.shaded"
-
+          backgroundColor: "background.shaded",
         },
       }}
     >
@@ -69,7 +68,7 @@ export const PortDetail = ({
                     </ShadedBox>
                   )}
                 </Box>
-              )
+              ),
             )}
           </Box>
         </Box>
@@ -91,7 +90,10 @@ export const PortDetail = ({
               label: open ? "Last connection" : "Last Connection attempts",
               value: record.lastConnectionDate,
             },
-            { label: isInbound ? "Last Src IP" : "Last Dest Ip", value: record.lastConnectionEndpoint },
+            {
+              label: isInbound ? "Last Src IP" : "Last Dest Ip",
+              value: record.lastConnectionEndpoint,
+            },
           ].map(({ label, value }) => (
             <Box
               key={label}
