@@ -5,9 +5,6 @@ import {
   EDGE_STYLES,
   FONT,
   GLOBAL_ALPHA,
-  LABEL_BORDER_RADIUS,
-  LABEL_RECT_HEIGHT,
-  LABEL_RECT_WIDTH,
   LINE_WIDTH,
 } from "./constants";
 import { CanvasImage, CustomEdge, DrawingOptions, NodeSize } from "./types";
@@ -69,11 +66,16 @@ export class NetworkEdge {
     this.ctx.restore();
   }
 
-  public drawEdgeLabel(isActiveEdge: boolean = false, disabled: boolean = false) {
-    if (this.isEdgeConnected() && 
-        this.options.activeNodeId && 
-        !disabled && 
-        !this.options.removingEdgeId) {
+  public drawEdgeLabel(
+    isActiveEdge: boolean = false,
+    disabled: boolean = false
+  ) {
+    if (
+      this.isEdgeConnected() &&
+      this.options.activeNodeId &&
+      !disabled &&
+      !this.options.removingEdgeId
+    ) {
       this.drawEdgeLinkLabel();
     } else if (isActiveEdge && !this.options.activeNodeId) {
       this.drawEdgeStatusLabel();
@@ -84,25 +86,28 @@ export class NetworkEdge {
     return this.options.activeEdgeId === this.edge.id;
   }
 
-  private drawEdgeLine(isActiveEdge: boolean = false, disabled: boolean = false) {
+  private drawEdgeLine(
+    isActiveEdge: boolean = false,
+    disabled: boolean = false
+  ) {
     const { fromX, fromY, toX, toY } = this.coords;
     const ctx = this.ctx;
-    
+
     ctx.beginPath();
     ctx.lineWidth = LINE_WIDTH;
     ctx.lineJoin = "round";
-    
+
     if (disabled) {
       ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
     }
-    
+
     this.setEdgeLineStyle(isActiveEdge, disabled);
-    
+
     ctx.moveTo(fromX, fromY);
     ctx.lineTo(toX, toY);
     ctx.stroke();
     ctx.closePath();
-    
+
     // Reset styles
     ctx.setLineDash([0, 0]);
     ctx.globalAlpha = GLOBAL_ALPHA;
@@ -111,19 +116,23 @@ export class NetworkEdge {
   private setEdgeLineStyle(isActiveEdge: boolean, disabled: boolean) {
     const { removingEdgeId } = this.options;
     const { status } = this.edge.data || {};
-    
+
     if (removingEdgeId === this.edge.id) {
       this.ctx.strokeStyle = color.stroke.default;
       this.ctx.setLineDash([2, 2]);
       return;
     }
-    
+
     // Set line dash based on status
-    this.ctx.setLineDash(status === WorkloadPortStatus.ATTEMPT ? [2, 2] : [0, 0]);
-    
+    this.ctx.setLineDash(
+      status === WorkloadPortStatus.ATTEMPT ? [2, 2] : [0, 0]
+    );
+
     // Set color based on active state and status
     if ((isActiveEdge || this.isEdgeConnected()) && !disabled) {
-      const styleKey = status ? String(status) : String(WorkloadPortStatus.ACTIVE);
+      const styleKey = status
+        ? String(status)
+        : String(WorkloadPortStatus.ACTIVE);
       const style = EDGE_STYLES[styleKey] || EDGE_STYLES.ACTIVE;
       this.ctx.strokeStyle = style.strokeStyle;
     } else {
@@ -135,10 +144,10 @@ export class NetworkEdge {
     const centerX = (this.coords.fromX + this.coords.toX) / 2;
     const centerY = (this.coords.fromY + this.coords.toY) / 2;
     const SIZE = 14;
-    
+
     this.ctx.save();
     this.ctx.translate(centerX, centerY);
-    
+
     // Draw circle background
     this.ctx.beginPath();
     this.ctx.arc(0, 0, 12, 0, 2 * Math.PI, false);
@@ -147,7 +156,7 @@ export class NetworkEdge {
     this.ctx.lineWidth = 1;
     this.ctx.strokeStyle = color.active;
     this.ctx.stroke();
-    
+
     // Draw connection icon
     this.ctx.lineWidth = LINE_WIDTH;
     this.ctx.drawImage(
@@ -157,7 +166,7 @@ export class NetworkEdge {
       SIZE,
       SIZE
     );
-    
+
     this.ctx.restore();
   }
 
@@ -168,7 +177,12 @@ export class NetworkEdge {
     const styleKey = String(edgeStatus);
     const style = EDGE_STYLES[styleKey];
 
-    if (!style?.label || !style.backgroundColor || !style.borderColor || !style.textColor) {
+    if (
+      !style?.label ||
+      !style.backgroundColor ||
+      !style.borderColor ||
+      !style.textColor
+    ) {
       return;
     }
 
@@ -182,6 +196,12 @@ export class NetworkEdge {
 
     // Draw label background
     this.ctx.fillStyle = style.backgroundColor;
+    let LABEL_RECT_WIDTH = 48;
+    const LABEL_RECT_HEIGHT = 24;
+    const LABEL_BORDER_RADIUS = 8;
+    if (edgeStatus === WorkloadPortStatus.ATTEMPT) {
+      LABEL_RECT_WIDTH = 60;
+    }
     this.drawRoundedRect(
       -LABEL_RECT_WIDTH / 2,
       -LABEL_RECT_HEIGHT / 2,
@@ -207,7 +227,9 @@ export class NetworkEdge {
 
   private getAdjustedTextAngle(angle: number): number {
     // Adjust text angle to ensure readability
-    return (angle > Math.PI / 2 || angle < -Math.PI / 2) ? angle + Math.PI : angle;
+    return angle > Math.PI / 2 || angle < -Math.PI / 2
+      ? angle + Math.PI
+      : angle;
   }
 
   private drawRoundedRect(
@@ -218,7 +240,7 @@ export class NetworkEdge {
     radius: number
   ) {
     const ctx = this.ctx;
-    
+
     ctx.beginPath();
     ctx.moveTo(x + radius, y);
     ctx.lineTo(x + width - radius, y);
@@ -233,7 +255,10 @@ export class NetworkEdge {
     ctx.fill();
   }
 
-  private drawEdgeArrow(isActiveEdge: boolean = false, disabled: boolean = false) {
+  private drawEdgeArrow(
+    isActiveEdge: boolean = false,
+    disabled: boolean = false
+  ) {
     let arrowKey = this.getArrowKey(isActiveEdge, disabled);
     const arrowImage = this.canvasImages[arrowKey];
     if (!arrowImage) return;
@@ -244,11 +269,11 @@ export class NetworkEdge {
     const arrowY = this.edge.to.y - arrowOffset * Math.sin(this.coords.angle);
 
     this.ctx.save();
-    
+
     if (disabled) {
       this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
     }
-    
+
     this.ctx.translate(arrowX, arrowY);
     this.ctx.rotate(this.coords.angle + Math.PI / 2);
     this.ctx.drawImage(
@@ -258,27 +283,32 @@ export class NetworkEdge {
       ARROW_SIZE,
       ARROW_SIZE
     );
-    
+
     this.ctx.restore();
     this.ctx.globalAlpha = GLOBAL_ALPHA;
   }
 
-  private getArrowKey(isActiveEdge: boolean, disabled: boolean): keyof CanvasImage {
+  private getArrowKey(
+    isActiveEdge: boolean,
+    disabled: boolean
+  ): keyof CanvasImage {
     if (this.options.removingEdgeId) {
       return EDGE_STYLES.DEFAULT.arrowKey;
     }
-    
+
     if (disabled) {
       return "defaultArrow";
     }
-    
+
     if (isActiveEdge || this.isEdgeConnected()) {
       const edgeStatus = this.edge.data?.status;
-      const styleKey = edgeStatus ? String(edgeStatus) : WorkloadPortStatus.ACTIVE;
+      const styleKey = edgeStatus
+        ? String(edgeStatus)
+        : WorkloadPortStatus.ACTIVE;
       const style = EDGE_STYLES[styleKey] || EDGE_STYLES.DEFAULT;
       return style.arrowKey;
     }
-    
+
     return "defaultArrow";
   }
 

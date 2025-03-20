@@ -35,9 +35,6 @@ export const EXTERNAL_GLOBAL_ALPHA = 0.5;
 
 export const ARROW_SIZE = 16;
 export const LINE_WIDTH = 1.4;
-export const LABEL_RECT_WIDTH = 48;
-export const LABEL_RECT_HEIGHT = 24;
-export const LABEL_BORDER_RADIUS = 8;
 export const FONT = "12px Arial";
 
 export const EDGE_STYLES: Record<string, EdgeStyle> = {

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { IdType, Network, Position } from "vis-network";
 
@@ -14,7 +14,7 @@ import {
 } from "./types";
 import { calculatePositionAlongEdge } from "./utils";
 
-import { FilterPorts, Port, PortDirection } from "@/models";
+import { FilterPorts, Port, PortDirection, WorkloadPortStatus } from "@/models";
 import { networkOptions } from "./constants";
 
 export type NetworkGraphProps = {
@@ -47,6 +47,35 @@ const NetworkGraph = ({
   const [activeEdgeId, setActiveEdgeId] = useState("");
   const hoverNodeId = useRef<string>("");
   const networkRef = useRef<CustomNetwork>(null);
+
+  const inboundEdges = useMemo(() => {
+    return edges.filter((edge) => {
+      if (
+        (!filterPorts?.attempted &&
+          edge.status === WorkloadPortStatus.ATTEMPT) ||
+        (!filterPorts?.error && edge.status === WorkloadPortStatus.ERROR) ||
+        (!filterPorts?.idle && edge.status === WorkloadPortStatus.IDLE)
+      ) {
+        return false;
+      }
+      return edge.to === activeNodeId;
+    });
+  }, [edges, activeNodeId, filterPorts]);
+
+  const outboundEdges = useMemo(() => {
+    return edges.filter((edge) => {
+      if (
+        (!filterPorts?.attempted &&
+          edge.status === WorkloadPortStatus.ATTEMPT) ||
+        (!filterPorts?.error && edge.status === WorkloadPortStatus.ERROR) ||
+        (!filterPorts?.idle && edge.status === WorkloadPortStatus.IDLE)
+      ) {
+        return false;
+      }
+      return edge.from === activeNodeId;
+    });
+  }, [edges, activeNodeId, filterPorts]);
+
   useEffect(() => {
     if (
       !canvasImages ||
@@ -95,16 +124,68 @@ const NetworkGraph = ({
       }
       hoverNodeId.current = "";
     });
+    const canvas = containerRef.current?.querySelector("canvas");
+    const onMouseMove = (event: MouseEvent) => {
+      const pointer = networkRef.current?.DOMtoCanvas({
+        x: event.offsetX,
+        y: event.offsetY,
+      });
 
-    networkRef.current.on("hoverEdge", (params) => {
-      setActiveEdgeId(params.edge as string);
-      document.body.style.cursor = "pointer";
-    });
+      const edgeId = networkRef.current?.getEdgeAt({
+        x: event.offsetX,
+        y: event.offsetY,
+      });
+      let connectedEdges = activeNodeId
+        ? networkRef.current?.getConnectedEdges(activeNodeId)
+        : [];
+
+      if (portDirection === PortDirection.OUTBOUND) {
+        const outboundEdgeIds = outboundEdges.map((edge) => edge.id);
+        connectedEdges = connectedEdges?.filter((connectedEdge) =>
+          outboundEdgeIds.includes(connectedEdge as string)
+        );
+      } else {
+        const inboundEdgeIds = inboundEdges.map((edge) => edge.id);
+        connectedEdges = connectedEdges?.filter((connectedEdge) =>
+          inboundEdgeIds.includes(connectedEdge as string)
+        );
+      }
+      if (
+        edgeId &&
+        pointer &&
+        activeNodeId &&
+        connectedEdges?.includes(edgeId)
+      ) {
+        const edge = networkRef.current?.body.edges[edgeId as string];
+        if (edge) {
+          const fromNodePos = networkRef.current?.getPositions([edge.from.id])[
+            edge.from.id
+          ];
+          const toNodePos = networkRef.current?.getPositions([edge.to.id])[
+            edge.to.id
+          ];
+          if (fromNodePos && toNodePos) {
+            const mousemoveRatio = calculatePositionAlongEdge(
+              pointer,
+              fromNodePos,
+              toNodePos
+            );
+            if (mousemoveRatio >= 0.2 && mousemoveRatio <= 0.8) {
+              setActiveEdgeId(edgeId as string);
+              document.body.style.cursor = "pointer";
+            }
+          }
+        }
+      } else {
+        setActiveEdgeId("");
+      }
+    };
 
     networkRef.current.on("blurEdge", () => {
-      setActiveEdgeId("");
       document.body.style.cursor = "auto";
     });
+
+    canvas?.addEventListener("mousemove", onMouseMove);
 
     networkRef.current.on("click", function (properties) {
       const edgeId = networkRef.current?.getEdgeAt({
@@ -156,6 +237,7 @@ const NetworkGraph = ({
       networkRef.current?.off("afterDrawing");
       networkRef.current?.off("blurNode");
       networkRef.current?.off("click");
+      canvas?.removeEventListener("mousemove", onMouseMove);
     };
   }, [
     canvasImages,
@@ -186,10 +268,6 @@ const NetworkGraph = ({
       ) as IdType[];
 
       if (activeNodeId) {
-        const inboundEdges = edges.filter((edge) => edge.to === activeNodeId);
-        const outboundEdges = edges.filter(
-          (edge) => edge.from === activeNodeId
-        );
         if (portDirection === PortDirection.OUTBOUND) {
           const outboundNodeIds = outboundEdges.map((edge) => edge.to);
           const outboundEdgeIds = outboundEdges.map((edge) => edge.id);
@@ -228,6 +306,25 @@ const NetworkGraph = ({
       }
       for (const edgeId in networkEdges) {
         const edge = networkEdges[edgeId];
+        if (
+          !filterPorts?.attempted &&
+          edge.data?.status === WorkloadPortStatus.ATTEMPT
+        ) {
+          continue;
+        }
+        if (
+          !filterPorts?.idle &&
+          edge.data?.status === WorkloadPortStatus.IDLE
+        ) {
+          continue;
+        }
+        if (
+          !filterPorts?.error &&
+          edge.data?.status === WorkloadPortStatus.ERROR
+        ) {
+          continue;
+        }
+
         const networkEdge = new NetworkEdge(ctx, edge, canvasImages, {
           connectedEdges: connectedEdges,
           activeEdgeId,
@@ -239,6 +336,7 @@ const NetworkGraph = ({
           portHover,
           removingEdgeId,
         });
+
         networkEdge.draw();
       }
 
