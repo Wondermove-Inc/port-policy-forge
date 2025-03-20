@@ -91,8 +91,6 @@ export class NetworkNode {
     } = this.getNodeStates();
 
     this.ctx.lineWidth = BORDER_LINE_WIDTH;
-    this.ctx.globalAlpha = GLOBAL_ALPHA;
-
     // Draw interaction circles if needed
     if (isHover || isActive || isActiveLastConnection) {
       this.drawInteractionCircles(
@@ -265,11 +263,13 @@ export class NetworkNode {
     );
     gradient.addColorStop(0, "rgba(255, 255, 255, 0.2)");
     gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+    this.ctx.globalAlpha = 1;
     this.ctx.strokeStyle = color.background;
     this.ctx.beginPath();
     this.ctx.arc(this.node.x, this.node.y, nodeSize / 2, 0, 2 * Math.PI, false);
     this.ctx.closePath();
     this.ctx.stroke();
+    this.setInitialOpacity();
     this.ctx.strokeStyle = gradient;
     this.ctx.beginPath();
     this.ctx.arc(this.node.x, this.node.y, nodeSize / 2, 0, 2 * Math.PI, false);
