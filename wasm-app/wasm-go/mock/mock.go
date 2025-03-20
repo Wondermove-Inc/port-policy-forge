@@ -36,7 +36,7 @@ var MockWorkloads = map[string][]model.Workload{
 		{
 			UUID:                    "7431bb4f-cae8-4dbe-a542-d6f52c893271",
 			WorkloadName:            "default-workload-1",
-			ConnectedWorkloadStatus: model.BEFORE_INIT_SETUP,
+			ConnectedWorkloadStatus: model.COMPLETE_SETUP,
 			PolicySettingBadge:      true,
 			Kind:                    model.WORKLOAD_KIND_DEPLOYMENT,
 			Usage:                   0.7, // 70% CPU usage

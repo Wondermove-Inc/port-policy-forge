@@ -113,7 +113,7 @@ export class NetworkNode {
     // Draw the main node circle
 
     // Add gradient if not active or hover
-    if (!isActive && !isHover) {
+    if (!isActive && !isHover && !isActiveLastConnection) {
       this.addNodeGradient(nodeSize);
     } else {
       this.addNodeActive(nodeSize);
