@@ -63,8 +63,9 @@ export const WorkloadTabs = ({
           }}
           label={tab.label}
           value={tab.id}
+          key={tab.id}
         />
       ))}
     </MuiTabs>
   );
-u};
+};
