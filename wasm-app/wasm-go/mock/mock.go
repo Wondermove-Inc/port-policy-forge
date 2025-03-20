@@ -114,7 +114,7 @@ var MockWorkloads = map[string][]model.Workload{
 			Usage:                   0.2, // 20% CPU usage
 			From:                    []model.Relation{},
 			To: []model.Relation{
-				{WorkloadId: "7f2552b4-ab40-4120-a6d9-16507024922b", Status: 0}, // Active
+				{WorkloadId: "7f2552b4-ab40-4120-a6d9-16507024922b", Status: 4}, // Active
 			},
 			Inbound: model.TrafficStats{
 				Stats: model.Stats{
@@ -215,7 +215,7 @@ var MockWorkloads = map[string][]model.Workload{
 			Kind:                    model.WORKLOAD_KIND_REPLICASET,
 			Usage:                   0.9, // 90% CPU usage
 			From: []model.Relation{
-				{WorkloadId: "7161198e-eeb6-48c6-a15f-6c131393402d", Status: 0}, // Active
+				{WorkloadId: "7161198e-eeb6-48c6-a15f-6c131393402d", Status: 4}, // Active
 			},
 			To: []model.Relation{},
 			Inbound: model.TrafficStats{
@@ -285,7 +285,7 @@ var MockWorkloads = map[string][]model.Workload{
 			Usage:                   0.2, // 20% CPU usage
 			From:                    []model.Relation{},
 			To: []model.Relation{
-				{WorkloadId: "8258ce53-0681-44db-b2ef-6793473c694e", Status: 1}, // Idle
+				{WorkloadId: "8258ce53-0681-44db-b2ef-6793473c694e", Status: 4}, // Idle
 			},
 			Inbound: model.TrafficStats{
 				Stats: model.Stats{

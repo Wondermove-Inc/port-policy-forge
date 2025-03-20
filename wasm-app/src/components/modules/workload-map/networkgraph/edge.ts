@@ -103,10 +103,14 @@ export class NetworkEdge {
 
     this.setEdgeLineStyle(isActiveEdge, disabled);
 
-    ctx.moveTo(fromX, fromY);
-    ctx.lineTo(toX, toY);
-    ctx.closePath();
-    ctx.stroke();
+    const path = new Path2D();
+    path.moveTo(fromX, fromY);
+    path.lineTo(toX, toY);
+
+    // ctx.moveTo(fromX, fromY);
+    // ctx.lineTo(toX, toY);
+    // ctx.closePath();
+    ctx.stroke(path);
 
     if (disabled) {
       ctx.beginPath();
