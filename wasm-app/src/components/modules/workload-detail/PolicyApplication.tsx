@@ -65,7 +65,7 @@ export const PolicyApplication = ({
           sx={{
             display: "flex",
             flexDirection: "column",
-            gap: "4px",
+            gap: "8px",
           }}
         >
           <Box
