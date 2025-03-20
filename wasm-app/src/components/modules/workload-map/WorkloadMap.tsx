@@ -23,7 +23,7 @@ export const WorkloadMap = () => {
   const [nodes, setNodes] = useState<NodeData[]>([]);
   const [removingEdgeId, setRemovingEdgeId] = useState("");
   const [networkGraphRenderKey, setNetworkGraphRenderKey] = useState<number>(
-    new Date().getTime(),
+    new Date().getTime()
   );
   const {
     workloads: storeWorkloads,
@@ -52,19 +52,30 @@ export const WorkloadMap = () => {
   }, [storeWorkloads]);
   useEffect(() => {
     const edges = workloads.reduce((pre, current) => {
-      const fromEdges: EdgeData[] =
+      let fromEdges: EdgeData[] =
         current.from?.map((f) => ({
           from: f.workloadId,
           to: current.uuid,
           status: f.status,
         })) || [];
+      // filtering duplicate from / to
+      fromEdges = fromEdges.filter(
+        (fromEdge) =>
+          !pre.find((p) => p.from === fromEdge.from && p.to === fromEdge.to)
+      );
 
-      const toEdges: EdgeData[] =
+      let toEdges: EdgeData[] =
         current.to?.map((t) => ({
           from: current.uuid,
           to: t.workloadId,
           status: t.status,
         })) || [];
+
+      // filtering duplicate from / to
+      toEdges = toEdges.filter(
+        (toEdge) =>
+          !pre.find((p) => p.from === toEdge.from && p.to === toEdge.to)
+      );
 
       return [...pre, ...fromEdges, ...toEdges] as EdgeData[];
     }, [] as EdgeData[]);
@@ -193,7 +204,7 @@ export const WorkloadMap = () => {
     // implement debounce function here ...
     wasmListWorkloads(selectedNamespace).then((val) => {
       const filteredWorkloads = val.result.filter((workload) =>
-        workload.workloadName.includes(keyword),
+        workload.workloadName.includes(keyword)
       );
       setWorkloads(filteredWorkloads);
     });
