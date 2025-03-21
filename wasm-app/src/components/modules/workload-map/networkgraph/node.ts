@@ -270,7 +270,7 @@ export class NetworkNode {
     }
 
     this.ctx.globalAlpha = 1;
-    this.ctx.strokeStyle = color.background;
+    this.ctx.strokeStyle = color.fill.default;
     this.ctx.beginPath();
     this.ctx.arc(this.node.x, this.node.y, nodeSize / 2, 0, 2 * Math.PI, false);
     this.ctx.closePath();

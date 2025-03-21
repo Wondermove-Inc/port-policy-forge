@@ -12,7 +12,7 @@ export const color = {
     error: "#EB4136",
   },
   fill: {
-    default: "#2d323d",
+    default: "rgba(255, 255, 255, 0.08)",
     active: "#2d4169",
     activeInteraction100: "rgba(83, 139, 255, 0.1)",
     activeInteraction200: "rgba(83, 139, 255, 0.2)",
