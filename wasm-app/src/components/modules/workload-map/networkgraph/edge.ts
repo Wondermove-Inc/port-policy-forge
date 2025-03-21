@@ -41,8 +41,8 @@ export class NetworkEdge {
     const angle = Math.atan2(to.y - from.y, to.x - from.x);
     const fromSize = from?.data?.nodeSize;
     const toSize = to?.data?.nodeSize;
-    const fromOffset = this.getLineOffset(fromSize);
-    const toOffset = this.getLineOffset(toSize);
+    const fromOffset = this.getFromLineOffset(fromSize);
+    const toOffset = this.getToLineOffset(toSize);
 
     return {
       fromX: from.x + fromOffset * Math.cos(angle),
@@ -340,16 +340,29 @@ export class NetworkEdge {
     return "defaultArrow";
   }
 
-  private getLineOffset(nodeSize: NodeSize | undefined): number {
+  private getFromLineOffset(nodeSize: NodeSize | undefined): number {
     if (nodeSize === undefined) return 31;
 
     switch (nodeSize) {
       case NodeSize.BIG:
-        return 37.5;
+        return 37.75;
       case NodeSize.SMALL:
-        return 21;
+        return 20.75;
       default:
-        return 30.5;
+        return 30.75;
+    }
+  }
+
+  private getToLineOffset(nodeSize: NodeSize | undefined): number {
+    if (nodeSize === undefined) return 31;
+
+    switch (nodeSize) {
+      case NodeSize.BIG:
+        return 38.5;
+      case NodeSize.SMALL:
+        return 21.5;
+      default:
+        return 31.25;
     }
   }
 
@@ -358,11 +371,11 @@ export class NetworkEdge {
 
     switch (nodeSize) {
       case NodeSize.BIG:
-        return 41;
+        return 41.5;
       case NodeSize.SMALL:
-        return 24;
+        return 24.5;
       default:
-        return 34;
+        return 34.5;
     }
   }
 
