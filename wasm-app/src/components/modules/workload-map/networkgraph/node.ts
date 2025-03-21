@@ -114,7 +114,7 @@ export class NetworkNode {
 
     // Add gradient if not active or hover
     if (!isActive && !isHover && !isActiveLastConnection) {
-      this.addNodeGradient(nodeSize);
+      this.addNodeGradient(nodeSize, isNodeError);
     } else {
       this.addNodeActive(nodeSize);
       // this.ctx.stroke();
@@ -254,15 +254,21 @@ export class NetworkNode {
     this.ctx.fill();
   }
 
-  private addNodeGradient(nodeSize: number): void {
+  private addNodeGradient(nodeSize: number, isNodeError: boolean): void {
     const gradient = this.ctx.createLinearGradient(
       this.node.x - nodeSize / 2,
       this.node.y - nodeSize / 2,
       this.node.x + nodeSize / 2,
       this.node.y + nodeSize / 2
     );
-    gradient.addColorStop(0, "rgba(255, 255, 255, 0.2)");
-    gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+    if (isNodeError) {
+      gradient.addColorStop(0, "rgba(235, 65, 54)");
+      gradient.addColorStop(1, "rgba(235, 65, 54)");
+    } else {
+      gradient.addColorStop(0, "rgba(255, 255, 255, 0.2)");
+      gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+    }
+
     this.ctx.globalAlpha = 1;
     this.ctx.strokeStyle = color.background;
     this.ctx.beginPath();
