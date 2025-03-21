@@ -99,6 +99,8 @@ export class NetworkEdge {
 
     if (disabled) {
       ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
+    } else if (this.isPortHover()) {
+      ctx.globalAlpha = 0.3;
     }
 
     this.setEdgeLineStyle(isActiveEdge, disabled);
@@ -285,6 +287,8 @@ export class NetworkEdge {
 
     if (disabled) {
       this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
+    } else if (this.isPortHover()) {
+      this.ctx.globalAlpha = 0.3;
     }
 
     this.ctx.translate(arrowX, arrowY);
@@ -360,5 +364,22 @@ export class NetworkEdge {
       default:
         return 34;
     }
+  }
+
+  private isPortHover() {
+    if (!this.options.portHover?.lastConnectionWorkloadUUID) {
+      return false;
+    }
+    for (const edge of this.options.connectedEdges || []) {
+      if (this.edge.id === edge) {
+        return !(
+          this.options.network?.body.edges[edge].data?.from ===
+            this.options.portHover?.lastConnectionWorkloadUUID ||
+          this.options.network?.body.edges[edge].data?.to ===
+            this.options.portHover?.lastConnectionWorkloadUUID
+        );
+      }
+    }
+    return true;
   }
 }

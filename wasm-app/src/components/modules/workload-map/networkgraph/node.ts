@@ -58,17 +58,22 @@ export class NetworkNode {
   private setInitialOpacity(): void {
     if (this.isDisabled()) {
       this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
+    } else if (this.isPortHover()) {
+      this.ctx.globalAlpha = 0.3;
     } else if (this.isExternalNamespace()) {
       this.ctx.globalAlpha = EXTERNAL_GLOBAL_ALPHA;
     }
   }
 
   private setLabelOpacity(): void {
-    if (!this.isDisabled() && this.isExternalNamespace()) {
-      this.ctx.globalAlpha = EXTERNAL_GLOBAL_ALPHA;
-    }
     if (!this.isDisabled()) {
-      this.ctx.globalAlpha = GLOBAL_ALPHA;
+      if (this.isPortHover()) {
+        this.ctx.globalAlpha = 0.3;
+      } else if (this.isExternalNamespace()) {
+        this.ctx.globalAlpha = EXTERNAL_GLOBAL_ALPHA;
+      } else {
+        this.ctx.globalAlpha = GLOBAL_ALPHA;
+      }
     }
   }
 
@@ -320,9 +325,7 @@ export class NetworkNode {
     this.ctx.fill();
 
     // Adjust opacity for disabled state
-    if (this.isDisabled()) {
-      this.ctx.globalAlpha = DISABLED_GLOBAL_ALPHA;
-    }
+    this.setInitialOpacity();
 
     // Draw exclamation image
     this.ctx.beginPath();
@@ -408,7 +411,7 @@ export class NetworkNode {
 
     // Draw namespace label if needed
     if (this.node.data?.externalNamespace) {
-      if (!this.isDisabled()) {
+      if (!this.isDisabled() && !this.isPortHover()) {
         this.ctx.globalAlpha = 0.78;
       }
 
@@ -451,6 +454,7 @@ export class NetworkNode {
 
       // Draw background
       this.drawStatBadgeBackground(x, y, ports[i].total);
+      this.setInitialOpacity();
 
       // Draw badge circle with appropriate colors
       this.drawStatBadgeCircle(x, y, ports[i].status, ports[i].total);
@@ -598,6 +602,14 @@ export class NetworkNode {
 
   private isExternalNamespace(): boolean {
     return !!this.node.data?.isExternalNamespace;
+  }
+
+  private isPortHover() {
+    return (
+      this.options.portHover &&
+      this.options.portHover.lastConnectionWorkloadUUID !== this.node.id &&
+      this.options.connectedNodes?.includes(this.node.id)
+    );
   }
 
   private getNodeSize(): number {
